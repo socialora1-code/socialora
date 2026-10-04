@@ -19,6 +19,31 @@ import { formatQuantity, formatUSD } from '@/lib/format'
 import { buildOrderHref } from '@/lib/order-url'
 import { cn } from '@/lib/utils'
 
+function UsaFlag() {
+  return (
+    <svg
+      viewBox="0 0 24 16"
+      aria-hidden="true"
+      className="h-4 w-6 shrink-0 rounded-[3px] ring-1 ring-black/10"
+    >
+      <rect width="24" height="16" fill="#ffffff" />
+      {Array.from({ length: 7 }, (_, i) => (
+        <rect key={i} y={(i * 2 * 16) / 13} width="24" height={16 / 13} fill="#B22234" />
+      ))}
+      <rect width="10" height={(16 * 7) / 13} fill="#3C3B6E" />
+      {Array.from({ length: 12 }, (_, i) => (
+        <circle
+          key={i}
+          cx={1.8 + (i % 4) * 2.2}
+          cy={1.6 + Math.floor(i / 4) * 2.4}
+          r="0.5"
+          fill="#ffffff"
+        />
+      ))}
+    </svg>
+  )
+}
+
 export function TieredServiceSection({
   platformId,
   serviceId,
@@ -68,7 +93,13 @@ export function TieredServiceSection({
                   {tier.badge}
                 </span>
               </div>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+
+              <div className="mt-3 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold tracking-wide">
+                <UsaFlag />
+                USA {service.label}
+              </div>
+
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 {getTierDescription(service, tier)}
               </p>
 
