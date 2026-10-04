@@ -9,7 +9,7 @@
  * All prices are stored in US cents to avoid floating-point rounding issues.
  */
 
-export type PlatformId = 'instagram' | 'tiktok' | 'youtube'
+export type PlatformId = 'instagram' | 'tiktok' | 'youtube' | 'x'
 export type ServiceId = 'followers' | 'likes' | 'views' | 'subscribers'
 export type TierId = 'high-quality' | 'premium' | 'vip'
 
@@ -152,6 +152,13 @@ const YOUTUBE_SUBSCRIBER_OPTIONS: readonly TieredOption[] = tieredOptions(
   },
 )
 
+// X followers, price per 100: High-Quality $8, Premium $12
+const X_FOLLOWER_OPTIONS: readonly TieredOption[] = tieredOptions(FOLLOWER_QUANTITIES, {
+  'high-quality': 800,
+  premium: 1200,
+  vip: 1200,
+})
+
 // Likes: $7.99 per 1,000
 const LIKE_OPTIONS: readonly FlatOption[] = flatOptions(LIKE_QUANTITIES, 799)
 
@@ -160,6 +167,12 @@ const VIEW_OPTIONS: readonly FlatOption[] = flatOptions(VIEW_QUANTITIES, 499)
 
 // YouTube views: $9.99 per 1,000
 const YOUTUBE_VIEW_OPTIONS: readonly FlatOption[] = flatOptions(VIEW_QUANTITIES, 999)
+
+// X likes: $9.99 per 1,000
+const X_LIKE_OPTIONS: readonly FlatOption[] = flatOptions(LIKE_QUANTITIES, 999)
+
+// X views: $6.99 per 1,000
+const X_VIEW_OPTIONS: readonly FlatOption[] = flatOptions(VIEW_QUANTITIES, 699)
 
 /* -------------------------------------------------------------------------- */
 /*                                  Platforms                                 */
@@ -308,6 +321,57 @@ export const PLATFORMS: readonly Platform[] = [
       },
     ],
   },
+  {
+    id: 'x',
+    name: 'X (Twitter)',
+    path: '/x',
+    tagline: 'Followers, likes and views',
+    description:
+      'Grow your X (Twitter) presence with followers for your profile and likes or views for your posts.',
+    profileFieldLabel: 'X (Twitter) Profile URL',
+    profilePlaceholder: 'https://x.com/yourprofile',
+    allowedHosts: ['x.com', 'twitter.com'],
+    services: [
+      {
+        id: 'followers',
+        label: 'Followers',
+        unit: 'followers',
+        target: 'profile',
+        summary: 'Choose a tier and quantity for your X profile.',
+        delivery: DELIVERY_NOTE,
+        refill: FOLLOWER_REFILL_NOTE,
+        defaultQuantity: 1000,
+        pricing: { kind: 'tiered', options: X_FOLLOWER_OPTIONS },
+        tierDescriptions: {
+          'high-quality': 'High-quality USA followers with a minimal drop rate',
+          premium:
+            'Premium USA followers with their own posts and followers. Minimal drop, and replacement deliveries are made if any occur',
+        },
+      },
+      {
+        id: 'likes',
+        label: 'Likes',
+        unit: 'likes',
+        target: 'post',
+        summary: 'Likes for a single public X post.',
+        delivery: DELIVERY_NOTE,
+        refill: null,
+        defaultQuantity: 1000,
+        pricing: { kind: 'flat', options: X_LIKE_OPTIONS },
+      },
+      {
+        id: 'views',
+        label: 'Views',
+        unit: 'views',
+        target: 'post',
+        summary: 'Views for a single public X post or video.',
+        delivery: DELIVERY_NOTE,
+        refill: null,
+        defaultQuantity: 1000,
+        pricing: { kind: 'flat', options: X_VIEW_OPTIONS },
+      },
+    ],
+  },
 ]
 
 /* -------------------------------------------------------------------------- */
@@ -439,4 +503,4 @@ export function getStartingPriceCents(service: Service): number {
 
 export function getServiceTitle(platform: Platform, service: Service): string {
   return `${platform.name} ${service.label}`
-                  }
+}
