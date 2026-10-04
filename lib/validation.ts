@@ -18,7 +18,8 @@ export function isValidEmail(value: string): boolean {
 }
 
 const USERNAME_PATTERN = /^@?[A-Za-z0-9._-]{1,60}$/
-const LOOKS_LIKE_URL = /^(https?:\/\/|www\.)|\/|(instagram|instagr|tiktok|youtube|youtu)\.(com|am|be)/i
+const LOOKS_LIKE_URL =
+  /^(https?:\/\/|www\.)|\/|(instagram|instagr|tiktok|youtube|youtu|twitter)\.(com|am|be)|(^|[/.])x\.com/i
 
 /**
  * Accepts either a full public URL on the platform's domain or a plain
