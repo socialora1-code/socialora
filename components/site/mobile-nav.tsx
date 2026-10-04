@@ -14,7 +14,6 @@ const LINKS = [
   { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'Support' },
   { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact & Support' },
 ]
 
 export function MobileNav() {
