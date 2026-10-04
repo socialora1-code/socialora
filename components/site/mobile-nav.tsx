@@ -10,6 +10,7 @@ const LINKS = [
   { href: '/instagram', label: 'Instagram' },
   { href: '/tiktok', label: 'TikTok' },
   { href: '/youtube', label: 'YouTube' },
+  { href: '/x', label: 'X (Twitter)' },
   { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'Support' },
   { href: '/about', label: 'About' },
