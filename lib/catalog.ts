@@ -26,22 +26,15 @@ export const TIERS: readonly Tier[] = [
     id: 'high-quality',
     name: 'High-Quality',
     badge: 'Selected',
-    description: 'Accounts with photos and posts',
+    description: 'High-quality USA followers',
     emphasized: false,
   },
   {
     id: 'premium',
     name: 'Premium',
     badge: 'Recommended',
-    description: 'Real, active accounts that look natural',
+    description: 'High-quality USA followers with posts and followers of their own',
     emphasized: true,
-  },
-  {
-    id: 'vip',
-    name: 'VIP',
-    badge: 'Exclusive',
-    description: 'Real, active and targeted',
-    emphasized: false,
   },
 ] as const
 
@@ -105,54 +98,56 @@ const FOLLOWER_REFILL_NOTE =
 /*                                Price tables                                */
 /* -------------------------------------------------------------------------- */
 
-const FOLLOWER_OPTIONS: readonly TieredOption[] = [
-  { quantity: 100, prices: { 'high-quality': 599, premium: 799, vip: 999 } },
-  { quantity: 250, prices: { 'high-quality': 1499, premium: 1999, vip: 2499 } },
-  { quantity: 500, prices: { 'high-quality': 2999, premium: 3999, vip: 4999 } },
-  { quantity: 1000, prices: { 'high-quality': 5999, premium: 7999, vip: 9999 } },
-  { quantity: 2000, prices: { 'high-quality': 11999, premium: 15999, vip: 19999 } },
-  { quantity: 5000, prices: { 'high-quality': 29999, premium: 39999, vip: 49999 } },
-  { quantity: 10000, prices: { 'high-quality': 59999, premium: 79999, vip: 99999 } },
-  { quantity: 20000, prices: { 'high-quality': 119999, premium: 159999, vip: 199999 } },
+/** Builds tiered options. Prices per 100 units are given in US cents. */
+function tieredOptions(
+  quantities: readonly number[],
+  per100Cents: Record<TierId, number>,
+): TieredOption[] {
+  return quantities.map((quantity) => ({
+    quantity,
+    prices: {
+      'high-quality': Math.round((per100Cents['high-quality'] * quantity) / 100),
+      premium: Math.round((per100Cents.premium * quantity) / 100),
+      vip: Math.round((per100Cents.vip * quantity) / 100),
+    },
+  }))
+}
+
+/** Builds flat options. Price per 1,000 units is given in US cents. */
+function flatOptions(quantities: readonly number[], per1000Cents: number): FlatOption[] {
+  return quantities.map((quantity) => ({
+    quantity,
+    price: Math.round((per1000Cents * quantity) / 1000),
+  }))
+}
+
+const FOLLOWER_QUANTITIES = [
+  100, 250, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000,
 ]
 
-const YOUTUBE_SUBSCRIBER_OPTIONS: readonly TieredOption[] = [
-  { quantity: 100, prices: { 'high-quality': 899, premium: 1199, vip: 1499 } },
-  { quantity: 250, prices: { 'high-quality': 2248, premium: 2998, vip: 3748 } },
-  { quantity: 500, prices: { 'high-quality': 4495, premium: 5995, vip: 7495 } },
-  { quantity: 1000, prices: { 'high-quality': 8990, premium: 11990, vip: 14990 } },
-  { quantity: 2000, prices: { 'high-quality': 17980, premium: 23980, vip: 29980 } },
-  { quantity: 5000, prices: { 'high-quality': 44950, premium: 59950, vip: 74950 } },
-  { quantity: 10000, prices: { 'high-quality': 89900, premium: 119900, vip: 149900 } },
+const LIKE_QUANTITIES = [1000, 2000, 5000, 10000, 20000, 50000, 100000]
+
+const VIEW_QUANTITIES = [
+  1000, 2000, 5000, 10000, 20000, 50000, 100000, 250000, 500000, 1000000,
 ]
 
-const LIKE_OPTIONS: readonly FlatOption[] = [
-  { quantity: 1000, price: 799 },
-  { quantity: 2000, price: 1598 },
-  { quantity: 5000, price: 3995 },
-  { quantity: 10000, price: 7990 },
-  { quantity: 20000, price: 15980 },
-]
+// Price per 100 followers: High-Quality $3, Premium $5 (VIP is not offered)
+const FOLLOWER_OPTIONS: readonly TieredOption[] = tieredOptions(FOLLOWER_QUANTITIES, {
+  'high-quality': 300,
+  premium: 500,
+  vip: 800,
+})
 
-const VIEW_OPTIONS: readonly FlatOption[] = [
-  { quantity: 1000, price: 499 },
-  { quantity: 2000, price: 998 },
-  { quantity: 5000, price: 2495 },
-  { quantity: 10000, price: 4990 },
-  { quantity: 20000, price: 9980 },
-  { quantity: 50000, price: 24950 },
-  { quantity: 100000, price: 49900 },
-]
+const YOUTUBE_SUBSCRIBER_OPTIONS: readonly TieredOption[] = FOLLOWER_OPTIONS
 
-const YOUTUBE_VIEW_OPTIONS: readonly FlatOption[] = [
-  { quantity: 1000, price: 999 },
-  { quantity: 2000, price: 1998 },
-  { quantity: 5000, price: 4995 },
-  { quantity: 10000, price: 9990 },
-  { quantity: 20000, price: 19980 },
-  { quantity: 50000, price: 49950 },
-  { quantity: 100000, price: 99900 },
-]
+// Likes: $7.99 per 1,000
+const LIKE_OPTIONS: readonly FlatOption[] = flatOptions(LIKE_QUANTITIES, 799)
+
+// Views: $4.99 per 1,000
+const VIEW_OPTIONS: readonly FlatOption[] = flatOptions(VIEW_QUANTITIES, 499)
+
+// YouTube views: $9.99 per 1,000
+const YOUTUBE_VIEW_OPTIONS: readonly FlatOption[] = flatOptions(VIEW_QUANTITIES, 999)
 
 /* -------------------------------------------------------------------------- */
 /*                                  Platforms                                 */
@@ -399,11 +394,12 @@ export function getPriceCents(
   return option ? option.price : null
 }
 
-/** Lowest price in cents across all options of a service. */
+/** Lowest price in cents across the tiers that are offered. */
 export function getStartingPriceCents(service: Service): number {
   if (service.pricing.kind === 'tiered') {
+    const offered = TIERS.map((t) => t.id)
     return Math.min(
-      ...service.pricing.options.flatMap((o) => Object.values(o.prices)),
+      ...service.pricing.options.flatMap((o) => offered.map((id) => o.prices[id])),
     )
   }
   return Math.min(...service.pricing.options.map((o) => o.price))
