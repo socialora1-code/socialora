@@ -1,4 +1,3 @@
-```tsx
 import Link from 'next/link'
 import { Logo } from '@/components/site/logo'
 import { MobileNav } from '@/components/site/mobile-nav'
@@ -44,4 +43,3 @@ export function SiteHeader() {
     </header>
   )
 }
-```
