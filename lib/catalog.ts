@@ -345,7 +345,7 @@ export const PLATFORMS: readonly Platform[] = [
         tierDescriptions: {
           'high-quality': 'High-quality USA followers with a minimal drop rate',
           premium:
-            'Premium USA followers with their own posts and followers. Minimal drop, and replacement deliveries are made if any occur',
+            'High-quality USA followers with their own posts and followers. Minimal drop, and replacement deliveries are made if any occur',
         },
       },
       {
