@@ -1,7 +1,7 @@
 export const SITE = {
   name: 'Socialora',
   description:
-    'High-quality social media growth services for Instagram, TikTok and YouTube. Simple ordering, transparent pricing and dedicated support.',
+    'High-quality social media growth services for Instagram, TikTok, YouTube and X. Simple ordering, transparent pricing and dedicated support.',
   supportEmail: 'socialora1@gmail.com',
   url:
     process.env.NEXT_PUBLIC_SITE_URL ??
@@ -20,6 +20,7 @@ export const MAIN_NAV = [
   { href: '/instagram', label: 'Instagram' },
   { href: '/tiktok', label: 'TikTok' },
   { href: '/youtube', label: 'YouTube' },
+  { href: '/x', label: 'X' },
   { href: '/how-it-works', label: 'How It Works' },
   { href: '/faq', label: 'FAQ' },
 ] as const
