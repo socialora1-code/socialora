@@ -3,72 +3,62 @@
 
 import { Menu, X } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { buttonVariants } from '@/components/ui/button'
-import { MAIN_NAV } from '@/lib/site'
-import { cn } from '@/lib/utils'
+import { useState } from 'react'
 
-const EXTRA_LINKS = [
+const LINKS = [
+  { href: '/instagram', label: 'Instagram' },
+  { href: '/tiktok', label: 'TikTok' },
+  { href: '/youtube', label: 'YouTube' },
+  { href: '/how-it-works', label: 'How It Works' },
+  { href: '/faq', label: 'FAQ' },
   { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact & Support' },
-] as const
+  { href: '/contact', label: 'Support' },
+]
 
 export function MobileNav() {
   const [open, setOpen] = useState(false)
-  const pathname = usePathname()
-
-  // Close the menu whenever the route changes.
-  const [lastPath, setLastPath] = useState(pathname)
-  if (lastPath !== pathname) {
-    setLastPath(pathname)
-    setOpen(false)
-  }
-
-  useEffect(() => {
-    if (!open) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
-    document.addEventListener('keydown', onKey)
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.removeEventListener('keydown', onKey)
-      document.body.style.overflow = ''
-    }
-  }, [open])
 
   return (
     <div className="lg:hidden">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        aria-controls="mobile-menu"
+        onClick={() => setOpen(!open)}
         aria-label={open ? 'Close menu' : 'Open menu'}
-        className="inline-flex size-11 items-center justify-center rounded-full border border-border bg-card text-foreground transition-colors hover:bg-muted"
+        className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card"
       >
-        {open ? <X className="size-5" /> : <Menu className="size-5" />}
+        {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </button>
 
       {open && (
         <div
-          id="mobile-menu"
-          className="fixed inset-x-0 top-16 bottom-0 z-50 overflow-y-auto border-t border-border bg-background animate-in fade-in slide-in-from-top-2 duration-200"
+          style={{
+            position: 'fixed',
+            top: '64px',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 99999,
+            background: 'white',
+            overflowY: 'auto',
+          }}
         >
-          <nav aria-label="Mobile" className="mx-auto flex max-w-6xl flex-col px-4 py-6 sm:px-6">
-            <ul className="flex flex-col">
-              {[...MAIN_NAV, ...EXTRA_LINKS].map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    aria-current={pathname === item.href ? 'page' : undefined}
-                    className="flex min-h-14 items-center border-b border-border/70 text-lg font-medium tracking-tight aria-[current=page]:text-primary"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <Link href="/order" className={cn(buttonVariants(), 'mt-8 h-12 rounded-full text-base')}>
+          <nav className="flex flex-col px-5 py-6">
+            {LINKS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="flex min-h-[60px] items-center border-b border-gray-200 text-lg font-semibold text-gray-900"
+              >
+                {item.label}
+              </Link>
+            ))}
+
+            <Link
+              href="/order"
+              onClick={() => setOpen(false)}
+              className="mt-8 flex h-12 items-center justify-center rounded-full bg-blue-600 font-semibold text-white"
+            >
               Get Started
             </Link>
           </nav>
