@@ -26,14 +26,15 @@ export const TIERS: readonly Tier[] = [
     id: 'high-quality',
     name: 'High-Quality',
     badge: 'Selected',
-    description: 'High-quality USA followers',
+    description: 'High-quality USA followers with a minimal drop rate',
     emphasized: false,
   },
   {
     id: 'premium',
     name: 'Premium',
     badge: 'Recommended',
-    description: 'High-quality USA followers with posts and followers of their own',
+    description:
+      'Premium USA followers with their own posts and followers. Minimal drop, and replacement deliveries are made if any occur',
     emphasized: true,
   },
 ] as const
@@ -69,6 +70,8 @@ export interface Service {
   refill: string | null
   defaultQuantity: number
   pricing: ServicePricing
+  /** Optional tier descriptions that replace the defaults for this service. */
+  tierDescriptions?: Partial<Record<TierId, string>>
 }
 
 export interface Platform {
@@ -131,14 +134,23 @@ const VIEW_QUANTITIES = [
   1000, 2000, 5000, 10000, 20000, 50000, 100000, 250000, 500000, 1000000,
 ]
 
-// Price per 100 followers: High-Quality $3, Premium $5 (VIP is not offered)
+// Instagram / TikTok followers, price per 100: High-Quality $3, Premium $5
+// (the "vip" value is unused because VIP is not offered)
 const FOLLOWER_OPTIONS: readonly TieredOption[] = tieredOptions(FOLLOWER_QUANTITIES, {
   'high-quality': 300,
   premium: 500,
-  vip: 800,
+  vip: 500,
 })
 
-const YOUTUBE_SUBSCRIBER_OPTIONS: readonly TieredOption[] = FOLLOWER_OPTIONS
+// YouTube subscribers, price per 100: High-Quality $6, Premium $10
+const YOUTUBE_SUBSCRIBER_OPTIONS: readonly TieredOption[] = tieredOptions(
+  FOLLOWER_QUANTITIES,
+  {
+    'high-quality': 600,
+    premium: 1000,
+    vip: 1000,
+  },
+)
 
 // Likes: $7.99 per 1,000
 const LIKE_OPTIONS: readonly FlatOption[] = flatOptions(LIKE_QUANTITIES, 799)
@@ -175,6 +187,11 @@ export const PLATFORMS: readonly Platform[] = [
         refill: FOLLOWER_REFILL_NOTE,
         defaultQuantity: 1000,
         pricing: { kind: 'tiered', options: FOLLOWER_OPTIONS },
+        tierDescriptions: {
+          'high-quality': 'High-quality USA followers with a minimal drop rate',
+          premium:
+            'Premium USA followers with their own posts and followers. Minimal drop, and replacement deliveries are made if any occur',
+        },
       },
       {
         id: 'likes',
@@ -221,6 +238,11 @@ export const PLATFORMS: readonly Platform[] = [
         refill: FOLLOWER_REFILL_NOTE,
         defaultQuantity: 1000,
         pricing: { kind: 'tiered', options: FOLLOWER_OPTIONS },
+        tierDescriptions: {
+          'high-quality': 'High-quality USA followers with a minimal drop rate',
+          premium:
+            'Premium USA followers with their own videos and followers. Minimal drop, and replacement deliveries are made if any occur',
+        },
       },
       {
         id: 'likes',
@@ -267,6 +289,11 @@ export const PLATFORMS: readonly Platform[] = [
         refill: FOLLOWER_REFILL_NOTE,
         defaultQuantity: 1000,
         pricing: { kind: 'tiered', options: YOUTUBE_SUBSCRIBER_OPTIONS },
+        tierDescriptions: {
+          'high-quality': 'High-quality USA subscribers with a minimal drop rate',
+          premium:
+            'Premium USA subscribers with channels of their own. Minimal drop, and replacement deliveries are made if any occur',
+        },
       },
       {
         id: 'views',
@@ -363,6 +390,11 @@ export function getTier(id: string | null | undefined): Tier | undefined {
   return TIERS.find((t) => t.id === id)
 }
 
+/** Tier description for a service, using the service override when present. */
+export function getTierDescription(service: Service, tier: Tier): string {
+  return service.tierDescriptions?.[tier.id] ?? tier.description
+}
+
 export function getPaymentMethod(id: string | null | undefined): PaymentMethod | undefined {
   return PAYMENT_METHODS.find((m) => m.id === id)
 }
@@ -407,4 +439,4 @@ export function getStartingPriceCents(service: Service): number {
 
 export function getServiceTitle(platform: Platform, service: Service): string {
   return `${platform.name} ${service.label}`
-}
+                  }
