@@ -10,6 +10,7 @@ import {
   getPriceCents,
   getQuantities,
   getService,
+  getTierDescription,
   TIERS,
   type PlatformId,
   type ServiceId,
@@ -42,7 +43,7 @@ export function TieredServiceSection({
         />
       </div>
 
-      <ul className="mt-6 grid gap-4 md:grid-cols-3 md:items-stretch">
+      <ul className="mx-auto mt-6 grid max-w-4xl gap-4 md:grid-cols-2 md:items-stretch">
         {TIERS.map((tier) => {
           const price = getPriceCents(service, tier.id, quantity)
           if (price === null) return null
@@ -67,7 +68,9 @@ export function TieredServiceSection({
                   {tier.badge}
                 </span>
               </div>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{tier.description}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {getTierDescription(service, tier)}
+              </p>
 
               <div className="mt-6 border-t border-border pt-6">
                 <p className="text-sm text-muted-foreground">
