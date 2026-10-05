@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { SiteFooter } from '@/components/site/site-footer'
 import { SiteHeader } from '@/components/site/site-header'
+import { TelegramButton } from '@/components/site/telegram-button'
 import { SITE } from '@/lib/site'
 import './globals.css'
 
@@ -12,7 +13,7 @@ const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono'
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: 'Socialora — Grow Your Social Presence on Instagram, TikTok & YouTube',
+    default: 'Socialora — Grow Your Social Presence on Instagram, TikTok, YouTube & X',
     template: '%s · Socialora',
   },
   description: SITE.description,
@@ -61,6 +62,7 @@ export default function RootLayout({
           {children}
         </main>
         <SiteFooter />
+        <TelegramButton />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
