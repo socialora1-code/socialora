@@ -11,6 +11,7 @@ const LINKS = [
   { href: '/tiktok', label: 'TikTok' },
   { href: '/youtube', label: 'YouTube' },
   { href: '/x', label: 'X (Twitter)' },
+  { href: '/custom-request', label: 'Custom Request' },
   { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'Support' },
   { href: '/about', label: 'About' },
