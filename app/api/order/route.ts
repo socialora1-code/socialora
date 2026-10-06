@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server'
+import { buildApprovalUrl, createApprovalToken, profileToLink } from '@/lib/approval'
 import { STANDARD_PACKAGE_NAME } from '@/lib/catalog'
 import { getInboxAddress, renderTableEmail, sendEmail } from '@/lib/email'
 import { formatQuantity, formatUSD } from '@/lib/format'
+import { SITE } from '@/lib/site'
 import { validateOrder } from '@/lib/validation'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 const REFERENCE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+const APPROVAL_VALID_MS = 14 * 24 * 60 * 60 * 1000
 
 function generateReference(): string {
   const bytes = new Uint8Array(8)
@@ -53,6 +56,22 @@ export async function POST(request: Request) {
   const packageName = order.tier?.name ?? STANDARD_PACKAGE_NAME
   const serviceName = `${order.platform.name} ${order.service.label}`
 
+  // Approval link: only created when APPROVAL_SECRET is set and the service has a panel ID.
+  const panelServiceId = order.service.panelServiceId
+  const token = panelServiceId
+    ? createApprovalToken({
+        ref: reference,
+        service: panelServiceId,
+        link: profileToLink(order.platform.id, order.profile),
+        quantity: order.quantity,
+        email: order.email,
+        name: serviceName,
+        amount,
+        exp: Date.now() + APPROVAL_VALID_MS,
+      })
+    : null
+  const approvalUrl = token ? buildApprovalUrl(SITE.url, token) : null
+
   const adminEmail = renderTableEmail(
     `New order ${reference}`,
     [
@@ -70,7 +89,8 @@ export async function POST(request: Request) {
       ['Order amount', `${amount} USD`],
       ['Transaction ID / hash', order.transactionId ?? 'Not provided'],
     ],
-    'Price recalculated server-side from the catalog. Verify the payment on-chain before fulfilling this order. Reply to this email to contact the customer.',
+    'Price recalculated server-side from the catalog. Verify the payment on-chain before approving. Use the button only after the payment is confirmed. Reply to this email to contact the customer.',
+    approvalUrl ? { label: 'Approve & send to panel', url: approvalUrl } : undefined,
   )
 
   const adminSend = await sendEmail({
