@@ -73,8 +73,13 @@ export function escapeHtml(value: string): string {
     .replace(/'/g, '&#39;')
 }
 
-/** Renders a simple, email-client-safe key/value table. */
-export function renderTableEmail(title: string, rows: [string, string][], footer?: string): {
+/** Renders a simple, email-client-safe key/value table, with an optional button. */
+export function renderTableEmail(
+  title: string,
+  rows: [string, string][],
+  footer?: string,
+  action?: { label: string; url: string },
+): {
   html: string
   text: string
 } {
@@ -85,9 +90,13 @@ export function renderTableEmail(title: string, rows: [string, string][], footer
     )
     .join('')
 
-  const html = `<!doctype html><html><body style="margin:0;padding:24px;background:#f6f6fa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif"><div style="max-width:600px;margin:0 auto;background:#ffffff;border:1px solid #e7e7ef;border-radius:12px;overflow:hidden"><div style="padding:20px 24px;border-bottom:1px solid #e7e7ef"><div style="font-size:13px;color:#5b4fd6;font-weight:600;letter-spacing:.02em">SOCIALORA</div><h1 style="margin:6px 0 0;font-size:18px;color:#16161f">${escapeHtml(title)}</h1></div><table role="presentation" style="width:100%;border-collapse:collapse">${htmlRows}</table>${footer ? `<p style="padding:16px 24px;margin:0;color:#6b6b80;font-size:13px;line-height:1.5">${escapeHtml(footer)}</p>` : ''}</div></body></html>`
+  const actionHtml = action
+    ? `<div style="padding:20px 24px 8px"><a href="${escapeHtml(action.url)}" style="display:inline-block;background:#5b4fd6;color:#ffffff;text-decoration:none;font-weight:600;font-size:14px;padding:12px 20px;border-radius:999px">${escapeHtml(action.label)}</a></div>`
+    : ''
 
-  const text = `${title}\n\n${rows.map(([l, v]) => `${l}: ${v}`).join('\n')}${footer ? `\n\n${footer}` : ''}`
+  const html = `<!doctype html><html><body style="margin:0;padding:24px;background:#f6f6fa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif"><div style="max-width:600px;margin:0 auto;background:#ffffff;border:1px solid #e7e7ef;border-radius:12px;overflow:hidden"><div style="padding:20px 24px;border-bottom:1px solid #e7e7ef"><div style="font-size:13px;color:#5b4fd6;font-weight:600;letter-spacing:.02em">SOCIALORA</div><h1 style="margin:6px 0 0;font-size:18px;color:#16161f">${escapeHtml(title)}</h1></div><table role="presentation" style="width:100%;border-collapse:collapse">${htmlRows}</table>${actionHtml}${footer ? `<p style="padding:16px 24px;margin:0;color:#6b6b80;font-size:13px;line-height:1.5">${escapeHtml(footer)}</p>` : ''}</div></body></html>`
+
+  const text = `${title}\n\n${rows.map(([l, v]) => `${l}: ${v}`).join('\n')}${action ? `\n\n${action.label}: ${action.url}` : ''}${footer ? `\n\n${footer}` : ''}`
 
   return { html, text }
 }
