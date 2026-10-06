@@ -1,16 +1,28 @@
 /**
  * Socialora service catalog.
  *
- * This is the single source of truth for every platform, service, tier,
- * quantity, price, delivery note and refill note shown on the site.
- * The checkout API also recalculates order totals from this file, so any
- * price change made here applies everywhere automatically.
+ * Single source of truth for every platform, service, quantity, price and
+ * note shown on the site. The checkout API recalculates order totals from
+ * this file, so any price change made here applies everywhere.
  *
  * All prices are stored in US cents to avoid floating-point rounding issues.
  */
 
 export type PlatformId = 'instagram' | 'tiktok' | 'youtube' | 'x'
-export type ServiceId = 'followers' | 'likes' | 'views' | 'subscribers'
+export type ServiceId =
+  | 'followers'
+  | 'likes'
+  | 'views'
+  | 'subscribers'
+  | 'watchtime'
+  | 'followers-refill'
+  | 'followers-top'
+  | 'followers-us'
+  | 'followers-es'
+  | 'followers-es-female'
+  | 'followers-es-male'
+  | 'followers-ar'
+  | 'followers-br'
 export type TierId = 'high-quality' | 'premium' | 'vip'
 
 export interface Tier {
@@ -26,15 +38,14 @@ export const TIERS: readonly Tier[] = [
     id: 'high-quality',
     name: 'High-Quality',
     badge: 'Selected',
-    description: 'High-quality USA followers with a minimal drop rate',
+    description: 'High-quality accounts with a minimal drop rate',
     emphasized: false,
   },
   {
     id: 'premium',
     name: 'Premium',
     badge: 'Recommended',
-    description:
-      'Premium USA followers with their own posts and followers. Minimal drop, and replacement deliveries are made if any occur',
+    description: 'Premium accounts with a minimal drop rate',
     emphasized: true,
   },
 ] as const
@@ -72,6 +83,8 @@ export interface Service {
   pricing: ServicePricing
   /** Optional tier descriptions that replace the defaults for this service. */
   tierDescriptions?: Partial<Record<TierId, string>>
+  /** Service number at the supplier panel (used later for automation). Not a secret. */
+  panelServiceId?: number
 }
 
 export interface Platform {
@@ -88,33 +101,31 @@ export interface Platform {
 }
 
 /* -------------------------------------------------------------------------- */
+/*                         PRICES (US cents per 1,000)                        */
+/*                  Change a price here, e.g. 800 = $8.00                     */
+/* -------------------------------------------------------------------------- */
+
+const PRICE_YOUTUBE_VIEWS = 800
+const PRICE_YOUTUBE_WATCHTIME = 2800
+const PRICE_YOUTUBE_SUBSCRIBERS = 4500
+const PRICE_X_FOLLOWERS = 2200
+const PRICE_X_FOLLOWERS_REFILL = 4200
+const PRICE_X_FOLLOWERS_TOP = 9000
+const PRICE_INSTAGRAM_US_FOLLOWERS = 1800
+const PRICE_INSTAGRAM_COUNTRY_FOLLOWERS = 4800
+
+/* -------------------------------------------------------------------------- */
 /*                               Editable notes                               */
 /* -------------------------------------------------------------------------- */
 
 const DELIVERY_NOTE =
-  'Starts after your payment is manually verified. Timing varies with order size.'
+  'Starts as soon as your payment is verified. We will email you when your order is complete.'
 
-const FOLLOWER_REFILL_NOTE =
-  'If your count drops after delivery, contact support and we will review your order.'
+const FOLLOWER_REFILL_NOTE = '30-day refill guarantee if your follower count drops.'
 
 /* -------------------------------------------------------------------------- */
 /*                                Price tables                                */
 /* -------------------------------------------------------------------------- */
-
-/** Builds tiered options. Prices per 100 units are given in US cents. */
-function tieredOptions(
-  quantities: readonly number[],
-  per100Cents: Record<TierId, number>,
-): TieredOption[] {
-  return quantities.map((quantity) => ({
-    quantity,
-    prices: {
-      'high-quality': Math.round((per100Cents['high-quality'] * quantity) / 100),
-      premium: Math.round((per100Cents.premium * quantity) / 100),
-      vip: Math.round((per100Cents.vip * quantity) / 100),
-    },
-  }))
-}
 
 /** Builds flat options. Price per 1,000 units is given in US cents. */
 function flatOptions(quantities: readonly number[], per1000Cents: number): FlatOption[] {
@@ -124,55 +135,11 @@ function flatOptions(quantities: readonly number[], per1000Cents: number): FlatO
   }))
 }
 
-const FOLLOWER_QUANTITIES = [
-  100, 250, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000,
-]
-
-const LIKE_QUANTITIES = [1000, 2000, 5000, 10000, 20000, 50000, 100000]
-
-const VIEW_QUANTITIES = [
-  1000, 2000, 5000, 10000, 20000, 50000, 100000, 250000, 500000, 1000000,
-]
-
-// Instagram / TikTok followers, price per 100: High-Quality $3, Premium $5
-// (the "vip" value is unused because VIP is not offered)
-const FOLLOWER_OPTIONS: readonly TieredOption[] = tieredOptions(FOLLOWER_QUANTITIES, {
-  'high-quality': 300,
-  premium: 500,
-  vip: 500,
-})
-
-// YouTube subscribers, price per 100: High-Quality $6, Premium $10
-const YOUTUBE_SUBSCRIBER_OPTIONS: readonly TieredOption[] = tieredOptions(
-  FOLLOWER_QUANTITIES,
-  {
-    'high-quality': 600,
-    premium: 1000,
-    vip: 1000,
-  },
-)
-
-// X followers, price per 100: High-Quality $8, Premium $12
-const X_FOLLOWER_OPTIONS: readonly TieredOption[] = tieredOptions(FOLLOWER_QUANTITIES, {
-  'high-quality': 800,
-  premium: 1200,
-  vip: 1200,
-})
-
-// Likes: $7.99 per 1,000
-const LIKE_OPTIONS: readonly FlatOption[] = flatOptions(LIKE_QUANTITIES, 799)
-
-// Views: $4.99 per 1,000
-const VIEW_OPTIONS: readonly FlatOption[] = flatOptions(VIEW_QUANTITIES, 499)
-
-// YouTube views: $9.99 per 1,000
-const YOUTUBE_VIEW_OPTIONS: readonly FlatOption[] = flatOptions(VIEW_QUANTITIES, 999)
-
-// X likes: $9.99 per 1,000
-const X_LIKE_OPTIONS: readonly FlatOption[] = flatOptions(LIKE_QUANTITIES, 999)
-
-// X views: $6.99 per 1,000
-const X_VIEW_OPTIONS: readonly FlatOption[] = flatOptions(VIEW_QUANTITIES, 699)
+const FOLLOWER_QUANTITIES = [100, 250, 500, 1000, 2000, 5000, 10000]
+const US_FOLLOWER_QUANTITIES = [100, 250, 500, 1000, 2000, 5000, 10000]
+const INSTAGRAM_QUANTITIES = [100, 250, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000]
+const YOUTUBE_VIEW_QUANTITIES = [1000, 2000, 5000, 10000, 20000, 50000]
+const WATCHTIME_QUANTITIES = [1000, 2000, 4000]
 
 /* -------------------------------------------------------------------------- */
 /*                                  Platforms                                 */
@@ -183,101 +150,84 @@ export const PLATFORMS: readonly Platform[] = [
     id: 'instagram',
     name: 'Instagram',
     path: '/instagram',
-    tagline: 'Followers, likes and views',
+    tagline: 'Followers by country',
     description:
-      'Grow your Instagram presence with followers for your profile and likes or views for your posts and Reels.',
+      'Grow your Instagram profile with followers from the country you choose. Pick the option that fits your audience.',
     profileFieldLabel: 'Instagram Profile URL',
     profilePlaceholder: 'https://instagram.com/yourprofile',
     allowedHosts: ['instagram.com', 'instagr.am'],
     services: [
       {
-        id: 'followers',
-        label: 'Followers',
+        id: 'followers-us',
+        label: 'Followers · USA',
         unit: 'followers',
         target: 'profile',
-        summary: 'Choose a tier and quantity for your Instagram profile.',
+        summary: 'American followers with profile photos for your Instagram profile, backed by a 30-day refill guarantee.',
         delivery: DELIVERY_NOTE,
         refill: FOLLOWER_REFILL_NOTE,
         defaultQuantity: 1000,
-        pricing: { kind: 'tiered', options: FOLLOWER_OPTIONS },
-        tierDescriptions: {
-          'high-quality': 'High-quality USA followers with a minimal drop rate',
-          premium:
-            'Premium USA followers with their own posts and followers. Minimal drop, and replacement deliveries are made if any occur',
-        },
+        pricing: { kind: 'flat', options: flatOptions(US_FOLLOWER_QUANTITIES, PRICE_INSTAGRAM_US_FOLLOWERS) },
+        panelServiceId: 21722,
       },
       {
-        id: 'likes',
-        label: 'Likes',
-        unit: 'likes',
-        target: 'post',
-        summary: 'Likes for a single public Instagram post or Reel.',
-        delivery: DELIVERY_NOTE,
-        refill: null,
-        defaultQuantity: 1000,
-        pricing: { kind: 'flat', options: LIKE_OPTIONS },
-      },
-      {
-        id: 'views',
-        label: 'Views',
-        unit: 'views',
-        target: 'post',
-        summary: 'Views for a single public Instagram Reel or video.',
-        delivery: DELIVERY_NOTE,
-        refill: null,
-        defaultQuantity: 1000,
-        pricing: { kind: 'flat', options: VIEW_OPTIONS },
-      },
-    ],
-  },
-  {
-    id: 'tiktok',
-    name: 'TikTok',
-    path: '/tiktok',
-    tagline: 'Followers, likes and views',
-    description:
-      'Build momentum on TikTok with followers for your account and likes or views for your videos.',
-    profileFieldLabel: 'TikTok Profile URL',
-    profilePlaceholder: 'https://tiktok.com/@yourprofile',
-    allowedHosts: ['tiktok.com'],
-    services: [
-      {
-        id: 'followers',
-        label: 'Followers',
+        id: 'followers-es',
+        label: 'Followers · Spanish',
         unit: 'followers',
         target: 'profile',
-        summary: 'Choose a tier and quantity for your TikTok account.',
+        summary: 'Spanish followers for your Instagram profile, backed by a 30-day refill guarantee.',
         delivery: DELIVERY_NOTE,
         refill: FOLLOWER_REFILL_NOTE,
         defaultQuantity: 1000,
-        pricing: { kind: 'tiered', options: FOLLOWER_OPTIONS },
-        tierDescriptions: {
-          'high-quality': 'High-quality USA followers with a minimal drop rate',
-          premium:
-            'Premium USA followers with their own videos and followers. Minimal drop, and replacement deliveries are made if any occur',
-        },
+        pricing: { kind: 'flat', options: flatOptions(INSTAGRAM_QUANTITIES, PRICE_INSTAGRAM_COUNTRY_FOLLOWERS) },
+        panelServiceId: 14541,
       },
       {
-        id: 'likes',
-        label: 'Likes',
-        unit: 'likes',
-        target: 'video',
-        summary: 'Likes for a single public TikTok video.',
+        id: 'followers-es-female',
+        label: 'Followers · Spanish Female',
+        unit: 'followers',
+        target: 'profile',
+        summary: 'Spanish female followers for your Instagram profile, backed by a 30-day refill guarantee.',
         delivery: DELIVERY_NOTE,
-        refill: null,
+        refill: FOLLOWER_REFILL_NOTE,
         defaultQuantity: 1000,
-        pricing: { kind: 'flat', options: LIKE_OPTIONS },
+        pricing: { kind: 'flat', options: flatOptions(INSTAGRAM_QUANTITIES, PRICE_INSTAGRAM_COUNTRY_FOLLOWERS) },
+        panelServiceId: 14542,
       },
       {
-        id: 'views',
-        label: 'Views',
-        unit: 'views',
-        target: 'video',
-        summary: 'Views for a single public TikTok video.',
+        id: 'followers-es-male',
+        label: 'Followers · Spanish Male',
+        unit: 'followers',
+        target: 'profile',
+        summary: 'Spanish male followers for your Instagram profile, backed by a 30-day refill guarantee.',
         delivery: DELIVERY_NOTE,
-        refill: null,
+        refill: FOLLOWER_REFILL_NOTE,
         defaultQuantity: 1000,
-        pricing: { kind: 'flat', options: VIEW_OPTIONS },
+        pricing: { kind: 'flat', options: flatOptions(INSTAGRAM_QUANTITIES, PRICE_INSTAGRAM_COUNTRY_FOLLOWERS) },
+        panelServiceId: 14543,
+      },
+      {
+        id: 'followers-ar',
+        label: 'Followers · Arabic',
+        unit: 'followers',
+        target: 'profile',
+        summary: 'Arabic followers for your Instagram profile, backed by a 30-day refill guarantee.',
+        delivery: DELIVERY_NOTE,
+        refill: FOLLOWER_REFILL_NOTE,
+        defaultQuantity: 1000,
+        pricing: { kind: 'flat', options: flatOptions(INSTAGRAM_QUANTITIES, PRICE_INSTAGRAM_COUNTRY_FOLLOWERS) },
+        panelServiceId: 14527,
+      },
+      {
+        id: 'followers-br',
+        label: 'Followers · Brazilian',
+        unit: 'followers',
+        target: 'profile',
+        summary: 'Brazilian followers for your Instagram profile, backed by a 30-day refill guarantee.',
+        delivery: DELIVERY_NOTE,
+        refill: FOLLOWER_REFILL_NOTE,
+        defaultQuantity: 1000,
+        pricing: { kind: 'flat', options: flatOptions(INSTAGRAM_QUANTITIES, PRICE_INSTAGRAM_COUNTRY_FOLLOWERS) },
+        panelServiceId: 14553,
       },
     ],
   },
@@ -285,39 +235,49 @@ export const PLATFORMS: readonly Platform[] = [
     id: 'youtube',
     name: 'YouTube',
     path: '/youtube',
-    tagline: 'Subscribers and views',
+    tagline: 'Views, watch time and subscribers',
     description:
-      'Support your YouTube channel with subscribers for your channel and views for your videos.',
-    profileFieldLabel: 'YouTube Profile URL',
+      'Grow your YouTube channel with views, watch time and subscribers for your videos and channel.',
+    profileFieldLabel: 'YouTube Video or Channel URL',
     profilePlaceholder: 'https://youtube.com/@yourchannel',
     allowedHosts: ['youtube.com', 'youtu.be'],
     services: [
-      {
-        id: 'subscribers',
-        label: 'Subscribers',
-        unit: 'subscribers',
-        target: 'channel',
-        summary: 'Choose a tier and quantity for your YouTube channel.',
-        delivery: DELIVERY_NOTE,
-        refill: FOLLOWER_REFILL_NOTE,
-        defaultQuantity: 1000,
-        pricing: { kind: 'tiered', options: YOUTUBE_SUBSCRIBER_OPTIONS },
-        tierDescriptions: {
-          'high-quality': 'High-quality USA subscribers with a minimal drop rate',
-          premium:
-            'Premium USA subscribers with channels of their own. Minimal drop, and replacement deliveries are made if any occur',
-        },
-      },
       {
         id: 'views',
         label: 'Views',
         unit: 'views',
         target: 'video',
-        summary: 'Views for a single public YouTube video.',
+        summary: 'Fast-start views for a single public YouTube video, with a lifetime refill guarantee.',
+        delivery: DELIVERY_NOTE,
+        refill: 'Lifetime refill guarantee if your view count drops.',
+        defaultQuantity: 1000,
+        pricing: { kind: 'flat', options: flatOptions(YOUTUBE_VIEW_QUANTITIES, PRICE_YOUTUBE_VIEWS) },
+        panelServiceId: 17022,
+      },
+      {
+        id: 'watchtime',
+        label: 'Watch Time',
+        unit: 'hours',
+        target: 'video',
+        summary:
+          'Watch hours for a public video that is at least 30 minutes long. 1,000 ordered = 1,000 hours of watch time.',
         delivery: DELIVERY_NOTE,
         refill: null,
         defaultQuantity: 1000,
-        pricing: { kind: 'flat', options: YOUTUBE_VIEW_OPTIONS },
+        pricing: { kind: 'flat', options: flatOptions(WATCHTIME_QUANTITIES, PRICE_YOUTUBE_WATCHTIME) },
+        panelServiceId: 21361,
+      },
+      {
+        id: 'subscribers',
+        label: 'Subscribers',
+        unit: 'subscribers',
+        target: 'channel',
+        summary: 'Subscribers for your YouTube channel, backed by a 30-day refill guarantee.',
+        delivery: DELIVERY_NOTE,
+        refill: '30-day refill guarantee if your subscriber count drops.',
+        defaultQuantity: 1000,
+        pricing: { kind: 'flat', options: flatOptions(FOLLOWER_QUANTITIES, PRICE_YOUTUBE_SUBSCRIBERS) },
+        panelServiceId: 21981,
       },
     ],
   },
@@ -325,9 +285,8 @@ export const PLATFORMS: readonly Platform[] = [
     id: 'x',
     name: 'X (Twitter)',
     path: '/x',
-    tagline: 'Followers, likes and views',
-    description:
-      'Grow your X (Twitter) presence with followers for your profile and likes or views for your posts.',
+    tagline: 'Followers',
+    description: 'Grow your X (Twitter) profile with followers. Choose the option that fits your goals.',
     profileFieldLabel: 'X (Twitter) Profile URL',
     profilePlaceholder: 'https://x.com/yourprofile',
     allowedHosts: ['x.com', 'twitter.com'],
@@ -337,38 +296,36 @@ export const PLATFORMS: readonly Platform[] = [
         label: 'Followers',
         unit: 'followers',
         target: 'profile',
-        summary: 'Choose a tier and quantity for your X profile.',
+        summary: 'Budget-friendly followers for your X profile.',
+        delivery: DELIVERY_NOTE,
+        refill: null,
+        defaultQuantity: 1000,
+        pricing: { kind: 'flat', options: flatOptions(FOLLOWER_QUANTITIES, PRICE_X_FOLLOWERS) },
+        panelServiceId: 21339,
+      },
+      {
+        id: 'followers-refill',
+        label: 'Followers · 30-Day Refill',
+        unit: 'followers',
+        target: 'profile',
+        summary: 'Followers for your X profile, backed by a 30-day refill guarantee.',
         delivery: DELIVERY_NOTE,
         refill: FOLLOWER_REFILL_NOTE,
         defaultQuantity: 1000,
-        pricing: { kind: 'tiered', options: X_FOLLOWER_OPTIONS },
-        tierDescriptions: {
-          'high-quality': 'High-quality USA followers with a minimal drop rate',
-          premium:
-            'High-quality USA followers with their own posts and followers. Minimal drop, and replacement deliveries are made if any occur',
-        },
+        pricing: { kind: 'flat', options: flatOptions(FOLLOWER_QUANTITIES, PRICE_X_FOLLOWERS_REFILL) },
+        panelServiceId: 21338,
       },
       {
-        id: 'likes',
-        label: 'Likes',
-        unit: 'likes',
-        target: 'post',
-        summary: 'Likes for a single public X post.',
+        id: 'followers-top',
+        label: 'Followers · Top Quality',
+        unit: 'followers',
+        target: 'profile',
+        summary: 'Our top-quality followers for your X profile, built for lasting results.',
         delivery: DELIVERY_NOTE,
         refill: null,
         defaultQuantity: 1000,
-        pricing: { kind: 'flat', options: X_LIKE_OPTIONS },
-      },
-      {
-        id: 'views',
-        label: 'Views',
-        unit: 'views',
-        target: 'post',
-        summary: 'Views for a single public X post or video.',
-        delivery: DELIVERY_NOTE,
-        refill: null,
-        defaultQuantity: 1000,
-        pricing: { kind: 'flat', options: X_VIEW_OPTIONS },
+        pricing: { kind: 'flat', options: flatOptions(FOLLOWER_QUANTITIES, PRICE_X_FOLLOWERS_TOP) },
+        panelServiceId: 21340,
       },
     ],
   },
@@ -490,7 +447,7 @@ export function getPriceCents(
   return option ? option.price : null
 }
 
-/** Lowest price in cents across the tiers that are offered. */
+/** Lowest price in cents across the options that are offered. */
 export function getStartingPriceCents(service: Service): number {
   if (service.pricing.kind === 'tiered') {
     const offered = TIERS.map((t) => t.id)
