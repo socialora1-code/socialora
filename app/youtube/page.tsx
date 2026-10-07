@@ -2,11 +2,11 @@ import type { Metadata } from 'next'
 import { PlatformPage } from '@/components/services/platform-page'
 
 export const metadata: Metadata = {
-  title: 'YouTube Subscribers & Views',
+  title: 'YouTube Views, Watch Time & Subscribers',
   description:
-    'Order YouTube subscribers in High-Quality, Premium and VIP tiers, plus YouTube views for your videos. Transparent USD pricing and dedicated support.',
+    'Order YouTube views, watch time and subscribers for your channel. Clear USD pricing, refill guarantees on selected services and dedicated support.',
   alternates: { canonical: '/youtube' },
-  openGraph: { url: '/youtube', title: 'YouTube Subscribers & Views · Socialora' },
+  openGraph: { url: '/youtube', title: 'YouTube Views, Watch Time & Subscribers · Socialora' },
 }
 
 export default function YouTubePage() {
