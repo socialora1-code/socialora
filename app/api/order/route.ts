@@ -78,7 +78,7 @@ export async function POST(request: Request) {
         reference,
         description: `${serviceName} x ${formatQuantity(order.quantity)}`,
         ipnUrl: `${SITE.url}/api/webhook`,
-        successUrl: SITE.url,
+        successUrl: `${SITE.url}/payment-success`,
         cancelUrl: SITE.url,
       })
       if (!invoiceUrl) {
