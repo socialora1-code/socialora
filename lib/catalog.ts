@@ -335,7 +335,13 @@ export const PLATFORMS: readonly Platform[] = [
 /*                               Payment methods                              */
 /* -------------------------------------------------------------------------- */
 
-export type PaymentMethodId = 'usdt-trc20' | 'usdt-bsc' | 'usdt-sol' | 'usdc-erc20' | 'btc'
+export type PaymentMethodId =
+  | 'nowpayments'
+  | 'usdt-trc20'
+  | 'usdt-bsc'
+  | 'usdt-sol'
+  | 'usdc-erc20'
+  | 'btc'
 
 export interface PaymentMethod {
   id: PaymentMethodId
@@ -348,6 +354,14 @@ export interface PaymentMethod {
 }
 
 export const PAYMENT_METHODS: readonly PaymentMethod[] = [
+  {
+    id: 'nowpayments',
+    label: 'Pay automatically (crypto)',
+    asset: 'Crypto',
+    network: 'Choose your coin at checkout',
+    address: '',
+    warning: '',
+  },
   {
     id: 'usdt-trc20',
     label: 'USDT — TRC20',
