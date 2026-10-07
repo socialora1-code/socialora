@@ -162,6 +162,7 @@ export function OrderForm({ initial }: { initial: InitialSelection }) {
             amountCents: number
             paymentMethodId: PaymentMethodId
             customerEmailSent: boolean
+            invoiceUrl?: string
           }
         | { ok: false; error?: string; fieldErrors?: FieldErrors }
         | null
@@ -176,6 +177,11 @@ export function OrderForm({ initial }: { initial: InitialSelection }) {
           setFormError(SUBMIT_FAILED)
           requestAnimationFrame(() => errorRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' }))
         }
+        return
+      }
+
+      if (data.invoiceUrl) {
+        window.location.href = data.invoiceUrl
         return
       }
 
