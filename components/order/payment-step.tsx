@@ -23,11 +23,13 @@ export function PaymentStep({
   transactionError?: string
 }) {
   const method = getPaymentMethod(paymentMethodId)
+  const isAutomatic = method?.id === 'nowpayments'
 
   return (
     <div className="flex flex-col gap-6">
       <div className="rounded-2xl border border-border bg-muted/50 p-4 text-sm leading-relaxed text-muted-foreground">
-        Payment is made manually in cryptocurrency and is <strong className="font-medium text-foreground">not verified automatically</strong>. Choose a method below to see the exact wallet address.
+        Choose <strong className="font-medium text-foreground">automatic payment</strong> to pay in any supported
+        cryptocurrency on a secure checkout page, or pick a manual wallet below to send crypto yourself.
       </div>
 
       <fieldset className="min-w-0" aria-describedby={paymentError ? 'payment-error' : undefined}>
@@ -40,6 +42,7 @@ export function PaymentStep({
                 'flex min-h-14 cursor-pointer items-center gap-3 rounded-2xl border border-border bg-background px-4 py-3 transition-colors',
                 'hover:border-foreground/30 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/40',
                 'has-[:checked]:border-primary has-[:checked]:bg-accent/60 has-[:checked]:ring-1 has-[:checked]:ring-primary',
+                m.id === 'nowpayments' && 'sm:col-span-2',
               )}
             >
               <input
@@ -64,7 +67,14 @@ export function PaymentStep({
         )}
       </fieldset>
 
-      {method && (
+      {isAutomatic && (
+        <div className="rounded-2xl border border-border bg-background p-4 text-sm leading-relaxed text-muted-foreground animate-in fade-in duration-200">
+          After you press <strong className="font-medium text-foreground">Submit Order</strong>, you will be taken to a
+          secure checkout page where you can choose your coin and pay. Your order starts once the payment is confirmed.
+        </div>
+      )}
+
+      {method && !isAutomatic && (
         <div className="flex flex-col gap-6 animate-in fade-in duration-200">
           <WalletCard method={method} amountCents={amountCents} />
           <p className="text-sm font-medium">After sending your payment, submit your order below.</p>
