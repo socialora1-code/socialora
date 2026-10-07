@@ -2,7 +2,7 @@ export const SITE = {
   name: 'Socialora',
   description:
     'Social media growth services for Instagram, YouTube and X. Simple ordering, transparent pricing and dedicated support.',
-  supportEmail: 'socialora1@gmail.com',
+  supportEmail: 'info@getsocialora.com',
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.getsocialora.com',
   /** Legal document details shown on Terms, Privacy and Refund pages. */
   legal: {
