@@ -1,70 +1,22 @@
-import { Analytics } from '@vercel/analytics/next'
-import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
-import { SiteFooter } from '@/components/site/site-footer'
-import { SiteHeader } from '@/components/site/site-header'
-import { TelegramButton } from '@/components/site/telegram-button'
-import { SITE } from '@/lib/site'
-import './globals.css'
-
-const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans', display: 'swap' })
-const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono', display: 'swap' })
-
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE.url),
-  title: {
-    default: 'Socialora — Social Media Growth Services for Instagram, YouTube & X',
-    template: '%s · Socialora',
+export const SITE = {
+  name: 'Socialora',
+  description:
+    'Social media growth services for Instagram, YouTube and X. Simple ordering, transparent pricing and dedicated support.',
+  supportEmail: 'socialora1@gmail.com',
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.getsocialora.com',
+  /** Legal document details shown on Terms, Privacy and Refund pages. */
+  legal: {
+    entityName: 'Socialora',
+    jurisdiction: 'Republic of Türkiye',
+    lastUpdated: 'October 4, 2026',
   },
-  description: SITE.description,
-  applicationName: SITE.name,
-  alternates: { canonical: '/' },
-  robots: { index: true, follow: true },
-  openGraph: {
-    type: 'website',
-    siteName: SITE.name,
-    locale: 'en_US',
-    url: '/',
-    title: 'Socialora — Social Media Growth Services',
-    description: SITE.description,
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Socialora — Social Media Growth Services',
-    description: SITE.description,
-  },
-  icons: { icon: [{ url: '/icon.svg', type: 'image/svg+xml' }], apple: '/apple-icon.png' },
-}
+} as const
 
-export const viewport: Viewport = {
-  colorScheme: 'light',
-  themeColor: '#fcfcfe',
-  width: 'device-width',
-  initialScale: 1,
-}
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
-  return (
-    <html lang="en-US" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="min-h-dvh antialiased">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-md focus:bg-foreground focus:px-4 focus:py-2 focus:text-background"
-        >
-          Skip to content
-        </a>
-        <SiteHeader />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <SiteFooter />
-        <TelegramButton />
-        {process.env.NODE_ENV === 'production' && <Analytics />}
-      </body>
-    </html>
-  )
-}
+export const MAIN_NAV = [
+  { href: '/instagram', label: 'Instagram' },
+  { href: '/youtube', label: 'YouTube' },
+  { href: '/x', label: 'X' },
+  { href: '/custom-request', label: 'Custom Request' },
+  { href: '/how-it-works', label: 'How It Works' },
+  { href: '/faq', label: 'FAQ' },
+] as const
