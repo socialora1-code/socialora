@@ -3,6 +3,7 @@ import { buildApprovalUrl, createApprovalToken, profileToLink } from '@/lib/appr
 import { STANDARD_PACKAGE_NAME } from '@/lib/catalog'
 import { getInboxAddress, renderTableEmail, sendEmail } from '@/lib/email'
 import { formatQuantity, formatUSD } from '@/lib/format'
+import { createInvoice, saveOrder } from '@/lib/pay-store'
 import { SITE } from '@/lib/site'
 import { validateOrder } from '@/lib/validation'
 
@@ -55,14 +56,55 @@ export async function POST(request: Request) {
   const amount = formatUSD(order.priceCents)
   const packageName = order.tier?.name ?? STANDARD_PACKAGE_NAME
   const serviceName = `${order.platform.name} ${order.service.label}`
-
-  // Approval link: only created when APPROVAL_SECRET is set and the service has a panel ID.
   const panelServiceId = order.service.panelServiceId
+  const link = profileToLink(order.platform.id, order.profile)
+
+  // Automatic crypto payment (NOWPayments)
+  if (order.paymentMethod.id === 'nowpayments') {
+    try {
+      await saveOrder({
+        reference,
+        panelServiceId: panelServiceId ?? null,
+        link,
+        quantity: order.quantity,
+        email: order.email,
+        serviceName,
+        packageName,
+        amount,
+        priceCents: order.priceCents,
+      })
+      const invoiceUrl = await createInvoice({
+        priceCents: order.priceCents,
+        reference,
+        description: `${serviceName} x ${formatQuantity(order.quantity)}`,
+        ipnUrl: `${SITE.url}/api/webhook`,
+        successUrl: SITE.url,
+        cancelUrl: SITE.url,
+      })
+      if (!invoiceUrl) {
+        return NextResponse.json({ ok: false, error: SUBMIT_FAILED }, { status: 503 })
+      }
+      return NextResponse.json({
+        ok: true,
+        reference,
+        status: 'Awaiting Payment',
+        amountCents: order.priceCents,
+        paymentMethodId: order.paymentMethod.id,
+        invoiceUrl,
+        customerEmailSent: false,
+      })
+    } catch (err) {
+      console.error('[order] NOWPayments flow failed:', err instanceof Error ? err.message : err)
+      return NextResponse.json({ ok: false, error: SUBMIT_FAILED }, { status: 503 })
+    }
+  }
+
+  // Manual wallet payment (unchanged)
   const token = panelServiceId
     ? createApprovalToken({
         ref: reference,
         service: panelServiceId,
-        link: profileToLink(order.platform.id, order.profile),
+        link,
         quantity: order.quantity,
         email: order.email,
         name: serviceName,
