@@ -33,6 +33,9 @@ import { cn } from '@/lib/utils'
 
 const SUBMIT_FAILED = "We couldn't submit your order right now. Please try again or contact support."
 const DEFAULT_TIER: TierId = 'premium'
+const MIN_AUTOMATIC_CENTS = 1000
+const MIN_AUTOMATIC_MESSAGE =
+  'Automatic payment requires a minimum order of $10 USD. For smaller orders, please choose another crypto payment option (USDT, USDC or Bitcoin wallet).'
 
 export interface InitialSelection {
   platform: PlatformId
@@ -100,7 +103,11 @@ export function OrderForm({ initial }: { initial: InitialSelection }) {
       errors.profile = `Please enter a valid public ${platform.name} URL or username.`
     }
     if (!isValidEmail(email.trim())) errors.email = 'Please enter a valid email address.'
-    if (!paymentMethod) errors.paymentMethod = 'Please choose a payment method.'
+    if (!paymentMethod) {
+      errors.paymentMethod = 'Please choose a payment method.'
+    } else if (paymentMethod.id === 'nowpayments' && priceCents !== null && priceCents < MIN_AUTOMATIC_CENTS) {
+      errors.paymentMethod = MIN_AUTOMATIC_MESSAGE
+    }
     if (!acceptTerms) errors.acceptTerms = 'Please accept the Terms of Service and Refund Policy.'
     if (priceCents === null) errors.quantity = 'Please choose a valid quantity.'
     return errors
@@ -127,7 +134,9 @@ export function OrderForm({ initial }: { initial: InitialSelection }) {
     const errors = validateClient()
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors)
-      setFormError('Please review the highlighted fields.')
+      setFormError(
+        errors.paymentMethod === MIN_AUTOMATIC_MESSAGE ? MIN_AUTOMATIC_MESSAGE : 'Please review the highlighted fields.',
+      )
       focusFirstError(errors)
       return
     }
