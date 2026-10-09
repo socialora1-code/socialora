@@ -2,11 +2,11 @@ import type { Metadata } from 'next'
 import { PlatformPage } from '@/components/services/platform-page'
 
 export const metadata: Metadata = {
-  title: 'Instagram Followers, Likes & Views',
+  title: 'Buy Instagram Followers',
   description:
-    'Buy Instagram followers in High-Quality, Premium and VIP tiers, plus Instagram likes and Instagram views. Transparent USD pricing and simple checkout.',
+    'Buy Instagram followers from the USA, Spain, Arabic countries and Brazil, or choose high-quality followers with a 365-day refill guarantee. Clear USD pricing, no password needed.',
   alternates: { canonical: '/instagram' },
-  openGraph: { url: '/instagram', title: 'Instagram Followers, Likes & Views · Socialora' },
+  openGraph: { url: '/instagram', title: 'Buy Instagram Followers · Socialora' },
 }
 
 export default function InstagramPage() {
