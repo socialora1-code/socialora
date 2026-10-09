@@ -20,11 +20,11 @@ export function Hero() {
             Instagram · YouTube · X
           </p>
           <h1 className="mt-6 text-5xl leading-[1.05] font-semibold tracking-tight text-balance sm:text-6xl">
-            Grow Your <span className="text-gradient">Social Presence</span>
+            Buy <span className="text-gradient">Instagram Followers</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground text-pretty">
-            Social media growth services for Instagram, YouTube and X. Simple ordering, transparent pricing and
-            dedicated support.
+            Buy Instagram followers from the USA, Spain, Brazil and more, plus YouTube views and X followers.
+            Clear USD pricing, no password needed and refill guarantees on selected services.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link href="/order" className={cn(buttonVariants(), 'h-12 rounded-full px-7 text-base')}>
