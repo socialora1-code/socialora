@@ -23,6 +23,7 @@ export type ServiceId =
   | 'followers-es-male'
   | 'followers-ar'
   | 'followers-br'
+  | 'followers-real'
 export type TierId = 'high-quality' | 'premium' | 'vip'
 
 export interface Tier {
@@ -113,6 +114,7 @@ const PRICE_X_FOLLOWERS_REFILL = 4200
 const PRICE_X_FOLLOWERS_TOP = 9000
 const PRICE_INSTAGRAM_US_FOLLOWERS = 1800
 const PRICE_INSTAGRAM_COUNTRY_FOLLOWERS = 4800
+const PRICE_INSTAGRAM_REAL_FOLLOWERS = 1690
 
 /* -------------------------------------------------------------------------- */
 /*                               Editable notes                               */
@@ -122,6 +124,8 @@ const DELIVERY_NOTE =
   'Starts as soon as your payment is verified. We will email you when your order is complete.'
 
 const FOLLOWER_REFILL_NOTE = '30-day refill guarantee if your follower count drops.'
+
+const FOLLOWER_REFILL_365_NOTE = '365-day refill guarantee if your follower count drops.'
 
 /* -------------------------------------------------------------------------- */
 /*                                Price tables                                */
@@ -138,6 +142,7 @@ function flatOptions(quantities: readonly number[], per1000Cents: number): FlatO
 const FOLLOWER_QUANTITIES = [100, 250, 500, 1000, 2000, 5000, 10000]
 const US_FOLLOWER_QUANTITIES = [100, 250, 500, 1000, 2000, 5000, 10000]
 const INSTAGRAM_QUANTITIES = [100, 250, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000]
+const INSTAGRAM_REAL_QUANTITIES = [100, 250, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000, 500000]
 const YOUTUBE_VIEW_QUANTITIES = [1000, 2000, 5000, 10000, 20000, 50000]
 const WATCHTIME_QUANTITIES = [1000, 2000, 4000]
 
@@ -150,13 +155,26 @@ export const PLATFORMS: readonly Platform[] = [
     id: 'instagram',
     name: 'Instagram',
     path: '/instagram',
-    tagline: 'Followers by country',
+    tagline: 'Followers by quality and country',
     description:
-      'Grow your Instagram profile with followers from the country you choose. Pick the option that fits your audience.',
+      'Grow your Instagram profile with high-quality followers or followers from the country you choose. Pick the option that fits your audience.',
     profileFieldLabel: 'Instagram Profile URL',
     profilePlaceholder: 'https://instagram.com/yourprofile',
     allowedHosts: ['instagram.com', 'instagr.am'],
     services: [
+      {
+        id: 'followers-real',
+        label: 'Followers · Real Quality',
+        unit: 'followers',
+        target: 'profile',
+        summary:
+          'High-quality followers for your Instagram profile, from accounts with profile photos, posts and followers of their own, backed by a 365-day refill guarantee. Orders up to 500,000.',
+        delivery: DELIVERY_NOTE,
+        refill: FOLLOWER_REFILL_365_NOTE,
+        defaultQuantity: 1000,
+        pricing: { kind: 'flat', options: flatOptions(INSTAGRAM_REAL_QUANTITIES, PRICE_INSTAGRAM_REAL_FOLLOWERS) },
+        panelServiceId: 21989,
+      },
       {
         id: 'followers-us',
         label: 'Followers · USA',
