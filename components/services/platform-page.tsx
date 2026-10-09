@@ -7,8 +7,15 @@ import { PlatformIcon } from '@/components/site/platform-icon'
 import { getPlatform, getStartingPriceCents, isTiered, type PlatformId } from '@/lib/catalog'
 import { formatUSD } from '@/lib/format'
 
+const PAGE_HEADINGS: Partial<Record<PlatformId, string>> = {
+  instagram: 'Buy Instagram Followers',
+  youtube: 'Buy YouTube Views, Watch Time & Subscribers',
+  x: 'Buy X (Twitter) Followers',
+}
+
 export function PlatformPage({ platformId }: { platformId: PlatformId }) {
   const platform = getPlatform(platformId)!
+  const heading = PAGE_HEADINGS[platform.id] ?? `${platform.name} growth services`
 
   return (
     <>
@@ -20,7 +27,7 @@ export function PlatformPage({ platformId }: { platformId: PlatformId }) {
         <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <PlatformIcon platform={platform.id} size="lg" />
           <h1 className="mt-5 text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-            {platform.name} growth services
+            {heading}
           </h1>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted-foreground text-pretty">
             {platform.description}
