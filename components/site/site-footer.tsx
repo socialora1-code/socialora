@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Logo } from '@/components/site/logo'
+import { LANDING_PAGES } from '@/lib/landing-pages'
 import { SITE } from '@/lib/site'
 
 const COLUMNS = [
@@ -7,9 +8,17 @@ const COLUMNS = [
     title: 'Services',
     links: [
       { href: '/instagram', label: 'Instagram' },
-      { href: '/tiktok', label: 'TikTok' },
       { href: '/youtube', label: 'YouTube' },
+      { href: '/x', label: 'X (Twitter)' },
+      { href: '/custom-request', label: 'Custom Request' },
     ],
+  },
+  {
+    title: 'Instagram Followers',
+    links: LANDING_PAGES.map((page) => ({
+      href: `/instagram/${page.slug}`,
+      label: page.title.replace(' Instagram Followers', ' Followers'),
+    })),
   },
   {
     title: 'Company',
@@ -34,11 +43,11 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
+        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-[1.4fr_repeat(4,1fr)]">
           <div className="max-w-sm">
             <Logo />
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              Straightforward social media growth services for creators, brands and businesses in the United States.
+              Straightforward social media growth services for creators, brands and businesses worldwide.
             </p>
             <a
               href={`mailto:${SITE.supportEmail}`}
