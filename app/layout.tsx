@@ -10,28 +10,31 @@ import './globals.css'
 const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans', display: 'swap' })
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono', display: 'swap' })
 
+const HOME_TITLE = 'Buy Instagram Followers, YouTube Views & X Followers'
+const HOME_DESCRIPTION =
+  'Buy Instagram followers, YouTube views, watch time and subscribers, and X (Twitter) followers. Clear USD pricing, refill guarantees on selected services, and no password needed.'
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: 'Socialora — Grow Your Social Presence on Instagram, TikTok, YouTube & X',
+    default: `${HOME_TITLE} · Socialora`,
     template: '%s · Socialora',
   },
-  description: SITE.description,
+  description: HOME_DESCRIPTION,
   applicationName: SITE.name,
-  generator: 'v0.app',
   alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
     siteName: SITE.name,
     locale: 'en_US',
     url: '/',
-    title: 'Socialora — Grow Your Social Presence',
-    description: SITE.description,
+    title: `${HOME_TITLE} · Socialora`,
+    description: HOME_DESCRIPTION,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Socialora — Grow Your Social Presence',
-    description: SITE.description,
+    title: `${HOME_TITLE} · Socialora`,
+    description: HOME_DESCRIPTION,
   },
   icons: { icon: [{ url: '/icon.svg', type: 'image/svg+xml' }], apple: '/apple-icon.png' },
 }
