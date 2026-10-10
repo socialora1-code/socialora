@@ -1,3 +1,4 @@
+import { freeInstagramViews, instagramFollowersDrop, isBuyingFollowersSafe } from '@/lib/blog-posts/buying-guides'
 import { instagramGrowth } from '@/lib/blog-posts/instagram-growth'
 
 export type BlogBlock =
@@ -17,7 +18,12 @@ export interface BlogPost {
   blocks: readonly BlogBlock[]
 }
 
-export const POSTS: readonly BlogPost[] = [instagramGrowth]
+export const POSTS: readonly BlogPost[] = [
+  isBuyingFollowersSafe,
+  freeInstagramViews,
+  instagramFollowersDrop,
+  instagramGrowth,
+]
 
 export function getPost(slug: string): BlogPost | undefined {
   return POSTS.find((post) => post.slug === slug)
