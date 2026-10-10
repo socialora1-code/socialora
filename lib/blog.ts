@@ -1,5 +1,6 @@
 import { freeInstagramViews, instagramFollowersDrop, isBuyingFollowersSafe } from '@/lib/blog-posts/buying-guides'
 import { instagramGrowth } from '@/lib/blog-posts/instagram-growth'
+import { tiktokGrowth } from '@/lib/blog-posts/tiktok-growth'
 
 export type BlogBlock =
   | { type: 'h2'; text: string }
@@ -12,13 +13,14 @@ export interface BlogPost {
   slug: string
   title: string
   description: string
-  category: 'Instagram' | 'YouTube' | 'X'
+  category: 'Instagram' | 'TikTok' | 'YouTube' | 'X'
   date: string
   updated?: string
   blocks: readonly BlogBlock[]
 }
 
 export const POSTS: readonly BlogPost[] = [
+  tiktokGrowth,
   isBuyingFollowersSafe,
   freeInstagramViews,
   instagramFollowersDrop,
