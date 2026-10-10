@@ -4,7 +4,7 @@ import { formatPostDate, POSTS, readingMinutes } from '@/lib/blog'
 
 export const metadata: Metadata = {
   title: 'Social Media Growth Guides',
-  description: 'Practical guides and tips for growing on Instagram, YouTube and X.',
+  description: 'Practical guides and tips for growing on Instagram, TikTok, YouTube and X.',
   alternates: { canonical: '/blog' },
 }
 
@@ -15,7 +15,7 @@ export default function BlogIndexPage() {
     <div className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
       <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Social Media Growth Guides</h1>
       <p className="mt-3 leading-relaxed text-muted-foreground">
-        Practical guides and tips for growing on Instagram, YouTube and X.
+        Practical guides and tips for growing on Instagram, TikTok, YouTube and X.
       </p>
 
       <ul className="mt-10 flex flex-col gap-4">
