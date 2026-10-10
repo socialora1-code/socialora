@@ -9,6 +9,7 @@ const ROUTES = [
   '/tiktok',
   '/youtube',
   '/x',
+  '/free-instagram-views',
   '/blog',
   '/custom-request',
   '/how-it-works',
@@ -20,7 +21,7 @@ const ROUTES = [
   '/refund-policy',
 ]
 
-const PLATFORM_ROUTES = ['/instagram', '/tiktok', '/youtube', '/x']
+const PLATFORM_ROUTES = ['/instagram', '/tiktok', '/youtube', '/x', '/free-instagram-views']
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date()
