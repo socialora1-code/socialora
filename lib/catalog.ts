@@ -127,8 +127,7 @@ const PRICE_TIKTOK_FOLLOWERS_LOW_DROP = 2600
 /*                               Editable notes                               */
 /* -------------------------------------------------------------------------- */
 
-const DELIVERY_NOTE =
-  'Starts as soon as your payment is verified. We will email you when your order is complete.'
+const DELIVERY_NOTE = 'Starts as soon as your payment is verified.'
 
 const FOLLOWER_REFILL_NOTE = '30-day refill guarantee if your follower count drops.'
 
@@ -565,4 +564,4 @@ export function getStartingPriceCents(service: Service): number {
 
 export function getServiceTitle(platform: Platform, service: Service): string {
   return `${platform.name} ${service.label}`
-        }
+  }
