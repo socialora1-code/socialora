@@ -24,6 +24,8 @@ export type ServiceId =
   | 'followers-ar'
   | 'followers-br'
   | 'followers-real'
+  | 'followers-hq'
+  | 'followers-low-drop'
 export type TierId = 'high-quality' | 'premium' | 'vip'
 
 export interface Tier {
@@ -112,9 +114,14 @@ const PRICE_YOUTUBE_SUBSCRIBERS = 4500
 const PRICE_X_FOLLOWERS = 2200
 const PRICE_X_FOLLOWERS_REFILL = 4200
 const PRICE_X_FOLLOWERS_TOP = 9000
+/** X views: $6.00 per 100,000 = 6 cents per 1,000. */
+const PRICE_X_VIEWS = 6
 const PRICE_INSTAGRAM_US_FOLLOWERS = 1800
 const PRICE_INSTAGRAM_COUNTRY_FOLLOWERS = 4800
 const PRICE_INSTAGRAM_REAL_FOLLOWERS = 1690
+const PRICE_INSTAGRAM_LIKES = 300
+const PRICE_TIKTOK_FOLLOWERS_HQ = 2200
+const PRICE_TIKTOK_FOLLOWERS_LOW_DROP = 2600
 
 /* -------------------------------------------------------------------------- */
 /*                               Editable notes                               */
@@ -143,6 +150,8 @@ const FOLLOWER_QUANTITIES = [100, 250, 500, 1000, 2000, 5000, 10000]
 const US_FOLLOWER_QUANTITIES = [100, 250, 500, 1000, 2000, 5000, 10000]
 const INSTAGRAM_QUANTITIES = [100, 250, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000]
 const INSTAGRAM_REAL_QUANTITIES = [100, 250, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000, 500000]
+const INSTAGRAM_LIKE_QUANTITIES = [1000, 2000, 5000, 10000, 20000, 50000]
+const X_VIEW_QUANTITIES = [100000, 200000, 500000, 1000000, 5000000, 10000000]
 const YOUTUBE_VIEW_QUANTITIES = [1000, 2000, 5000, 10000, 20000, 50000]
 const WATCHTIME_QUANTITIES = [1000, 2000, 4000]
 
@@ -155,9 +164,9 @@ export const PLATFORMS: readonly Platform[] = [
     id: 'instagram',
     name: 'Instagram',
     path: '/instagram',
-    tagline: 'Followers by quality and country',
+    tagline: 'Followers by country, plus likes',
     description:
-      'Grow your Instagram profile with high-quality followers or followers from the country you choose. Pick the option that fits your audience.',
+      'Grow your Instagram profile with high-quality followers, followers from the country you choose, and likes for your posts.',
     profileFieldLabel: 'Instagram Profile URL',
     profilePlaceholder: 'https://instagram.com/yourprofile',
     allowedHosts: ['instagram.com', 'instagr.am'],
@@ -247,6 +256,56 @@ export const PLATFORMS: readonly Platform[] = [
         pricing: { kind: 'flat', options: flatOptions(INSTAGRAM_QUANTITIES, PRICE_INSTAGRAM_COUNTRY_FOLLOWERS) },
         panelServiceId: 14553,
       },
+      {
+        id: 'likes',
+        label: 'Likes',
+        unit: 'likes',
+        target: 'post',
+        summary:
+          'Standard-quality likes for a public Instagram post or reel at a low price, with up to 50% extra likes added as a bonus. Minimum order 1,000.',
+        delivery: DELIVERY_NOTE,
+        refill: null,
+        defaultQuantity: 1000,
+        pricing: { kind: 'flat', options: flatOptions(INSTAGRAM_LIKE_QUANTITIES, PRICE_INSTAGRAM_LIKES) },
+        panelServiceId: 19826,
+      },
+    ],
+  },
+  {
+    id: 'tiktok',
+    name: 'TikTok',
+    path: '/tiktok',
+    tagline: 'Followers',
+    description: 'Grow your TikTok profile with high-quality followers, backed by a 30-day refill guarantee.',
+    profileFieldLabel: 'TikTok Profile URL',
+    profilePlaceholder: 'https://tiktok.com/@yourprofile',
+    allowedHosts: ['tiktok.com'],
+    services: [
+      {
+        id: 'followers-hq',
+        label: 'Followers · High Quality',
+        unit: 'followers',
+        target: 'profile',
+        summary: 'High-quality followers for your TikTok profile, backed by a 30-day refill guarantee.',
+        delivery: DELIVERY_NOTE,
+        refill: FOLLOWER_REFILL_NOTE,
+        defaultQuantity: 1000,
+        pricing: { kind: 'flat', options: flatOptions(FOLLOWER_QUANTITIES, PRICE_TIKTOK_FOLLOWERS_HQ) },
+        panelServiceId: 14882,
+      },
+      {
+        id: 'followers-low-drop',
+        label: 'Followers · Minimal Drop',
+        unit: 'followers',
+        target: 'profile',
+        summary:
+          'TikTok followers from accounts with quality profile photos, followers and posts of their own, with a minimal drop rate and a 30-day refill guarantee.',
+        delivery: DELIVERY_NOTE,
+        refill: FOLLOWER_REFILL_NOTE,
+        defaultQuantity: 1000,
+        pricing: { kind: 'flat', options: flatOptions(FOLLOWER_QUANTITIES, PRICE_TIKTOK_FOLLOWERS_LOW_DROP) },
+        panelServiceId: 21951,
+      },
     ],
   },
   {
@@ -303,8 +362,9 @@ export const PLATFORMS: readonly Platform[] = [
     id: 'x',
     name: 'X (Twitter)',
     path: '/x',
-    tagline: 'Followers',
-    description: 'Grow your X (Twitter) profile with followers. Choose the option that fits your goals.',
+    tagline: 'Followers and views',
+    description:
+      'Grow your X (Twitter) profile with followers, and boost your tweets and videos with views.',
     profileFieldLabel: 'X (Twitter) Profile URL',
     profilePlaceholder: 'https://x.com/yourprofile',
     allowedHosts: ['x.com', 'twitter.com'],
@@ -344,6 +404,19 @@ export const PLATFORMS: readonly Platform[] = [
         defaultQuantity: 1000,
         pricing: { kind: 'flat', options: flatOptions(FOLLOWER_QUANTITIES, PRICE_X_FOLLOWERS_TOP) },
         panelServiceId: 21340,
+      },
+      {
+        id: 'views',
+        label: 'Views',
+        unit: 'views',
+        target: 'post',
+        summary:
+          'Fast-start views and impressions for a public tweet or video on X. Minimum order 100,000, priced per 100,000.',
+        delivery: DELIVERY_NOTE,
+        refill: null,
+        defaultQuantity: 100000,
+        pricing: { kind: 'flat', options: flatOptions(X_VIEW_QUANTITIES, PRICE_X_VIEWS) },
+        panelServiceId: 18525,
       },
     ],
   },
@@ -492,4 +565,4 @@ export function getStartingPriceCents(service: Service): number {
 
 export function getServiceTitle(platform: Platform, service: Service): string {
   return `${platform.name} ${service.label}`
-}
+        }
