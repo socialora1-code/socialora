@@ -1,4 +1,4 @@
-import type { ServiceId } from '@/lib/catalog'
+import type { PlatformId, ServiceId } from '@/lib/catalog'
 
 export interface LandingFaq {
   q: string
@@ -7,6 +7,7 @@ export interface LandingFaq {
 
 export interface LandingPage {
   slug: string
+  platformId?: PlatformId
   serviceId: ServiceId
   title: string
   description: string
@@ -32,6 +33,25 @@ const COMMON_FAQS: LandingFaq[] = [
   {
     q: "Is buying followers safe for my account?",
     a: "We never ask for your login details and your profile only needs to stay public. Instagram's terms do not allow purchased followers, so nobody can promise how the platform will treat an account. Start with a smaller amount if you are unsure.",
+  },
+]
+
+const TIKTOK_COMMON_FAQS: LandingFaq[] = [
+  {
+    q: "Do you need my TikTok password?",
+    a: "No. We only need your public profile URL or username. Never share your password with anyone.",
+  },
+  {
+    q: "How do I pay?",
+    a: "You pay with crypto at checkout. You can choose automatic payment or send the exact amount to the wallet address shown on the order page.",
+  },
+  {
+    q: "When does my order start?",
+    a: "Your order starts after your payment is verified. We email you the order updates, so use an email address you check.",
+  },
+  {
+    q: "Is buying followers safe for my account?",
+    a: "We never ask for your login details and your profile only needs to stay public. Platforms set their own rules and nobody can promise how an account will be treated, so start with a smaller amount if you are unsure.",
   },
 ]
 
@@ -172,6 +192,81 @@ export const LANDING_PAGES: readonly LandingPage[] = [
   },
 ]
 
+export const TIKTOK_LANDING_PAGES: readonly LandingPage[] = [
+  {
+    slug: "buy-high-quality-tiktok-followers",
+    platformId: "tiktok",
+    serviceId: "followers-hq",
+    title: "Buy High-Quality TikTok Followers",
+    description:
+      "Buy high-quality TikTok followers with a 30-day refill guarantee. Simple USD pricing, no password needed, pay with crypto.",
+    h1: "Buy High-Quality TikTok Followers",
+    intro:
+      "Add high-quality followers to your TikTok profile. Choose your amount, enter your public profile link and check out in a few minutes. Every order is covered by a 30-day refill guarantee if your follower count drops.",
+    points: [
+      "High-quality followers for your TikTok profile",
+      "30-day refill guarantee if your count drops",
+      "Only your public profile link is needed, never your password",
+    ],
+    faqs: [
+      {
+        q: "What are high-quality TikTok followers?",
+        a: "This is our main TikTok followers service. It comes with a 30-day refill guarantee in case your follower count drops after the order is completed.",
+      },
+      {
+        q: "What does the 30-day refill guarantee cover?",
+        a: "If your follower count drops within 30 days after the order is completed, contact us with your order details and we will request a refill.",
+      },
+      {
+        q: "Which TikTok followers option should I choose?",
+        a: "Both options include a 30-day refill guarantee. High Quality is the lower-priced option. Minimal Drop is chosen to keep the drop rate low and costs a little more. Compare prices on the TikTok services page.",
+      },
+      ...TIKTOK_COMMON_FAQS,
+    ],
+  },
+  {
+    slug: "buy-minimal-drop-tiktok-followers",
+    platformId: "tiktok",
+    serviceId: "followers-low-drop",
+    title: "Buy TikTok Followers with Minimal Drop",
+    description:
+      "Buy TikTok followers with a minimal drop rate and a 30-day refill guarantee. Clear USD pricing, no password needed, pay with crypto.",
+    h1: "Buy TikTok Followers with a Minimal Drop Rate",
+    intro:
+      "Add followers to your TikTok profile from accounts with profile photos, followers and posts of their own, chosen for a minimal drop rate. Every order is covered by a 30-day refill guarantee.",
+    points: [
+      "Followers from accounts with profile photos, followers and posts of their own",
+      "Minimal drop rate with a 30-day refill guarantee",
+      "Only your public profile link is needed, never your password",
+    ],
+    faqs: [
+      {
+        q: "What does minimal drop mean?",
+        a: "It means this service is chosen to keep the number of followers that disappear after delivery low. Some drop can still happen on any platform, so the 30-day refill guarantee applies if your count goes down.",
+      },
+      {
+        q: "What does the 30-day refill guarantee cover?",
+        a: "If your follower count drops within 30 days after the order is completed, contact us with your order details and we will request a refill.",
+      },
+      {
+        q: "Which TikTok followers option should I choose?",
+        a: "Both options include a 30-day refill guarantee. High Quality is the lower-priced option. Minimal Drop is chosen to keep the drop rate low and costs a little more. Compare prices on the TikTok services page.",
+      },
+      ...TIKTOK_COMMON_FAQS,
+    ],
+  },
+]
+
 export function getLandingPage(slug: string): LandingPage | undefined {
   return LANDING_PAGES.find((p) => p.slug === slug)
+}
+
+export function getTikTokLandingPage(slug: string): LandingPage | undefined {
+  return TIKTOK_LANDING_PAGES.find((p) => p.slug === slug)
+}
+
+export function getLandingPagesFor(platformId: PlatformId): readonly LandingPage[] {
+  if (platformId === 'tiktok') return TIKTOK_LANDING_PAGES
+  if (platformId === 'instagram') return LANDING_PAGES
+  return []
 }
