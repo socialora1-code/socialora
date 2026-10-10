@@ -5,12 +5,23 @@ const PANEL_SERVICE_ID = 21945
 const MIN_QUANTITY = 100
 const MAX_QUANTITY = 1000
 const MAX_PER_IP_PER_DAY = 3
-const DAY_MS = 24 * 60 * 60 * 1000
-const LINK_BLOCK_MS = 30 * DAY_MS
+const DAY_SECONDS = 24 * 60 * 60
+const LINK_BLOCK_SECONDS = 30 * DAY_SECONDS
 
-// Best-effort limits kept in memory. They reset when the server restarts.
-const ipHits = new Map<string, number[]>()
-const linkHits = new Map<string, number>()
+async function redis(command: (string | number)[]): Promise<unknown> {
+  const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL
+  const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN
+  if (!url || !token) throw new Error('Redis is not configured')
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(command),
+    cache: 'no-store',
+  })
+  if (!res.ok) throw new Error(`Redis error ${res.status}`)
+  const data = await res.json()
+  return data.result
+}
 
 function clientIp(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for')
@@ -35,6 +46,31 @@ function normalizeLink(raw: string): string | null {
 
 function fail(message: string, status: number) {
   return NextResponse.json({ ok: false, error: message }, { status })
+}
+
+async function placeOrder(apiKey: string, link: string, quantity: number): Promise<boolean> {
+  const params = new URLSearchParams({
+    key: apiKey,
+    action: 'add',
+    service: String(PANEL_SERVICE_ID),
+    link,
+    quantity: String(quantity),
+  })
+  try {
+    const res = await fetch(PANEL_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params,
+      cache: 'no-store',
+    })
+    const data = await res.json()
+    if (data && data.order) return true
+    console.error('Free views panel error:', data?.error ?? 'unknown error')
+    return false
+  } catch (error) {
+    console.error('Free views request failed:', error)
+    return false
+  }
 }
 
 export async function POST(request: Request) {
@@ -65,42 +101,31 @@ export async function POST(request: Request) {
     return fail('Free views are unavailable right now.', 500)
   }
 
-  const now = Date.now()
-  const ip = clientIp(request)
-  const recent = (ipHits.get(ip) ?? []).filter((t) => now - t < DAY_MS)
-  if (recent.length >= MAX_PER_IP_PER_DAY) {
-    return fail('Daily free limit reached. Please try again tomorrow.', 429)
-  }
-  const lastForLink = linkHits.get(link)
-  if (lastForLink && now - lastForLink < LINK_BLOCK_MS) {
-    return fail('This post already received free views.', 429)
-  }
-
-  const params = new URLSearchParams({
-    key: apiKey,
-    action: 'add',
-    service: String(PANEL_SERVICE_ID),
-    link,
-    quantity: String(quantity),
-  })
+  const ipKey = `fv:ip:${clientIp(request)}`
+  const linkKey = `fv:link:${link}`
 
   try {
-    const res = await fetch(PANEL_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params,
-      cache: 'no-store',
-    })
-    const data = await res.json()
-    if (data && data.order) {
-      ipHits.set(ip, [...recent, now])
-      linkHits.set(link, now)
-      return NextResponse.json({ ok: true })
+    const count = Number(await redis(['INCR', ipKey]))
+    if (count === 1) await redis(['EXPIRE', ipKey, DAY_SECONDS])
+    if (count > MAX_PER_IP_PER_DAY) {
+      return fail('Daily free limit reached. Please try again tomorrow.', 429)
     }
-    console.error('Free views panel error:', data?.error ?? 'unknown error')
-    return fail('We could not place this order right now. Please try again later.', 502)
+
+    const locked = await redis(['SET', linkKey, '1', 'NX', 'EX', LINK_BLOCK_SECONDS])
+    if (locked !== 'OK') {
+      await redis(['DECR', ipKey])
+      return fail('This post already received free views.', 429)
+    }
+
+    const placed = await placeOrder(apiKey, link, quantity)
+    if (!placed) {
+      await redis(['DEL', linkKey])
+      await redis(['DECR', ipKey])
+      return fail('We could not place this order right now. Please try again later.', 502)
+    }
+    return NextResponse.json({ ok: true })
   } catch (error) {
-    console.error('Free views request failed:', error)
-    return fail('We could not place this order right now. Please try again later.', 502)
+    console.error('Free views error:', error)
+    return fail('Free views are unavailable right now. Please try again later.', 503)
   }
 }
