@@ -8,8 +8,10 @@ const COLUMNS = [
     title: 'Services',
     links: [
       { href: '/instagram', label: 'Instagram' },
+      { href: '/tiktok', label: 'TikTok' },
       { href: '/youtube', label: 'YouTube' },
       { href: '/x', label: 'X (Twitter)' },
+      { href: '/free-instagram-views', label: 'Free Instagram Views' },
       { href: '/custom-request', label: 'Custom Request' },
     ],
   },
@@ -24,6 +26,7 @@ const COLUMNS = [
     title: 'Company',
     links: [
       { href: '/how-it-works', label: 'How It Works' },
+      { href: '/blog', label: 'Blog' },
       { href: '/faq', label: 'FAQ' },
       { href: '/about', label: 'About' },
       { href: '/contact', label: 'Contact' },
