@@ -8,9 +8,10 @@ import { getPlatform, getStartingPriceCents, isTiered, type PlatformId } from '@
 import { formatUSD } from '@/lib/format'
 
 const PAGE_HEADINGS: Partial<Record<PlatformId, string>> = {
-  instagram: 'Buy Instagram Followers',
+  instagram: 'Buy Instagram Followers & Likes',
+  tiktok: 'Buy TikTok Followers',
   youtube: 'Buy YouTube Views, Watch Time & Subscribers',
-  x: 'Buy X (Twitter) Followers',
+  x: 'Buy X (Twitter) Followers & Views',
 }
 
 export function PlatformPage({ platformId }: { platformId: PlatformId }) {
