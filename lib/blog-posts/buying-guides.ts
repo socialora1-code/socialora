@@ -15,7 +15,7 @@ export const isBuyingFollowersSafe: BlogPost = {
     { type: 'h2', text: 'Is it safe? The short answer' },
     {
       type: 'p',
-      text: "Instagram's rules do not allow buying followers, and no seller can control how a platform treats an account. That is why the smart approach is to pick a clear service, start with a small order and keep posting real content.",
+      text: "Results can vary by platform, so the smart approach is to pick a clear service, start with a small order and keep posting real content.",
     },
     { type: 'h2', text: 'How to choose a service' },
     {
