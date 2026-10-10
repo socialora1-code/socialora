@@ -5,12 +5,12 @@ import { ComplianceNotice } from '@/components/site/compliance-notice'
 import { PlatformIcon } from '@/components/site/platform-icon'
 import { getPlatform, getService, getStartingPriceCents } from '@/lib/catalog'
 import { formatUSD } from '@/lib/format'
-import { LANDING_PAGES, type LandingPage } from '@/lib/landing-pages'
+import { getLandingPagesFor, type LandingPage } from '@/lib/landing-pages'
 
 export function LandingPageView({ page }: { page: LandingPage }) {
-  const platform = getPlatform('instagram')!
+  const platform = getPlatform(page.platformId ?? 'instagram')!
   const service = getService(platform, page.serviceId)!
-  const others = LANDING_PAGES.filter((p) => p.slug !== page.slug)
+  const others = getLandingPagesFor(platform.id).filter((p) => p.slug !== page.slug)
 
   const faqJsonLd = {
     '@context': 'https://schema.org',
@@ -40,8 +40,8 @@ export function LandingPageView({ page }: { page: LandingPage }) {
               Home
             </Link>
             {' / '}
-            <Link href="/instagram" className="hover:text-foreground">
-              Instagram
+            <Link href={platform.path} className="hover:text-foreground">
+              {platform.name}
             </Link>
             {' / '}
             <span className="text-foreground">{page.title}</span>
@@ -100,13 +100,13 @@ export function LandingPageView({ page }: { page: LandingPage }) {
 
         <section aria-labelledby="more-title">
           <h2 id="more-title" className="text-2xl font-semibold tracking-tight">
-            More Instagram follower options
+            More {platform.name} follower options
           </h2>
           <ul className="mt-4 flex flex-wrap gap-2">
             {others.map((p) => (
               <li key={p.slug}>
                 <Link
-                  href={`/instagram/${p.slug}`}
+                  href={`${platform.path}/${p.slug}`}
                   className="inline-flex h-11 items-center rounded-full border border-border bg-card px-4 text-sm font-medium transition-colors hover:border-foreground/30"
                 >
                   {p.title}
@@ -115,10 +115,10 @@ export function LandingPageView({ page }: { page: LandingPage }) {
             ))}
             <li>
               <Link
-                href="/instagram"
+                href={platform.path}
                 className="inline-flex h-11 items-center rounded-full border border-border bg-card px-4 text-sm font-medium transition-colors hover:border-foreground/30"
               >
-                All Instagram services
+                All {platform.name} services
               </Link>
             </li>
           </ul>
