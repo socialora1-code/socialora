@@ -1,6 +1,8 @@
 import { freeInstagramViews, instagramFollowersDrop, isBuyingFollowersSafe } from '@/lib/blog-posts/buying-guides'
 import { instagramGrowth } from '@/lib/blog-posts/instagram-growth'
 import { tiktokGrowth } from '@/lib/blog-posts/tiktok-growth'
+import { xGrowth } from '@/lib/blog-posts/x-growth'
+import { youtubeGrowth } from '@/lib/blog-posts/youtube-growth'
 
 export type BlogBlock =
   | { type: 'h2'; text: string }
@@ -20,6 +22,8 @@ export interface BlogPost {
 }
 
 export const POSTS: readonly BlogPost[] = [
+  xGrowth,
+  youtubeGrowth,
   tiktokGrowth,
   isBuyingFollowersSafe,
   freeInstagramViews,
