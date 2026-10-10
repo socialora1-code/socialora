@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { FreeViewsForm } from '@/components/home/free-views-form'
 import { Hero } from '@/components/home/hero'
 import { HowItWorksSteps } from '@/components/home/how-it-works-steps'
 import { PlatformCards } from '@/components/home/platform-cards'
@@ -12,9 +11,6 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <div className="relative mx-auto -mt-10 max-w-6xl px-4 pb-10 sm:-mt-16 sm:px-6">
-        <FreeViewsForm />
-      </div>
       <PlatformCards />
       <section aria-labelledby="how-title" className="border-t border-border">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
