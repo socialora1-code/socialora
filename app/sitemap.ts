@@ -6,6 +6,7 @@ import { SITE } from '@/lib/site'
 const ROUTES = [
   '',
   '/instagram',
+  '/tiktok',
   '/youtube',
   '/x',
   '/blog',
@@ -19,7 +20,7 @@ const ROUTES = [
   '/refund-policy',
 ]
 
-const PLATFORM_ROUTES = ['/instagram', '/youtube', '/x']
+const PLATFORM_ROUTES = ['/instagram', '/tiktok', '/youtube', '/x']
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date()
