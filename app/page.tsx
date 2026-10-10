@@ -35,7 +35,7 @@ export default function HomePage() {
       <section aria-labelledby="guides-title" className="border-t border-border">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <SectionHeading id="guides-title" eyebrow="Guides" title="Instagram growth guides" />
+            <SectionHeading id="guides-title" eyebrow="Guides" title="Social media growth guides" />
             <Link href="/blog" className="text-sm font-medium text-primary underline-offset-4 hover:underline">
               See all guides
             </Link>
