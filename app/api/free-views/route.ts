@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
 const PANEL_URL = 'https://smmwiz.com/api/v2'
-const PANEL_SERVICE_ID = 21945
+const PANEL_SERVICE_ID = 19639
 const MIN_QUANTITY = 100
 const MAX_QUANTITY = 1000
 const MAX_PER_IP_PER_DAY = 3
