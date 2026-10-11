@@ -1,7 +1,18 @@
 import Link from 'next/link'
 import { Logo } from '@/components/site/logo'
-import { LANDING_PAGES } from '@/lib/landing-pages'
+import { LANDING_PAGES, TIKTOK_LANDING_PAGES } from '@/lib/landing-pages'
 import { SITE } from '@/lib/site'
+
+const FOLLOWER_LINKS = [
+  ...LANDING_PAGES.map((page) => ({
+    href: `/instagram/${page.slug}`,
+    label: page.title,
+  })),
+  ...TIKTOK_LANDING_PAGES.map((page) => ({
+    href: `/tiktok/${page.slug}`,
+    label: page.title,
+  })),
+]
 
 const COLUMNS = [
   {
@@ -16,17 +27,15 @@ const COLUMNS = [
     ],
   },
   {
-    title: 'Instagram Followers',
-    links: LANDING_PAGES.map((page) => ({
-      href: `/instagram/${page.slug}`,
-      label: page.title.replace(' Instagram Followers', ' Followers'),
-    })),
+    title: 'Followers',
+    links: FOLLOWER_LINKS,
   },
   {
     title: 'Company',
     links: [
       { href: '/how-it-works', label: 'How It Works' },
       { href: '/blog', label: 'Blog' },
+      { href: '/tools/instagram-engagement-rate-calculator', label: 'Engagement Calculator' },
       { href: '/faq', label: 'FAQ' },
       { href: '/about', label: 'About' },
       { href: '/contact', label: 'Contact' },
@@ -40,7 +49,7 @@ const COLUMNS = [
       { href: '/refund-policy', label: 'Refund Policy' },
     ],
   },
-] as const
+]
 
 export function SiteFooter() {
   return (
