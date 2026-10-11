@@ -2,8 +2,9 @@ import { CALC_TOOLS } from '@/lib/tool-data/calc-tools'
 import { FONT_TOOLS } from '@/lib/tool-data/font-tools'
 import { GEN_TOOLS } from '@/lib/tool-data/gen-tools'
 import type { ToolDef } from '@/lib/tool-data/types'
+import { UTIL_TOOLS } from '@/lib/tool-data/util-tools'
 
-export const TOOLS: readonly ToolDef[] = [...FONT_TOOLS, ...CALC_TOOLS, ...GEN_TOOLS]
+export const TOOLS: readonly ToolDef[] = [...FONT_TOOLS, ...CALC_TOOLS, ...GEN_TOOLS, ...UTIL_TOOLS]
 
 export function getTool(slug: string): ToolDef | undefined {
   return TOOLS.find((tool) => tool.slug === slug)
