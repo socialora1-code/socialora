@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next'
 import { POSTS } from '@/lib/blog'
 import { LANDING_PAGES, TIKTOK_LANDING_PAGES } from '@/lib/landing-pages'
 import { SITE } from '@/lib/site'
+import { TOOLS } from '@/lib/tool-list'
 
 const ROUTES = [
   '',
@@ -11,6 +12,7 @@ const ROUTES = [
   '/x',
   '/free-instagram-views',
   '/blog',
+  '/tools',
   '/tools/instagram-engagement-rate-calculator',
   '/custom-request',
   '/how-it-works',
@@ -23,7 +25,7 @@ const ROUTES = [
 ]
 
 const PLATFORM_ROUTES = ['/instagram', '/tiktok', '/youtube', '/x', '/free-instagram-views']
-const TOOL_ROUTES = ['/tools/instagram-engagement-rate-calculator']
+const TOOL_ROUTES = ['/tools', '/tools/instagram-engagement-rate-calculator']
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date()
@@ -56,6 +58,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }))
 
+  const tools: MetadataRoute.Sitemap = TOOLS.map((tool) => ({
+    url: `${SITE.url}/tools/${tool.slug}`,
+    lastModified,
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }))
+
   const posts: MetadataRoute.Sitemap = POSTS.map((post) => ({
     url: `${SITE.url}/blog/${post.slug}`,
     lastModified: new Date(post.updated ?? post.date),
@@ -63,5 +72,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }))
 
-  return [...pages, ...landing, ...tiktokLanding, ...posts]
+  return [...pages, ...landing, ...tiktokLanding, ...tools, ...posts]
 }
