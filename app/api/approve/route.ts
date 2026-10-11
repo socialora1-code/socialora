@@ -2,6 +2,7 @@ import { verifyApprovalToken } from '@/lib/approval'
 import { escapeHtml } from '@/lib/email'
 import { sendInProgressEmail, sendOrderToPanel, sendReferralMails } from '@/lib/fulfil'
 import { claimPanel, getPanelOrder, releasePanel, setPanelOrder } from '@/lib/pay-store'
+import { saveTrack } from '@/lib/track'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -60,6 +61,15 @@ export async function POST(request: Request) {
   }
 
   await setPanelOrder(payload.ref, result.order).catch(() => undefined)
+
+  await saveTrack({
+    reference: payload.ref,
+    email: payload.email,
+    panelOrder: result.order,
+    serviceName: payload.name,
+    quantity: payload.quantity,
+    link: payload.link,
+  })
 
   const emailResult = await sendInProgressEmail({
     reference: payload.ref,
