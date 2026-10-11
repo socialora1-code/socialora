@@ -86,7 +86,7 @@ export function renderTableEmail(
   const htmlRows = rows
     .map(
       ([label, value]) =>
-        `<tr><td style="padding:10px 12px;border-bottom:1px solid #e7e7ef;color:#6b6b80;font-size:13px;white-space:nowrap;vertical-align:top">${escapeHtml(label)}</td><td style="padding:10px 12px;border-bottom:1px solid #e7e7ef;color:#16161f;font-size:14px;word-break:break-all">${escapeHtml(value).replace(/\n/g, '<br>')}</td></tr>`,
+        `<tr><td style="width:36%;padding:10px 12px;border-bottom:1px solid #e7e7ef;color:#6b6b80;font-size:13px;vertical-align:top;word-break:break-word;overflow-wrap:anywhere">${escapeHtml(label)}</td><td style="padding:10px 12px;border-bottom:1px solid #e7e7ef;color:#16161f;font-size:14px;vertical-align:top;word-break:break-word;overflow-wrap:anywhere">${escapeHtml(value).replace(/\n/g, '<br>')}</td></tr>`,
     )
     .join('')
 
@@ -94,7 +94,7 @@ export function renderTableEmail(
     ? `<div style="padding:20px 24px 8px"><a href="${escapeHtml(action.url)}" style="display:inline-block;background:#5b4fd6;color:#ffffff;text-decoration:none;font-weight:600;font-size:14px;padding:12px 20px;border-radius:999px">${escapeHtml(action.label)}</a></div>`
     : ''
 
-  const html = `<!doctype html><html><body style="margin:0;padding:24px;background:#f6f6fa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif"><div style="max-width:600px;margin:0 auto;background:#ffffff;border:1px solid #e7e7ef;border-radius:12px;overflow:hidden"><div style="padding:20px 24px;border-bottom:1px solid #e7e7ef"><div style="font-size:13px;color:#5b4fd6;font-weight:600;letter-spacing:.02em">SOCIALORA</div><h1 style="margin:6px 0 0;font-size:18px;color:#16161f">${escapeHtml(title)}</h1></div><table role="presentation" style="width:100%;border-collapse:collapse">${htmlRows}</table>${actionHtml}${footer ? `<p style="padding:16px 24px;margin:0;color:#6b6b80;font-size:13px;line-height:1.5">${escapeHtml(footer)}</p>` : ''}</div></body></html>`
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Language" content="en"><title>${escapeHtml(title)}</title></head><body style="margin:0;padding:16px;background:#f6f6fa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif"><div style="max-width:600px;margin:0 auto;background:#ffffff;border:1px solid #e7e7ef;border-radius:12px;overflow:hidden"><div style="padding:20px 24px;border-bottom:1px solid #e7e7ef"><div style="font-size:13px;color:#5b4fd6;font-weight:600;letter-spacing:.02em">SOCIALORA</div><h1 style="margin:6px 0 0;font-size:18px;color:#16161f">${escapeHtml(title)}</h1></div><table role="presentation" width="100%" style="width:100%;table-layout:fixed;border-collapse:collapse">${htmlRows}</table>${actionHtml}${footer ? `<p style="padding:16px 24px;margin:0;color:#6b6b80;font-size:13px;line-height:1.5">${escapeHtml(footer)}</p>` : ''}</div></body></html>`
 
   const text = `${title}\n\n${rows.map(([l, v]) => `${l}: ${v}`).join('\n')}${action ? `\n\n${action.label}: ${action.url}` : ''}${footer ? `\n\n${footer}` : ''}`
 
