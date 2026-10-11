@@ -27,6 +27,7 @@ import {
   type TierId,
 } from '@/lib/catalog'
 import { formatUSD } from '@/lib/format'
+import { readStoredRef } from '@/lib/referral'
 import { SITE } from '@/lib/site'
 import { isValidEmail, normalizeProfile, type FieldErrors } from '@/lib/validation'
 import { cn } from '@/lib/utils'
@@ -160,6 +161,7 @@ export function OrderForm({ initial }: { initial: InitialSelection }) {
           transactionId: transactionId.trim(),
           acceptTerms,
           website: honeypot,
+          ref: readStoredRef() ?? undefined,
         }),
       })
 
@@ -434,4 +436,4 @@ export function OrderForm({ initial }: { initial: InitialSelection }) {
       </div>
     </form>
   )
-}
+        }
