@@ -18,10 +18,10 @@ export const dynamic = 'force-dynamic'
 
 const APPROVAL_VALID_MS = 14 * 24 * 60 * 60 * 1000
 
-export async function POST(request: Request) {
-  let body: Record<string, unknown>
+export async function POST(request) {
+  let body
   try {
-    body = (await request.json()) as Record<string, unknown>
+    body = await request.json()
   } catch {
     return NextResponse.json({ ok: false }, { status: 400 })
   }
@@ -48,8 +48,8 @@ export async function POST(request: Request) {
   }
 
   try {
-    let panelOrder: string | null = null
-    let panelError: string | null = null
+    let panelOrder = null
+    let panelError = null
 
     if (!order.panelServiceId) {
       panelError = 'This service has no panel service ID'
