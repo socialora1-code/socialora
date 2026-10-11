@@ -14,18 +14,18 @@ export const UTIL_TOOLS: readonly ToolDef[] = [
     intro:
       'Pick giveaway winners fairly and fast. Paste the usernames of everyone who entered, one per line, choose how many winners you need and press the button.',
     tips: [
-      'Write your rules in the giveaway post: how to enter, the end date and how you will pick winners.',
-      'Copy the entrants from your comments yourself, then paste them here. This tool does not connect to Instagram.',
-      'Pick one or two backup winners in case someone does not reply.',
+      'Post your rules and end date before you start, so everyone knows how the giveaway works.',
+      'Copy the names from your comments and paste them here, one per line.',
+      'Pick a backup winner too, in case someone does not reply.',
     ],
     faqs: [
       {
         q: 'Can this tool read the comments on my post?',
-        a: 'No. It does not connect to Instagram. You paste the names yourself, and the tool picks randomly from that list.',
+        a: 'No. You paste the names yourself, and the tool picks randomly from your list.',
       },
       {
         q: 'Is the pick really random?',
-        a: 'It uses your browser’s secure random number generator, and every name has the same chance. Nothing is saved or sent anywhere.',
+        a: 'Yes. Every name has the same chance, and nothing is saved or sent anywhere.',
       },
       {
         q: 'What does "remove duplicates" do?',
@@ -62,11 +62,7 @@ export const UTIL_TOOLS: readonly ToolDef[] = [
       },
       {
         q: 'Can people message me without saving my number?',
-        a: 'Yes. The link opens a chat with the number directly, so they do not need to save it first.',
-      },
-      {
-        q: 'Does the tool store my number?',
-        a: 'No. The link is built in your browser and nothing is sent to us.',
+        a: 'Yes. The link opens a chat with the number directly.',
       },
     ],
   },
@@ -83,18 +79,14 @@ export const UTIL_TOOLS: readonly ToolDef[] = [
     intro:
       'Paste a YouTube video link and see its thumbnail in every size that exists. Open the one you need and save it from there.',
     tips: [
-      'Use thumbnails from other channels only as inspiration for your own design, or with the owner’s permission.',
-      'Look at what works in your niche: clear faces, big text and strong contrast are common in thumbnails that get clicks.',
-      'Test two thumbnails on your own video and keep the one people click more.',
+      'Study the thumbnails in your niche: clear faces, big text and strong contrast stand out.',
+      'Test two thumbnails on your own video and keep the one that gets more clicks.',
+      'It works with normal links, Shorts links and short youtu.be links.',
     ],
     faqs: [
       {
         q: 'Why is the biggest size missing?',
         a: 'Not every video has a full HD thumbnail. Older or low-resolution uploads may only have the smaller sizes.',
-      },
-      {
-        q: 'Can I use any thumbnail I download?',
-        a: 'Thumbnails belong to the video’s creator. Use your own, or ask for permission before you use someone else’s.',
       },
       {
         q: 'Which links work?',
