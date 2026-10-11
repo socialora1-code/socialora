@@ -12,6 +12,7 @@ import {
   verifyIpnSignature,
 } from '@/lib/pay-store'
 import { SITE } from '@/lib/site'
+import { saveTrack } from '@/lib/track'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -74,6 +75,15 @@ export async function POST(request) {
     }
 
     if (panelOrder) {
+      await saveTrack({
+        reference: order.reference,
+        email: order.email,
+        panelOrder,
+        serviceName: order.serviceName,
+        quantity: order.quantity,
+        link: order.link,
+      })
+
       // Order is on its way. Mail problems below must never cause a second panel order.
       await sendInProgressEmail({
         reference: order.reference,
