@@ -9,6 +9,11 @@ export interface ApprovalPayload {
   name: string
   amount: string
   exp: number
+  // Optional referral info (only for manual wallet orders)
+  rc?: string
+  rm?: string
+  rs?: boolean
+  cents?: number
 }
 
 function getSecret(): string | null {
