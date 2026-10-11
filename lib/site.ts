@@ -18,6 +18,7 @@ export const MAIN_NAV = [
   { href: '/youtube', label: 'YouTube' },
   { href: '/x', label: 'X' },
   { href: '/free-instagram-views', label: 'Free Views' },
+  { href: '/tools', label: 'Free Tools' },
   { href: '/custom-request', label: 'Custom Request' },
   { href: '/track', label: 'Track' },
   { href: '/referral', label: 'Referral' },
