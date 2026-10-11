@@ -19,6 +19,7 @@ export const MAIN_NAV = [
   { href: '/x', label: 'X' },
   { href: '/free-instagram-views', label: 'Free Views' },
   { href: '/custom-request', label: 'Custom Request' },
+  { href: '/track', label: 'Track' },
   { href: '/referral', label: 'Referral' },
   { href: '/faq', label: 'FAQ' },
 ] as const
