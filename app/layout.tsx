@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
+import { ReferralCapture } from '@/components/site/referral-capture'
 import { SiteFooter } from '@/components/site/site-footer'
 import { SiteHeader } from '@/components/site/site-header'
 import { TelegramButton } from '@/components/site/telegram-button'
@@ -60,6 +61,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <ReferralCapture />
         <SiteHeader />
         <main id="main" className="flex-1">
           {children}
