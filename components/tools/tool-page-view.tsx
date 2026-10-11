@@ -2,6 +2,9 @@ import Link from 'next/link'
 import { Calculator } from '@/components/tools/calculator'
 import { FontGenerator } from '@/components/tools/font-generator'
 import { Generator } from '@/components/tools/generator'
+import { LinkGenerator } from '@/components/tools/link-generator'
+import { GiveawayPicker } from '@/components/tools/picker'
+import { ThumbnailDownloader } from '@/components/tools/thumbnail-downloader'
 import type { ToolDef } from '@/lib/tool-data/types'
 import { relatedTools } from '@/lib/tool-list'
 
@@ -27,12 +30,30 @@ const STEPS: Record<string, readonly string[]> = {
     'Press More ideas until you see something you like.',
     'Tap Copy, then edit it so it sounds like you.',
   ],
+  picker: [
+    'Paste the names of your entrants, one per line.',
+    'Choose how many winners you need.',
+    'Press Pick winners. Press Pick again to choose a backup.',
+  ],
+  link: [
+    'Enter the phone number with the country code.',
+    'Add a first message if you want one.',
+    'Copy your link and share it anywhere.',
+  ],
+  thumb: [
+    'Paste the YouTube video link.',
+    'Check the sizes that appear.',
+    'Open the size you need and save the image.',
+  ],
 }
 
 const NOTES: Record<string, string> = {
   font: 'Fancy text is great for short phrases. Screen readers may read decorative symbols letter by letter, so keep important information in plain text too.',
   calc: 'Results are estimates for planning, not guaranteed numbers.',
   gen: 'These ideas are built from templates and your own words, so treat them as a starting point.',
+  picker: 'Everything runs in your browser. Your list is not saved or sent anywhere.',
+  link: 'The link is created in your browser. Your number is not saved or sent anywhere.',
+  thumb: 'Thumbnails belong to the creator of the video. Use your own or ask for permission.',
 }
 
 function Widget({ tool }: { tool: ToolDef }) {
@@ -43,6 +64,12 @@ function Widget({ tool }: { tool: ToolDef }) {
       return <Calculator id={tool.widget ?? ''} />
     case 'gen':
       return <Generator id={tool.widget ?? ''} />
+    case 'picker':
+      return <GiveawayPicker />
+    case 'link':
+      return <LinkGenerator />
+    case 'thumb':
+      return <ThumbnailDownloader />
     default:
       return null
   }
