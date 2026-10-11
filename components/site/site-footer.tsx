@@ -31,11 +31,24 @@ const COLUMNS = [
     links: FOLLOWER_LINKS,
   },
   {
+    title: 'Free Tools',
+    links: [
+      { href: '/tools', label: 'All Free Tools' },
+      { href: '/tools/instagram-font-generator', label: 'Instagram Font Generator' },
+      { href: '/tools/instagram-bio-generator', label: 'Instagram Bio Generator' },
+      { href: '/tools/instagram-hashtag-generator', label: 'Hashtag Generator' },
+      { href: '/tools/youtube-money-calculator', label: 'YouTube Money Calculator' },
+      { href: '/tools/youtube-thumbnail-downloader', label: 'Thumbnail Downloader' },
+      { href: '/tools/instagram-engagement-rate-calculator', label: 'Engagement Calculator' },
+    ],
+  },
+  {
     title: 'Company',
     links: [
       { href: '/how-it-works', label: 'How It Works' },
       { href: '/blog', label: 'Blog' },
-      { href: '/tools/instagram-engagement-rate-calculator', label: 'Engagement Calculator' },
+      { href: '/track', label: 'Track Order' },
+      { href: '/referral', label: 'Referral Program' },
       { href: '/faq', label: 'FAQ' },
       { href: '/about', label: 'About' },
       { href: '/contact', label: 'Contact' },
@@ -55,7 +68,7 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-[1.4fr_repeat(4,1fr)]">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(5,1fr)]">
           <div className="max-w-sm">
             <Logo />
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
