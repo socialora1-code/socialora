@@ -23,12 +23,12 @@ const STEPS: Record<string, readonly string[]> = {
   calc: [
     'Enter your numbers in the boxes. Boxes marked optional can stay empty.',
     'The result updates as you type.',
-    'Try different numbers to see what changes, and compare with your own past results.',
+    'Try different numbers to see what changes.',
   ],
   gen: [
     'Type your topic in the first box. The other box is optional.',
     'Press More ideas until you see something you like.',
-    'Tap Copy, then edit it so it sounds like you.',
+    'Tap Copy and make it your own.',
   ],
   picker: [
     'Paste the names of your entrants, one per line.',
@@ -45,15 +45,6 @@ const STEPS: Record<string, readonly string[]> = {
     'Check the sizes that appear.',
     'Open the size you need and save the image.',
   ],
-}
-
-const NOTES: Record<string, string> = {
-  font: 'Fancy text is great for short phrases. Screen readers may read decorative symbols letter by letter, so keep important information in plain text too.',
-  calc: 'Results are estimates for planning, not guaranteed numbers.',
-  gen: 'These ideas are built from templates and your own words, so treat them as a starting point.',
-  picker: 'Everything runs in your browser. Your list is not saved or sent anywhere.',
-  link: 'The link is created in your browser. Your number is not saved or sent anywhere.',
-  thumb: 'Thumbnails belong to the creator of the video. Use your own or ask for permission.',
 }
 
 function Widget({ tool }: { tool: ToolDef }) {
@@ -78,7 +69,6 @@ function Widget({ tool }: { tool: ToolDef }) {
 export function ToolPageView({ tool }: { tool: ToolDef }) {
   const cta = tool.cta ?? DEFAULT_CTA
   const steps = STEPS[tool.kind] ?? []
-  const note = NOTES[tool.kind]
   const related = relatedTools(tool)
 
   return (
@@ -89,8 +79,6 @@ export function ToolPageView({ tool }: { tool: ToolDef }) {
       <div className="mt-8">
         <Widget tool={tool} />
       </div>
-
-      {note && <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{note}</p>}
 
       {steps.length > 0 && (
         <section className="mt-12" aria-labelledby="how-title">
