@@ -13,6 +13,7 @@ const LINKS = [
   { href: '/x', label: 'X (Twitter)' },
   { href: '/free-instagram-views', label: 'Free Instagram Views' },
   { href: '/custom-request', label: 'Custom Request' },
+  { href: '/referral', label: 'Referral Program' },
   { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'Support' },
   { href: '/about', label: 'About' },
@@ -29,7 +30,7 @@ export function MobileNav() {
   }, [open])
 
   return (
-    <div className="lg:hidden">
+    <div className="xl:hidden">
       <button
         type="button"
         onClick={() => setOpen(!open)}
