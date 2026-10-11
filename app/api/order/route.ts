@@ -4,6 +4,7 @@ import { STANDARD_PACKAGE_NAME } from '@/lib/catalog'
 import { getInboxAddress, renderTableEmail, sendEmail } from '@/lib/email'
 import { formatQuantity, formatUSD } from '@/lib/format'
 import { createInvoice, saveOrder } from '@/lib/pay-store'
+import { COMMISSION_PERCENT, normalizeRefCode } from '@/lib/referral'
 import { SITE } from '@/lib/site'
 import { validateOrder } from '@/lib/validation'
 
@@ -22,6 +23,70 @@ function generateReference(): string {
 }
 
 const SUBMIT_FAILED = "We couldn't submit your order right now. Please try again or contact support."
+
+type Referrer = { code: string; email: string; self: boolean }
+
+async function redisGet(key: string): Promise<string | null> {
+  const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL
+  const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN
+  if (!url || !token) return null
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(['GET', key]),
+    cache: 'no-store',
+  })
+  if (!res.ok) return null
+  const data = await res.json()
+  return typeof data.result === 'string' ? data.result : null
+}
+
+// Never lets a referral problem block an order.
+async function lookupReferrer(body: unknown, customerEmail: string): Promise<Referrer | null> {
+  try {
+    const raw = body && typeof body === 'object' ? (body as Record<string, unknown>).ref : null
+    const code = typeof raw === 'string' ? normalizeRefCode(raw) : null
+    if (!code) return null
+    const email = await redisGet(`ref:code:${code}`)
+    if (!email) return null
+    return { code, email, self: email.toLowerCase() === customerEmail.trim().toLowerCase() }
+  } catch {
+    return null
+  }
+}
+
+async function notifyReferral(
+  referrer: Referrer,
+  details: { reference: string; serviceName: string; amount: string; priceCents: number; payment: string },
+) {
+  try {
+    const commission = referrer.self
+      ? 'None (customer used their own referral code)'
+      : `${COMMISSION_PERCENT}% = ${formatUSD(Math.round((details.priceCents * COMMISSION_PERCENT) / 100))} USD`
+    const email = renderTableEmail(
+      `Referral order ${details.reference}`,
+      [
+        ['Order reference', details.reference],
+        ['Referral code', referrer.code],
+        ['Referrer email', referrer.email],
+        ['Service', details.serviceName],
+        ['Order amount', `${details.amount} USD`],
+        ['Commission', commission],
+        ['Payment', details.payment],
+      ],
+      'Pay the commission only after this order is paid and completed.',
+    )
+    await sendEmail({
+      to: getInboxAddress(),
+      subject: `Referral order ${details.reference} — code ${referrer.code} · ${details.amount}`,
+      html: email.html,
+      text: email.text,
+      idempotencyKey: `order-referral-${details.reference}`,
+    })
+  } catch (err) {
+    console.error('[order] referral notice failed:', err instanceof Error ? err.message : err)
+  }
+}
 
 export async function POST(request: Request) {
   let body: unknown
@@ -45,6 +110,7 @@ export async function POST(request: Request) {
   }
 
   const order = result.value
+  const referrer = await lookupReferrer(body, order.email)
   const reference = generateReference()
   const now = new Date()
   const submittedAt = `${now.toLocaleString('en-US', {
@@ -83,6 +149,15 @@ export async function POST(request: Request) {
       })
       if (!invoiceUrl) {
         return NextResponse.json({ ok: false, error: SUBMIT_FAILED }, { status: 503 })
+      }
+      if (referrer) {
+        await notifyReferral(referrer, {
+          reference,
+          serviceName,
+          amount,
+          priceCents: order.priceCents,
+          payment: 'Awaiting payment (automatic). Wait for the payment confirmed email.',
+        })
       }
       return NextResponse.json({
         ok: true,
@@ -130,6 +205,20 @@ export async function POST(request: Request) {
       ['Wallet address', order.paymentMethod.address],
       ['Order amount', `${amount} USD`],
       ['Transaction ID / hash', order.transactionId ?? 'Not provided'],
+      ...(referrer
+        ? [
+            [
+              'Referral code',
+              `${referrer.code} (${referrer.email})${
+                referrer.self
+                  ? ' - SELF REFERRAL, no commission'
+                  : ` - commission ${COMMISSION_PERCENT}% = ${formatUSD(
+                      Math.round((order.priceCents * COMMISSION_PERCENT) / 100),
+                    )} USD after payment is confirmed`
+              }`,
+            ] as [string, string],
+          ]
+        : []),
     ],
     'Price recalculated server-side from the catalog. Verify the payment on-chain before approving. Use the button only after the payment is confirmed. Reply to this email to contact the customer.',
     approvalUrl ? { label: 'Approve & send to panel', url: approvalUrl } : undefined,
