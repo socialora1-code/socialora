@@ -4,7 +4,7 @@ import { STANDARD_PACKAGE_NAME } from '@/lib/catalog'
 import { getInboxAddress, renderTableEmail, sendEmail } from '@/lib/email'
 import { formatQuantity, formatUSD } from '@/lib/format'
 import { createInvoice, saveOrder } from '@/lib/pay-store'
-import { COMMISSION_PERCENT, normalizeRefCode } from '@/lib/referral'
+import { COMMISSION_PERCENT, MIN_PAYOUT_USD, normalizeRefCode } from '@/lib/referral'
 import { SITE } from '@/lib/site'
 import { validateOrder } from '@/lib/validation'
 
@@ -88,6 +88,36 @@ async function notifyReferral(
   }
 }
 
+async function notifyReferrer(
+  referrer: Referrer,
+  details: { reference: string; amount: string; priceCents: number },
+) {
+  if (referrer.self) return
+  try {
+    const commissionCents = Math.round((details.priceCents * COMMISSION_PERCENT) / 100)
+    const email = renderTableEmail(
+      'You have a new referral order',
+      [
+        ['Referral code', referrer.code],
+        ['Order amount', `${details.amount} USD`],
+        ['Your commission', `${COMMISSION_PERCENT}% = ${formatUSD(commissionCents)} USD`],
+        ['Status', 'Pending payment'],
+      ],
+      `Someone placed an order using your referral link. Your commission is confirmed once the order is paid and completed. When your total confirmed commission reaches ${formatUSD(MIN_PAYOUT_USD * 100)} USD, email ${SITE.supportEmail} from the email address you registered with to request a payout. Thank you for sharing Socialora.`,
+    )
+    await sendEmail({
+      to: referrer.email,
+      subject: `New referral order: ${formatUSD(commissionCents)} commission pending`,
+      html: email.html,
+      text: email.text,
+      replyTo: getInboxAddress(),
+      idempotencyKey: `order-referrer-${details.reference}`,
+    })
+  } catch (err) {
+    console.error('[order] referrer email failed:', err instanceof Error ? err.message : err)
+  }
+}
+
 export async function POST(request: Request) {
   let body: unknown
   try {
@@ -158,6 +188,7 @@ export async function POST(request: Request) {
           priceCents: order.priceCents,
           payment: 'Awaiting payment (automatic). Wait for the payment confirmed email.',
         })
+        await notifyReferrer(referrer, { reference, amount, priceCents: order.priceCents })
       }
       return NextResponse.json({
         ok: true,
@@ -235,6 +266,10 @@ export async function POST(request: Request) {
 
   if (!adminSend.ok) {
     return NextResponse.json({ ok: false, error: SUBMIT_FAILED }, { status: 503 })
+  }
+
+  if (referrer) {
+    await notifyReferrer(referrer, { reference, amount, priceCents: order.priceCents })
   }
 
   const customerEmail = renderTableEmail(
