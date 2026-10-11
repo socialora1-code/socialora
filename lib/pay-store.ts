@@ -10,6 +10,7 @@ export interface PendingOrder {
   packageName: string
   amount: string
   priceCents: number
+  referral?: { code: string; email: string; self: boolean } | null
 }
 
 const TWO_WEEKS = 14 * 24 * 60 * 60
@@ -45,6 +46,25 @@ export async function claimNotification(reference: string): Promise<boolean> {
 
 export async function releaseNotification(reference: string) {
   await redis(['DEL', `notified:${reference}`])
+}
+
+// Panel duplicate guard: makes sure one order is sent to the panel only once.
+export async function claimPanel(reference: string): Promise<boolean> {
+  const result = await redis(['SET', `panel:${reference}`, 'pending', 'NX', 'EX', TWO_WEEKS])
+  return result === 'OK'
+}
+
+export async function setPanelOrder(reference: string, panelOrder: string) {
+  await redis(['SET', `panel:${reference}`, panelOrder, 'EX', TWO_WEEKS])
+}
+
+export async function getPanelOrder(reference: string): Promise<string | null> {
+  const raw = await redis(['GET', `panel:${reference}`])
+  return typeof raw === 'string' ? raw : null
+}
+
+export async function releasePanel(reference: string) {
+  await redis(['DEL', `panel:${reference}`])
 }
 
 export async function createInvoice(params: {
