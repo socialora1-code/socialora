@@ -4,7 +4,7 @@ import { STANDARD_PACKAGE_NAME } from '@/lib/catalog'
 import { getInboxAddress, renderTableEmail, sendEmail } from '@/lib/email'
 import { formatQuantity, formatUSD } from '@/lib/format'
 import { createInvoice, saveOrder } from '@/lib/pay-store'
-import { COMMISSION_PERCENT, MIN_PAYOUT_USD, normalizeRefCode } from '@/lib/referral'
+import { COMMISSION_PERCENT, normalizeRefCode } from '@/lib/referral'
 import { SITE } from '@/lib/site'
 import { validateOrder } from '@/lib/validation'
 
@@ -55,69 +55,6 @@ async function lookupReferrer(body: unknown, customerEmail: string): Promise<Ref
   }
 }
 
-async function notifyReferral(
-  referrer: Referrer,
-  details: { reference: string; serviceName: string; amount: string; priceCents: number; payment: string },
-) {
-  try {
-    const commission = referrer.self
-      ? 'None (customer used their own referral code)'
-      : `${COMMISSION_PERCENT}% = ${formatUSD(Math.round((details.priceCents * COMMISSION_PERCENT) / 100))} USD`
-    const email = renderTableEmail(
-      `Referral order ${details.reference}`,
-      [
-        ['Order reference', details.reference],
-        ['Referral code', referrer.code],
-        ['Referrer email', referrer.email],
-        ['Service', details.serviceName],
-        ['Order amount', `${details.amount} USD`],
-        ['Commission', commission],
-        ['Payment', details.payment],
-      ],
-      'Pay the commission only after this order is paid and completed.',
-    )
-    await sendEmail({
-      to: getInboxAddress(),
-      subject: `Referral order ${details.reference} — code ${referrer.code} · ${details.amount}`,
-      html: email.html,
-      text: email.text,
-      idempotencyKey: `order-referral-${details.reference}`,
-    })
-  } catch (err) {
-    console.error('[order] referral notice failed:', err instanceof Error ? err.message : err)
-  }
-}
-
-async function notifyReferrer(
-  referrer: Referrer,
-  details: { reference: string; amount: string; priceCents: number },
-) {
-  if (referrer.self) return
-  try {
-    const commissionCents = Math.round((details.priceCents * COMMISSION_PERCENT) / 100)
-    const email = renderTableEmail(
-      'You have a new referral order',
-      [
-        ['Referral code', referrer.code],
-        ['Order amount', `${details.amount} USD`],
-        ['Your commission', `${COMMISSION_PERCENT}% = ${formatUSD(commissionCents)} USD`],
-        ['Status', 'Pending payment'],
-      ],
-      `Someone placed an order using your referral link. Your commission is confirmed once the order is paid and completed. When your total confirmed commission reaches ${formatUSD(MIN_PAYOUT_USD * 100)} USD, email ${SITE.supportEmail} from the email address you registered with to request a payout. Thank you for sharing Socialora.`,
-    )
-    await sendEmail({
-      to: referrer.email,
-      subject: `New referral order: ${formatUSD(commissionCents)} commission pending`,
-      html: email.html,
-      text: email.text,
-      replyTo: getInboxAddress(),
-      idempotencyKey: `order-referrer-${details.reference}`,
-    })
-  } catch (err) {
-    console.error('[order] referrer email failed:', err instanceof Error ? err.message : err)
-  }
-}
-
 export async function POST(request: Request) {
   let body: unknown
   try {
@@ -155,7 +92,7 @@ export async function POST(request: Request) {
   const panelServiceId = order.service.panelServiceId
   const link = profileToLink(order.platform.id, order.profile)
 
-  // Automatic crypto payment (NOWPayments)
+  // Automatic crypto payment (NOWPayments). Referral mails are sent later, when the payment is confirmed.
   if (order.paymentMethod.id === 'nowpayments') {
     try {
       await saveOrder({
@@ -168,6 +105,7 @@ export async function POST(request: Request) {
         packageName,
         amount,
         priceCents: order.priceCents,
+        referral: referrer ? { code: referrer.code, email: referrer.email, self: referrer.self } : null,
       })
       const invoiceUrl = await createInvoice({
         priceCents: order.priceCents,
@@ -179,16 +117,6 @@ export async function POST(request: Request) {
       })
       if (!invoiceUrl) {
         return NextResponse.json({ ok: false, error: SUBMIT_FAILED }, { status: 503 })
-      }
-      if (referrer) {
-        await notifyReferral(referrer, {
-          reference,
-          serviceName,
-          amount,
-          priceCents: order.priceCents,
-          payment: 'Awaiting payment (automatic). Wait for the payment confirmed email.',
-        })
-        await notifyReferrer(referrer, { reference, amount, priceCents: order.priceCents })
       }
       return NextResponse.json({
         ok: true,
@@ -205,7 +133,7 @@ export async function POST(request: Request) {
     }
   }
 
-  // Manual wallet payment (unchanged)
+  // Manual wallet payment. Referral mails are sent when the owner presses the approve button.
   const token = panelServiceId
     ? createApprovalToken({
         ref: reference,
@@ -216,6 +144,9 @@ export async function POST(request: Request) {
         name: serviceName,
         amount,
         exp: Date.now() + APPROVAL_VALID_MS,
+        ...(referrer
+          ? { rc: referrer.code, rm: referrer.email, rs: referrer.self, cents: order.priceCents }
+          : {}),
       })
     : null
   const approvalUrl = token ? buildApprovalUrl(SITE.url, token) : null
@@ -245,7 +176,7 @@ export async function POST(request: Request) {
                   ? ' - SELF REFERRAL, no commission'
                   : ` - commission ${COMMISSION_PERCENT}% = ${formatUSD(
                       Math.round((order.priceCents * COMMISSION_PERCENT) / 100),
-                    )} USD after payment is confirmed`
+                    )} USD (referral emails are sent when you press the approve button)`
               }`,
             ] as [string, string],
           ]
@@ -266,10 +197,6 @@ export async function POST(request: Request) {
 
   if (!adminSend.ok) {
     return NextResponse.json({ ok: false, error: SUBMIT_FAILED }, { status: 503 })
-  }
-
-  if (referrer) {
-    await notifyReferrer(referrer, { reference, amount, priceCents: order.priceCents })
   }
 
   const customerEmail = renderTableEmail(
