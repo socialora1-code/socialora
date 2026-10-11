@@ -1,4 +1,4 @@
-export type ToolKind = 'font'
+export type ToolKind = 'font' | 'calc'
 
 export interface ToolFaq {
   q: string
@@ -17,6 +17,7 @@ export interface ToolDef {
   intro: string
   tips: readonly string[]
   faqs: readonly ToolFaq[]
+  /** For calculators: the id of the calculator in lib/calculators.ts */
   widget?: string
   cta?: { text: string; href: string; label: string }
 }
