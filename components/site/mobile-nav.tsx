@@ -12,6 +12,7 @@ const LINKS = [
   { href: '/youtube', label: 'YouTube' },
   { href: '/x', label: 'X (Twitter)' },
   { href: '/free-instagram-views', label: 'Free Instagram Views' },
+  { href: '/tools', label: 'Free Tools' },
   { href: '/custom-request', label: 'Custom Request' },
   { href: '/track', label: 'Track Order' },
   { href: '/referral', label: 'Referral Program' },
