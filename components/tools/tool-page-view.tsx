@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Calculator } from '@/components/tools/calculator'
 import { FontGenerator } from '@/components/tools/font-generator'
 import type { ToolDef } from '@/lib/tool-data/types'
 import { relatedTools } from '@/lib/tool-list'
@@ -15,16 +16,24 @@ const STEPS: Record<string, readonly string[]> = {
     'Scroll through the styles and pick the one you like.',
     'Tap Copy, then paste it where you need it.',
   ],
+  calc: [
+    'Enter your numbers in the boxes. Boxes marked optional can stay empty.',
+    'The result updates as you type.',
+    'Try different numbers to see what changes, and compare with your own past results.',
+  ],
 }
 
 const NOTES: Record<string, string> = {
   font: 'Fancy text is great for short phrases. Screen readers may read decorative symbols letter by letter, so keep important information in plain text too.',
+  calc: 'Results are estimates for planning, not guaranteed numbers.',
 }
 
 function Widget({ tool }: { tool: ToolDef }) {
   switch (tool.kind) {
     case 'font':
       return <FontGenerator />
+    case 'calc':
+      return <Calculator id={tool.widget ?? ''} />
     default:
       return null
   }
