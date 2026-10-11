@@ -1,5 +1,11 @@
 import { freeInstagramViews, instagramFollowersDrop, isBuyingFollowersSafe } from '@/lib/blog-posts/buying-guides'
 import { instagramGrowth } from '@/lib/blog-posts/instagram-growth'
+import {
+  instagramBestTime,
+  instagramEngagementRate,
+  tiktokAlgorithm,
+  youtubeMonetization,
+} from '@/lib/blog-posts/long-tail'
 import { tiktokGrowth } from '@/lib/blog-posts/tiktok-growth'
 import { xGrowth } from '@/lib/blog-posts/x-growth'
 import { youtubeGrowth } from '@/lib/blog-posts/youtube-growth'
@@ -22,6 +28,10 @@ export interface BlogPost {
 }
 
 export const POSTS: readonly BlogPost[] = [
+  youtubeMonetization,
+  tiktokAlgorithm,
+  instagramBestTime,
+  instagramEngagementRate,
   xGrowth,
   youtubeGrowth,
   tiktokGrowth,
