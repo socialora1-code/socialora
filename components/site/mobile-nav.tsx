@@ -13,6 +13,7 @@ const LINKS = [
   { href: '/x', label: 'X (Twitter)' },
   { href: '/free-instagram-views', label: 'Free Instagram Views' },
   { href: '/custom-request', label: 'Custom Request' },
+  { href: '/track', label: 'Track Order' },
   { href: '/referral', label: 'Referral Program' },
   { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'Support' },
