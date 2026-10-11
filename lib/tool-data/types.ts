@@ -1,4 +1,4 @@
-export type ToolKind = 'font' | 'calc'
+export type ToolKind = 'font' | 'calc' | 'gen' | 'picker' | 'link' | 'thumb'
 
 export interface ToolFaq {
   q: string
@@ -17,7 +17,7 @@ export interface ToolDef {
   intro: string
   tips: readonly string[]
   faqs: readonly ToolFaq[]
-  /** For calculators: the id of the calculator in lib/calculators.ts */
+  /** For calculators and generators: the id of the config in lib/calculators.ts or lib/generators.ts */
   widget?: string
   cta?: { text: string; href: string; label: string }
 }
