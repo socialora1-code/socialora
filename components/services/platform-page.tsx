@@ -23,7 +23,7 @@ export function PlatformPage({ platformId }: { platformId: PlatformId }) {
       <section className="relative overflow-hidden border-b border-border">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_90%_at_20%_0%,oklch(0.93_0.05_285/.75),transparent_70%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_90%_at_20%_0%,oklch(0.63_0.22_295/.22),transparent_70%),radial-gradient(40%_70%_at_95%_0%,oklch(0.66_0.22_350/.14),transparent_70%)]"
         />
         <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <PlatformIcon platform={platform.id} size="lg" />
@@ -40,7 +40,7 @@ export function PlatformPage({ platformId }: { platformId: PlatformId }) {
                 <li key={service.id}>
                   <Link
                     href={`#${service.id}`}
-                    className="inline-flex h-11 items-center gap-2 rounded-full border border-border bg-card px-4 text-sm font-medium transition-colors hover:border-foreground/30"
+                    className="inline-flex h-11 items-center gap-2 rounded-full border border-border bg-card px-4 text-sm font-medium transition-colors hover:border-primary/60"
                   >
                     {service.label}
                     <span className="text-muted-foreground">from {formatUSD(getStartingPriceCents(service))}</span>
