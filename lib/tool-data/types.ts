@@ -1,4 +1,14 @@
-export type ToolKind = 'font' | 'calc' | 'gen' | 'picker' | 'link' | 'thumb'
+export type ToolKind =
+  | 'font'
+  | 'calc'
+  | 'gen'
+  | 'picker'
+  | 'link'
+  | 'thumb'
+  | 'grid'
+  | 'resize'
+  | 'symbols'
+  | 'goal'
 
 export interface ToolFaq {
   q: string
