@@ -14,7 +14,7 @@ export const STEPS = [
   {
     icon: Send,
     title: 'Complete Your Order',
-    body: 'Pick a crypto payment method, send the exact amount and submit your order. We review it manually once payment is confirmed.',
+    body: 'Pick a crypto payment method and send the exact amount. Your order starts as soon as your payment is verified.',
   },
 ] as const
 
@@ -22,7 +22,10 @@ export function HowItWorksSteps() {
   return (
     <ol className="grid gap-4 md:grid-cols-3">
       {STEPS.map((step, index) => (
-        <li key={step.title} className="relative rounded-3xl border border-border bg-card p-6">
+        <li
+          key={step.title}
+          className="relative rounded-3xl border border-border bg-card p-6 transition-all hover:-translate-y-0.5 hover:border-primary/60"
+        >
           <div className="flex items-center justify-between">
             <span className="inline-flex size-11 items-center justify-center rounded-xl bg-accent text-accent-foreground">
               <step.icon className="size-5" aria-hidden="true" />
