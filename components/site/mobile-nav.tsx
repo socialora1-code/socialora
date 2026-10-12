@@ -1,9 +1,14 @@
 'use client'
 
-import { Menu, X } from 'lucide-react'
+import { ChevronDown, Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+
+export type ToolMenuGroup = {
+  title: string
+  links: { href: string; label: string }[]
+}
 
 const LINKS = [
   { href: '/', label: 'Home' },
@@ -21,7 +26,7 @@ const LINKS = [
   { href: '/about', label: 'About' },
 ]
 
-export function MobileNav() {
+export function MobileNav({ toolGroups = [] }: { toolGroups?: ToolMenuGroup[] }) {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -71,16 +76,54 @@ export function MobileNav() {
             </div>
 
             <nav className="flex flex-1 flex-col px-5 py-4">
-              {LINKS.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="flex min-h-[60px] items-center border-b border-gray-200 text-lg font-semibold text-gray-900"
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {LINKS.map((item) =>
+                item.href === '/tools' && toolGroups.length > 0 ? (
+                  <details key={item.label} className="border-b border-gray-200">
+                    <summary className="flex min-h-[60px] cursor-pointer list-none items-center justify-between text-lg font-semibold text-gray-900 [&::-webkit-details-marker]:hidden">
+                      {item.label}
+                      <ChevronDown className="h-5 w-5 text-gray-500" />
+                    </summary>
+                    <div className="pb-4">
+                      <Link
+                        href="/tools"
+                        onClick={() => setOpen(false)}
+                        className="flex min-h-[44px] items-center text-base font-medium text-blue-600"
+                      >
+                        All free tools
+                      </Link>
+                      {toolGroups.map((group) => (
+                        <div key={group.title} className="mt-3">
+                          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            {group.title}
+                          </p>
+                          <ul>
+                            {group.links.map((link) => (
+                              <li key={link.href}>
+                                <Link
+                                  href={link.href}
+                                  onClick={() => setOpen(false)}
+                                  className="flex min-h-[44px] items-center text-base text-gray-900"
+                                >
+                                  {link.label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+                ) : (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="flex min-h-[60px] items-center border-b border-gray-200 text-lg font-semibold text-gray-900"
+                  >
+                    {item.label}
+                  </Link>
+                ),
+              )}
 
               <Link
                 href="/order"
