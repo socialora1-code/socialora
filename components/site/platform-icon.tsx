@@ -24,10 +24,10 @@ const ICONS: Record<string, ComponentType<{ className?: string }>> = {
 }
 
 const TONES: Record<string, string> = {
-  instagram: 'bg-[oklch(0.95_0.04_10)] text-[oklch(0.5_0.18_10)]',
-  tiktok: 'bg-[oklch(0.94_0.02_200)] text-[oklch(0.4_0.08_210)]',
-  youtube: 'bg-[oklch(0.95_0.04_30)] text-[oklch(0.52_0.19_28)]',
-  x: 'bg-neutral-900 text-white',
+  instagram: 'bg-[oklch(0.3_0.1_350)] text-[oklch(0.86_0.12_350)]',
+  tiktok: 'bg-[oklch(0.3_0.06_200)] text-[oklch(0.86_0.1_200)]',
+  youtube: 'bg-[oklch(0.3_0.1_25)] text-[oklch(0.86_0.13_25)]',
+  x: 'bg-white/10 text-white',
 }
 
 export function PlatformIcon({
