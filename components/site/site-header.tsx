@@ -102,7 +102,7 @@ export function SiteHeader() {
           </Link>
           <Link
             href="/order"
-            className={cn(buttonVariants(), 'hidden h-10 rounded-full px-5 sm:inline-flex')}
+            className={cn(buttonVariants(), 'brand-gradient hidden h-10 rounded-full border-0 px-5 text-white sm:inline-flex')}
           >
             Get Started
           </Link>
