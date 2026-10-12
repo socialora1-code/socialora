@@ -2,8 +2,12 @@ import Link from 'next/link'
 import { Calculator } from '@/components/tools/calculator'
 import { FontGenerator } from '@/components/tools/font-generator'
 import { Generator } from '@/components/tools/generator'
+import { GoalCalculator } from '@/components/tools/goal-calculator'
+import { GridMaker } from '@/components/tools/grid-maker'
 import { LinkGenerator } from '@/components/tools/link-generator'
 import { GiveawayPicker } from '@/components/tools/picker'
+import { PhotoResizer } from '@/components/tools/photo-resizer'
+import { SymbolsPicker } from '@/components/tools/symbols'
 import { ThumbnailDownloader } from '@/components/tools/thumbnail-downloader'
 import type { ToolDef } from '@/lib/tool-data/types'
 import { relatedTools } from '@/lib/tool-list'
@@ -45,6 +49,26 @@ const STEPS: Record<string, readonly string[]> = {
     'Check the sizes that appear.',
     'Open the size you need and save the image.',
   ],
+  grid: [
+    'Choose your photo.',
+    'Pick the grid size and the tile shape.',
+    'Download the tiles and post them one by one, starting with Post 1.',
+  ],
+  resize: [
+    'Choose your photo.',
+    'Pick where you will post it.',
+    'Check the preview and download your photo.',
+  ],
+  symbols: [
+    'Pick a category.',
+    'Tap the symbol you like to copy it.',
+    'Paste it into your bio, caption or name.',
+  ],
+  goal: [
+    'Enter your followers now and your goal.',
+    'Enter how many followers you gain per week.',
+    'Read the estimate and check the chart.',
+  ],
 }
 
 function Widget({ tool }: { tool: ToolDef }) {
@@ -61,6 +85,14 @@ function Widget({ tool }: { tool: ToolDef }) {
       return <LinkGenerator />
     case 'thumb':
       return <ThumbnailDownloader />
+    case 'grid':
+      return <GridMaker />
+    case 'resize':
+      return <PhotoResizer />
+    case 'symbols':
+      return <SymbolsPicker />
+    case 'goal':
+      return <GoalCalculator />
     default:
       return null
   }
