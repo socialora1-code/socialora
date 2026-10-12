@@ -18,7 +18,7 @@ export function PageHero({
     <section className={cn('relative overflow-hidden border-b border-border', className)}>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_80%_at_50%_0%,oklch(0.93_0.05_285/.7),transparent_70%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_80%_at_50%_0%,oklch(0.63_0.22_295/.22),transparent_70%)]"
       />
       <div className="relative mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
         <div className="max-w-2xl">
