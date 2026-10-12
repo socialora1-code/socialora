@@ -57,43 +57,44 @@ export function MobileNav({ toolGroups = [] }: { toolGroups?: ToolMenuGroup[] })
               right: 0,
               bottom: 0,
               zIndex: 99999,
-              background: 'white',
+              background: 'var(--background)',
+              color: 'var(--foreground)',
               display: 'flex',
               flexDirection: 'column',
               overflowY: 'auto',
             }}
           >
-            <div className="flex h-16 shrink-0 items-center justify-between border-b border-gray-200 px-5">
-              <span className="text-xl font-bold text-gray-900">Socialora</span>
+            <div className="flex h-16 shrink-0 items-center justify-between border-b border-border px-5">
+              <span className="text-xl font-bold text-foreground">Socialora</span>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card"
               >
-                <X className="h-5 w-5 text-gray-900" />
+                <X className="h-5 w-5 text-foreground" />
               </button>
             </div>
 
             <nav className="flex flex-1 flex-col px-5 py-4">
               {LINKS.map((item) =>
                 item.href === '/tools' && toolGroups.length > 0 ? (
-                  <details key={item.label} className="border-b border-gray-200">
-                    <summary className="flex min-h-[60px] cursor-pointer list-none items-center justify-between text-lg font-semibold text-gray-900 [&::-webkit-details-marker]:hidden">
+                  <details key={item.label} className="border-b border-border">
+                    <summary className="flex min-h-[60px] cursor-pointer list-none items-center justify-between text-lg font-semibold text-foreground [&::-webkit-details-marker]:hidden">
                       {item.label}
-                      <ChevronDown className="h-5 w-5 text-gray-500" />
+                      <ChevronDown className="h-5 w-5 text-muted-foreground" />
                     </summary>
                     <div className="pb-4">
                       <Link
                         href="/tools"
                         onClick={() => setOpen(false)}
-                        className="flex min-h-[44px] items-center text-base font-medium text-blue-600"
+                        className="flex min-h-[44px] items-center text-base font-medium text-primary"
                       >
                         All free tools
                       </Link>
                       {toolGroups.map((group) => (
                         <div key={group.title} className="mt-3">
-                          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                             {group.title}
                           </p>
                           <ul>
@@ -102,7 +103,7 @@ export function MobileNav({ toolGroups = [] }: { toolGroups?: ToolMenuGroup[] })
                                 <Link
                                   href={link.href}
                                   onClick={() => setOpen(false)}
-                                  className="flex min-h-[44px] items-center text-base text-gray-900"
+                                  className="flex min-h-[44px] items-center text-base text-foreground"
                                 >
                                   {link.label}
                                 </Link>
@@ -118,7 +119,7 @@ export function MobileNav({ toolGroups = [] }: { toolGroups?: ToolMenuGroup[] })
                     key={item.label}
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className="flex min-h-[60px] items-center border-b border-gray-200 text-lg font-semibold text-gray-900"
+                    className="flex min-h-[60px] items-center border-b border-border text-lg font-semibold text-foreground"
                   >
                     {item.label}
                   </Link>
@@ -128,7 +129,7 @@ export function MobileNav({ toolGroups = [] }: { toolGroups?: ToolMenuGroup[] })
               <Link
                 href="/order"
                 onClick={() => setOpen(false)}
-                className="mt-auto flex h-14 items-center justify-center rounded-full bg-blue-600 text-lg font-semibold text-white"
+                className="brand-gradient mt-auto flex h-14 items-center justify-center rounded-full text-lg font-semibold text-white"
               >
                 Get Started
               </Link>
