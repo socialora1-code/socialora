@@ -10,12 +10,15 @@ import { cn } from '@/lib/utils'
 export function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_60%_at_15%_0%,oklch(0.92_0.06_285/.9),transparent_70%),radial-gradient(40%_50%_at_95%_10%,oklch(0.94_0.05_40/.8),transparent_70%)]"
-      />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="animate-drift absolute -top-32 -left-24 size-[28rem] rounded-full bg-primary/30 blur-3xl" />
+        <div
+          className="animate-drift absolute top-0 -right-24 size-[24rem] rounded-full bg-brand-warm/20 blur-3xl"
+          style={{ animationDelay: '-6s' }}
+        />
+      </div>
       <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-12 px-4 pt-14 pb-16 sm:px-6 sm:pt-20 sm:pb-24 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-center">
-        <div className="min-w-0">
+        <div className="animate-fade-up min-w-0">
           <p className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
             <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
             Instagram · TikTok · YouTube · X
@@ -43,7 +46,10 @@ export function Hero() {
           <FreeViewsForm />
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/order" className={cn(buttonVariants(), 'h-12 rounded-full px-7 text-base')}>
+            <Link
+              href="/order"
+              className={cn(buttonVariants(), 'brand-gradient glow h-12 rounded-full border-0 px-7 text-base text-white')}
+            >
               Get Started
               <ArrowRight data-icon="inline-end" />
             </Link>
@@ -56,8 +62,8 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative min-w-0">
-          <div className="rounded-3xl border border-border bg-card/90 p-3 shadow-[0_30px_80px_-40px_oklch(0.3_0.1_280/.45)] backdrop-blur">
+        <div className="animate-fade-up relative min-w-0" style={{ animationDelay: '0.15s' }}>
+          <div className="rounded-3xl border border-border bg-card/80 p-3 shadow-[0_30px_80px_-40px_oklch(0.63_0.22_295/.55)] backdrop-blur">
             <div className="flex items-center justify-between px-3 pt-2 pb-3">
               <p className="text-sm font-medium">Starting prices</p>
               <p className="text-xs text-muted-foreground">USD</p>
@@ -67,7 +73,7 @@ export function Hero() {
                 <li key={platform.id}>
                   <Link
                     href={platform.path}
-                    className="group flex items-center gap-4 rounded-2xl border border-border bg-background p-4 transition-colors hover:border-foreground/25"
+                    className="group flex items-center gap-4 rounded-2xl border border-border bg-background/60 p-4 transition-all hover:-translate-y-0.5 hover:border-primary/60"
                   >
                     <PlatformIcon platform={platform.id} />
                     <div className="min-w-0 flex-1">
