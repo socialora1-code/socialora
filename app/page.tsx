@@ -45,7 +45,7 @@ export default function HomePage() {
               <li key={post.slug}>
                 <Link
                   href={`/blog/${post.slug}`}
-                  className="flex h-full flex-col rounded-3xl border border-border bg-card p-6 transition-colors hover:border-foreground/25"
+                  className="flex h-full flex-col rounded-3xl border border-border bg-card p-6 transition-all hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-[0_20px_50px_-30px_oklch(0.63_0.22_295/.6)]"
                 >
                   <p className="text-xs font-medium text-primary">{post.category}</p>
                   <h3 className="mt-2 leading-snug font-semibold">{post.title}</h3>
