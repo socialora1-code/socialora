@@ -20,7 +20,7 @@ export function PlatformCards() {
             <li key={platform.id}>
               <Link
                 href={platform.path}
-                className="group flex h-full flex-col rounded-3xl border border-border bg-card p-6 transition-all hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-[0_20px_50px_-30px_oklch(0.3_0.1_280/.4)]"
+                className="group flex h-full flex-col rounded-3xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary/60 hover:shadow-[0_24px_60px_-30px_oklch(0.63_0.22_295/.7)]"
               >
                 <PlatformIcon platform={platform.id} size="lg" />
                 <h3 className="mt-6 text-2xl font-semibold tracking-tight">{platform.name}</h3>
