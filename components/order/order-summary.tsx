@@ -6,6 +6,7 @@ export function OrderSummary({
   serviceLabel,
   packageName,
   quantity,
+  hideQuantity = false,
   priceCents,
   paymentLabel,
   children,
@@ -14,6 +15,7 @@ export function OrderSummary({
   serviceLabel: string
   packageName: string
   quantity: number
+  hideQuantity?: boolean
   priceCents: number | null
   paymentLabel: string | null
   children?: ReactNode
@@ -22,7 +24,7 @@ export function OrderSummary({
     ['Platform', platformName],
     ['Service', serviceLabel],
     ['Package', packageName],
-    ['Quantity', formatQuantity(quantity)],
+    ...(hideQuantity ? [] : ([['Quantity', formatQuantity(quantity)]] as [string, string][])),
     ['Price', priceCents !== null ? formatUSD(priceCents) : '—'],
     ['Payment Method', paymentLabel ?? 'Not selected'],
   ]
