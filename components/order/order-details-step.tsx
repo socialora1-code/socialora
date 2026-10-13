@@ -3,6 +3,7 @@
 import { QuantityPicker } from '@/components/services/quantity-picker'
 import { PlatformIcon } from '@/components/site/platform-icon'
 import {
+  getListPriceCents,
   getPriceCents,
   getQuantities,
   isTiered,
@@ -46,12 +47,17 @@ export function OrderDetailsStep({
   onQuantityChange: (q: number) => void
 }) {
   const tiered = isTiered(service)
+  const fixed = Boolean(service.fixed)
+  const listPrice = getListPriceCents(service, quantity)
+  const itemName = fixed
+    ? `${platform.name} ${service.label}`
+    : `${formatQuantity(quantity)} ${platform.name} ${service.label}`
 
   return (
     <div className="flex flex-col gap-7">
       <fieldset className="min-w-0">
         <legend className="text-sm font-medium">Platform</legend>
-        <div className="mt-3 grid grid-cols-3 gap-2">
+        <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-5">
           {PLATFORMS.map((p) => (
             <label key={p.id} className={cn(optionClass, 'flex-col items-center gap-2 px-2 py-3 text-center')}>
               <input
@@ -138,22 +144,31 @@ export function OrderDetailsStep({
         </div>
       )}
 
-      <QuantityPicker
-        name="quantity"
-        legend="Quantity"
-        quantities={getQuantities(service)}
-        value={quantity}
-        onChange={onQuantityChange}
-      />
+      {fixed ? (
+        <div className="rounded-2xl border border-border bg-muted/40 px-4 py-3 text-sm leading-relaxed text-muted-foreground">
+          This is a fixed package, so there is no quantity to choose. {service.summary}
+        </div>
+      ) : (
+        <QuantityPicker
+          name="quantity"
+          legend="Quantity"
+          quantities={getQuantities(service)}
+          value={quantity}
+          onChange={onQuantityChange}
+        />
+      )}
 
       <div className="flex items-end justify-between gap-4 rounded-2xl bg-muted/70 p-4">
         <div className="min-w-0">
-          <p className="text-sm text-muted-foreground">
-            {formatQuantity(quantity)} {platform.name} {service.label}
-          </p>
+          <p className="text-sm text-muted-foreground">{itemName}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">{service.delivery}</p>
         </div>
         <p className="shrink-0 text-2xl font-semibold tracking-tight tabular-nums" aria-live="polite">
+          {listPrice !== null && (
+            <span className="mr-2 text-base font-normal text-muted-foreground line-through">
+              {formatUSD(listPrice)}
+            </span>
+          )}
           {priceCents !== null ? formatUSD(priceCents) : '—'}
         </p>
       </div>
