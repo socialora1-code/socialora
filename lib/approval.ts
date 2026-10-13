@@ -9,6 +9,8 @@ export interface ApprovalPayload {
   name: string
   amount: string
   exp: number
+  // Which supplier panel gets the order. Missing means smmwiz (older links).
+  panel?: string
   // Optional referral info (only for manual wallet orders)
   rc?: string
   rm?: string
@@ -69,7 +71,22 @@ export function profileToLink(platformId: string, profile: string): string {
       return `https://tiktok.com/@${user}`
     case 'youtube':
       return `https://youtube.com/@${user}`
+    case 'telegram':
+      return `https://t.me/${user}`
     default:
       return profile
+  }
+}
+
+/** Some services only want the plain username, for example "maya" and not a link. */
+export function profileToUsername(profile: string): string {
+  const value = profile.trim()
+  if (value.startsWith('@')) return value.slice(1)
+  try {
+    const url = new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`)
+    const first = url.pathname.split('/').filter(Boolean)[0] ?? ''
+    return first.replace(/^@/, '')
+  } catch {
+    return value.replace(/^@/, '')
   }
 }
