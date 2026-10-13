@@ -1,11 +1,12 @@
 'use client'
 
-import { ArrowRight, Clock, RefreshCw } from 'lucide-react'
+import { ArrowRight, Check, Clock, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { QuantityPicker } from '@/components/services/quantity-picker'
 import { buttonVariants } from '@/components/ui/button'
 import {
+  getListPriceCents,
   getPlatform,
   getPriceCents,
   getQuantities,
@@ -91,7 +92,13 @@ export function FlatServiceSection({
   const service = getService(platform, serviceId)!
   const [quantity, setQuantity] = useState(service.defaultQuantity)
   const price = getPriceCents(service, null, quantity) ?? 0
+  const listPrice = getListPriceCents(service, quantity)
+  const savePercent = listPrice ? Math.round((1 - price / listPrice) * 100) : 0
   const country = COUNTRY_BY_SERVICE[service.id]
+  const fixed = Boolean(service.fixed)
+  const itemName = fixed
+    ? `${platform.name} ${service.label}`
+    : `${formatQuantity(quantity)} ${platform.name} ${service.label}`
 
   return (
     <div className="overflow-hidden rounded-3xl border border-border bg-card">
@@ -104,14 +111,16 @@ export function FlatServiceSection({
 
       <div className="grid md:grid-cols-[1.3fr_1fr]">
         <div className="min-w-0 p-5 sm:p-6">
-          <QuantityPicker
-            name={`${platform.id}-${service.id}-quantity`}
-            legend={`How many ${service.unit}?`}
-            quantities={getQuantities(service)}
-            value={quantity}
-            onChange={setQuantity}
-          />
-          <dl className="mt-6 flex flex-col gap-3 text-sm">
+          {!fixed && (
+            <QuantityPicker
+              name={`${platform.id}-${service.id}-quantity`}
+              legend={`How many ${service.unit}?`}
+              quantities={getQuantities(service)}
+              value={quantity}
+              onChange={setQuantity}
+            />
+          )}
+          <dl className={cn('flex flex-col gap-3 text-sm', !fixed && 'mt-6')}>
             <div className="flex gap-2.5">
               <dt className="sr-only">Estimated delivery</dt>
               <Clock className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
@@ -125,6 +134,16 @@ export function FlatServiceSection({
               </div>
             )}
           </dl>
+          {service.notes && service.notes.length > 0 && (
+            <ul className="mt-4 flex flex-col gap-2 border-t border-border pt-4 text-sm">
+              {service.notes.map((note) => (
+                <li key={note} className="flex gap-2.5">
+                  <Check className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
+                  <span className="leading-relaxed text-muted-foreground">{note}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="flex flex-col justify-between gap-6 border-t border-border bg-muted/50 p-5 sm:p-6 md:border-t-0 md:border-l">
@@ -132,18 +151,24 @@ export function FlatServiceSection({
             <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
               {STANDARD_PACKAGE_NAME} package
             </p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {formatQuantity(quantity)} {platform.name} {service.label}
-            </p>
+            <p className="mt-2 text-sm text-muted-foreground">{itemName}</p>
             <p className="mt-1 text-4xl font-semibold tracking-tight tabular-nums" aria-live="polite">
+              {listPrice !== null && (
+                <span className="mr-2 text-xl font-normal text-muted-foreground line-through">
+                  {formatUSD(listPrice)}
+                </span>
+              )}
               {formatUSD(price)}
               <span className="ml-1 text-sm font-normal text-muted-foreground">USD</span>
             </p>
+            {listPrice !== null && (
+              <p className="mt-1 text-xs font-medium text-success">Volume price: save {savePercent}%</p>
+            )}
           </div>
           <Link
             href={buildOrderHref({ platform: platform.id, service: service.id, quantity })}
             className={cn(buttonVariants(), 'h-12 w-full rounded-full text-base')}
-            aria-label={`Order ${formatQuantity(quantity)} ${platform.name} ${service.label} for ${formatUSD(price)}`}
+            aria-label={`Order ${itemName} for ${formatUSD(price)}`}
           >
             Order Now
             <ArrowRight data-icon="inline-end" />
