@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: NOT_FOUND }, { status: 404 })
   }
 
-  const panel = await getPanelStatus(record.panelOrder)
+  const panel = await getPanelStatus(record.panelOrder, record.panel)
   if (!panel.ok) {
     return NextResponse.json(
       { ok: false, error: 'Status is not available right now. Please try again in a few minutes.' },
