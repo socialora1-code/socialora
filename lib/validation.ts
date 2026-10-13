@@ -19,7 +19,10 @@ export function isValidEmail(value: string): boolean {
 
 const USERNAME_PATTERN = /^@?[A-Za-z0-9._-]{1,60}$/
 const LOOKS_LIKE_URL =
-  /^(https?:\/\/|www\.)|\/|(instagram|instagr|tiktok|youtube|youtu|twitter)\.(com|am|be)|(^|[/.])x\.com/i
+  /^(https?:\/\/|www\.)|\/|(instagram|instagr|tiktok|youtube|youtu|twitter)\.(com|am|be)|(^|[/.])x\.com|(^|[/.])(t|telegram)\.me/i
+
+/** Path words that are not usernames (post, reel and story links). */
+const NOT_USERNAMES = new Set(['p', 'reel', 'reels', 'stories', 'explore', 'tv', 'accounts'])
 
 /**
  * Accepts either a full public URL on the platform's domain or a plain
@@ -48,6 +51,19 @@ export function normalizeProfile(platform: Platform, raw: string): string | null
 
   url.protocol = 'https:'
   return url.toString()
+}
+
+/** For username-only services: turns a normalized profile into "@username". */
+function usernameFromProfile(profile: string): string | null {
+  if (profile.startsWith('@')) return USERNAME_PATTERN.test(profile) ? profile : null
+  try {
+    const first = new URL(profile).pathname.split('/').filter(Boolean)[0] ?? ''
+    const name = first.replace(/^@/, '')
+    if (!name || NOT_USERNAMES.has(name.toLowerCase())) return null
+    return USERNAME_PATTERN.test(name) ? `@${name}` : null
+  } catch {
+    return null
+  }
 }
 
 export interface ValidatedOrder {
@@ -114,9 +130,12 @@ export function validateOrder(input: unknown): Result<ValidatedOrder> {
     if (priceCents === null) errors.quantity = 'This quantity is not available for the selected service.'
   }
 
-  const profile = normalizeProfile(platform, str(body.profile))
+  let profile = normalizeProfile(platform, str(body.profile))
+  if (profile && service.usernameOnly) profile = usernameFromProfile(profile)
   if (!profile) {
-    errors.profile = `Please enter a valid public ${platform.name} URL or username.`
+    errors.profile = service.usernameOnly
+      ? `Please enter a valid public ${platform.name} username.`
+      : `Please enter a valid public ${platform.name} URL or username.`
   }
 
   const email = str(body.email).trim().toLowerCase()
