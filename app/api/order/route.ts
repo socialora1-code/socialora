@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
-import { buildApprovalUrl, createApprovalToken, profileToLink } from '@/lib/approval'
+import { buildApprovalUrl, createApprovalToken, profileToLink, profileToUsername } from '@/lib/approval'
 import { STANDARD_PACKAGE_NAME } from '@/lib/catalog'
 import { getInboxAddress, renderTableEmail, sendEmail } from '@/lib/email'
 import { formatQuantity, formatUSD } from '@/lib/format'
+import { serviceExtras } from '@/lib/panels'
 import { createInvoice, saveOrder } from '@/lib/pay-store'
 import { COMMISSION_PERCENT, normalizeRefCode } from '@/lib/referral'
 import { SITE } from '@/lib/site'
@@ -90,7 +91,11 @@ export async function POST(request: Request) {
   const packageName = order.tier?.name ?? STANDARD_PACKAGE_NAME
   const serviceName = `${order.platform.name} ${order.service.label}`
   const panelServiceId = order.service.panelServiceId
-  const link = profileToLink(order.platform.id, order.profile)
+  const extras = serviceExtras(order.service)
+  const panel = extras.panel ?? 'smmwiz'
+  const link = extras.usernameOnly
+    ? profileToUsername(order.profile)
+    : profileToLink(order.platform.id, order.profile)
 
   // Automatic crypto payment (NOWPayments). Referral mails are sent later, when the payment is confirmed.
   if (order.paymentMethod.id === 'nowpayments') {
@@ -105,6 +110,7 @@ export async function POST(request: Request) {
         packageName,
         amount,
         priceCents: order.priceCents,
+        panel,
         referral: referrer ? { code: referrer.code, email: referrer.email, self: referrer.self } : null,
       })
       const invoiceUrl = await createInvoice({
@@ -143,6 +149,7 @@ export async function POST(request: Request) {
         email: order.email,
         name: serviceName,
         amount,
+        panel,
         exp: Date.now() + APPROVAL_VALID_MS,
         ...(referrer
           ? { rc: referrer.code, rm: referrer.email, rs: referrer.self, cents: order.priceCents }
