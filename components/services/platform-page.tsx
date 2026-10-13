@@ -1,6 +1,6 @@
-import { KeyRound, Mail, ShieldCheck } from 'lucide-react'
-import Link from 'next/link'
+import { KeyRound, Mail, ShieldCheck, TriangleAlert } from 'lucide-react'
 import { FlatServiceSection } from '@/components/services/flat-service-section'
+import { ServiceAccordion } from '@/components/services/service-accordion'
 import { TieredServiceSection } from '@/components/services/tiered-service-section'
 import { ComplianceNotice } from '@/components/site/compliance-notice'
 import { PlatformIcon } from '@/components/site/platform-icon'
@@ -12,6 +12,7 @@ const PAGE_HEADINGS: Partial<Record<PlatformId, string>> = {
   tiktok: 'Buy TikTok Followers',
   youtube: 'Buy YouTube Views, Watch Time & Subscribers',
   x: 'Buy X (Twitter) Followers & Views',
+  telegram: 'Buy Telegram Members & Channel Subscribers',
 }
 
 export function PlatformPage({ platformId }: { platformId: PlatformId }) {
@@ -20,6 +21,13 @@ export function PlatformPage({ platformId }: { platformId: PlatformId }) {
 
   return (
     <>
+      <div className="border-b border-amber-500/30 bg-amber-500/10 px-4 py-2.5 text-center text-sm font-medium text-amber-700 dark:text-amber-200">
+        <span className="inline-flex items-center gap-2">
+          <TriangleAlert className="size-4 shrink-0" aria-hidden="true" />
+          Please read the service description before placing your order.
+        </span>
+      </div>
+
       <section className="relative overflow-hidden border-b border-border">
         <div
           aria-hidden="true"
@@ -33,41 +41,27 @@ export function PlatformPage({ platformId }: { platformId: PlatformId }) {
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted-foreground text-pretty">
             {platform.description}
           </p>
-
-          <nav aria-label={`${platform.name} services`} className="mt-8">
-            <ul className="flex flex-wrap gap-2">
-              {platform.services.map((service) => (
-                <li key={service.id}>
-                  <Link
-                    href={`#${service.id}`}
-                    className="inline-flex h-11 items-center gap-2 rounded-full border border-border bg-card px-4 text-sm font-medium transition-colors hover:border-primary/60"
-                  >
-                    {service.label}
-                    <span className="text-muted-foreground">from {formatUSD(getStartingPriceCents(service))}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
         </div>
       </section>
 
-      <div className="mx-auto flex max-w-6xl flex-col gap-20 px-4 py-14 sm:px-6 sm:py-20">
-        {platform.services.map((service) => (
-          <section key={service.id} id={service.id} aria-labelledby={`${service.id}-title`} className="scroll-mt-24">
-            <div className="mb-6 max-w-2xl">
-              <h2 id={`${service.id}-title`} className="text-3xl font-semibold tracking-tight">
-                {platform.name} {service.label}
-              </h2>
-              <p className="mt-2 leading-relaxed text-muted-foreground">{service.summary}</p>
-            </div>
-            {isTiered(service) ? (
-              <TieredServiceSection platformId={platform.id} serviceId={service.id} />
-            ) : (
-              <FlatServiceSection platformId={platform.id} serviceId={service.id} />
-            )}
-          </section>
-        ))}
+      <div className="mx-auto flex max-w-6xl flex-col gap-14 px-4 py-14 sm:px-6 sm:py-20">
+        <div className="flex flex-col gap-3">
+          {platform.services.map((service) => (
+            <ServiceAccordion
+              key={service.id}
+              id={service.id}
+              title={`${platform.name} ${service.label}`}
+              summary={service.summary}
+              fromPrice={formatUSD(getStartingPriceCents(service))}
+            >
+              {isTiered(service) ? (
+                <TieredServiceSection platformId={platform.id} serviceId={service.id} />
+              ) : (
+                <FlatServiceSection platformId={platform.id} serviceId={service.id} />
+              )}
+            </ServiceAccordion>
+          ))}
+        </div>
 
         <section aria-labelledby="ordering-notes" className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
           <div>
