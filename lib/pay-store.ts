@@ -1,8 +1,10 @@
 import { createHmac, timingSafeEqual } from 'crypto'
+import type { PanelId } from '@/lib/panels'
 
 export interface PendingOrder {
   reference: string
   panelServiceId: number | null
+  panel?: PanelId
   link: string
   quantity: number
   email: string
