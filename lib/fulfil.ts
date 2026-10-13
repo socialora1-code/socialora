@@ -1,9 +1,8 @@
 import { getInboxAddress, renderTableEmail, sendEmail } from '@/lib/email'
 import { formatQuantity, formatUSD } from '@/lib/format'
+import { getPanelKey, PANELS, type PanelId } from '@/lib/panels'
 import { COMMISSION_PERCENT, MIN_PAYOUT_USD } from '@/lib/referral'
 import { SITE } from '@/lib/site'
-
-const PANEL_API_URL = 'https://smmwiz.com/api/v2'
 
 export type ReferralInfo = { code: string; email: string; self: boolean }
 
@@ -13,11 +12,13 @@ export async function sendOrderToPanel(params: {
   service: number
   link: string
   quantity: number
+  panel?: PanelId
 }): Promise<PanelResult> {
-  const apiKey = process.env.SMMWIZ_API_KEY
-  if (!apiKey) return { ok: false, error: 'SMMWIZ_API_KEY is missing' }
+  const panel = params.panel ?? 'smmwiz'
+  const apiKey = getPanelKey(panel)
+  if (!apiKey) return { ok: false, error: `The API key for ${panel} is missing` }
   try {
-    const response = await fetch(PANEL_API_URL, {
+    const response = await fetch(PANELS[panel].url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
