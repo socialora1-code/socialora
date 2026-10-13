@@ -1,6 +1,7 @@
 import { verifyApprovalToken } from '@/lib/approval'
 import { escapeHtml } from '@/lib/email'
 import { sendInProgressEmail, sendOrderToPanel, sendReferralMails } from '@/lib/fulfil'
+import { getPanelKey, normalizePanel } from '@/lib/panels'
 import { claimPanel, getPanelOrder, releasePanel, setPanelOrder } from '@/lib/pay-store'
 import { saveTrack } from '@/lib/track'
 
@@ -24,8 +25,14 @@ export async function POST(request: Request) {
     return page('Link not valid', 'This approval link is invalid or has expired.', 400)
   }
 
-  if (!process.env.SMMWIZ_API_KEY) {
-    return page('Panel not configured', 'SMMWIZ_API_KEY is missing in the server settings.', 503)
+  const panel = normalizePanel(payload.panel)
+
+  if (!getPanelKey(panel)) {
+    return page(
+      'Panel not configured',
+      `The API key for the "${panel}" panel is missing in the server settings.`,
+      503,
+    )
   }
 
   let claimed = false
@@ -53,6 +60,7 @@ export async function POST(request: Request) {
     service: payload.service,
     link: payload.link,
     quantity: payload.quantity,
+    panel,
   })
 
   if (!result.ok) {
@@ -69,6 +77,7 @@ export async function POST(request: Request) {
     serviceName: payload.name,
     quantity: payload.quantity,
     link: payload.link,
+    panel,
   })
 
   const emailResult = await sendInProgressEmail({
