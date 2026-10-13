@@ -17,11 +17,21 @@ export interface SubmittedOrder {
   serviceTitle: string
   packageName: string
   quantity: number
+  fixed?: boolean
   paymentMethod: PaymentMethod
   transactionId: string
 }
 
 export function OrderSubmitted({ order }: { order: SubmittedOrder }) {
+  const rows: [string, string][] = [
+    ['Service', order.serviceTitle],
+    ['Package', order.packageName],
+    ...(order.fixed ? [] : ([['Quantity', formatQuantity(order.quantity)]] as [string, string][])),
+    ['Payment method', order.paymentMethod.label],
+    ['Transaction ID / hash', order.transactionId || 'Not provided'],
+    ['Total', `${formatUSD(order.amountCents)} USD`],
+  ]
+
   return (
     <div className="mx-auto max-w-2xl">
       <div className="rounded-3xl border border-border bg-card p-6 sm:p-8">
@@ -50,14 +60,7 @@ export function OrderSubmitted({ order }: { order: SubmittedOrder }) {
         </div>
 
         <dl className="mt-6 divide-y divide-border text-sm">
-          {[
-            ['Service', order.serviceTitle],
-            ['Package', order.packageName],
-            ['Quantity', formatQuantity(order.quantity)],
-            ['Payment method', order.paymentMethod.label],
-            ['Transaction ID / hash', order.transactionId || 'Not provided'],
-            ['Total', `${formatUSD(order.amountCents)} USD`],
-          ].map(([label, value]) => (
+          {rows.map(([label, value]) => (
             <div key={label} className="flex items-start justify-between gap-4 py-2.5">
               <dt className="text-muted-foreground">{label}</dt>
               <dd className="min-w-0 text-right font-medium break-all">{value}</dd>
