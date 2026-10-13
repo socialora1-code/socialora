@@ -64,6 +64,7 @@ export async function POST(request) {
         service: order.panelServiceId,
         link: order.link,
         quantity: order.quantity,
+        panel: order.panel,
       })
       if (result.ok) {
         panelOrder = result.order
@@ -82,6 +83,7 @@ export async function POST(request) {
         serviceName: order.serviceName,
         quantity: order.quantity,
         link: order.link,
+        panel: order.panel,
       })
 
       // Order is on its way. Mail problems below must never cause a second panel order.
@@ -138,6 +140,7 @@ export async function POST(request) {
           email: order.email,
           name: order.serviceName,
           amount: order.amount,
+          panel: order.panel,
           exp: Date.now() + APPROVAL_VALID_MS,
           ...(order.referral
             ? {
