@@ -1,5 +1,6 @@
+import { getPanelKey, PANELS, type PanelId } from '@/lib/panels'
+
 const ONE_YEAR = 365 * 24 * 60 * 60
-const PANEL_API_URL = 'https://smmwiz.com/api/v2'
 
 export interface TrackRecord {
   reference: string
@@ -8,6 +9,7 @@ export interface TrackRecord {
   serviceName: string
   quantity: number
   link: string
+  panel?: PanelId
 }
 
 async function redis(command: (string | number)[]) {
@@ -46,11 +48,11 @@ export async function getTrack(reference: string): Promise<TrackRecord | null> {
 
 export type PanelStatus = { ok: true; status: string; remains: number | null } | { ok: false }
 
-export async function getPanelStatus(panelOrder: string): Promise<PanelStatus> {
-  const apiKey = process.env.SMMWIZ_API_KEY
+export async function getPanelStatus(panelOrder: string, panel: PanelId = 'smmwiz'): Promise<PanelStatus> {
+  const apiKey = getPanelKey(panel)
   if (!apiKey) return { ok: false }
   try {
-    const res = await fetch(PANEL_API_URL, {
+    const res = await fetch(PANELS[panel].url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ key: apiKey, action: 'status', order: panelOrder }),
