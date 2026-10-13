@@ -75,6 +75,8 @@ export function OrderForm({ initial }: { initial: InitialSelection }) {
   const priceCents = getPriceCents(service, activeTier?.id ?? null, quantity)
   const paymentMethod = getPaymentMethod(paymentMethodId) ?? null
   const packageName = activeTier?.name ?? STANDARD_PACKAGE_NAME
+  const usernameOnly = Boolean(service.usernameOnly)
+  const fixed = Boolean(service.fixed)
 
   function clearError(key: keyof FieldErrors) {
     if (fieldErrors[key]) setFieldErrors((prev) => ({ ...prev, [key]: undefined }))
@@ -101,7 +103,9 @@ export function OrderForm({ initial }: { initial: InitialSelection }) {
   function validateClient(): FieldErrors {
     const errors: FieldErrors = {}
     if (!normalizeProfile(platform, profile)) {
-      errors.profile = `Please enter a valid public ${platform.name} URL or username.`
+      errors.profile = usernameOnly
+        ? `Please enter a valid public ${platform.name} username.`
+        : `Please enter a valid public ${platform.name} URL or username.`
     }
     if (!isValidEmail(email.trim())) errors.email = 'Please enter a valid email address.'
     if (!paymentMethod) {
@@ -211,6 +215,7 @@ export function OrderForm({ initial }: { initial: InitialSelection }) {
         serviceTitle: getServiceTitle(platform, service),
         packageName,
         quantity,
+        fixed,
         paymentMethod: confirmedMethod,
         transactionId: transactionId.trim(),
       })
@@ -262,17 +267,21 @@ export function OrderForm({ initial }: { initial: InitialSelection }) {
           <StepCard step={2} title="Social Profile">
             <FormField
               id="profile"
-              label={platform.profileFieldLabel}
-              helper="Enter the public profile or post URL you want to grow."
-              placeholder={platform.profilePlaceholder}
+              label={usernameOnly ? `${platform.name} Username` : platform.profileFieldLabel}
+              helper={
+                usernameOnly
+                  ? 'Enter the public username you want to grow. No link needed.'
+                  : 'Enter the public profile or post URL you want to grow.'
+              }
+              placeholder={usernameOnly ? '@yourusername' : platform.profilePlaceholder}
               value={profile}
               onChange={(e) => {
                 setProfile(e.target.value)
                 clearError('profile')
               }}
               error={fieldErrors.profile}
-              inputMode="url"
-              autoComplete="url"
+              inputMode={usernameOnly ? 'text' : 'url'}
+              autoComplete={usernameOnly ? 'off' : 'url'}
               autoCapitalize="off"
               autoCorrect="off"
               spellCheck={false}
@@ -332,6 +341,7 @@ export function OrderForm({ initial }: { initial: InitialSelection }) {
             serviceLabel={service.label}
             packageName={packageName}
             quantity={quantity}
+            hideQuantity={fixed}
             priceCents={priceCents}
             paymentLabel={paymentMethod?.label ?? null}
           >
@@ -436,4 +446,4 @@ export function OrderForm({ initial }: { initial: InitialSelection }) {
       </div>
     </form>
   )
-        }
+}
