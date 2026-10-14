@@ -11,7 +11,6 @@
 export type PlatformId = 'instagram' | 'tiktok' | 'youtube' | 'x' | 'telegram'
 export type ServiceId =
   | 'followers'
-  | 'likes'
   | 'views'
   | 'subscribers'
   | 'watchtime'
@@ -23,7 +22,6 @@ export type ServiceId =
   | 'followers-es-male'
   | 'followers-ar'
   | 'followers-br'
-  | 'followers-real'
   | 'followers-hq'
   | 'followers-low-drop'
   | 'followers-mid'
@@ -151,10 +149,8 @@ const PRICE_X_FOLLOWERS_TOP = 9000
 const PRICE_X_VIEWS = 6
 const PRICE_INSTAGRAM_US_FOLLOWERS = 1800
 const PRICE_INSTAGRAM_COUNTRY_FOLLOWERS = 4800
-const PRICE_INSTAGRAM_REAL_FOLLOWERS = 1690
 const PRICE_INSTAGRAM_MID_FOLLOWERS = 1000
 const PRICE_INSTAGRAM_365_FOLLOWERS = 2000
-const PRICE_INSTAGRAM_LIKES = 300
 const PRICE_TIKTOK_FOLLOWERS_HQ = 2200
 const PRICE_TIKTOK_FOLLOWERS_LOW_DROP = 2600
 const PRICE_TIKTOK_FOLLOWERS_STD = 2400
@@ -210,10 +206,8 @@ function tableOptions(per1000Cents: number, rows: readonly (readonly [number, nu
 const FOLLOWER_QUANTITIES = [250, 500, 1000, 2000, 5000, 10000]
 const US_FOLLOWER_QUANTITIES = [250, 500, 1000, 2000, 5000, 10000]
 const INSTAGRAM_QUANTITIES = [250, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000]
-const INSTAGRAM_REAL_QUANTITIES = [250, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000, 500000]
 const INSTAGRAM_MID_QUANTITIES = [500, 1000, 2000, 5000, 10000, 20000]
-const INSTAGRAM_365_QUANTITIES = [500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000, 500000]
-const INSTAGRAM_LIKE_QUANTITIES = [1000, 2000, 5000, 10000, 20000, 50000]
+const INSTAGRAM_365_QUANTITIES = [500, 1000, 2000, 5000, 10000, 20000, 50000, 100000]
 const TIKTOK_STD_QUANTITIES = [250, 500, 1000, 2000]
 const X_VIEW_QUANTITIES = [100000, 200000, 500000, 1000000, 5000000, 10000000]
 const YOUTUBE_VIEW_QUANTITIES = [1000, 2000, 5000, 10000, 20000, 50000]
@@ -289,9 +283,9 @@ export const PLATFORMS: readonly Platform[] = [
     id: 'instagram',
     name: 'Instagram',
     path: '/instagram',
-    tagline: 'Followers by country, plus likes',
+    tagline: 'Followers by country, plus auto likes',
     description:
-      'Grow your Instagram profile with high-quality followers, followers from the country you choose, and likes for your posts.',
+      'Grow your Instagram profile with followers, followers from the country you choose, and automatic likes for your new posts.',
     profileFieldLabel: 'Instagram Profile URL',
     profilePlaceholder: 'https://instagram.com/yourprofile',
     allowedHosts: ['instagram.com', 'instagr.am'],
@@ -322,7 +316,7 @@ export const PLATFORMS: readonly Platform[] = [
         unit: 'followers',
         target: 'profile',
         summary:
-          'Followers for your Instagram profile at up to 50,000 per day, backed by a 365-day refill guarantee. Large orders welcome.',
+          'Followers for your Instagram profile at up to 50,000 per day, backed by a 365-day refill guarantee.',
         delivery: DELIVERY_NOTE,
         refill: FOLLOWER_REFILL_365_NOTE,
         defaultQuantity: 1000,
@@ -333,22 +327,9 @@ export const PLATFORMS: readonly Platform[] = [
         notes: [
           'Starts in 0-2 hours',
           'Speed: up to 50,000 per day',
-          'Order range: 500 - 500,000',
+          'Order range: 500 - 100,000',
           'Needs: public profile username',
         ],
-      },
-      {
-        id: 'followers-real',
-        label: 'Followers · Real Quality',
-        unit: 'followers',
-        target: 'profile',
-        summary:
-          'High-quality followers for your Instagram profile, from accounts with profile photos, posts and followers of their own, backed by a 365-day refill guarantee. Orders up to 500,000.',
-        delivery: DELIVERY_NOTE,
-        refill: FOLLOWER_REFILL_365_NOTE,
-        defaultQuantity: 1000,
-        pricing: { kind: 'flat', options: flatOptions(INSTAGRAM_REAL_QUANTITIES, PRICE_INSTAGRAM_REAL_FOLLOWERS) },
-        panelServiceId: 21989,
       },
       {
         id: 'followers-us',
@@ -421,19 +402,6 @@ export const PLATFORMS: readonly Platform[] = [
         defaultQuantity: 1000,
         pricing: { kind: 'flat', options: flatOptions(INSTAGRAM_QUANTITIES, PRICE_INSTAGRAM_COUNTRY_FOLLOWERS) },
         panelServiceId: 14553,
-      },
-      {
-        id: 'likes',
-        label: 'Likes',
-        unit: 'likes',
-        target: 'post',
-        summary:
-          'Standard-quality likes for a public Instagram post or reel at a low price, with up to 50% extra likes added as a bonus. Minimum order 1,000.',
-        delivery: DELIVERY_NOTE,
-        refill: null,
-        defaultQuantity: 1000,
-        pricing: { kind: 'flat', options: flatOptions(INSTAGRAM_LIKE_QUANTITIES, PRICE_INSTAGRAM_LIKES) },
-        panelServiceId: 19826,
       },
       ...AUTO_LIKE_PACKAGES.map(([panelServiceId, likes, priceCents]) =>
         autoLikesService(panelServiceId, likes, priceCents),
@@ -937,4 +905,4 @@ export function getStartingPriceCents(service: Service): number {
 
 export function getServiceTitle(platform: Platform, service: Service): string {
   return `${platform.name} ${service.label}`
-  }
+}
