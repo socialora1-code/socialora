@@ -55,6 +55,21 @@ const ZONES: Zone[] = [
   },
 ]
 
+function drawBase(ctx: CanvasRenderingContext2D, img: HTMLImageElement | null) {
+  if (img) {
+    const scale = Math.max(W / img.naturalWidth, H / img.naturalHeight)
+    const dw = img.naturalWidth * scale
+    const dh = img.naturalHeight * scale
+    ctx.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh)
+  } else {
+    const g = ctx.createLinearGradient(0, 0, 0, H)
+    g.addColorStop(0, '#1f2937')
+    g.addColorStop(1, '#111827')
+    ctx.fillStyle = g
+    ctx.fillRect(0, 0, W, H)
+  }
+}
+
 function drawGuide(ctx: CanvasRenderingContext2D, zone: Zone) {
   const safeH = H - zone.top - zone.bottom
   ctx.fillStyle = 'rgba(239, 68, 68, 0.42)'
@@ -125,21 +140,16 @@ export function SafeZone() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
     const z = ZONES.find((x) => x.id === zoneId) ?? ZONES[0]
-
-    if (img) {
-      const scale = Math.max(W / img.naturalWidth, H / img.naturalHeight)
-      const dw = img.naturalWidth * scale
-      const dh = img.naturalHeight * scale
-      ctx.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh)
-    } else {
-      const g = ctx.createLinearGradient(0, 0, 0, H)
-      g.addColorStop(0, '#1f2937')
-      g.addColorStop(1, '#111827')
-      ctx.fillStyle = g
-      ctx.fillRect(0, 0, W, H)
-    }
+    drawBase(ctx, img)
     if (showGuide) drawGuide(ctx, z)
   }, [img, zoneId, showGuide])
+
+  function save(canvas: HTMLCanvasElement, type: string, name: string) {
+    const a = document.createElement('a')
+    a.href = canvas.toDataURL(type, 0.92)
+    a.download = name
+    a.click()
+  }
 
   function downloadGuide() {
     const off = document.createElement('canvas')
@@ -148,10 +158,18 @@ export function SafeZone() {
     const ctx = off.getContext('2d')
     if (!ctx) return
     drawGuide(ctx, zone)
-    const a = document.createElement('a')
-    a.href = off.toDataURL('image/png')
-    a.download = `${zone.id}-safe-zone-guide-1080x1920.png`
-    a.click()
+    save(off, 'image/png', `${zone.id}-safe-zone-guide-1080x1920.png`)
+  }
+
+  function downloadWithPhoto() {
+    const off = document.createElement('canvas')
+    off.width = W
+    off.height = H
+    const ctx = off.getContext('2d')
+    if (!ctx) return
+    drawBase(ctx, img)
+    drawGuide(ctx, zone)
+    save(off, 'image/jpeg', `${zone.id}-photo-with-safe-zone-1080x1920.jpg`)
   }
 
   return (
@@ -203,7 +221,7 @@ export function SafeZone() {
           Red areas are where buttons and text usually cover your video. Keep your text and faces inside the green box.
           The areas are approximate.
         </p>
-        <div className="mt-4 flex justify-center">
+        <div className="mt-4 flex flex-wrap justify-center gap-3">
           <button
             type="button"
             onClick={downloadGuide}
@@ -211,7 +229,19 @@ export function SafeZone() {
           >
             Download guide overlay (PNG)
           </button>
+          {img && (
+            <button
+              type="button"
+              onClick={downloadWithPhoto}
+              className="inline-flex h-11 items-center justify-center rounded-full border border-border bg-background px-6 text-sm font-medium"
+            >
+              Download photo with guide
+            </button>
+          )}
         </div>
+        <p className="mt-3 text-center text-xs text-muted-foreground">
+          The overlay is transparent. Place it over your video in your editor, then remove it before you export.
+        </p>
       </div>
     </div>
   )
