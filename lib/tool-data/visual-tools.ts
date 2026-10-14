@@ -134,4 +134,105 @@ export const VISUAL_TOOLS: readonly ToolDef[] = [
       label: 'See Instagram services',
     },
   },
+  {
+    slug: 'instagram-no-crop-blur-background',
+    kind: 'fit',
+    group: 'Visual Tools',
+    platform: 'Instagram',
+    name: 'Instagram No Crop Photo Maker',
+    title: 'Instagram No Crop Tool - Fit Any Photo with a Blur Background',
+    h1: 'Instagram No Crop Photo Maker (Blur Background)',
+    description:
+      'Free tool to fit any photo or screenshot into an Instagram post, Story or Reel without cropping. The empty space is filled with a blurred copy of your photo.',
+    intro:
+      'Post your whole photo without cutting anything off. Choose your photo and where you will post it, and the empty space is filled with a soft blurred background. Your photo stays on your device.',
+    tips: [
+      'Use the 4:5 size for feed posts. It takes up more of the screen than a square.',
+      'For Stories and Reels, try all three blur strengths and keep the one that matches your photo best.',
+      'Start with a large, sharp photo. Your photo is placed at full quality, only the background is blurred.',
+    ],
+    faqs: [
+      {
+        q: 'Is my photo uploaded anywhere?',
+        a: 'No. Everything happens in your browser and nothing is sent to a server.',
+      },
+      {
+        q: 'Why is there a blurred background?',
+        a: 'When your photo does not match the shape of a post or Story, there is empty space. The tool fills it with a blurred copy of the same photo so nothing has to be cropped.',
+      },
+      {
+        q: 'Which sizes can I make?',
+        a: 'Instagram post 4:5, Story, Reels and TikTok 9:16, square 1:1 and YouTube thumbnail 16:9.',
+      },
+    ],
+  },
+  {
+    slug: 'reels-tiktok-safe-zone-guide',
+    kind: 'safezone',
+    group: 'Visual Tools',
+    platform: 'Instagram',
+    name: 'Reels and TikTok Safe Zone Guide',
+    title: 'Reels, TikTok and Shorts Safe Zone Guide - Free Overlay',
+    h1: 'Reels, TikTok and YouTube Shorts Safe Zone Guide',
+    description:
+      'Free safe zone guide for Instagram Reels, TikTok and YouTube Shorts. See where buttons and captions cover your video and download a transparent overlay for your editor.',
+    intro:
+      'Keep your text and faces out of the areas the app covers with buttons and captions. Pick a platform, add a frame from your video if you like, and download a transparent guide to place over your video in any editor.',
+    tips: [
+      'Put titles, subtitles and calls to action inside the green box.',
+      'Download the overlay, place it on top of your video in your editor, then remove it before you export.',
+      'Apps change their layouts from time to time, so check your video in the app preview before you post.',
+    ],
+    faqs: [
+      {
+        q: 'Are the safe zones exact?',
+        a: 'No. They are approximate guides. Each app can change its layout, and phones have different screen shapes, so leave a little extra space.',
+      },
+      {
+        q: 'Is my image uploaded anywhere?',
+        a: 'No. The guide is drawn in your browser and nothing is sent to a server.',
+      },
+      {
+        q: 'How do I use the overlay?',
+        a: 'Download the transparent PNG and add it as the top layer in your editor, such as CapCut or Canva. Place your text inside the green box, then delete the overlay before you export your video.',
+      },
+    ],
+  },
+  {
+    slug: 'video-frame-to-thumbnail',
+    kind: 'frame',
+    group: 'Visual Tools',
+    platform: 'YouTube',
+    name: 'Video Frame to Thumbnail Maker',
+    title: 'Video Frame to Thumbnail - Pick a Frame and Save It as an Image',
+    h1: 'Video Frame to Thumbnail Maker',
+    description:
+      'Free tool to pick any frame from your video and save it as a thumbnail or cover image for YouTube, Reels or TikTok. Your video stays on your device.',
+    intro:
+      'Find the best moment in your video and save it as a cover image. Choose your video file, move to the frame you like and save it in the size you need. Your video never leaves your device.',
+    tips: [
+      'Pick a frame where the face is clear and the eyes are open.',
+      'Avoid frames with motion blur. Use the 0.1 second buttons to step to a sharper frame.',
+      'Leave some empty space in the frame, so you can add text later.',
+    ],
+    faqs: [
+      {
+        q: 'Is my video uploaded anywhere?',
+        a: 'No. The frame is taken in your browser, so your video stays on your device and large files are fine.',
+      },
+      {
+        q: 'Which video files work?',
+        a: 'Files your browser can play, which includes most MP4 videos. If a file does not open, try converting it to MP4.',
+      },
+      {
+        q: 'The image looks black. What should I do?',
+        a: 'Wait until the video has loaded, move the slider a little and capture the frame again.',
+      },
+    ],
+    cta: {
+      text: 'Working on your channel? See our YouTube views, watch time and subscribers.',
+      href: '/youtube',
+      label: 'See YouTube services',
+    },
+  },
 ]
