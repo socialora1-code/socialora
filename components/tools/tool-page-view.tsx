@@ -1,12 +1,15 @@
 import Link from 'next/link'
+import { BlurFit } from '@/components/tools/blur-fit'
 import { Calculator } from '@/components/tools/calculator'
 import { FontGenerator } from '@/components/tools/font-generator'
+import { FrameGrabber } from '@/components/tools/frame-grabber'
 import { Generator } from '@/components/tools/generator'
 import { GoalCalculator } from '@/components/tools/goal-calculator'
 import { GridMaker } from '@/components/tools/grid-maker'
 import { LinkGenerator } from '@/components/tools/link-generator'
 import { GiveawayPicker } from '@/components/tools/picker'
 import { PhotoResizer } from '@/components/tools/photo-resizer'
+import { SafeZone } from '@/components/tools/safe-zone'
 import { SymbolsPicker } from '@/components/tools/symbols'
 import { ThumbnailDownloader } from '@/components/tools/thumbnail-downloader'
 import type { ToolDef } from '@/lib/tool-data/types'
@@ -69,6 +72,21 @@ const STEPS: Record<string, readonly string[]> = {
     'Enter how many followers you gain per week.',
     'Read the estimate and check the chart.',
   ],
+  fit: [
+    'Choose your photo.',
+    'Pick where you will post it and how strong the blur should be.',
+    'Check the preview and download your photo.',
+  ],
+  safezone: [
+    'Pick Instagram Reels, TikTok or YouTube Shorts.',
+    'Add a frame from your video to check it, or skip this step.',
+    'Keep your text inside the green box, or download the overlay and place it over your video in your editor.',
+  ],
+  frame: [
+    'Choose your video file.',
+    'Move the slider to the frame you like and fine-tune it with the 0.1 second buttons.',
+    'Pick a size, capture the frame and download the image.',
+  ],
 }
 
 function Widget({ tool }: { tool: ToolDef }) {
@@ -93,6 +111,12 @@ function Widget({ tool }: { tool: ToolDef }) {
       return <SymbolsPicker />
     case 'goal':
       return <GoalCalculator />
+    case 'fit':
+      return <BlurFit />
+    case 'safezone':
+      return <SafeZone />
+    case 'frame':
+      return <FrameGrabber />
     default:
       return null
   }
