@@ -10,6 +10,7 @@ const ROUTES = [
   '/tiktok',
   '/youtube',
   '/x',
+  '/telegram',
   '/free-instagram-views',
   '/blog',
   '/tools',
@@ -24,7 +25,7 @@ const ROUTES = [
   '/refund-policy',
 ]
 
-const PLATFORM_ROUTES = ['/instagram', '/tiktok', '/youtube', '/x', '/free-instagram-views']
+const PLATFORM_ROUTES = ['/instagram', '/tiktok', '/youtube', '/x', '/telegram', '/free-instagram-views']
 const TOOL_ROUTES = ['/tools', '/tools/instagram-engagement-rate-calculator']
 
 export default function sitemap(): MetadataRoute.Sitemap {
