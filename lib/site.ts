@@ -1,7 +1,7 @@
 export const SITE = {
   name: 'Socialora',
   description:
-    'Social media growth services for Instagram, TikTok, YouTube and X. Simple ordering, transparent pricing and dedicated support.',
+    'Social media growth services for Instagram, TikTok, YouTube, X and Telegram. Simple ordering, transparent pricing and dedicated support.',
   supportEmail: 'info@getsocialora.com',
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.getsocialora.com',
   /** Legal document details shown on Terms, Privacy and Refund pages. */
@@ -17,6 +17,7 @@ export const MAIN_NAV = [
   { href: '/tiktok', label: 'TikTok' },
   { href: '/youtube', label: 'YouTube' },
   { href: '/x', label: 'X' },
+  { href: '/telegram', label: 'Telegram' },
   { href: '/free-instagram-views', label: 'Free Views' },
   { href: '/tools', label: 'Free Tools' },
   { href: '/custom-request', label: 'Custom Request' },
