@@ -166,17 +166,17 @@ export const LANDING_PAGES: readonly LandingPage[] = [
   },
   {
     slug: "buy-high-quality-followers",
-    serviceId: "followers-real",
-    title: "Buy High-Quality Instagram Followers",
+    serviceId: "followers-365",
+    title: "Buy Instagram Followers with 365-Day Refill",
     description:
-      "Buy high-quality Instagram followers with a 365-day refill guarantee. Orders up to 500,000, no password needed, pay with crypto.",
-    h1: "Buy High-Quality Instagram Followers",
+      "Buy Instagram followers with a 365-day refill guarantee. Orders from 500 to 100,000, just your username, pay with crypto.",
+    h1: "Buy Instagram Followers with a 365-Day Refill Guarantee",
     intro:
-      "Our high-quality followers option comes with a 365-day refill guarantee and supports large orders up to 500,000. Pick your amount, enter your public profile link and check out.",
+      "Add followers to your Instagram profile with a full year of refill cover. Orders run from 500 up to 100,000 followers. Pick your amount, enter your public username and check out.",
     points: [
       "365-day refill guarantee if your count drops",
-      "Orders from 100 up to 500,000 followers",
-      "Only your public profile link is needed, never your password",
+      "Orders from 500 up to 100,000 followers",
+      "Only your public username is needed, never your password",
     ],
     faqs: [
       {
@@ -185,7 +185,11 @@ export const LANDING_PAGES: readonly LandingPage[] = [
       },
       {
         q: "What is the largest order I can place?",
-        a: "You can order up to 500,000 followers in one order.",
+        a: "You can order up to 100,000 followers in one order. The smallest order is 500.",
+      },
+      {
+        q: "Do I need to send a profile link?",
+        a: "No. For this service you only enter your public Instagram username. Your profile must stay public while the order is running.",
       },
       ...COMMON_FAQS,
     ],
