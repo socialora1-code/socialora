@@ -9,6 +9,9 @@ export type ToolKind =
   | 'resize'
   | 'symbols'
   | 'goal'
+  | 'fit'
+  | 'safezone'
+  | 'frame'
 
 export interface ToolFaq {
   q: string
