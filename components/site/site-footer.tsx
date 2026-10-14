@@ -22,6 +22,7 @@ const COLUMNS = [
       { href: '/tiktok', label: 'TikTok' },
       { href: '/youtube', label: 'YouTube' },
       { href: '/x', label: 'X (Twitter)' },
+      { href: '/telegram', label: 'Telegram' },
       { href: '/free-instagram-views', label: 'Free Instagram Views' },
       { href: '/custom-request', label: 'Custom Request' },
     ],
@@ -103,9 +104,9 @@ export function SiteFooter() {
         <div className="mt-12 border-t border-border pt-6">
           <p className="text-xs leading-relaxed text-muted-foreground text-pretty">
             Socialora provides digital social media marketing services. Socialora is not affiliated with, endorsed by,
-            or sponsored by Instagram, Meta, TikTok, ByteDance, YouTube or Google. All trademarks belong to their
-            respective owners. Customers are responsible for complying with the terms and rules of the social platforms
-            they use.
+            or sponsored by Instagram, Meta, TikTok, ByteDance, YouTube, Google or Telegram. All trademarks belong to
+            their respective owners. Customers are responsible for complying with the terms and rules of the social
+            platforms they use.
           </p>
           <p className="mt-4 text-xs text-muted-foreground">© Socialora. All rights reserved.</p>
         </div>
