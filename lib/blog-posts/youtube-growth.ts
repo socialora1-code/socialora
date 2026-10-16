@@ -7,6 +7,7 @@ export const youtubeGrowth: BlogPost = {
     'Practical ways to grow your YouTube channel: stronger titles and thumbnails, better retention, searchable descriptions and smart use of analytics. Plus a faster way to get started.',
   category: 'YouTube',
   date: '2026-10-11',
+  updated: '2026-10-16',
   blocks: [
     {
       type: 'p',
@@ -16,6 +17,16 @@ export const youtubeGrowth: BlogPost = {
     {
       type: 'p',
       text: "Viewers subscribe to channels that promise something specific, like budget travel, beginner guitar or game guides. When your videos share one theme, a new viewer knows right away what they will get if they subscribe.",
+    },
+    {
+      type: 'p',
+      text: "Your channel name is part of that promise. It should be easy to say, easy to spell and not too narrow for the future.",
+    },
+    {
+      type: 'cta',
+      text: 'Still choosing a name? Get ideas and check them on YouTube.',
+      href: '/tools/youtube-channel-name-generator',
+      label: 'Open the channel name generator',
     },
     { type: 'h2', text: 'Ways to get more YouTube views and subscribers' },
     {
@@ -32,10 +43,40 @@ export const youtubeGrowth: BlogPost = {
         'Reply to comments, especially in the first hours after you upload.',
       ],
     },
+    {
+      type: 'p',
+      text: "Thumbnails decide many clicks. You can pick a sharp frame from your own video and save it at the right size, or study how other thumbnails in your niche look.",
+    },
+    {
+      type: 'cta',
+      text: 'Pick the best frame from your video and save it as a thumbnail.',
+      href: '/tools/video-frame-to-thumbnail',
+      label: 'Open the frame to thumbnail tool',
+    },
+    {
+      type: 'p',
+      text: "Tags are a small extra next to your title and description, but they help describe the topic and spelling variations.",
+    },
+    {
+      type: 'cta',
+      text: 'Get tag ideas built from your video topic.',
+      href: '/tools/youtube-tag-generator',
+      label: 'Open the YouTube tag generator',
+    },
     { type: 'h2', text: 'Learn from your own analytics' },
     {
       type: 'p',
       text: "Open YouTube Studio and compare your best and worst videos. Look at click-through rate to see if your title and thumbnail work, and at average view duration to see where people stop watching. Make more videos like the ones that keep people watching.",
+    },
+    {
+      type: 'p',
+      text: "If monetization is your goal, you can also estimate what your views might be worth with a low and a high rate per 1,000 views.",
+    },
+    {
+      type: 'cta',
+      text: 'Estimate what your monthly views could earn.',
+      href: '/tools/youtube-money-calculator',
+      label: 'Open the YouTube money calculator',
     },
     { type: 'h2', text: 'Want a faster start?' },
     {
