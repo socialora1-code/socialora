@@ -119,7 +119,7 @@ export default function FreeInstagramViewsPage() {
           <ul className="mt-4 flex flex-wrap gap-2">
             {[
               { href: '/instagram', label: 'Buy Instagram Followers' },
-              { href: '/instagram/buy-usa-followers', label: 'Buy USA Followers' },
+              { href: '/buy-usa-instagram-followers', label: 'Buy USA Followers' },
               { href: '/tiktok', label: 'Buy TikTok Followers' },
               { href: '/youtube', label: 'YouTube Views' },
             ].map((link) => (
