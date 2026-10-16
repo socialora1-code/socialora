@@ -13,6 +13,11 @@ export const VISUAL_TOOLS: readonly ToolDef[] = [
       'Free Instagram grid maker. Split one photo into a 3x3, 3x2 or 3x1 grid of tiles and download them to post as a giant picture on your profile.',
     intro:
       'Turn one big photo into a grid of tiles for your profile. Pick your photo, choose the grid size and download every tile. Your photo stays on your device.',
+        about: [
+      'A split grid turns one photo into a single large picture across your profile. Visitors see a bigger, more memorable image, and it works well for launches, announcements and portfolio covers.',
+      'Instagram profile tiles are shown in a 3-column layout, so 3x3 gives you nine posts, 3x2 six posts and 3x1 a clean three-post banner. Choose the portrait 3:4 shape if your profile shows the newer tall grid, or the square shape for the classic look.',
+      'Post the tiles in reverse order, last tile first, so Post 1 lands in the top-left corner. Everything runs in your browser, so your original photo is never uploaded.',
+    ],
     tips: [
       'Post the tiles in reverse order, starting with the last one, so the picture lines up on your profile.',
       'Pick a photo with a clear subject in the middle. Tiny details get lost when the photo is split.',
