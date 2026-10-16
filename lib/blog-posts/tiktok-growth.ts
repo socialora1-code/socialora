@@ -7,6 +7,7 @@ export const tiktokGrowth: BlogPost = {
     'Practical ways to grow your TikTok followers: stronger hooks, steady posting, searchable captions and smart use of analytics. Plus a faster way to get started.',
   category: 'TikTok',
   date: '2026-10-10',
+  updated: '2026-10-16',
   blocks: [
     {
       type: 'p',
@@ -16,6 +17,16 @@ export const tiktokGrowth: BlogPost = {
     {
       type: 'p',
       text: "People follow accounts that promise something specific, like quick recipes, gym tips or gaming clips. When your videos share one theme, a new visitor understands in seconds why they should follow you. Mixed content makes that decision harder.",
+    },
+    {
+      type: 'p',
+      text: "Your bio is the place to say it. You only have 80 characters, so keep it short and clear.",
+    },
+    {
+      type: 'cta',
+      text: 'Not sure what to write? Get short bio ideas that fit the limit.',
+      href: '/tools/tiktok-bio-generator',
+      label: 'Open the TikTok bio generator',
     },
     { type: 'h2', text: 'Ways to get more TikTok followers' },
     {
@@ -32,10 +43,30 @@ export const tiktokGrowth: BlogPost = {
         'Write a clear bio that says what you post and add one link.',
       ],
     },
+    {
+      type: 'p',
+      text: "Captions help viewers understand and react to a video. A short line that opens a question works well, and you can get ideas in a few seconds.",
+    },
+    {
+      type: 'cta',
+      text: 'Need a caption for your next video? Get short ideas to edit and use.',
+      href: '/tools/tiktok-caption-generator',
+      label: 'Open the TikTok caption generator',
+    },
     { type: 'h2', text: 'Learn from your own analytics' },
     {
       type: 'p',
       text: "Open the analytics of your best and worst videos and compare them. Look at watch time and where people stop watching. If most people leave in the first seconds, your hook needs work. If they watch to the end, make more videos like that one. Also check which days and hours your audience is online and post then.",
+    },
+    {
+      type: 'p',
+      text: "To track one number over time, use engagement rate: average likes, comments and shares per video divided by your followers. Check it once a month with the average of your last 10 to 20 videos.",
+    },
+    {
+      type: 'cta',
+      text: 'See how your audience reacts to your videos.',
+      href: '/tools/tiktok-engagement-rate-calculator',
+      label: 'Open the TikTok engagement calculator',
     },
     { type: 'h2', text: 'Want a faster start?' },
     {
