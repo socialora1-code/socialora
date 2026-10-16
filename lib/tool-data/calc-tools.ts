@@ -76,6 +76,11 @@ export const CALC_TOOLS: readonly ToolDef[] = [
       'Free Spotify royalty calculator. Enter your monthly streams and a payout range per stream to estimate what a track or artist could earn.',
     intro:
       'See roughly what your streams are worth. Enter your monthly streams and a low and high payout per stream, and get a monthly and yearly estimate.',
+        about: [
+      'Spotify does not pay a fixed rate per stream. Money is shared with the rights holders and the amount per stream changes by country, listener type and agreement, which is why this calculator uses a low and a high rate instead of one number.',
+      'Enter your monthly streams and adjust the two rates until they match what your distributor reports. You get a monthly and a yearly range, which is more useful for planning than a single exact figure.',
+      'Remember that labels, distributors and co-writers take their share first. Treat the result as the total pool, and multiply by your own split to see what you might actually receive.',
+    ],
     widget: 'spotify-earnings',
     tips: [
       'The payout per stream is not fixed. It changes by country, listener type and your agreement, so keep the range wide.',
