@@ -12,6 +12,11 @@ export const UTIL_TOOLS: readonly ToolDef[] = [
     description:
       'Free random winner picker for Instagram giveaways. Paste the names of your entrants, choose how many winners you need and pick fairly in one click.',
     intro:
+          about: [
+      "A fair giveaway depends on one thing: every entrant must have the same chance. This picker draws winners with your browser's built-in secure random generator, so no name is favored, and nothing you paste is saved or sent anywhere.",
+      'A simple workflow: copy the usernames from your post comments, paste them here one per line, keep "Remove duplicate names" on so nobody gets extra chances, then pick. Always pick one or two backup winners, because some people never reply to the DM.',
+      'Before you announce, screenshot the result or record your screen while you pick. Showing the draw openly builds trust with your followers and protects you if anyone questions the result.',
+    ],
       'Pick giveaway winners fairly and fast. Paste the usernames of everyone who entered, one per line, choose how many winners you need and press the button.',
     tips: [
       'Post your rules and end date before you start, so everyone knows how the giveaway works.',
