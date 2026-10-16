@@ -450,6 +450,11 @@ export const GEN_TOOLS: readonly ToolDef[] = [
       'Free Instagram content ideas generator. Enter your niche and get post and Reel ideas you can use this week.',
     intro:
       'Out of ideas? Enter your niche and get post and Reel ideas to try. Press More ideas for another batch, then pick the ones that feel natural for you.',
+        about: [
+      'Running out of ideas is the most common reason accounts stop posting. This generator gives you proven post and Reel formats for your niche, so you can plan a week in a few minutes.',
+      'Enter your niche, press More ideas for new batches and pick three or four you can really make. Turn one idea into several formats: a Reel, a carousel and a Story.',
+      'Add your own example, number or story to each idea. That personal detail is what makes a common format feel original to your audience.',
+    ],
     widget: 'content-ideas-instagram',
     tips: [
       'Turn one idea into several formats: a Reel, a carousel and a Story.',
