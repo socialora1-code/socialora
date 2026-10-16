@@ -3,6 +3,14 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  async redirects() {
+    return [
+      { source: '/instagram/buy-usa-followers', destination: '/buy-usa-instagram-followers', permanent: true },
+      { source: '/instagram/buy-spanish-followers', destination: '/buy-spanish-instagram-followers', permanent: true },
+      { source: '/instagram/buy-arabic-followers', destination: '/buy-arabic-instagram-followers', permanent: true },
+      { source: '/instagram/buy-brazilian-followers', destination: '/buy-brazilian-instagram-followers', permanent: true },
+    ]
+  },
   async headers() {
     return [
       {
