@@ -47,6 +47,11 @@ export const GEN_TOOLS: readonly ToolDef[] = [
       'Free TikTok bio generator. Enter what your videos are about and get short bio ideas to copy and paste into your profile.',
     intro:
       'A TikTok bio is tiny, so every word counts. Tell us what you make videos about and get short ideas that fit. Press More ideas to see another batch.',
+        about: [
+      'A TikTok bio is only 80 characters, so every word has to work. The best ones say what your videos are about and give a reason to follow, nothing more.',
+      'Enter your topic and the generator builds short bios that fit the limit. Add a detail in the optional box, such as how often you post or your niche, to make the result feel like yours.',
+      'Keep your link in the link field and use the bio for the pitch. Update it when your content changes, so new visitors always see what you really post.',
+    ],
     widget: 'bio-tiktok',
     tips: [
       'Lead with what your videos are about, so new visitors know in one second why to follow.',
@@ -81,6 +86,11 @@ export const GEN_TOOLS: readonly ToolDef[] = [
       'Free Twitter and X bio generator. Type your topic and get bio ideas that are short enough for your X profile.',
     intro:
       'Your X bio is the first thing people read before they follow. Enter your topic, get a few clear bio ideas and edit them to fit your voice.',
+        about: [
+      'Your X bio is read in about three seconds, usually right before someone decides to follow. It should say what you post about, who it is for and, if you like, one human detail.',
+      'This generator turns your topic into short bios within the X length limit. Use the optional box for something specific, like your city, your project or a phrase you often use, so the result does not sound generic.',
+      'After you copy a bio, pin your best post so the bio and the pinned post tell the same story. Plain, clear words usually beat long lists of titles.',
+    ],
     widget: 'bio-x',
     tips: [
       'Say what you post about and who it is for. Vague bios get fewer follows.',
@@ -338,6 +348,11 @@ export const GEN_TOOLS: readonly ToolDef[] = [
       'Free Snapchat caption generator. Type a topic and get short, fun caption ideas for your snaps and stories.',
     intro:
       'Snaps need short captions that fit the moment. Enter what you are posting about and get quick ideas you can copy.',
+        about: [
+      'Snap captions work best when they are short and match the mood of the photo or video. A few words are enough, because long text covers the picture.',
+      'Type what you are posting about and the generator gives quick caption ideas you can copy in one tap. Press More ideas for a fresh batch until one fits the moment.',
+      'Change a word or two so the caption sounds like you, and use light text on dark snaps and dark text on bright ones so it stays readable.',
+    ],
     widget: 'caption-snapchat',
     tips: [
       'Keep it to a few words. Long text covers the picture.',
