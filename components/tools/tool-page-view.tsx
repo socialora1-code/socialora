@@ -12,6 +12,7 @@ import { PhotoResizer } from '@/components/tools/photo-resizer'
 import { SafeZone } from '@/components/tools/safe-zone'
 import { SymbolsPicker } from '@/components/tools/symbols'
 import { ThumbnailDownloader } from '@/components/tools/thumbnail-downloader'
+import { SITE } from '@/lib/site'
 import type { ToolDef } from '@/lib/tool-data/types'
 import { relatedTools } from '@/lib/tool-list'
 
@@ -127,14 +128,63 @@ export function ToolPageView({ tool }: { tool: ToolDef }) {
   const steps = STEPS[tool.kind] ?? []
   const related = relatedTools(tool)
 
+  const url = `${SITE.url}/tools/${tool.slug}`
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: tool.name,
+      description: tool.description,
+      url,
+      applicationCategory: 'UtilitiesApplication',
+      operatingSystem: 'Any',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: tool.faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+        { '@type': 'ListItem', position: 2, name: 'Free Tools', item: `${SITE.url}/tools` },
+        { '@type': 'ListItem', position: 3, name: tool.name, item: url },
+      ],
+    },
+  ]
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
       <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{tool.h1}</h1>
       <p className="mt-3 leading-relaxed text-muted-foreground">{tool.intro}</p>
 
       <div className="mt-8">
         <Widget tool={tool} />
       </div>
+
+      {tool.about && tool.about.length > 0 && (
+        <section className="mt-12" aria-labelledby="about-title">
+          <h2 id="about-title" className="text-2xl font-semibold tracking-tight">
+            About the {tool.name}
+          </h2>
+          <div className="mt-3 grid gap-3 leading-relaxed text-muted-foreground">
+            {tool.about.map((p) => (
+              <p key={p}>{p}</p>
+            ))}
+          </div>
+        </section>
+      )}
 
       {steps.length > 0 && (
         <section className="mt-12" aria-labelledby="how-title">
