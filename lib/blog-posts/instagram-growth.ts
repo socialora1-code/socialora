@@ -7,6 +7,7 @@ export const instagramGrowth: BlogPost = {
     'Learn how to grow your Instagram account with a clear profile, consistent content, Reels, smart captions and real engagement. A practical step-by-step guide.',
   category: 'Instagram',
   date: '2026-10-09',
+  updated: '2026-10-16',
   blocks: [
     {
       type: 'p',
@@ -26,10 +27,22 @@ export const instagramGrowth: BlogPost = {
         'Pin your three best posts so new visitors see your strongest work first.',
       ],
     },
+    {
+      type: 'cta',
+      text: 'Need a bio that is short and clear? Get ideas you can edit.',
+      href: '/tools/instagram-bio-generator',
+      label: 'Open the Instagram bio generator',
+    },
     { type: 'h2', text: '2. Pick a niche and stay consistent' },
     {
       type: 'p',
       text: 'Accounts with a clear topic are easier to follow and easier for Instagram to recommend to the right people. Your last nine posts should make it obvious what your account is about. Consistency matters more than volume: a realistic schedule you can keep for months beats a burst of daily posts that fades after two weeks.',
+    },
+    {
+      type: 'cta',
+      text: 'Out of ideas for your niche? Get post and Reel ideas for the week.',
+      href: '/tools/instagram-content-ideas-generator',
+      label: 'Open the content ideas generator',
     },
     { type: 'h2', text: '3. Use Reels and carousels for reach' },
     {
@@ -45,10 +58,26 @@ export const instagramGrowth: BlogPost = {
         'End with a simple prompt, such as asking viewers to save or share the post.',
       ],
     },
+    {
+      type: 'p',
+      text: 'Keep your text away from the areas covered by buttons and captions. The safe zone guide shows where those areas are on Reels, and the no-crop tool fits any photo into a post without cutting it.',
+    },
+    {
+      type: 'cta',
+      text: 'Check where your text is safe on Reels, TikTok and Shorts.',
+      href: '/tools/reels-tiktok-safe-zone-guide',
+      label: 'Open the safe zone guide',
+    },
     { type: 'h2', text: '4. Write captions and hashtags for people first' },
     {
       type: 'p',
       text: 'Describe what each post is about in natural language, which also helps Instagram understand your content. Add a small set of relevant hashtags rather than a long block of generic ones. Hashtags work best as a clue about your topic, not as a growth trick on their own.',
+    },
+    {
+      type: 'cta',
+      text: 'Get hashtag ideas built from your topic, then keep the relevant ones.',
+      href: '/tools/instagram-hashtag-generator',
+      label: 'Open the hashtag generator',
     },
     { type: 'h2', text: '5. Engage like a real community member' },
     {
@@ -59,6 +88,16 @@ export const instagramGrowth: BlogPost = {
     {
       type: 'p',
       text: 'Instagram’s built-in Insights show which posts reached the most people, which were saved or shared, and when your followers are online. Check them every week or two. Repeat the formats and topics that perform well, and drop the ones that consistently fall flat.',
+    },
+    {
+      type: 'p',
+      text: 'Engagement rate is a good single number to track. It shows how many of your followers react to your posts.',
+    },
+    {
+      type: 'cta',
+      text: 'Calculate your engagement rate in a few seconds.',
+      href: '/tools/instagram-engagement-rate-calculator',
+      label: 'Open the engagement calculator',
     },
     { type: 'h2', text: '7. Building early momentum' },
     {
