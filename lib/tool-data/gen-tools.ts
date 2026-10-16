@@ -115,6 +115,11 @@ export const GEN_TOOLS: readonly ToolDef[] = [
       'Free Facebook bio generator. Enter your interests and get short intro ideas you can copy into your profile.',
     intro:
       'Facebook intros are short and friendly. Tell us what you are into and get a few ideas to copy, tweak and paste into your profile.',
+        about: [
+      'A Facebook intro has very little room, so it should answer one question fast: who are you and what do you share? This generator builds short lines from your interests that fit the intro limit, which you can then personalize.',
+      'Good intros are warm and specific. "Coffee lover and weekend hiker" says more than "Living life". Add one detail only you would say, such as a city, a hobby or a favorite phrase, in the optional box.',
+      'Press More ideas to see new batches, copy the one you like and edit a word or two so it sounds like you. Keep it friendly, because Facebook visitors are usually people you already know or are about to meet.',
+    ],
     widget: 'bio-facebook',
     tips: [
       'Keep it warm and simple. Facebook is more personal than most platforms.',
