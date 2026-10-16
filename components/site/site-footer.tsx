@@ -1,4 +1,3 @@
-
 import Link from 'next/link'
 import { Logo } from '@/components/site/logo'
 import { LANDING_PAGES, MOVED_LANDING_SLUGS, TIKTOK_LANDING_PAGES } from '@/lib/landing-pages'
