@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Hero } from '@/components/home/hero'
 import { HowItWorksSteps } from '@/components/home/how-it-works-steps'
 import { PlatformCards } from '@/components/home/platform-cards'
+import { ToolsSection } from '@/components/home/tools-section'
 import { TransparencySection } from '@/components/home/transparency-section'
 import { ComplianceNotice } from '@/components/site/compliance-notice'
 import { CtaSection } from '@/components/site/cta-section'
@@ -32,6 +33,7 @@ export default function HomePage() {
         </div>
       </section>
       <TransparencySection />
+      <ToolsSection />
       <section aria-labelledby="guides-title" className="border-t border-border">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
