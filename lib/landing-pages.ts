@@ -269,8 +269,15 @@ export function getTikTokLandingPage(slug: string): LandingPage | undefined {
   return TIKTOK_LANDING_PAGES.find((p) => p.slug === slug)
 }
 
+export const MOVED_LANDING_SLUGS = new Set([
+  'buy-usa-followers',
+  'buy-spanish-followers',
+  'buy-arabic-followers',
+  'buy-brazilian-followers',
+])
+
 export function getLandingPagesFor(platformId: PlatformId): readonly LandingPage[] {
   if (platformId === 'tiktok') return TIKTOK_LANDING_PAGES
-  if (platformId === 'instagram') return LANDING_PAGES
+  if (platformId === 'instagram') return LANDING_PAGES.filter((p) => !MOVED_LANDING_SLUGS.has(p.slug))
   return []
 }
