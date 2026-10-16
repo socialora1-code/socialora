@@ -1,10 +1,15 @@
 import Link from 'next/link'
+import Link from 'next/link'
 import { Logo } from '@/components/site/logo'
-import { LANDING_PAGES, TIKTOK_LANDING_PAGES } from '@/lib/landing-pages'
+import { LANDING_PAGES, MOVED_LANDING_SLUGS, TIKTOK_LANDING_PAGES } from '@/lib/landing-pages'
 import { SITE } from '@/lib/site'
 
 const FOLLOWER_LINKS = [
-  ...LANDING_PAGES.map((page) => ({
+  { href: '/buy-usa-instagram-followers', label: 'Buy USA Instagram Followers' },
+  { href: '/buy-spanish-instagram-followers', label: 'Buy Spanish Instagram Followers' },
+  { href: '/buy-arabic-instagram-followers', label: 'Buy Arabic Instagram Followers' },
+  { href: '/buy-brazilian-instagram-followers', label: 'Buy Brazilian Instagram Followers' },
+  ...LANDING_PAGES.filter((p) => !MOVED_LANDING_SLUGS.has(p.slug)).map((page) => ({
     href: `/instagram/${page.slug}`,
     label: page.title,
   })),
