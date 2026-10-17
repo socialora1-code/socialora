@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { AccountScorecard } from '@/components/tools/account-scorecard'
 import { BlurFit } from '@/components/tools/blur-fit'
 import { Calculator } from '@/components/tools/calculator'
 import { FontGenerator } from '@/components/tools/font-generator'
@@ -88,6 +89,11 @@ const STEPS: Record<string, readonly string[]> = {
     'Move the slider to the frame you like and fine-tune it with the 0.1 second buttons.',
     'Pick a size, capture the frame and download the image.',
   ],
+  scorecard: [
+    'Open your Instagram profile and your Insights, then note your numbers.',
+    'Enter them in the boxes. Use the average of your last 10 to 20 posts for likes and comments.',
+    'Read your score and growth plan, then download the card to share.',
+  ],
 }
 
 function Widget({ tool }: { tool: ToolDef }) {
@@ -118,6 +124,8 @@ function Widget({ tool }: { tool: ToolDef }) {
       return <SafeZone />
     case 'frame':
       return <FrameGrabber />
+    case 'scorecard':
+      return <AccountScorecard />
     default:
       return null
   }
