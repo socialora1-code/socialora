@@ -298,9 +298,27 @@ export function OrderForm({ initial }: { initial: InitialSelection }) {
             <FormField
               id="email"
               type="email"
-              label="Email Address"
-              helper="We'll send your order confirmation and payment instructions here."
-              placeholder="you@example.com"
+              label={
+  usernameOnly
+    ? `${platform.name} Username`
+    : service.target === 'profile'
+      ? platform.profileFieldLabel
+      : `${platform.name} ${service.target === 'channel' ? 'Channel' : 'Post or Video'} URL`
+}
+helper={
+  usernameOnly
+    ? 'Enter the public username you want to grow. No link needed.'
+    : service.target === 'profile'
+      ? 'Enter the public profile or post URL you want to grow.'
+      : 'Enter the public link of the video, reel or post.'
+}
+placeholder={
+  usernameOnly
+    ? '@yourusername'
+    : service.target === 'profile'
+      ? platform.profilePlaceholder
+      : `https://${platform.allowedHosts[0]}/...`
+}
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value)
