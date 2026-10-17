@@ -8,7 +8,7 @@ export const SITE = {
   legal: {
     entityName: 'Socialora',
     jurisdiction: 'Republic of Türkiye',
-    lastUpdated: 'October 4, 2026',
+    lastUpdated: 'October 17, 2026',
   },
 } as const
 
