@@ -39,6 +39,8 @@ export type ServiceId =
   | 'autolikes-700'
   | 'autolikes-800'
   | 'autolikes-900'
+  | `tt-autolikes-${number}`
+  | `tt-autoviews-${number}`
   | 'members'
   | 'premium-7'
   | 'premium-14'
@@ -147,6 +149,8 @@ const PRICE_X_FOLLOWERS_REFILL = 4200
 const PRICE_X_FOLLOWERS_TOP = 9000
 /** X views: $6.00 per 100,000 = 6 cents per 1,000. */
 const PRICE_X_VIEWS = 6
+/** Instagram views: $2.00 per 10,000 = 20 cents per 1,000. */
+const PRICE_INSTAGRAM_VIEWS = 20
 const PRICE_INSTAGRAM_US_FOLLOWERS = 1800
 const PRICE_INSTAGRAM_COUNTRY_FOLLOWERS = 4800
 const PRICE_INSTAGRAM_MID_FOLLOWERS = 1000
@@ -208,7 +212,10 @@ const US_FOLLOWER_QUANTITIES = [250, 500, 1000, 2000, 5000, 10000]
 const INSTAGRAM_QUANTITIES = [250, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000]
 const INSTAGRAM_MID_QUANTITIES = [500, 1000, 2000, 5000, 10000, 20000]
 const INSTAGRAM_365_QUANTITIES = [500, 1000, 2000, 5000, 10000, 20000, 50000, 100000]
+const INSTAGRAM_VIEW_QUANTITIES = [10000, 20000, 50000, 100000, 250000, 500000, 1000000, 2500000, 5000000]
 const TIKTOK_STD_QUANTITIES = [250, 500, 1000, 2000]
+const TIKTOK_AUTO_LIKE_QUANTITIES = [1000, 2000, 5000, 10000, 20000, 50000, 100000]
+const TIKTOK_AUTO_VIEW_QUANTITIES = [1000, 2000, 5000, 10000, 50000, 100000, 250000, 500000, 1000000]
 const X_VIEW_QUANTITIES = [100000, 200000, 500000, 1000000, 5000000, 10000000]
 const YOUTUBE_VIEW_QUANTITIES = [1000, 2000, 5000, 10000, 20000, 50000]
 const YOUTUBE_VIEW_LIFETIME_QUANTITIES = [1000, 2000, 5000, 10000, 20000, 50000, 100000, 500000, 1000000]
@@ -275,6 +282,83 @@ function autoLikesService(panelServiceId: number, likes: number, priceCents: num
 }
 
 /* -------------------------------------------------------------------------- */
+/*                        TikTok auto likes and auto views                    */
+/* -------------------------------------------------------------------------- */
+
+/** [panel service id, number of posts, price in US cents per 1,000 likes per post] */
+const TIKTOK_AUTO_LIKE_PACKAGES = [
+  [2450, 5, 800],
+  [10622, 10, 1600],
+  [2451, 20, 3200],
+  [2452, 30, 4800],
+  [2454, 40, 6400],
+  [2453, 50, 8000],
+  [2455, 75, 12000],
+  [10650, 100, 18000],
+] as const
+
+/** [panel service id, number of posts, price in US cents per 1,000 views per post] */
+const TIKTOK_AUTO_VIEW_PACKAGES = [
+  [10691, 10, 800],
+  [10692, 20, 1600],
+  [10693, 30, 2400],
+  [10694, 40, 3200],
+  [10695, 50, 4000],
+  [10696, 75, 6000],
+  [10697, 100, 8000],
+] as const
+
+function tiktokAutoLikesService(panelServiceId: number, posts: number, per1000Cents: number): Service {
+  return {
+    id: `tt-autolikes-${posts}` as ServiceId,
+    label: `Auto Likes · ${posts} Posts`,
+    unit: 'likes per post',
+    target: 'profile',
+    summary: `Automatically adds likes to each of your next ${posts} TikTok posts. Enter your username and choose how many likes each post gets.`,
+    delivery: 'Setup within 0-6 hours of payment. Likes arrive 5-15 minutes after each new post is published.',
+    refill: null,
+    defaultQuantity: 1000,
+    pricing: { kind: 'flat', options: flatOptions(TIKTOK_AUTO_LIKE_QUANTITIES, per1000Cents, false) },
+    panelServiceId,
+    panel: 'hepsisosyal',
+    usernameOnly: true,
+    notes: [
+      `Posts covered: your next ${posts} posts`,
+      'Example: order 1,000 and every one of those posts gets 1,000 likes',
+      'Likes arrive 5-15 minutes after each post is published',
+      'Order range: 1,000 - 100,000 likes per post',
+      'Needs: public profile username (profile must not be private)',
+      'Do not change profile settings. Tell support if you switch to a private or business account',
+    ],
+  }
+}
+
+function tiktokAutoViewsService(panelServiceId: number, posts: number, per1000Cents: number): Service {
+  return {
+    id: `tt-autoviews-${posts}` as ServiceId,
+    label: `Auto Views · ${posts} Posts`,
+    unit: 'views per post',
+    target: 'profile',
+    summary: `Automatically adds views to each of your next ${posts} TikTok posts. Enter your username and choose how many views each post gets.`,
+    delivery: 'Setup within 0-6 hours of payment. Views arrive 5-15 minutes after each new post is published.',
+    refill: null,
+    defaultQuantity: 1000,
+    pricing: { kind: 'flat', options: flatOptions(TIKTOK_AUTO_VIEW_QUANTITIES, per1000Cents, false) },
+    panelServiceId,
+    panel: 'hepsisosyal',
+    usernameOnly: true,
+    notes: [
+      `Posts covered: your next ${posts} posts`,
+      'Example: order 1,000 and every one of those posts gets 1,000 views',
+      'Views arrive 5-15 minutes after each post is published',
+      'Order range: 1,000 - 1,000,000 views per post',
+      'Needs: public profile username (profile must not be private)',
+      'Do not change profile settings. Tell support if you switch to a private or business account',
+    ],
+  }
+}
+
+/* -------------------------------------------------------------------------- */
 /*                                  Platforms                                 */
 /* -------------------------------------------------------------------------- */
 
@@ -283,9 +367,9 @@ export const PLATFORMS: readonly Platform[] = [
     id: 'instagram',
     name: 'Instagram',
     path: '/instagram',
-    tagline: 'Followers by country, plus auto likes',
+    tagline: 'Followers by country, views and auto likes',
     description:
-      'Grow your Instagram profile with followers, followers from the country you choose, and automatic likes for your new posts.',
+      'Grow your Instagram profile with followers, followers from the country you choose, views for your reels and posts, and automatic likes for your new posts.',
     profileFieldLabel: 'Instagram Profile URL',
     profilePlaceholder: 'https://instagram.com/yourprofile',
     allowedHosts: ['instagram.com', 'instagr.am'],
@@ -403,6 +487,24 @@ export const PLATFORMS: readonly Platform[] = [
         pricing: { kind: 'flat', options: flatOptions(INSTAGRAM_QUANTITIES, PRICE_INSTAGRAM_COUNTRY_FOLLOWERS) },
         panelServiceId: 14553,
       },
+      {
+        id: 'views',
+        label: 'Views',
+        unit: 'views',
+        target: 'post',
+        summary:
+          'Views for a public Instagram reel or post. Orders start at 10,000 views and go up to 5,000,000. No refill guarantee on this service.',
+        delivery: DELIVERY_NOTE,
+        refill: null,
+        defaultQuantity: 10000,
+        pricing: { kind: 'flat', options: flatOptions(INSTAGRAM_VIEW_QUANTITIES, PRICE_INSTAGRAM_VIEWS, false) },
+        panelServiceId: 19639,
+        notes: [
+          'Order range: 10,000 - 5,000,000',
+          'Needs: public reel or post link',
+          'Keep your reel or post public while the order runs',
+        ],
+      },
       ...AUTO_LIKE_PACKAGES.map(([panelServiceId, likes, priceCents]) =>
         autoLikesService(panelServiceId, likes, priceCents),
       ),
@@ -412,8 +514,9 @@ export const PLATFORMS: readonly Platform[] = [
     id: 'tiktok',
     name: 'TikTok',
     path: '/tiktok',
-    tagline: 'Followers',
-    description: 'Grow your TikTok profile with high-quality followers, backed by a 30-day refill guarantee.',
+    tagline: 'Followers, auto likes and auto views',
+    description:
+      'Grow your TikTok profile with high-quality followers, plus automatic likes and views for every new video you post.',
     profileFieldLabel: 'TikTok Profile URL',
     profilePlaceholder: 'https://tiktok.com/@yourprofile',
     allowedHosts: ['tiktok.com'],
@@ -462,6 +565,12 @@ export const PLATFORMS: readonly Platform[] = [
           'Needs: public profile link',
         ],
       },
+      ...TIKTOK_AUTO_LIKE_PACKAGES.map(([panelServiceId, posts, per1000Cents]) =>
+        tiktokAutoLikesService(panelServiceId, posts, per1000Cents),
+      ),
+      ...TIKTOK_AUTO_VIEW_PACKAGES.map(([panelServiceId, posts, per1000Cents]) =>
+        tiktokAutoViewsService(panelServiceId, posts, per1000Cents),
+      ),
     ],
   },
   {
