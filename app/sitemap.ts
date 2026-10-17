@@ -1,11 +1,19 @@
 import type { MetadataRoute } from 'next'
 import { POSTS } from '@/lib/blog'
-import { LANDING_PAGES, MOVED_LANDING_SLUGS, TIKTOK_LANDING_PAGES } from '@/lib/landing-pages'
+import {
+  LANDING_PAGES,
+  MOVED_LANDING_SLUGS,
+  TELEGRAM_LANDING_PAGES,
+  TIKTOK_LANDING_PAGES,
+  X_LANDING_PAGES,
+  YOUTUBE_LANDING_PAGES,
+  type LandingPage,
+} from '@/lib/landing-pages'
 import { SITE } from '@/lib/site'
 import { TOOLS } from '@/lib/tool-list'
 
 // İçerik gerçekten değiştiğinde bu tarihi güncelle
-const SITE_UPDATED = new Date('2026-10-16')
+const SITE_UPDATED = new Date('2026-10-17')
 
 const ROUTES = [
   '',
@@ -48,6 +56,13 @@ const PLATFORM_ROUTES = [
 ]
 const TOOL_ROUTES = ['/tools', '/tools/instagram-engagement-rate-calculator']
 
+const PLATFORM_LANDING: [string, readonly LandingPage[]][] = [
+  ['/tiktok', TIKTOK_LANDING_PAGES],
+  ['/youtube', YOUTUBE_LANDING_PAGES],
+  ['/x', X_LANDING_PAGES],
+  ['/telegram', TELEGRAM_LANDING_PAGES],
+]
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = SITE_UPDATED
 
@@ -74,12 +89,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }),
   )
 
-  const tiktokLanding: MetadataRoute.Sitemap = TIKTOK_LANDING_PAGES.map((page) => ({
-    url: `${SITE.url}/tiktok/${page.slug}`,
-    lastModified,
-    changeFrequency: 'monthly' as const,
-    priority: 0.9,
-  }))
+  const otherLanding: MetadataRoute.Sitemap = PLATFORM_LANDING.flatMap(([path, list]) =>
+    list.map((page) => ({
+      url: `${SITE.url}${path}/${page.slug}`,
+      lastModified,
+      changeFrequency: 'monthly' as const,
+      priority: 0.9,
+    })),
+  )
 
   const tools: MetadataRoute.Sitemap = TOOLS.map((tool) => ({
     url: `${SITE.url}/tools/${tool.slug}`,
@@ -95,5 +112,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }))
 
-  return [...pages, ...landing, ...tiktokLanding, ...tools, ...posts]
+  return [...pages, ...landing, ...otherLanding, ...tools, ...posts]
 }
