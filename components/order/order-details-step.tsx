@@ -55,25 +55,23 @@ export function OrderDetailsStep({
 
   return (
     <div className="flex flex-col gap-7">
-      <fieldset className="min-w-0">
-        <legend className="text-sm font-medium">Platform</legend>
-        <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-5">
-          {PLATFORMS.map((p) => (
-            <label key={p.id} className={cn(optionClass, 'flex-col items-center gap-2 px-2 py-3 text-center')}>
-              <input
-                type="radio"
-                name="platform"
-                value={p.id}
-                checked={platform.id === p.id}
-                onChange={() => onPlatformChange(p.id)}
-                className="sr-only"
-              />
-              <PlatformIcon platform={p.id} size="sm" />
-              <span className="text-sm font-medium">{p.name}</span>
-            </label>
+            <div className="min-w-0">
+        <label htmlFor="service" className="text-sm font-medium">
+          Service
+        </label>
+        <select
+          id="service"
+          value={service.id}
+          onChange={(e) => onServiceChange(e.target.value as ServiceId)}
+          className="mt-3 h-12 w-full rounded-xl border border-border bg-background px-4 text-base"
+        >
+          {platform.services.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.label}
+            </option>
           ))}
-        </div>
-      </fieldset>
+        </select>
+      </div>
 
       <fieldset className="min-w-0">
         <legend className="text-sm font-medium">Service</legend>
