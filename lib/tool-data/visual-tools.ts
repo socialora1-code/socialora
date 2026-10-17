@@ -2,6 +2,48 @@ import type { ToolDef } from '@/lib/tool-data/types'
 
 export const VISUAL_TOOLS: readonly ToolDef[] = [
   {
+    slug: 'instagram-account-scorecard',
+    kind: 'scorecard',
+    group: 'Account Tools',
+    platform: 'Instagram',
+    name: 'Instagram Account Scorecard',
+    title: 'Instagram Account Scorecard - Free Profile Score Out of 100',
+    h1: 'Instagram Account Scorecard',
+    description:
+      'Free Instagram account scorecard. Enter your followers, posts, likes and comments to get a score out of 100, a growth plan and a shareable card.',
+    intro:
+      'How strong is your Instagram profile? Enter a few numbers and get a score out of 100, a short growth plan and a card you can download and share.',
+    about: [
+      'The scorecard looks at four things: how much your followers react to your posts, the balance between followers and accounts you follow, how often you post and how many people comment. Each part adds points to a total of 100.',
+      'Engagement is compared with the average rates for accounts of a similar size, because big accounts naturally have lower rates than small ones. That way a 20,000 follower account is not judged like a 500 follower account.',
+      'The score is an evaluation based on average engagement rates, not official Instagram data. Use it to see which area to improve first, and check again in a month to see your progress.',
+    ],
+    tips: [
+      'Use the average of your last 10 to 20 posts for likes and comments, not your best post.',
+      'Find your numbers in Instagram Insights. Likes and comments are also public on each post.',
+      'Work on your lowest part first. It usually gives the biggest jump in your score.',
+    ],
+    faqs: [
+      {
+        q: 'How is the score calculated?',
+        a: 'Engagement counts for 50 points, followers versus following for 20, posting activity for 15 and comments for 15. Engagement is compared with typical rates for accounts of your size.',
+      },
+      {
+        q: 'Is this official Instagram data?',
+        a: 'No. It is an evaluation based on average engagement rates. It helps you see where to improve, but it is not an Instagram measurement.',
+      },
+      {
+        q: 'Is my information saved?',
+        a: 'No. The score and the card are made in your browser. Nothing you type is sent to a server.',
+      },
+    ],
+    cta: {
+      text: 'Want your profile to look stronger? See our Instagram services.',
+      href: '/instagram',
+      label: 'See Instagram services',
+    },
+  },
+  {
     slug: 'instagram-grid-maker',
     kind: 'grid',
     group: 'Visual Tools',
@@ -13,7 +55,7 @@ export const VISUAL_TOOLS: readonly ToolDef[] = [
       'Free Instagram grid maker. Split one photo into a 3x3, 3x2 or 3x1 grid of tiles and download them to post as a giant picture on your profile.',
     intro:
       'Turn one big photo into a grid of tiles for your profile. Pick your photo, choose the grid size and download every tile. Your photo stays on your device.',
-        about: [
+    about: [
       'A split grid turns one photo into a single large picture across your profile. Visitors see a bigger, more memorable image, and it works well for launches, announcements and portfolio covers.',
       'Instagram profile tiles are shown in a 3-column layout, so 3x3 gives you nine posts, 3x2 six posts and 3x1 a clean three-post banner. Choose the portrait 3:4 shape if your profile shows the newer tall grid, or the square shape for the classic look.',
       'Post the tiles in reverse order, last tile first, so Post 1 lands in the top-left corner. Everything runs in your browser, so your original photo is never uploaded.',
