@@ -26,13 +26,14 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          Socialora provides digital social media marketing services for Instagram, TikTok and YouTube, such as
-          followers, subscribers, likes and views. Service descriptions, quantities and prices are shown on our website
-          and may change at any time; the price shown at checkout applies to your order.
+          Socialora provides digital social media marketing services for Instagram, TikTok, YouTube, X (Twitter) and
+          Telegram, such as followers, subscribers, members, likes and views. Service descriptions, quantities and
+          prices are shown on our website and may change at any time; the price shown at checkout applies to your
+          order.
         </p>
         <p>
           Socialora is independent and is not affiliated with, endorsed by or sponsored by Instagram, Meta, TikTok,
-          ByteDance, YouTube or Google.
+          ByteDance, YouTube, Google, X Corp. or Telegram.
         </p>
       </>
     ),
@@ -43,7 +44,7 @@ const sections: LegalSection[] = [
       <ul>
         <li>You must be at least 18 years old, or the age of majority where you live, to place an order.</li>
         <li>You must own or be authorized to promote the account or content you submit.</li>
-        <li>The profile, post or video you submit must be public and remain public while your order is processed.</li>
+        <li>The profile, post, video or channel you submit must be public and remain public while your order is processed.</li>
         <li>
           You are solely responsible for making sure your use of our services complies with the terms, policies and
           community guidelines of the platform you use.
@@ -57,7 +58,7 @@ const sections: LegalSection[] = [
     body: (
       <p>
         We never request passwords, login codes or other account credentials. Do not send them to us. Orders only
-        require a public URL or username.
+        require a public link or username.
       </p>
     ),
   },
@@ -66,9 +67,10 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          Payment is made in cryptocurrency to the wallet address shown at checkout. Payments are verified manually and
-          are not confirmed automatically. Submitting an order does not mean payment has been received; your order
-          remains pending until we confirm the payment.
+          Payment is made in cryptocurrency. You can pay automatically on a secure checkout page, where you choose your
+          coin, or send crypto to the wallet address shown at checkout. With automatic payment, your order starts once
+          the payment is confirmed. With a manual wallet payment, we verify the payment on the blockchain and your
+          order stays pending until we confirm it.
         </p>
         <p>
           You are responsible for sending the exact amount on the correct network to the correct address, and for any
@@ -86,7 +88,17 @@ const sections: LegalSection[] = [
         Delivery begins after payment is verified. Delivery times are estimates and are not guaranteed. Social platforms
         may change their systems or remove engagement at any time, and we cannot guarantee specific results, such as
         reach, revenue, account growth beyond the ordered quantity, or long-term retention, except as stated for a
-        specific service.
+        specific service. Where a service includes a refill period, it applies only as described on that service.
+      </p>
+    ),
+  },
+  {
+    title: 'Free offers and tools',
+    body: (
+      <p>
+        Free offers, such as free Instagram views, are limited-time trials. We may change, limit or end them at any
+        time, they are not covered by a refill guarantee, and limits apply per post and per person. Our free tools are
+        provided as is, for general information and convenience.
       </p>
     ),
   },
