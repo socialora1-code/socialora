@@ -44,22 +44,7 @@ export function PlatformPage({ platformId }: { platformId: PlatformId }) {
 
       <div className="mx-auto flex max-w-6xl flex-col gap-14 px-4 py-14 sm:px-6 sm:py-20">
         <div className="flex flex-col gap-3">
-          {platform.services.map((service) => (
-            <ServiceAccordion
-              key={service.id}
-              id={service.id}
-              title={`${platform.name} ${service.label}`}
-              summary={service.summary}
-              fromPrice={formatUSD(getStartingPriceCents(service))}
-            >
-              {isTiered(service) ? (
-                <TieredServiceSection platformId={platform.id} serviceId={service.id} />
-              ) : (
-                <FlatServiceSection platformId={platform.id} serviceId={service.id} />
-              )}
-            </ServiceAccordion>
-          ))}
-        </div>
+        <PlatformServices platformId={platform.id} />
 
         <section aria-labelledby="ordering-notes" className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
           <div>
