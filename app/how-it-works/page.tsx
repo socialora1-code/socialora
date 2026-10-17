@@ -7,7 +7,7 @@ import { PageHero, SectionHeading } from '@/components/site/page-hero'
 export const metadata: Metadata = {
   title: 'How It Works',
   description:
-    'See how ordering Instagram, TikTok and YouTube growth services with Socialora works — from choosing a package to manual crypto payment and order review.',
+    'See how ordering Instagram, TikTok, YouTube, X and Telegram growth services with Socialora works, from choosing a service to paying with crypto and tracking your order.',
   alternates: { canonical: '/how-it-works' },
   openGraph: { url: '/how-it-works', title: 'How It Works · Socialora' },
 }
@@ -15,27 +15,27 @@ export const metadata: Metadata = {
 const DETAILS = [
   {
     title: 'Pick a platform and service',
-    body: 'Browse Instagram, TikTok or YouTube and choose followers, subscribers, likes or views. Follower and subscriber orders come in three packages — High-Quality, Premium and VIP — so you can pick the one that fits.',
+    body: 'Browse Instagram, TikTok, YouTube, X or Telegram and choose followers, subscribers, members, likes or views. Each service lists its start time, speed and refill terms before you order.',
   },
   {
     title: 'Choose a quantity',
-    body: 'Select from fixed quantities. The price updates immediately and is always shown in USD before you continue.',
+    body: 'Select from the available quantities. The price updates immediately and is always shown in USD before you continue. Larger orders get a lower price per 1,000.',
   },
   {
-    title: 'Enter a public URL',
-    body: 'Paste the public profile, post or video URL you want to grow, or your username. Keep the account public while your order is processed. We never ask for your password.',
+    title: 'Enter your link or username',
+    body: 'Paste the public profile, post, video or channel link, or your username, depending on the service. Keep the account public while your order is processed. We never ask for your password.',
   },
   {
     title: 'Add your email',
-    body: 'We send your order confirmation and payment instructions to this address. No account is created.',
+    body: 'We send your order updates to this address. No account is created.',
   },
   {
     title: 'Pay with crypto',
-    body: 'Choose USDT (TRC20, BNB Smart Chain or Solana), USDC (Ethereum ERC20) or Bitcoin. You will see the full wallet address with a copy button and the exact amount to send. Always use the network shown.',
+    body: 'Choose automatic payment to pay on a secure checkout page in the coin you prefer, or choose manual payment and send USDT (TRC20, BNB Smart Chain or Solana), USDC (Ethereum ERC20) or Bitcoin to the wallet address shown, with a copy button and the exact amount. Always use the network shown.',
   },
   {
-    title: 'Submit and wait for review',
-    body: 'After sending your payment, submit your order. You will receive an order reference (SO-XXXXXXXX). Your order status is Pending Manual Verification until our team confirms the payment on the blockchain, after which processing begins.',
+    title: 'Start and track your order',
+    body: 'You receive an order reference (SO-XXXXXXXX). With automatic payment, your order starts as soon as the payment is confirmed. With manual payment, it starts after we verify the transaction on the blockchain. You can follow progress any time on the Track page with your order reference and email.',
   },
 ] as const
 
