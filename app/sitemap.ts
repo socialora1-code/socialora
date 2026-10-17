@@ -13,7 +13,7 @@ import { SITE } from '@/lib/site'
 import { TOOLS } from '@/lib/tool-list'
 
 // İçerik gerçekten değiştiğinde bu tarihi güncelle
-const SITE_UPDATED = new Date('2026-10-17')
+const SITE_UPDATED = new Date('2026-10-18')
 
 const ROUTES = [
   '',
