@@ -55,6 +55,63 @@ const TIKTOK_COMMON_FAQS: LandingFaq[] = [
   },
 ]
 
+const YOUTUBE_COMMON_FAQS: LandingFaq[] = [
+  {
+    q: "Do you need my YouTube password?",
+    a: "No. We only need a public link. Never share your password or login code with anyone.",
+  },
+  {
+    q: "How do I pay?",
+    a: "You pay with crypto at checkout. You can choose automatic payment or send the exact amount to the wallet address shown on the order page.",
+  },
+  {
+    q: "When does my order start?",
+    a: "Your order starts after your payment is verified. We email you the order updates, so use an email address you check.",
+  },
+  {
+    q: "Is this safe for my channel?",
+    a: "We never ask for your login details and your video or channel only needs to stay public. YouTube's terms do not allow purchased engagement, so nobody can promise how the platform will treat a channel. Start with a smaller amount if you are unsure.",
+  },
+]
+
+const TELEGRAM_COMMON_FAQS: LandingFaq[] = [
+  {
+    q: "Do you need my Telegram login?",
+    a: "No. We only need the public link of your channel or group. Never share your login code or password with anyone.",
+  },
+  {
+    q: "How do I pay?",
+    a: "You pay with crypto at checkout. You can choose automatic payment or send the exact amount to the wallet address shown on the order page.",
+  },
+  {
+    q: "When does my order start?",
+    a: "Your order starts after your payment is verified. We email you the order updates, so use an email address you check.",
+  },
+  {
+    q: "Is this safe for my channel?",
+    a: "We never ask for your login details. Telegram sets its own rules and nobody can promise how a channel or group will be treated, so start with a smaller amount if you are unsure.",
+  },
+]
+
+const X_COMMON_FAQS: LandingFaq[] = [
+  {
+    q: "Do you need my X password?",
+    a: "No. We only need your public profile or post link. Never share your password with anyone.",
+  },
+  {
+    q: "How do I pay?",
+    a: "You pay with crypto at checkout. You can choose automatic payment or send the exact amount to the wallet address shown on the order page.",
+  },
+  {
+    q: "When does my order start?",
+    a: "Your order starts after your payment is verified. We email you the order updates, so use an email address you check.",
+  },
+  {
+    q: "Is this safe for my account?",
+    a: "We never ask for your login details and your profile or post only needs to stay public. X sets its own rules and nobody can promise how an account will be treated, so start with a smaller amount if you are unsure.",
+  },
+]
+
 export const LANDING_PAGES: readonly LandingPage[] = [
   {
     slug: "buy-usa-followers",
@@ -261,6 +318,240 @@ export const TIKTOK_LANDING_PAGES: readonly LandingPage[] = [
   },
 ]
 
+export const YOUTUBE_LANDING_PAGES: readonly LandingPage[] = [
+  {
+    slug: "buy-youtube-views",
+    platformId: "youtube",
+    serviceId: "views-lifetime",
+    title: "Buy YouTube Views with Lifetime Refill",
+    description:
+      "Buy YouTube views with a lifetime refill guarantee. Orders from 1,000 to 1,000,000, clear USD pricing, no password needed, pay with crypto.",
+    h1: "Buy YouTube Views with a Lifetime Refill Guarantee",
+    intro:
+      "Give your video a stronger start. Choose your amount, paste the public link of your video and check out in a few minutes. Orders run from 1,000 up to 1,000,000 views and are covered by a lifetime refill guarantee if your view count drops.",
+    points: [
+      "Lifetime refill guarantee if your view count drops",
+      "Orders from 1,000 up to 1,000,000 views",
+      "Only your public video link is needed, never your password",
+    ],
+    faqs: [
+      {
+        q: "How fast are the views delivered?",
+        a: "Orders start within 0-4 hours after your payment is verified, at a speed of up to 3,000 views per day. Larger orders are delivered over several days.",
+      },
+      {
+        q: "What does the lifetime refill guarantee cover?",
+        a: "If your view count drops after the order is completed, contact us with your order details and we will request a refill.",
+      },
+      {
+        q: "Which link do I need?",
+        a: "The public link of the video you want to boost. The video must stay public while the order is running.",
+      },
+      ...YOUTUBE_COMMON_FAQS,
+    ],
+  },
+  {
+    slug: "buy-youtube-subscribers",
+    platformId: "youtube",
+    serviceId: "subscribers",
+    title: "Buy YouTube Subscribers with 30-Day Refill",
+    description:
+      "Buy YouTube subscribers with a 30-day refill guarantee. Clear USD pricing, no password needed, pay with crypto.",
+    h1: "Buy YouTube Subscribers with a 30-Day Refill Guarantee",
+    intro:
+      "Add subscribers to your YouTube channel. Choose your amount, paste your public channel link and check out in a few minutes. Every order is covered by a 30-day refill guarantee if your subscriber count drops.",
+    points: [
+      "30-day refill guarantee if your subscriber count drops",
+      "Orders from 250 up to 10,000 subscribers",
+      "Only your public channel link is needed, never your password",
+    ],
+    faqs: [
+      {
+        q: "What does the 30-day refill guarantee cover?",
+        a: "If your subscriber count drops within 30 days after the order is completed, contact us with your order details and we will request a refill.",
+      },
+      {
+        q: "Do subscribers help me get monetized?",
+        a: "Subscribers are one of the requirements of the YouTube Partner Program, but not the only one. Watch hours and policy compliance also matter, and YouTube sets the final rules, so check its current requirements. Buying subscribers does not guarantee approval.",
+      },
+      {
+        q: "Which link do I need?",
+        a: "The public link of your channel. The channel must stay public while the order is running.",
+      },
+      ...YOUTUBE_COMMON_FAQS,
+    ],
+  },
+  {
+    slug: "buy-youtube-watch-time",
+    platformId: "youtube",
+    serviceId: "watchtime",
+    title: "Buy YouTube Watch Time (Watch Hours)",
+    description:
+      "Buy YouTube watch hours for a public video that is at least 30 minutes long. Orders of 1,000, 2,000 or 4,000 hours, no password needed, pay with crypto.",
+    h1: "Buy YouTube Watch Time",
+    intro:
+      "Add watch hours to a public YouTube video. Choose 1,000, 2,000 or 4,000 hours, paste the link of your video and check out. One unit ordered equals one hour of watch time.",
+    points: [
+      "1,000 ordered equals 1,000 hours of watch time",
+      "Packages of 1,000, 2,000 or 4,000 hours",
+      "Only your public video link is needed, never your password",
+    ],
+    faqs: [
+      {
+        q: "Which video can I use?",
+        a: "A public video that is at least 30 minutes long. The video must stay public while the order is running.",
+      },
+      {
+        q: "Does watch time get me monetized?",
+        a: "Public watch hours are one of the requirements of the YouTube Partner Program. Subscribers and policy compliance also matter, and YouTube sets the final rules, so check its current requirements. Buying watch time does not guarantee approval.",
+      },
+      {
+        q: "Is there a refill guarantee?",
+        a: "No. This service does not include a refill guarantee.",
+      },
+      ...YOUTUBE_COMMON_FAQS,
+    ],
+  },
+]
+
+export const TELEGRAM_LANDING_PAGES: readonly LandingPage[] = [
+  {
+    slug: "buy-telegram-members",
+    platformId: "telegram",
+    serviceId: "members",
+    title: "Buy Telegram Members with 30-Day Refill",
+    description:
+      "Buy Telegram channel or group members with a 30-day refill guarantee. Volume pricing in USD, no login needed, pay with crypto.",
+    h1: "Buy Telegram Members for Your Channel or Group",
+    intro:
+      "Add members to your public Telegram channel or group. Choose your amount, paste your link and check out in a few minutes. The more you order, the lower the price per 1,000.",
+    points: [
+      "Members from mixed global accounts for a channel or group",
+      "30-day refill guarantee, as described below",
+      "Volume pricing: bigger orders cost less per 1,000",
+    ],
+    faqs: [
+      {
+        q: "Where do the members come from?",
+        a: "They are mixed global accounts that are added to your member count. They are not a replacement for real readers, so keep posting for your real audience.",
+      },
+      {
+        q: "What does the 30-day refill guarantee cover?",
+        a: "The refill covers orders placed while your starting member count is low. Drops that happened before your order are not covered. Contact us with your order details if your count drops within 30 days.",
+      },
+      {
+        q: "What do I need before I order?",
+        a: "A public link such as t.me/YourChannel or t.me/YourGroup. The channel or group must be at least 3 days old.",
+      },
+      {
+        q: "How fast is delivery?",
+        a: "Orders start within 0-2 hours after your payment is verified, at a speed of up to 10,000 members per day.",
+      },
+      ...TELEGRAM_COMMON_FAQS,
+    ],
+  },
+  {
+    slug: "buy-telegram-premium-subscribers",
+    platformId: "telegram",
+    serviceId: "premium-30",
+    title: "Buy Telegram Premium Channel Subscribers",
+    description:
+      "Buy Telegram Premium subscribers for your channel, with random views added to your latest posts. Stay periods from 7 to 90 days, pay with crypto.",
+    h1: "Buy Telegram Premium Channel Subscribers",
+    intro:
+      "Add Premium subscribers to your Telegram channel, with random views added to your latest posts. This page shows the 30-day option. Choose your amount, paste your channel link and check out.",
+    points: [
+      "Subscribers from Telegram search, with profile photos",
+      "Random views added to your latest posts",
+      "Other stay periods (7, 14, 60 and 90 days) are on the Telegram services page",
+    ],
+    faqs: [
+      {
+        q: "How long do the subscribers stay?",
+        a: "On this page they stay in your channel for 30 days. If you want 7, 14, 60 or 90 days, pick that option on the Telegram services page.",
+      },
+      {
+        q: "Can I use a group link?",
+        a: "No. This service works for channels only. Please enter a channel link.",
+      },
+      {
+        q: "Is there a refill guarantee?",
+        a: "No. Premium subscribers do not include a refill guarantee.",
+      },
+      {
+        q: "What quality are the subscribers?",
+        a: "They are mixed global accounts that all have profile photos and come from Telegram search. Orders start within 0-1 hours after your payment is verified.",
+      },
+      ...TELEGRAM_COMMON_FAQS,
+    ],
+  },
+]
+
+export const X_LANDING_PAGES: readonly LandingPage[] = [
+  {
+    slug: "buy-x-followers",
+    platformId: "x",
+    serviceId: "followers-refill",
+    title: "Buy X (Twitter) Followers with 30-Day Refill",
+    description:
+      "Buy X (Twitter) followers with a 30-day refill guarantee. Clear USD pricing, no password needed, pay with crypto.",
+    h1: "Buy X (Twitter) Followers with a 30-Day Refill Guarantee",
+    intro:
+      "Add followers to your X profile. Choose your amount, paste your public profile link and check out in a few minutes. Every order is covered by a 30-day refill guarantee if your follower count drops.",
+    points: [
+      "30-day refill guarantee if your count drops",
+      "Orders from 250 up to 10,000 followers",
+      "Only your public profile link is needed, never your password",
+    ],
+    faqs: [
+      {
+        q: "What does the 30-day refill guarantee cover?",
+        a: "If your follower count drops within 30 days after the order is completed, contact us with your order details and we will request a refill.",
+      },
+      {
+        q: "Which X followers option should I choose?",
+        a: "We offer three options: Followers at the lowest price with no refill, Followers with a 30-day refill, and Top Quality, our premium option. Compare prices on the X services page.",
+      },
+      {
+        q: "Can I choose the country, age or interests of the followers?",
+        a: "No. This option adds followers to your profile and does not let you pick a country, age or interest.",
+      },
+      ...X_COMMON_FAQS,
+    ],
+  },
+  {
+    slug: "buy-x-views",
+    platformId: "x",
+    serviceId: "views",
+    title: "Buy X (Twitter) Views and Impressions",
+    description:
+      "Buy views and impressions for a public X post or video. Orders from 100,000 views, priced per 100,000, pay with crypto.",
+    h1: "Buy X (Twitter) Views and Impressions",
+    intro:
+      "Give a public tweet or video on X a stronger start. Orders start at 100,000 views and are priced per 100,000. Paste the link of your post and check out in a few minutes.",
+    points: [
+      "Views and impressions for a public post or video",
+      "Minimum order 100,000, priced per 100,000",
+      "Only your public post link is needed, never your password",
+    ],
+    faqs: [
+      {
+        q: "What is the minimum order?",
+        a: "The minimum order is 100,000 views. The price is shown per package before you check out.",
+      },
+      {
+        q: "Does this add likes or reposts?",
+        a: "No. This service adds views and impressions only. It does not promise likes, replies, reposts or any other result.",
+      },
+      {
+        q: "Is there a refill guarantee?",
+        a: "No. This service does not include a refill guarantee.",
+      },
+      ...X_COMMON_FAQS,
+    ],
+  },
+]
+
 export function getLandingPage(slug: string): LandingPage | undefined {
   return LANDING_PAGES.find((p) => p.slug === slug)
 }
@@ -278,6 +569,13 @@ export const MOVED_LANDING_SLUGS = new Set([
 
 export function getLandingPagesFor(platformId: PlatformId): readonly LandingPage[] {
   if (platformId === 'tiktok') return TIKTOK_LANDING_PAGES
+  if (platformId === 'youtube') return YOUTUBE_LANDING_PAGES
+  if (platformId === 'telegram') return TELEGRAM_LANDING_PAGES
+  if (platformId === 'x') return X_LANDING_PAGES
   if (platformId === 'instagram') return LANDING_PAGES.filter((p) => !MOVED_LANDING_SLUGS.has(p.slug))
   return []
+}
+
+export function getPlatformLandingPage(platformId: PlatformId, slug: string): LandingPage | undefined {
+  return getLandingPagesFor(platformId).find((p) => p.slug === slug)
 }
