@@ -100,7 +100,7 @@ export function LandingPageView({ page }: { page: LandingPage }) {
 
         <section aria-labelledby="more-title">
           <h2 id="more-title" className="text-2xl font-semibold tracking-tight">
-            More {platform.name} follower options
+            More {platform.name} options
           </h2>
           <ul className="mt-4 flex flex-wrap gap-2">
             {others.map((p) => (
