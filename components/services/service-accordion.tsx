@@ -52,10 +52,6 @@ export function ServiceAccordion({
         </button>
       </h2>
       {open && (
-        <div id={`${id}-panel`} className="border-t border-border p-3 sm:p-5">
-          {children}
-        </div>
-      )}
-    </section>
-  )
-}
+        <div id={`${id}-panel`} hidden={!open} className="border-t border-border p-3 sm:p-5">
+  {children}
+</div>
