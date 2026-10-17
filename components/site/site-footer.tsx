@@ -1,9 +1,16 @@
 import Link from 'next/link'
 import { Logo } from '@/components/site/logo'
-import { LANDING_PAGES, MOVED_LANDING_SLUGS, TIKTOK_LANDING_PAGES } from '@/lib/landing-pages'
+import {
+  LANDING_PAGES,
+  MOVED_LANDING_SLUGS,
+  TELEGRAM_LANDING_PAGES,
+  TIKTOK_LANDING_PAGES,
+  X_LANDING_PAGES,
+  YOUTUBE_LANDING_PAGES,
+} from '@/lib/landing-pages'
 import { SITE } from '@/lib/site'
 
-const FOLLOWER_LINKS = [
+const POPULAR_LINKS = [
   { href: '/buy-usa-instagram-followers', label: 'Buy USA Instagram Followers' },
   { href: '/buy-spanish-instagram-followers', label: 'Buy Spanish Instagram Followers' },
   { href: '/buy-arabic-instagram-followers', label: 'Buy Arabic Instagram Followers' },
@@ -14,6 +21,18 @@ const FOLLOWER_LINKS = [
   })),
   ...TIKTOK_LANDING_PAGES.map((page) => ({
     href: `/tiktok/${page.slug}`,
+    label: page.title,
+  })),
+  ...YOUTUBE_LANDING_PAGES.map((page) => ({
+    href: `/youtube/${page.slug}`,
+    label: page.title,
+  })),
+  ...X_LANDING_PAGES.map((page) => ({
+    href: `/x/${page.slug}`,
+    label: page.title,
+  })),
+  ...TELEGRAM_LANDING_PAGES.map((page) => ({
+    href: `/telegram/${page.slug}`,
     label: page.title,
   })),
 ]
@@ -32,8 +51,8 @@ const COLUMNS = [
     ],
   },
   {
-    title: 'Followers',
-    links: FOLLOWER_LINKS,
+    title: 'Popular Services',
+    links: POPULAR_LINKS,
   },
   {
     title: 'Free Tools',
@@ -108,9 +127,9 @@ export function SiteFooter() {
         <div className="mt-12 border-t border-border pt-6">
           <p className="text-xs leading-relaxed text-muted-foreground text-pretty">
             Socialora provides digital social media marketing services. Socialora is not affiliated with, endorsed by,
-            or sponsored by Instagram, Meta, TikTok, ByteDance, YouTube, Google or Telegram. All trademarks belong to
-            their respective owners. Customers are responsible for complying with the terms and rules of the social
-            platforms they use.
+            or sponsored by Instagram, Meta, TikTok, ByteDance, YouTube, Google, X Corp. or Telegram. All trademarks
+            belong to their respective owners. Customers are responsible for complying with the terms and rules of the
+            social platforms they use.
           </p>
           <p className="mt-4 text-xs text-muted-foreground">© Socialora. All rights reserved.</p>
         </div>
