@@ -1,5 +1,4 @@
 import { KeyRound, Mail, ShieldCheck, TriangleAlert } from 'lucide-react'
-import { KeyRound, Mail, ShieldCheck, TriangleAlert } from 'lucide-react'
 import { PlatformServices } from '@/components/services/platform-services'
 import { ComplianceNotice } from '@/components/site/compliance-notice'
 import { PlatformIcon } from '@/components/site/platform-icon'
@@ -43,7 +42,6 @@ export function PlatformPage({ platformId }: { platformId: PlatformId }) {
       </section>
 
       <div className="mx-auto flex max-w-6xl flex-col gap-14 px-4 py-14 sm:px-6 sm:py-20">
-        <div className="flex flex-col gap-3">
         <PlatformServices platformId={platform.id} />
 
         <section aria-labelledby="ordering-notes" className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
