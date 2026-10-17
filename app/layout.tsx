@@ -11,10 +11,9 @@ import './globals.css'
 const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans', display: 'swap' })
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono', display: 'swap' })
 
-const HOME_TITLE = 'Buy Instagram Followers, TikTok & YouTube Views'
+const HOME_TITLE = 'Buy Instagram & TikTok Followers, Likes and Views'
 const HOME_DESCRIPTION =
-  'Buy Instagram, TikTok, YouTube and X (Twitter) followers and views. Clear USD pricing, refill guarantees on selected services and no password needed.'
-
+  'Buy Instagram, TikTok, YouTube and X (Twitter) followers, likes and views. Clear USD pricing, refill guarantees on selected services and no password needed.'
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
