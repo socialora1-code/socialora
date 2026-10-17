@@ -1,15 +1,13 @@
 import { KeyRound, Mail, ShieldCheck, TriangleAlert } from 'lucide-react'
-import { FlatServiceSection } from '@/components/services/flat-service-section'
-import { ServiceAccordion } from '@/components/services/service-accordion'
-import { TieredServiceSection } from '@/components/services/tiered-service-section'
+import { KeyRound, Mail, ShieldCheck, TriangleAlert } from 'lucide-react'
+import { PlatformServices } from '@/components/services/platform-services'
 import { ComplianceNotice } from '@/components/site/compliance-notice'
 import { PlatformIcon } from '@/components/site/platform-icon'
-import { getPlatform, getStartingPriceCents, isTiered, type PlatformId } from '@/lib/catalog'
-import { formatUSD } from '@/lib/format'
+import { getPlatform, type PlatformId } from '@/lib/catalog'
 
 const PAGE_HEADINGS: Partial<Record<PlatformId, string>> = {
-  instagram: 'Buy Instagram Followers & Likes',
-  tiktok: 'Buy TikTok Followers',
+  instagram: 'Buy Instagram Followers, Likes & Views',
+  tiktok: 'Buy TikTok Followers, Likes & Views',
   youtube: 'Buy YouTube Views, Watch Time & Subscribers',
   x: 'Buy X (Twitter) Followers & Views',
   telegram: 'Buy Telegram Members & Channel Subscribers',
