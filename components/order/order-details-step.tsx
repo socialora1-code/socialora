@@ -24,7 +24,16 @@ const optionClass = cn(
   'hover:border-foreground/30 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/40',
   'has-[:checked]:border-primary has-[:checked]:bg-accent/60 has-[:checked]:ring-1 has-[:checked]:ring-primary',
 )
-
+function categoryOf(s: Service): string {
+  const id = String(s.id)
+  if (id.includes('autolikes')) return 'Likes'
+  if (id.includes('autoviews') || id.startsWith('views')) return 'Views'
+  if (id === 'watchtime') return 'Watch Time'
+  if (id.startsWith('subscribers')) return 'Subscribers'
+  if (id === 'members') return 'Members'
+  if (id.startsWith('premium')) return 'Premium Subscribers'
+  return 'Followers'
+}
 export function OrderDetailsStep({
   platform,
   service,
@@ -48,6 +57,9 @@ export function OrderDetailsStep({
 }) {
   const tiered = isTiered(service)
   const fixed = Boolean(service.fixed)
+    const categories = Array.from(new Set(platform.services.map(categoryOf)))
+  const category = categoryOf(service)
+  const inCategory = platform.services.filter((s) => categoryOf(s) === category)
   const listPrice = getListPriceCents(service, quantity)
   const itemName = fixed
     ? `${platform.name} ${service.label}`
@@ -55,23 +67,52 @@ export function OrderDetailsStep({
 
   return (
     <div className="flex flex-col gap-7">
-            <div className="min-w-0">
-        <label htmlFor="service" className="text-sm font-medium">
-          Service
-        </label>
-        <select
-          id="service"
-          value={service.id}
-          onChange={(e) => onServiceChange(e.target.value as ServiceId)}
-          className="mt-3 h-12 w-full rounded-xl border border-border bg-background px-4 text-base"
-        >
-          {platform.services.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.label}
-            </option>
-          ))}
-        </select>
-      </div>
+                  {categories.length > 1 && (
+        <fieldset className="min-w-0">
+          <legend className="text-sm font-medium">Type</legend>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {categories.map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => {
+                  const first = platform.services.find((s) => categoryOf(s) === c)
+                  if (first) onServiceChange(first.id)
+                }}
+                aria-pressed={c === category}
+                className={cn(
+                  'inline-flex h-11 items-center rounded-full border px-5 text-sm font-medium transition-colors',
+                  c === category
+                    ? 'border-foreground bg-foreground text-background'
+                    : 'border-border bg-background hover:border-foreground/30',
+                )}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      )}
+
+      {inCategory.length > 1 && (
+        <div className="min-w-0">
+          <label htmlFor="service" className="text-sm font-medium">
+            Option
+          </label>
+          <select
+            id="service"
+            value={service.id}
+            onChange={(e) => onServiceChange(e.target.value as ServiceId)}
+            className="mt-3 h-12 w-full rounded-xl border border-border bg-background px-4 text-base"
+          >
+            {inCategory.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <fieldset className="min-w-0">
         <legend className="text-sm font-medium">Service</legend>
