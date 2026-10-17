@@ -125,7 +125,7 @@ const sections: LegalSection[] = [
   },
   {
     title: 'Governing law',
-    body: <p>These Terms are governed by the laws of {SITE.legal.jurisdiction}, without regard to conflict-of-law rules.</p>,
+    body: <p>These Terms are governed by applicable law, without regard to conflict-of-law rules.</p>,
   },
   {
     title: 'Changes and contact',
