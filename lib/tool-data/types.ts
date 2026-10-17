@@ -12,6 +12,7 @@ export type ToolKind =
   | 'fit'
   | 'safezone'
   | 'frame'
+  | 'scorecard'
 
 export interface ToolFaq {
   q: string
