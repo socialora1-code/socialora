@@ -24,14 +24,20 @@ const sections: LegalSection[] = [
       <>
         <p>When you place an order, we collect:</p>
         <ul>
-          <li>The public profile, post or video URL or username you submit</li>
+          <li>The public profile, post, video or channel link, or username, you submit</li>
           <li>Your email address</li>
           <li>The service, package, quantity and price of your order</li>
           <li>The payment method you chose and, if you provide it, your transaction ID or hash</li>
+          <li>A referral code, if you arrived through a referral link</li>
         </ul>
         <p>
-          When you contact support, we collect your name, email, subject and message. Our hosting provider may also
-          process standard technical data, such as IP address and browser type, to operate and secure the website.
+          When you use the free Instagram views offer, we collect the post link you submit and your IP address, which
+          we use to enforce the free limits. When you join the referral program, we collect your email address and the
+          code you choose. When you contact support, we collect your name, email, subject and message.
+        </p>
+        <p>
+          Our hosting provider and analytics tools may also process standard technical data, such as IP address,
+          browser type and pages visited, to operate and secure the website and to understand how it is used.
         </p>
       </>
     ),
@@ -40,8 +46,9 @@ const sections: LegalSection[] = [
     title: 'How we use information',
     body: (
       <ul>
-        <li>To process, verify and deliver your order</li>
-        <li>To send order confirmations, payment instructions and support replies</li>
+        <li>To process, verify, deliver and track your order</li>
+        <li>To send order confirmations, status updates and support replies</li>
+        <li>To run the referral program and the free offers</li>
         <li>To prevent fraud and abuse and to keep our website secure</li>
         <li>To meet legal obligations</li>
       </ul>
@@ -50,11 +57,23 @@ const sections: LegalSection[] = [
   {
     title: 'How information is stored',
     body: (
-      <p>
-        We do not store orders in a customer database on this website. Order and support details are delivered to our
-        team by email through our email delivery provider and are retained in our mailbox for as long as needed to
-        handle your order, resolve disputes and meet legal requirements.
-      </p>
+      <>
+        <p>
+          Order details are stored in a database run by our infrastructure provider so we can process, track and
+          support your order. Pending order records are kept for up to 14 days, and order tracking records are kept for
+          up to one year. Order and support emails are also delivered to our mailbox and kept for as long as needed to
+          handle your order, resolve disputes and meet legal requirements.
+        </p>
+        <p>
+          For the free views offer, your IP address is counted for up to 24 hours and a post link is remembered for 30
+          days, so the same post cannot receive free views twice. Referral email addresses and codes are kept while
+          the referral program is active.
+        </p>
+        <p>
+          If you arrive through a referral link, your browser keeps the referral code for 30 days so we can credit the
+          referrer. You can clear it at any time in your browser settings.
+        </p>
+      </>
     ),
   },
   {
@@ -62,8 +81,9 @@ const sections: LegalSection[] = [
     body: (
       <p>
         We do not sell your personal information. We share it only with service providers that help us run our
-        business — such as website hosting, email delivery and the providers that help fulfill your order — and only
-        as needed for those purposes, or when required by law.
+        business, and only as needed for those purposes, or when required by law. These include website hosting, email
+        delivery, analytics, the payment processor for automatic crypto payments, and the supply partners that deliver
+        your order, who receive the link or username and the quantity you ordered.
       </p>
     ),
   },
