@@ -1,5 +1,6 @@
 'use client'
 
+import { ChevronDown } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FlatServiceSection } from '@/components/services/flat-service-section'
 import { ServiceAccordion } from '@/components/services/service-accordion'
@@ -36,55 +37,58 @@ export function PlatformServices({ platformId }: { platformId: PlatformId }) {
   }, [platform])
 
   return (
-    <div>
-      {names.length > 1 && (
-        <ul className="grid gap-3 sm:grid-cols-3">
-          {names.map((name) => {
-            const list = groups.get(name)!
-            const from = Math.min(...list.map(getStartingPriceCents))
-            return (
-              <li key={name}>
-                <button
-                  type="button"
-                  onClick={() => setOpen(open === name ? null : name)}
-                  aria-expanded={open === name}
-                  className={cn(
-                    'w-full rounded-2xl border p-5 text-left transition-colors',
-                    open === name ? 'border-primary bg-accent/60' : 'border-border bg-card hover:border-foreground/30',
-                  )}
-                >
+    <div className="flex flex-col gap-3">
+      {names.map((name) => {
+        const list = groups.get(name)!
+        const from = Math.min(...list.map(getStartingPriceCents))
+        const isOpen = open === name
+        return (
+          <div key={name}>
+            {names.length > 1 && (
+              <button
+                type="button"
+                onClick={() => setOpen(isOpen ? null : name)}
+                aria-expanded={isOpen}
+                className={cn(
+                  'flex w-full items-center justify-between gap-4 rounded-2xl border p-5 text-left transition-colors',
+                  isOpen ? 'border-primary bg-accent/60' : 'border-border bg-card hover:border-foreground/30',
+                )}
+              >
+                <span>
                   <span className="block text-lg font-semibold tracking-tight">
                     {platform.name} {name}
                   </span>
                   <span className="mt-1 block text-sm text-muted-foreground">
                     {list.length} {list.length === 1 ? 'option' : 'options'} · from {formatUSD(from)}
                   </span>
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-      )}
+                </span>
+                <ChevronDown
+                  className={cn('size-5 shrink-0 text-muted-foreground transition-transform', isOpen && 'rotate-180')}
+                  aria-hidden="true"
+                />
+              </button>
+            )}
 
-      {names.map((name) => (
-        <div key={name} hidden={open !== name} className={cn('flex flex-col gap-3', names.length > 1 && 'mt-4')}>
-          {groups.get(name)!.map((service) => (
-            <ServiceAccordion
-              key={service.id}
-              id={service.id}
-              title={`${platform.name} ${service.label}`}
-              summary={service.summary}
-              fromPrice={formatUSD(getStartingPriceCents(service))}
-            >
-              {isTiered(service) ? (
-                <TieredServiceSection platformId={platform.id} serviceId={service.id} />
-              ) : (
-                <FlatServiceSection platformId={platform.id} serviceId={service.id} />
-              )}
-            </ServiceAccordion>
-          ))}
-        </div>
-      ))}
+            <div hidden={!isOpen} className={cn('flex flex-col gap-3', names.length > 1 && 'mt-3 pl-2 sm:pl-4')}>
+              {list.map((service) => (
+                <ServiceAccordion
+                  key={service.id}
+                  id={service.id}
+                  title={`${platform.name} ${service.label}`}
+                  summary={service.summary}
+                  fromPrice={formatUSD(getStartingPriceCents(service))}
+                >
+                  {isTiered(service) ? (
+                    <TieredServiceSection platformId={platform.id} serviceId={service.id} />
+                  ) : (
+                    <FlatServiceSection platformId={platform.id} serviceId={service.id} />
+                  )}
+                </ServiceAccordion>
+              ))}
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }
