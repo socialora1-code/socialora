@@ -264,16 +264,30 @@ export function OrderForm({ initial }: { initial: InitialSelection }) {
             )}
           </StepCard>
 
-          <StepCard step={2} title="Social Profile">
+                    <StepCard step={2} title="Social Profile">
             <FormField
               id="profile"
-              label={usernameOnly ? `${platform.name} Username` : platform.profileFieldLabel}
+              label={
+                usernameOnly
+                  ? `${platform.name} Username`
+                  : service.target === 'profile'
+                    ? platform.profileFieldLabel
+                    : `${platform.name} ${service.target === 'channel' ? 'Channel' : 'Post or Video'} URL`
+              }
               helper={
                 usernameOnly
                   ? 'Enter the public username you want to grow. No link needed.'
-                  : 'Enter the public profile or post URL you want to grow.'
+                  : service.target === 'profile'
+                    ? 'Enter the public profile URL you want to grow.'
+                    : 'Enter the public link of the video, reel or post.'
               }
-              placeholder={usernameOnly ? '@yourusername' : platform.profilePlaceholder}
+              placeholder={
+                usernameOnly
+                  ? '@yourusername'
+                  : service.target === 'profile'
+                    ? platform.profilePlaceholder
+                    : `https://${platform.allowedHosts[0]}/...`
+              }
               value={profile}
               onChange={(e) => {
                 setProfile(e.target.value)
