@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { AccountScorecard } from '@/components/tools/account-scorecard'
 import { BlurFit } from '@/components/tools/blur-fit'
+import { CaptionGenerator } from '@/components/tools/caption-generator'
 import { Calculator } from '@/components/tools/calculator'
 import { FontGenerator } from '@/components/tools/font-generator'
 import { FrameGrabber } from '@/components/tools/frame-grabber'
@@ -89,6 +90,11 @@ const STEPS: Record<string, readonly string[]> = {
     'Move the slider to the frame you like and fine-tune it with the 0.1 second buttons.',
     'Pick a size, capture the frame and download the image.',
   ],
+    caption: [
+    'Pick the type of post, like selfie, travel or gym.',
+    'Add a short topic if you want, then press More captions until one fits.',
+    'Tap Copy caption, or copy it with hashtags, and paste it into Instagram.',
+  ],
   scorecard: [
     'Open your Instagram profile and your Insights, then note your numbers.',
     'Enter them in the boxes. Use the average of your last 10 to 20 posts for likes and comments.',
@@ -124,6 +130,8 @@ function Widget({ tool }: { tool: ToolDef }) {
       return <SafeZone />
     case 'frame':
       return <FrameGrabber />
+          case 'caption':
+      return <CaptionGenerator />
     case 'scorecard':
       return <AccountScorecard />
     default:
