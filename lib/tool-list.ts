@@ -1,4 +1,5 @@
 import { CALC_TOOLS } from '@/lib/tool-data/calc-tools'
+import { CAPTION_TOOLS } from '@/lib/tool-data/caption-tools'
 import { FONT_TOOLS } from '@/lib/tool-data/font-tools'
 import { GEN_TOOLS } from '@/lib/tool-data/gen-tools'
 import type { ToolDef } from '@/lib/tool-data/types'
@@ -9,6 +10,7 @@ export const TOOLS: readonly ToolDef[] = [
   ...FONT_TOOLS,
   ...CALC_TOOLS,
   ...GEN_TOOLS,
+  ...CAPTION_TOOLS,
   ...UTIL_TOOLS,
   ...VISUAL_TOOLS,
 ]
