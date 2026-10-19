@@ -14,6 +14,7 @@ export type ToolKind =
   | 'frame'
   | 'scorecard'
   | 'caption'
+  | 'fakecheck'
 
 export interface ToolFaq {
   q: string
