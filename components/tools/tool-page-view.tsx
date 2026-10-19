@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { AccountScorecard } from '@/components/tools/account-scorecard'
+import { FakeFollowerCheck } from '@/components/tools/fake-follower-check'
 import { BlurFit } from '@/components/tools/blur-fit'
 import { CaptionGenerator } from '@/components/tools/caption-generator'
 import { Calculator } from '@/components/tools/calculator'
@@ -95,6 +96,11 @@ const STEPS: Record<string, readonly string[]> = {
     'Add a short topic if you want, then press More captions until one fits.',
     'Tap Copy caption, or copy it with hashtags, and paste it into Instagram.',
   ],
+    fakecheck: [
+    'Open the Instagram profile and note the followers, following and number of posts.',
+    'Enter the average likes and comments of the last 10 to 20 posts. Add the 30-day growth if you know it.',
+    'Read each signal and the risk level, then copy the report if you need to share it.',
+  ],
   scorecard: [
     'Open your Instagram profile and your Insights, then note your numbers.',
     'Enter them in the boxes. Use the average of your last 10 to 20 posts for likes and comments.',
@@ -132,6 +138,8 @@ function Widget({ tool }: { tool: ToolDef }) {
       return <FrameGrabber />
           case 'caption':
       return <CaptionGenerator />
+          case 'fakecheck':
+      return <FakeFollowerCheck />
     case 'scorecard':
       return <AccountScorecard />
     default:
