@@ -1,6 +1,6 @@
 import { Send } from 'lucide-react'
 
-const TELEGRAM_URL = 'https://t.me/socialora0'
+const TELEGRAM_URL = 'https://t.me/SocialoraSupport'
 
 export function TelegramButton() {
   return (
