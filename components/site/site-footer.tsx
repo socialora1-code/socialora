@@ -10,6 +10,9 @@ import {
 } from '@/lib/landing-pages'
 import { SITE } from '@/lib/site'
 
+const SAASHUB_URL =
+  'https://www.saashub.com/socialora?utm_source=badge&utm_campaign=badge&utm_content=socialora&badge_variant=color&badge_kind=approved'
+
 const POPULAR_LINKS = [
   { href: '/buy-usa-instagram-followers', label: 'Buy USA Instagram Followers' },
   { href: '/buy-spanish-instagram-followers', label: 'Buy Spanish Instagram Followers' },
@@ -103,6 +106,17 @@ export function SiteFooter() {
               className="mt-4 inline-block text-sm font-medium text-foreground underline-offset-4 hover:underline"
             >
               {SITE.supportEmail}
+            </a>
+            <a href={SAASHUB_URL} target="_blank" rel="noopener noreferrer" className="mt-4 block w-fit">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://cdn-b.saashub.com/img/badges/approved-color.png?v=1"
+                alt="Socialora approved on SaaSHub"
+                width={150}
+                height={40}
+                loading="lazy"
+                style={{ maxWidth: '150px', height: 'auto' }}
+              />
             </a>
           </div>
           {COLUMNS.map((col) => (
