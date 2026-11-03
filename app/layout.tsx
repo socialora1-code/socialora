@@ -23,12 +23,10 @@ export const metadata: Metadata = {
   },
   description: HOME_DESCRIPTION,
   applicationName: SITE.name,
-  alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
     siteName: SITE.name,
     locale: 'en_US',
-    url: '/',
     title: `${HOME_TITLE} · Socialora`,
     description: HOME_DESCRIPTION,
   },
