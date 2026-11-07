@@ -15,8 +15,10 @@ SPEC.loader.exec_module(app)
 
 
 class FakeTelegram:
-    def __init__(self, error=None, bot=app.BOT, permission=True, wrong_chat=False):
+    def __init__(self, error=None, bot=app.BOT, permission=True, wrong_chat=False, webhook_url='', updates=None):
         self.calls, self.error, self.bot, self.permission, self.wrong_chat = [], error, bot, permission, wrong_chat
+        self.webhook_url = webhook_url
+        self.updates = list(updates or [])
 
     def call(self, method, payload=None):
         self.calls.append((method, payload))
@@ -36,7 +38,12 @@ class FakeTelegram:
         if method == 'getChatMemberCount':
             return 100
         if method == 'getWebhookInfo':
-            return {'url': 'https://unseen.example/private-secret'}
+            return {'url': self.webhook_url}
+        if method == 'getUpdates':
+            offset = (payload or {}).get('offset')
+            if offset is not None:
+                return [u for u in self.updates if u['update_id'] >= offset]
+            return list(self.updates)
         raise AssertionError('Forbidden method ' + method)
 
 
@@ -300,9 +307,59 @@ class PublisherTests(unittest.TestCase):
 
     def test_webhook_mutation_methods_are_impossible(self):
         api = app.Telegram('not-real')
-        for method in ['getUpdates', 'setWebhook', 'deleteWebhook', 'deleteMessage', 'banChatMember']:
+        for method in ['setWebhook', 'deleteWebhook', 'deleteMessage', 'banChatMember']:
             with self.assertRaises(app.SafeError):
                 api.call(method)
+
+    def test_consume_updates_requires_empty_webhook_and_deduplicates(self):
+        updates = [
+            {'update_id': 10, 'message': {'message_id': 501, 'chat': {'id': -1002},
+                                          'from': {'id': 77, 'username': 'alice', 'is_bot': False},
+                                          'text': 'How can I resize a vertical photo without cropping?'}},
+            {'update_id': 11, 'message': {'message_id': 502, 'chat': {'id': -1002},
+                                          'from': {'id': 78, 'username': 'bob', 'is_bot': False},
+                                          'text': 'Good morning everyone'}},
+            {'update_id': 12, 'message': {'message_id': 503, 'chat': {'id': -9999},
+                                          'from': {'id': 79, 'username': 'eve', 'is_bot': False},
+                                          'text': 'Question in another chat?'}},
+        ]
+        blocked_api = FakeTelegram(webhook_url='https://example.com/hook', updates=updates)
+        self.assertEqual(0, app.consume_updates(self.db, blocked_api, self.now))
+        self.assertFalse(any(m == 'getUpdates' for m, _ in blocked_api.calls))
+
+        api = FakeTelegram(webhook_url='', updates=updates)
+        self.assertEqual(1, app.consume_updates(self.db, api, self.now))
+        # Second poll with same updates must advance offset and not duplicate
+        self.assertEqual(0, app.consume_updates(self.db, api, self.now + 60))
+        rows = self.db.execute('SELECT * FROM inbox ORDER BY update_id').fetchall()
+        self.assertEqual(2, len(rows))
+        self.assertEqual('pending', rows[0]['status'])
+        self.assertEqual('ignored', rows[1]['status'])
+
+    def test_reply_to_inbox_validates_and_prevents_double_reply(self):
+        updates = [{'update_id': 25, 'message': {'message_id': 600, 'chat': {'id': -1002},
+                                                 'from': {'id': 80, 'username': 'creator1', 'is_bot': False},
+                                                 'text': '@socialora_publisher_2026_bot how do I track my order'}}]
+        api = FakeTelegram(webhook_url='', updates=updates)
+        app.consume_updates(self.db, api, self.now)
+        # Reject asking for private info in public group
+        with self.assertRaises(app.SafeError):
+            app.reply_to_inbox(self.db, api, 25, 'Please send your email and share your order id here.', self.now)
+        # Reject untracked link
+        with self.assertRaises(app.SafeError):
+            app.reply_to_inbox(self.db, api, 25, 'Use https://www.getsocialora.com/track to check status.', self.now)
+        # Valid helpful reply with tracked link
+        valid_reply = ('You can check live status with your order reference on the tracking page — '
+                       'avoid posting private order details in the group: '
+                       'https://www.getsocialora.com/track?utm_source=telegram&utm_medium=group&utm_campaign=reply_u25')
+        msg_id = app.reply_to_inbox(self.db, api, 25, valid_reply, self.now)
+        self.assertEqual(900, msg_id)
+        row = self.db.execute('SELECT * FROM inbox WHERE update_id=25').fetchone()
+        self.assertEqual('replied', row['status'])
+        self.assertEqual(900, row['reply_message_id'])
+        # Prevent duplicate reply
+        with self.assertRaises(app.SafeError):
+            app.reply_to_inbox(self.db, api, 25, valid_reply, self.now + 10)
 
     def test_full_seven_day_calendar_survives_restart(self):
         start = (dt.datetime.now(app.TZ).date() + dt.timedelta(days=1)).isoformat()

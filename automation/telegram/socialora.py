@@ -25,7 +25,7 @@ CONFIG = Path(os.environ.get('SOCIALORA_CONFIG', str(Path.home() / '.config/soci
 TZ = dt.timezone(dt.timedelta(hours=3), 'Europe/Istanbul')
 TARGETS = {'channel': '@SocialoraOfficial', 'group': '@SocialoraChat'}
 BOT = 'socialora_publisher_2026_bot'
-VERSION = '1.1.0'
+VERSION = '1.2.0'
 LOG = logging.getLogger('socialora')
 
 
@@ -80,9 +80,9 @@ class Telegram:
         self.opener = urllib.request.build_opener(NoRedirect)
 
     def call(self, method, payload=None):
-        # This allowlist deliberately excludes webhook mutation and message ingestion.
+        # This allowlist deliberately excludes webhook mutation and destructive methods.
         if method not in {'getMe', 'getChat', 'getChatMember', 'getChatMemberCount',
-                          'getWebhookInfo', 'sendMessage'}:
+                          'getWebhookInfo', 'getUpdates', 'sendMessage'}:
             raise SafeError('Desteklenmeyen Telegram işlemi.')
         req = urllib.request.Request('https://api.telegram.org/bot' + self.token + '/' + method,
                                      data=json.dumps(payload or {}).encode(),
@@ -141,6 +141,13 @@ def connect():
           note TEXT NOT NULL DEFAULT '', UNIQUE(target, digest));
         CREATE TABLE IF NOT EXISTS snapshots (
           day TEXT PRIMARY KEY, channel INTEGER, members INTEGER, captured_at INTEGER NOT NULL);
+        CREATE TABLE IF NOT EXISTS inbox (
+          update_id INTEGER PRIMARY KEY, chat_id INTEGER NOT NULL, message_id INTEGER NOT NULL,
+          sender TEXT NOT NULL DEFAULT '', reply_to_message_id INTEGER, text TEXT NOT NULL,
+          directed INTEGER NOT NULL DEFAULT 0, status TEXT NOT NULL DEFAULT 'pending',
+          reply_message_id INTEGER, reply_text TEXT NOT NULL DEFAULT '',
+          received_at INTEGER NOT NULL, replied_at INTEGER, note TEXT NOT NULL DEFAULT '',
+          UNIQUE(chat_id, message_id));
     ''')
     db.commit()
     (STATE / 'queue.sqlite3').chmod(0o600)
@@ -239,8 +246,145 @@ def pause(reason='Kullanıcı duraklattı.'):
 def recover(db):
     with db:
         count = db.execute("UPDATE posts SET status='unknown',note='Interrupted while sending; check Telegram.' WHERE status='sending'").rowcount
-    if count:
-        pause('Kesinti sırasında sonucu belirsiz yayın var; Telegram kontrolü gerekiyor.')
+        inbox_count = db.execute("UPDATE inbox SET status='unknown',note='Interrupted while replying; check Telegram.' WHERE status='sending'").rowcount
+    if count or inbox_count:
+        pause('Kesinti sırasında sonucu belirsiz yayın veya yanıt var; Telegram kontrolü gerekiyor.')
+
+
+def is_directed_to_us(msg):
+    text = (msg.get('text') or msg.get('caption') or '').strip()
+    if not text:
+        return False
+    lower = text.lower()
+    if f'@{BOT}' in lower or '@socialoraofficial' in lower or 'socialora' in lower:
+        return True
+    reply = msg.get('reply_to_message') or {}
+    reply_from = reply.get('from') or {}
+    reply_sender_chat = reply.get('sender_chat') or {}
+    if reply_from.get('username', '').lower() == BOT:
+        return True
+    if reply_sender_chat.get('username', '').lower() in {'socialoraofficial', 'socialorachat'}:
+        return True
+    return '?' in text
+
+
+def consume_updates(db, api, now):
+    if (STATE / 'PAUSED').exists():
+        return 0
+    webhook = api.call('getWebhookInfo')
+    if not isinstance(webhook, dict) or webhook.get('url'):
+        LOG.warning('polling_skipped_webhook_active')
+        return 0
+    group_chat_id = verify(api, 'group')
+    row = db.execute("SELECT value FROM meta WHERE key='last_update_id'").fetchone()
+    offset = int(row['value']) + 1 if row else None
+    payload = {'timeout': 0, 'limit': 50, 'allowed_updates': ['message']}
+    if offset is not None:
+        payload['offset'] = offset
+    updates = api.call('getUpdates', payload)
+    if not isinstance(updates, list):
+        return 0
+    stored = 0
+    max_uid = int(row['value']) if row else None
+    with db:
+        for upd in updates:
+            if not isinstance(upd, dict) or not isinstance(upd.get('update_id'), int):
+                continue
+            uid = upd['update_id']
+            if max_uid is None or uid > max_uid:
+                max_uid = uid
+            msg = upd.get('message')
+            if not isinstance(msg, dict) or not isinstance(msg.get('message_id'), int):
+                continue
+            chat = msg.get('chat') or {}
+            if chat.get('id') != group_chat_id:
+                continue
+            sender_info = msg.get('from') or {}
+            if sender_info.get('is_bot') is True or sender_info.get('username', '').lower() == BOT:
+                continue
+            text = (msg.get('text') or msg.get('caption') or '').strip()
+            if not text:
+                continue
+            sender = sender_info.get('username') or sender_info.get('first_name') or str(sender_info.get('id', 'member'))
+            reply_to = (msg.get('reply_to_message') or {}).get('message_id')
+            directed = 1 if is_directed_to_us(msg) else 0
+            status = 'pending' if directed else 'ignored'
+            cur = db.execute('''
+                INSERT OR IGNORE INTO inbox
+                (update_id, chat_id, message_id, sender, reply_to_message_id, text, directed, status, received_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (uid, group_chat_id, msg['message_id'], str(sender)[:80], reply_to, text[:2000], directed, status, now))
+            if cur.rowcount == 1 and directed:
+                stored += 1
+        if max_uid is not None:
+            db.execute("INSERT INTO meta(key, value) VALUES('last_update_id', ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value", (str(max_uid),))
+    return stored
+
+
+def validate_reply_text(text, campaign_id):
+    text = text.strip()
+    if not 15 <= len(text.encode('utf-16-le')) // 2 <= 1200:
+        raise SafeError('Yanıt uzunluğu 15–1200 karakter arasında olmalı.')
+    if re.search(r'\b\d{5,}:[A-Za-z0-9_-]{20,}', text) or re.search(r'\b(?:100% safe|never drops|guaranteed followers)\b', text, re.I):
+        raise SafeError('Yanıtta yasak bilgi veya garanti bulundu.')
+    if re.search(r'\b(?:send your email|share your order id|what is your order number|send payment screenshot)\b', text, re.I):
+        raise SafeError('Herkese açık grupta özel sipariş/iletişim bilgisi istenemez.')
+    for raw in re.findall(r'https?://[^\s]+', text):
+        u = urllib.parse.urlsplit(raw)
+        if u.scheme != 'https' or u.username or u.password or u.port:
+            raise SafeError('Yanıt bağlantısı güvenli değil.')
+        if u.netloc == 'www.getsocialora.com':
+            query = urllib.parse.parse_qs(u.query)
+            if query.get('utm_source') != ['telegram'] or query.get('utm_medium') != ['group'] or query.get('utm_campaign') != [campaign_id]:
+                raise SafeError(f'Site bağlantısında takip etiketleri eksik (utm_source=telegram&utm_medium=group&utm_campaign={campaign_id}).')
+        elif u.netloc != 't.me' or u.path not in {'/SocialoraOfficial', '/SocialoraChat'} or u.query:
+            raise SafeError('Yanıtta beklenmeyen dış bağlantı var.')
+    return text
+
+
+def reply_to_inbox(db, api, update_id, text, now=None):
+    now = int(now or time.time())
+    if (STATE / 'PAUSED').exists():
+        raise SafeError('Sistem duraklatılmış durumda; önce durumu kontrol edin.')
+    row = db.execute('SELECT * FROM inbox WHERE update_id=?', (update_id,)).fetchone()
+    if not row:
+        raise SafeError('Bu update_id ile kayıtlı gelen mesaj bulunamadı.')
+    if row['status'] == 'replied':
+        raise SafeError('Bu mesaja zaten yanıt verildi; tekrar gönderilmez.')
+    if row['status'] not in {'pending', 'ignored'}:
+        raise SafeError('Mesaj durumu yanıtlamaya uygun değil.')
+    campaign_id = f'reply_u{update_id}'
+    clean_text = validate_reply_text(text, campaign_id)
+    chat_id = verify(api, 'group')
+    if chat_id != row['chat_id']:
+        raise SafeError('Grup kimliği doğrulanamadı.')
+    with db:
+        changed = db.execute("UPDATE inbox SET status='sending',reply_text=? WHERE update_id=? AND status IN ('pending','ignored')",
+                             (clean_text, update_id)).rowcount
+    if changed != 1:
+        raise SafeError('Mesaj başka bir işlem tarafından güncellendi.')
+    try:
+        sent = api.call('sendMessage', {
+            'chat_id': chat_id,
+            'text': clean_text,
+            'reply_parameters': {'message_id': row['message_id']},
+            'link_preview_options': {'is_disabled': True},
+            'disable_notification': False,
+        })
+        if not isinstance(sent, dict) or not isinstance(sent.get('message_id'), int) or sent['message_id'] <= 0 or sent.get('chat', {}).get('id') != chat_id:
+            raise TelegramError(0, uncertain=True)
+    except TelegramError as err:
+        status = 'unknown' if err.uncertain else 'failed'
+        with db:
+            db.execute('UPDATE inbox SET status=?,note=? WHERE update_id=?',
+                       (status, f'Telegram code={err.code}; uncertain={err.uncertain}', update_id))
+        if status == 'unknown' or err.code in {401, 403}:
+            pause('Grup yanıtı sonucu belirsiz veya yetki hatası; Telegram kontrol edilmeli.')
+        raise SafeError('Yanıt gönderilemedi; durumu kontrol edin.') from None
+    with db:
+        db.execute("UPDATE inbox SET status='replied',reply_message_id=?,replied_at=?,note='' WHERE update_id=?",
+                   (sent['message_id'], now, update_id))
+    return sent['message_id']
 
 
 def publish_one(db, api, now):
@@ -318,6 +462,7 @@ def report(db, now=None):
     today = dt.datetime.fromtimestamp(now, TZ).date()
     midnight = int(dt.datetime.combine(today, dt.time(), TZ).timestamp())
     counts = dict(db.execute('SELECT status,COUNT(*) FROM posts GROUP BY status').fetchall())
+    inbox_counts = dict(db.execute('SELECT status,COUNT(*) FROM inbox GROUP BY status').fetchall())
     snaps = db.execute('SELECT * FROM snapshots ORDER BY day DESC LIMIT 2').fetchall()
     latest = snaps[0] if snaps else None
     yesterday = next((s for s in snaps if s['day'] == (today-dt.timedelta(days=1)).isoformat()), None)
@@ -329,8 +474,8 @@ def report(db, now=None):
                       f'Bugün yayınlanan: {sent}; bekleyen: {counts.get("pending", 0)}',
                       f'Belirsiz: {counts.get("unknown", 0)}; hatalı: {counts.get("failed", 0)}; süresi geçen: {counts.get("expired", 0)}',
                       'Site tıklaması / satış / en iyi gönderi: analitik verisi yok',
-                      'AI/API çağrısı: 0; otomatik grup yanıtı: kapalı',
-                      'Plan: kuyruk bitmeden yeni, incelenmiş haftalık içerik ekle.'])
+                      f'Grup kutusu: bekleyen={inbox_counts.get("pending", 0)}, yanıtlanan={inbox_counts.get("replied", 0)}; AI/API çağrısı: 0 (otomatik AI kapalı)',
+                      'Plan: gelen grup sorularını kontrol et; kuyruk bitmeden yeni haftalık içerik ekle.'])
     atomic_text(STATE / 'report.txt', text + '\n')
     return text
 
@@ -352,7 +497,7 @@ def setup():
     atomic_text(CONFIG, json.dumps({'bot_token': token, 'version': 1}, indent=2) + '\n')
     pause('İlk kurulum: içerik ve mevcut botun yayın kuyruğu kontrol edilmeli.')
     print('Bot doğrulandı; anahtar telefonda özel dosyaya kaydedildi. Yayın henüz kapalı.')
-    print('Webhook ayarı değiştirilmedi. Gelen grup mesajlarını henüz okumuyoruz.')
+    print('Webhook ayarı değiştirilmedi. Boş webhook varsa tek tüketici olarak grup mesajları okunabilir.')
     print('Başka webhook var:', bool(webhook.get('url')))
 
 
@@ -362,16 +507,29 @@ def doctor():
         chat_id = verify(api, target)
         count = api.call('getChatMemberCount', {'chat_id': chat_id})
         print(f'{TARGETS[target]}: kimlik ve yayın yetkisi doğru; üye={count}')
-    print('Mevcut webhook:', bool(api.call('getWebhookInfo').get('url')), '(değiştirilmedi)')
-    print('AI/API kullanımı: yok. Kişisel Telegram oturumu: kullanılmıyor.')
+    webhook_url = bool(api.call('getWebhookInfo').get('url'))
+    print('Mevcut webhook:', webhook_url, '(değiştirilmedi; boşsa getUpdates ile grup okuma açık)')
+    print('AI/API kullanımı: yok (ücretli/otomatik AI yanıtı kapalı). Kişisel Telegram oturumu: kullanılmıyor.')
 
 
 def main():
     os.umask(0o077)
-    parser = argparse.ArgumentParser(description='Socialora Telegram — yalnızca kendi kanal/grubuna yayın')
+    parser = argparse.ArgumentParser(description='Socialora Telegram — yalnızca kendi kanal/grubuna yayın ve grup kutusu')
     sub = parser.add_subparsers(dest='command', required=True)
-    for command in ['setup', 'doctor', 'status', 'pause', 'run', 'tick', 'report', 'check-content']:
+    for command in ['setup', 'doctor', 'status', 'pause', 'run', 'tick', 'report', 'check-content', 'poll']:
         sub.add_parser(command)
+    inbox_cmd = sub.add_parser('inbox')
+    inbox_cmd.add_argument('--all', action='store_true')
+    reply_cmd = sub.add_parser('reply')
+    reply_cmd.add_argument('update_id', type=int)
+    reply_cmd.add_argument('--text', required=True)
+    ignore_cmd = sub.add_parser('ignore-inbox')
+    ignore_cmd.add_argument('update_id', type=int)
+    res_inbox = sub.add_parser('resolve-inbox')
+    res_inbox.add_argument('update_id', type=int)
+    res_inbox_action = res_inbox.add_mutually_exclusive_group(required=True)
+    res_inbox_action.add_argument('--sent-message-id', type=int)
+    res_inbox_action.add_argument('--skip', action='store_true')
     preview = sub.add_parser('preview')
     preview.add_argument('--file', default=str(ROOT / 'content.json'))
     imp = sub.add_parser('import')
@@ -411,8 +569,8 @@ def main():
         elif args.command == 'resume':
             with worker_lock():
                 recover(db)
-                if db.execute("SELECT 1 FROM posts WHERE status='unknown' LIMIT 1").fetchone():
-                    raise SafeError('Belirsiz gönderileri Telegram’dan kontrol edip resolve ile işaretleyin.')
+                if db.execute("SELECT 1 FROM posts WHERE status='unknown' LIMIT 1").fetchone() or db.execute("SELECT 1 FROM inbox WHERE status='unknown' LIMIT 1").fetchone():
+                    raise SafeError('Belirsiz gönderileri/yanıtları Telegram’dan kontrol edip resolve ile işaretleyin.')
                 if not args.queue_reviewed:
                     raise SafeError('ControllerBot kuyruğunda çakışma olmadığını kontrol edin; sonra --queue-reviewed kullanın.')
                 doctor()
@@ -431,6 +589,41 @@ def main():
                 if changed != 1:
                     raise SafeError('Çözümlenebilir bir gönderi bulunamadı.')
                 print('Durum kaydedildi; tekrar gönderim yapılmadı.')
+        elif args.command == 'resolve-inbox':
+            with worker_lock():
+                if args.sent_message_id is not None and args.sent_message_id <= 0:
+                    raise SafeError('Geçerli Telegram mesaj numarası girin.')
+                with db:
+                    changed = db.execute("UPDATE inbox SET status=?,reply_message_id=?,replied_at=?,note='Manually reconciled; no resend.' WHERE update_id=? AND status IN ('unknown','failed','sending')",
+                                         ('replied' if args.sent_message_id else 'ignored', args.sent_message_id,
+                                          int(time.time()) if args.sent_message_id else None, args.update_id)).rowcount
+                if changed != 1:
+                    raise SafeError('Çözümlenebilir bir grup yanıtı bulunamadı.')
+                print('Grup yanıtı durumu kaydedildi; tekrar gönderim yapılmadı.')
+        elif args.command == 'poll':
+            api = Telegram(load_config()['bot_token'])
+            with worker_lock():
+                added = consume_updates(db, api, int(time.time()))
+            print(f'Gelen kutusu güncellendi; yeni yöneltilen soru/mesaj: {added}')
+        elif args.command == 'inbox':
+            query = "SELECT update_id,message_id,sender,status,directed,text FROM inbox ORDER BY update_id DESC LIMIT 30" if args.all else "SELECT update_id,message_id,sender,status,directed,text FROM inbox WHERE status='pending' ORDER BY update_id ASC LIMIT 30"
+            rows = db.execute(query).fetchall()
+            if not rows:
+                print('Bekleyen grup mesajı yok.')
+            for r in rows:
+                print(f"[update_id={r['update_id']} msg_id={r['message_id']} @{r['sender']} status={r['status']}] {r['text']}")
+        elif args.command == 'ignore-inbox':
+            with worker_lock():
+                with db:
+                    changed = db.execute("UPDATE inbox SET status='ignored',note='Manually ignored.' WHERE update_id=? AND status='pending'", (args.update_id,)).rowcount
+                if changed != 1:
+                    raise SafeError('Bekleyen mesaj bulunamadı.')
+                print('Mesaj yanıtlanmadan kapatıldı.')
+        elif args.command == 'reply':
+            api = Telegram(load_config()['bot_token'])
+            with worker_lock():
+                msg_id = reply_to_inbox(db, api, args.update_id, args.text, int(time.time()))
+            print(f'Yanıt gönderildi ve kaydedildi (message_id={msg_id}).')
         elif args.command in {'run', 'tick'}:
             api = Telegram(load_config()['bot_token'])
             private_dir(STATE)
@@ -441,11 +634,17 @@ def main():
             with worker_lock('runner.lock'):
                 with worker_lock():
                     recover(db)
-                last_snapshot_attempt, last_report, last_backup = 0, 0, ''
+                last_snapshot_attempt, last_report, last_poll, last_backup = 0, 0, 0, ''
                 while True:
                     now = int(time.time())
                     with worker_lock():
                         publish_one(db, api, now)
+                        if now - last_poll >= 60:
+                            last_poll = now
+                            try:
+                                consume_updates(db, api, now)
+                            except SafeError:
+                                LOG.warning('inbox_poll_unavailable')
                     if now - last_snapshot_attempt >= 1800:
                         last_snapshot_attempt = now
                         try:

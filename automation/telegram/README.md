@@ -59,11 +59,15 @@ Termux:Boot'u bir kez açın. Android'de Termux ve Termux:Boot için pil kullan�
 
 İlk günün 08.10 gönderisi “Start here” metnidir. Yayınlanınca Telegram'dan sabitleyin. Paket mevcut sabit mesajı değiştirmez.
 
-## Günlük kullanım
+## Günlük kullanım ve grup gelen kutusu
 
 ```sh
 socialora status                  # doğrulanmış durum ve sorunlar
 socialora report                  # en fazla 8 satır Türkçe rapor
+socialora poll                    # webhook boşsa gelen grup mesajlarını tek tüketici olarak çeker
+socialora inbox                   # grupta yanıt bekleyen soruları listeler (--all tümünü gösterir)
+socialora reply UPDATE_ID --text "Natural English reply..." # soruya bağlama özel yanıt verir
+socialora ignore-inbox UPDATE_ID  # yanıt gerektirmeyen mesajı kapatır
 socialora pause                   # gelecekteki gönderimleri durdurur
 socialora resume --queue-reviewed # sorunlar giderilince devam
 sv down socialora-telegram        # servis motorunu kapatır
@@ -72,17 +76,22 @@ sv up socialora-telegram          # motoru yeniden açar
 
 Duraklatma halihazırda Telegram'a ulaşmış isteği geri alamaz. Yayımlanmış içerik veya üye silinmez.
 
+- Servis (`run`) çalışırken dakikada bir `getWebhookInfo` kontrol edilir; yalnızca webhook boşsa `getUpdates` ile `@SocialoraChat` mesajları okunur.
+- Her mesaj `update_id` ve `(chat_id, message_id)` ile SQLite `inbox` tablosuna tekil olarak kaydedilir; tekrar işlenmez veya çift yanıtlanmaz.
+- Ücretsiz AI kotası doğrulanmadan otomatik AI yanıtı kapalıdır (ücretli API/faturalandırma açılmaz). Sorular `socialora inbox` ile görülüp `socialora reply` ile kısa, doğal İngilizce ve takipli (`utm_campaign=reply_u<update_id>`) bağlantılarla yanıtlanır.
+
 Rapor ve durum kayıtları `~/.local/share/socialora-telegram/` içindedir. Rapor otomatik olarak gruba gönderilmez; Türkçe iç rapor marka kanalına karışmaz. Üye sayısı günde bir kez okunur. Bot API'sinden site tıklamaları, satışlar veya geçmiş post görüntülenmeleri alınmış gibi raporlanmaz.
 
-## Belirsiz yayın
+## Belirsiz yayın veya yanıt
 
 `unknown` durumunda motor durur. Mesajın Telegram'da yayınlandığını görürseniz bağlantı sonundaki mesaj numarasıyla:
 
 ```sh
 socialora resolve tg_v1_ORNEK --sent-message-id 123
+socialora resolve-inbox UPDATE_ID --sent-message-id 456
 ```
 
-Yayınlanmadığı doğrulanırsa `socialora resolve tg_v1_ORNEK --skip` ile atlayın. Otomatik yeniden gönderme yoktur. Sonra gerekirse farklı, incelenmiş bir içerik hazırlayın. Boş veritabanına geçerek veya yedekten körlemesine dönerek gönderilmiş mesajları tekrar kuyruğa almayın.
+Yayınlanmadığı doğrulanırsa `--skip` ile atlayın. Otomatik yeniden gönderme yoktur. Sonra gerekirse farklı, incelenmiş bir içerik hazırlayın. Boş veritabanına geçerek veya yedekten körlemesine dönerek gönderilmiş mesajları tekrar kuyruğa almayın.
 
 ## İçerik bitince
 
@@ -92,7 +101,8 @@ Fiyat, refill, kampanya ve müşteri sonucu içeriklerine kullanıcı onayı ger
 
 ## Şu anda yapılmayanlar
 
-- Eski webhook 7 Kasım 2026 tarihinde sahibinin talebiyle kaldırıldı ve boş olduğu doğrulandı. Bu paket henüz **gelen grup mesajlarını okumaz veya otomatik cevaplamaz**; `getUpdates`, `setWebhook`, `deleteWebhook` kullanmaz. Doğal, bağlama göre AI yanıtı için ayrıca doğrulanmış gelen mesaj bağlantısı ve ücretsiz API kotası gerekir. Hazır, alakasız yanıtlarla bunun yerini doldurmaz.
+- Eski webhook 7 Kasım 2026 tarihinde sahibinin talebiyle kaldırıldı ve boş olduğu doğrulandı. Paket `setWebhook` veya `deleteWebhook` çağırmaz; yalnızca mevcut `getWebhookInfo` boşsa `getUpdates` ile tek tüketici olarak grup mesajlarını okur.
+- Ücretsiz API kotası doğrulanmadığı için **otomatik AI yanıtı kapalıdır**; ücretli faturalandırma kullanılmaz ve hazır robotik kalıp yanıtlar otomatik atılmaz.
 - Dış gruplara yazma, DM, üye ekleme, takas mesajı gönderme, çekiliş veya ödül başlatma yoktur.
 - Telefon kapalıyken veya Android uygulamayı tamamen durdurduğunda çalışamaz. Runit süreç hatalarını toparlar; işletim sisteminin tüm Termux'u kapatmasını tek başına önleyemez.
 - Bu makinedeki testler gerçek telefonun ekran kapalı çalışma testinin yerini tutmaz.
@@ -104,4 +114,4 @@ python -m unittest discover -s tests -v
 python socialora.py check-content
 ```
 
-Testler Telegram'a mesaj yollamaz. Uygulama yalnızca izin verilen Telegram yöntemlerini kullanır; üçüncü taraf Python paketi gerektirmez. Sürüm: 1.1.0.
+Testler Telegram'a mesaj yollamaz. Uygulama yalnızca izin verilen Telegram yöntemlerini kullanır; üçüncü taraf Python paketi gerektirmez. Sürüm: 1.2.0.
