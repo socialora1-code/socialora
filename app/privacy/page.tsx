@@ -32,7 +32,7 @@ const sections: LegalSection[] = [
         </ul>
         <p>
           When you use the free Instagram views offer, we collect the post link you submit and your IP address, which
-          we use to enforce the free limits. If you connect Telegram for this offer, we verify your Telegram user ID and group membership. Telegram provides signed profile fields for verification; we keep only the user ID in a secure browser cookie and a daily usage counter. When you join the referral program, we collect your email address and the
+          we use to enforce the free limits. If you open our Telegram community invitation, we remember that click in a browser cookie. We do not ask you to log in to Telegram on this website or collect your Telegram user ID. When you join the referral program, we collect your email address and the
           code you choose. When you contact support, we collect your name, email, subject and message.
         </p>
         <p>
@@ -66,7 +66,7 @@ const sections: LegalSection[] = [
         </p>
         <p>
           For the free views offer, your IP address is counted for up to 24 hours and a post link is remembered for 30
-          days. The Telegram connection cookie lasts up to 90 days, and its daily usage counter expires after 24 hours. Clearing the cookie requires reconnecting Telegram. Referral email addresses and codes are kept while
+          days. The Telegram invitation cookie lasts up to 90 days. Clearing it may show the invitation again. Referral email addresses and codes are kept while
           the referral program is active.
         </p>
         <p>
@@ -83,7 +83,7 @@ const sections: LegalSection[] = [
         We do not sell your personal information. We share it only with service providers that help us run our
         business, and only as needed for those purposes, or when required by law. These include website hosting, email
         delivery, analytics, the payment processor for automatic crypto payments, and the supply partners that deliver
-        your order, who receive the link or username and the quantity you ordered. When you connect Telegram, its login widget loads only after you choose to connect; we also ask Telegram to confirm your membership in our community.
+        your order, who receive the link or username and the quantity you ordered. When you choose Join group, your browser opens our group on Telegram. Telegram handles the app or website destination under its own privacy policy.
       </p>
     ),
   },

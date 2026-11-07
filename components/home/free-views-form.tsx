@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { TelegramConnect } from '@/components/home/telegram-connect'
+import { TelegramInvite } from '@/components/home/telegram-invite'
 
 export function FreeViewsForm() {
   const [link, setLink] = useState('')
@@ -10,7 +10,7 @@ export function FreeViewsForm() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
   const [message, setMessage] = useState('')
   const submitting = useRef(false)
-  const [telegram, setTelegram] = useState<{ enabled: boolean; configured: boolean; connected: boolean; botUsername: string; groupUrl: string } | null>(null)
+  const [telegram, setTelegram] = useState<{ enabled: boolean; configured: boolean; invited: boolean } | null>(null)
   const [showJoin, setShowJoin] = useState(false)
   const [configError, setConfigError] = useState(false)
 
@@ -37,7 +37,7 @@ export function FreeViewsForm() {
       setMessage('Free views are unavailable right now. Please try again later.')
       return
     }
-    if (telegram.enabled && !telegram.connected) {
+    if (telegram.enabled && !telegram.invited) {
       setShowJoin(true)
       setStatus('idle')
       setMessage('')
@@ -59,11 +59,10 @@ export function FreeViewsForm() {
         setLink('')
         setShowJoin(false)
       } else {
-        if (data.code === 'TELEGRAM_CONNECT_REQUIRED') {
-          setTelegram(current => current ? { ...current, connected: false } : current)
+        if (data.code === 'TELEGRAM_INVITE_REQUIRED') {
+          setTelegram(current => current ? { ...current, invited: false } : current)
           setShowJoin(true)
         }
-        if (data.code === 'TELEGRAM_JOIN_REQUIRED') setShowJoin(true)
         setStatus('error')
         setMessage(data.error ?? 'Something went wrong. Please try again.')
       }
@@ -135,39 +134,22 @@ export function FreeViewsForm() {
             disabled={status === 'loading' || !telegram}
             className="h-12 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
           >
-            {status === 'loading' ? 'Checking & sending...' : showJoin && telegram?.connected ? 'Check membership & get views' : 'Get free views'}
+            {status === 'loading' ? 'Sending...' : 'Get free views'}
           </button>
         </div>
       </div>
 
-      {showJoin && telegram?.enabled && telegram.configured ? (
-        <div className="mt-4 rounded-xl border border-border bg-background p-4">
-          <h3 className="text-sm font-semibold">Join our Telegram community to get free views</h3>
-          {!telegram.connected ? (
-            <>
-              <p className="mb-3 mt-1 text-sm text-muted-foreground">Connect Telegram once, then join the group. We’ll remember your connection on this browser.</p>
-              <TelegramConnect botUsername={telegram.botUsername}
-                onConnected={() => {
-                  setTelegram(current => current ? { ...current, connected: true } : current)
-                  setStatus('idle')
-                  setMessage('')
-                }}
-                onError={error => { setStatus('error'); setMessage(error) }} />
-            </>
-          ) : (
-            <>
-              <p className="mb-3 mt-1 text-sm text-muted-foreground">Telegram connected. Join the group, then return here and tap “Check membership & get views”. Already a member? Just tap the button.</p>
-              <a href={telegram.groupUrl} target="_blank" rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-center rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground">Join Telegram group</a>
-            </>
-          )}
-        </div>
-      ) : null}
+      <TelegramInvite open={showJoin} onClose={() => setShowJoin(false)} onJoin={() => {
+        setTelegram(current => current ? { ...current, invited: true } : current)
+        setShowJoin(false)
+        setMessage('After joining, return here and tap Get free views.')
+        setStatus('idle')
+      }} />
       {configError ? <p role="status" className="mt-3 text-sm text-destructive">Could not load free views. Please refresh and try again.</p> : null}
       {message ? (
         <p
           role="status"
-          className={`mt-3 text-sm ${status === 'done' ? 'text-foreground' : 'text-destructive'}`}
+          className={`mt-3 text-sm ${status === 'error' ? 'text-destructive' : 'text-foreground'}`}
         >
           {message}
         </p>

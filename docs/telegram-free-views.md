@@ -1,27 +1,11 @@
-# Telegram community gate for free views
+# Telegram invitation before free views
 
-The existing Socialora Community group (@SocialoraChat) is the membership target. Rose remains the moderator. This integration does not use or change a bot webhook, so the existing publisher can remain connected to ControllerBot.
+The owner requested a simple invitation popup with the existing Socialora Community name and profile photo, no website Telegram login. This replaces the earlier identity and membership verification design.
 
-## Activation
+On first use, Get free views opens a centered native dialog. Join group opens a same-site redirect endpoint in a new tab, records a signed HttpOnly invitation receipt and immediately redirects to the existing Telegram invitation. Telegram can open the installed app. On returning, the visitor can submit the original form. The browser remembers the click for 90 days. Closing the popup does not unlock claims.
 
-Keep `FREE_VIEWS_TELEGRAM_ENABLED` unset until all steps pass.
+Important: this is an invitation-click check, NOT proof of membership. No Telegram identity, password or login code is requested. No Telegram membership API is called. Three claims per IP per rolling 24 hours and the 30-day post duplicate limit remain unchanged. Without identity there is no per-Telegram-account quota. Atomic reservations and uncertain panel-response protection remain.
 
-1. Completed on 7 November 2026: BotFather confirmed `www.getsocialora.com` as the linked domain for `@socialora_publisher_2026_bot`. The public site uses this canonical host.
-2. Completed on 7 November 2026: the same bot was added to the existing group and appears in its administrator list. All optional permission switches were turned off, including deleting messages, banning users, invitations, pins, changing group info, welcome messages, video chats, member tags and adding admins. Rose remains the moderator.
-3. Store its token in the Socialora Vercel project as the server-only secret `FREE_VIEWS_TELEGRAM_BOT_TOKEN`. Never put it in Git, a `NEXT_PUBLIC_` variable, chat output or logs.
-4. Verify the bot identity and group administrator status using the Bot API, and test the Telegram login on the canonical site.
-5. Set `FREE_VIEWS_TELEGRAM_ENABLED=true` in the same project/environment and redeploy after checks pass.
+Production uses FREE_VIEWS_TELEGRAM_ENABLED=true. The existing server-only FREE_VIEWS_TELEGRAM_BOT_TOKEN is reused only as the signing secret for the invitation receipt, never sent to the client. The new cookie is socialora_telegram_invite; old authentication cookies do not unlock claims. No ControllerBot webhook changes or new-member CAPTCHA changes are involved.
 
-## Behavior
-
-On first claim, the visitor authorizes Telegram using the official login widget, joins the existing group, and taps Check membership & get views. Authorization is remembered for up to 90 days on that browser. We only retain the verified user ID, not the other signed profile fields. Each future claim checks current group membership server-side without asking for another login. No CAPTCHA is added.
-
-The existing limit of three orders per IP per rolling 24 hours remains. Connected Telegram users also have a three-order limit, so changing IP alone does not create more claims. Each post remains locked for 30 days. Membership failures do not consume quota. A Lua reservation makes duplicate concurrent claims atomic. A panel response whose outcome is uncertain retains the reservation to prevent repeat spending; support must review it before a retry.
-
-This feature does not grant more views, remove post limits, start a contest, or automatically message group members. It does not create a new group or channel.
-
-## Validation
-
-Run `node --experimental-strip-types --test tests/telegram-free-views.test.mjs`, `npx tsc --noEmit`, and `npm run build`. Tests use fake panel, Telegram and Redis responses; they never order real views. Live end-to-end validation still requires configured credentials, bot rights, and a Telegram login.
-
-Until activation, the existing free-views flow is preserved. If activated with a missing token or Telegram outage, requests fail closed before ordering views. Disable `FREE_VIEWS_TELEGRAM_ENABLED` and redeploy to roll back the membership requirement.
+Validation: node --experimental-strip-types --test tests/telegram-free-views.test.mjs; npm run build. Tests never send real panel orders.

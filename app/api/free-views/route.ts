@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { TELEGRAM_COOKIE, telegramEnabled, botToken, readTelegramSession, isGroupMember, sameOrigin } from '@/lib/telegram-free-views'
+import { TELEGRAM_COOKIE, telegramEnabled, inviteSecret, hasInviteReceipt, sameOrigin } from '@/lib/telegram-free-views'
 
 export const runtime = 'nodejs'
 
@@ -108,19 +108,11 @@ export async function POST(request: Request) {
     return fail('Free views are unavailable right now.', 500)
   }
 
-  let telegramId: string | null = null
   if (telegramEnabled()) {
     if (!process.env.FREE_VIEWS_TELEGRAM_BOT_TOKEN) return fail('Free views are unavailable right now. Please try again later.', 503)
-    telegramId = readTelegramSession((await cookies()).get(TELEGRAM_COOKIE)?.value, botToken())
-    if (!telegramId) {
-      return NextResponse.json({ ok: false, code: 'TELEGRAM_CONNECT_REQUIRED', error: 'Connect Telegram once to claim your free views.' }, { status: 401 })
-    }
-    try {
-      if (!await isGroupMember(telegramId)) {
-        return NextResponse.json({ ok: false, code: 'TELEGRAM_JOIN_REQUIRED', error: 'Join our Telegram group, then check your membership to get your views.' }, { status: 403 })
-      }
-    } catch {
-      return fail('We could not check your Telegram membership. Please try again shortly.', 503)
+    const invited = hasInviteReceipt((await cookies()).get(TELEGRAM_COOKIE)?.value, inviteSecret())
+    if (!invited) {
+      return NextResponse.json({ ok: false, code: 'TELEGRAM_INVITE_REQUIRED', error: 'Open our Telegram group to continue.' }, { status: 403 })
     }
   }
 
@@ -129,7 +121,7 @@ export async function POST(request: Request) {
 
   try {
     // Reserve quota and the post in one operation, including concurrent clicks.
-    const quotaKeys = telegramId ? [ipKey, `fv:telegram:${telegramId}`] : [ipKey]
+    const quotaKeys = [ipKey]
     const reservation = Number(await redis(['EVAL', `
       for i = 2, #KEYS do
         if tonumber(redis.call('GET', KEYS[i]) or '0') >= tonumber(ARGV[1]) then return 1 end

@@ -25,7 +25,7 @@ const STEPS = [
   },
   {
     title: 'Send the order',
-    body: telegramEnabled() ? 'Connect Telegram once, join our community and confirm your membership. Future claims use the same connection.' : 'Press the button. No password, no email and no account are needed.',
+    body: telegramEnabled() ? 'Tap Get free views, open our Telegram group from the popup, then return here to send your request. No website login.' : 'Press the button. No password, no email and no account are needed.',
   },
 ]
 
@@ -40,7 +40,7 @@ const FAQS = [
   },
   {
     q: 'How many free views can I get?',
-    a: 'Up to 1,000 views per reel or post, with up to 3 claims in each 24-hour period. Each post is eligible once every 30 days. Shared internet connections also share an IP limit.' + (telegramEnabled() ? ' Telegram community membership is required. Connect once on this browser; we check membership when you claim.' : ''),
+    a: 'Up to 1,000 views per reel or post, with up to 3 claims in each 24-hour period. Each post is eligible once every 30 days. Shared internet connections also share an IP limit.' + (telegramEnabled() ? ' A popup invites you to our Telegram community before your first claim. No Telegram login on this website is needed.' : ''),
   },
   {
     q: 'How long does delivery take?',
