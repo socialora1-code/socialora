@@ -64,3 +64,8 @@ Decision and next gate:
 - Telegram Web in the shared browser is signed out. Its QR sign-in was reported unusable on the user's mobile client; do not claim login succeeded. Phone-number sign-in is the alternative method awaiting the user's choice.
 - When migration is concretely ready, preserve pending updates (do not use drop_pending_updates=true), verify the exact bot and previously audited webhook fingerprint, and verify the replacement receives updates before declaring completion.
 - Removing a webhook does not revoke a service's knowledge of the bot token. If ControllerBot access must be fully withdrawn, disconnect it through its supported interface; credential rotation requires the owner to perform the credential-change step and then update the GitHub/phone secret locations securely. Do not rotate casually or affect the website invitation signing configuration.
+
+
+## Legacy webhook removed — 2026-11-07 23:44 Europe/Istanbul
+
+The owner explicitly instructed immediate removal. Run https://github.com/socialora1-code/socialora/actions/runs/42412507165 succeeded and verified the expected bot, the audited webhook fingerprint, deleteWebhook(drop_pending_updates=false), and a subsequent empty webhook URL. Pending updates were preserved; count at verification was 0. No channel/group posts, members, token or website settings were deleted or changed. This supersedes the earlier decision to defer removal. The phone publisher is still not installed and no inbound AI responder is yet deployed. Removing the webhook does not revoke any third party's previously held bot token.
