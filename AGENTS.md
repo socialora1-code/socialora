@@ -36,3 +36,11 @@ ASLA:
 İstenmeyen DM, toplu üye ekleme, davetsiz başka gruplara paylaşım, sahte üyeler veya sonuçlar, uydurma kampanyalar ve güvenlik garantileri kullanma. Token, şifre veya giriş kodunu sohbette isteme ya da gösterme.
 
 Hata olursa aynı işlemi en fazla bir kez yeniden dene; yayın durumunu kontrol etmeden tekrar gönderme. Engel sürerse kaydet, bağımsız işlere devam et. Yalnızca doğrulanmış işlemleri tamamlandı diye raporla.
+
+## Kalıcı Telegram bot bağlantısı
+
+Socialora Telegram işlemleri için mevcut GitHub bağlantısıyla `.github/workflows/socialora-telegram.yml` iş akışını kullan; kullanım ve sınırlar `docs/telegram-antigravity.md` içindedir. Bot kimliği `@socialora_publisher_2026_bot` olmalıdır. Bot anahtarı yalnızca GitHub Actions repository secret `SOCIALORA_TELEGRAM_BOT_TOKEN` içinde saklanır. Anahtarı sohbete, depoya, workflow girdisine veya loga yazma.
+
+Yeni sohbette Telegram işi verilirse önce `operation=inspect` ile hedefin erişimini doğrula. `operation=send` yalnızca kullanıcının talep ettiği, metni ve hedefi belli bir gönderi için kullanılır. Gönderiyi yalnızca başarılı workflow sonucu ve Telegram message_id ile tamamlandı say. Belirsiz gönderimi tekrar çalıştırmadan önce run durumunu ve Telegram sonucunu kontrol et. Mevcut ControllerBot webhook'unu, bot anahtarını veya kişisel oturumları değiştirme.
+
+Bu bağlantı tarayıcı girişine ihtiyaç duymayan bot yayını içindir. Henüz otomatik zamanlama, gelen grup mesajlarını okuma veya ControllerBot kuyruğunu yönetme kurulmuş değildir; varmış gibi davranma.

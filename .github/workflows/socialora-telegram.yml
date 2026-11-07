@@ -1,0 +1,123 @@
+name: Socialora Telegram
+run-name: Socialora Telegram ${{ inputs.operation }} / ${{ inputs.target }}
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        type: choice
+        options: [inspect, send]
+        default: inspect
+        required: true
+      target:
+        type: choice
+        options: [channel, group]
+        default: channel
+        required: true
+      text:
+        description: "Approved plain-text post. Leave empty for inspect."
+        type: string
+        required: false
+permissions: {}
+concurrency:
+  group: socialora-telegram
+  cancel-in-progress: false
+jobs:
+  telegram:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check connection or send one approved message
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.SOCIALORA_TELEGRAM_BOT_TOKEN }}
+          OPERATION: ${{ inputs.operation }}
+          TARGET: ${{ inputs.target }}
+          POST_TEXT: ${{ inputs.text }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          import urllib.error
+          import urllib.request
+
+          def fail(message):
+              print(message, file=sys.stderr)
+              raise SystemExit(1)
+
+          token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+          if not token:
+              fail("Missing SOCIALORA_TELEGRAM_BOT_TOKEN repository secret.")
+          operation = os.environ.get("OPERATION", "")
+          targets = {"channel": "@SocialoraOfficial", "group": "@SocialoraChat"}
+          target = targets.get(os.environ.get("TARGET", ""))
+          if operation not in {"inspect", "send"} or not target:
+              fail("Unsupported operation or destination.")
+          text = os.environ.get("POST_TEXT", "")
+          if operation == "send":
+              if os.environ.get("GITHUB_RUN_ATTEMPT", "1") != "1":
+                  fail("Send reruns are blocked to prevent duplicate posts.")
+              if not text.strip() or len(text) > 4096:
+                  fail("Send requires 1-4096 characters of approved plain text.")
+
+          def api(method, payload=None):
+              request = urllib.request.Request(
+                  "https://api.telegram.org/bot" + token + "/" + method,
+                  data=json.dumps(payload or {}).encode("utf-8"),
+                  headers={"Content-Type": "application/json"},
+                  method="POST",
+              )
+              try:
+                  with urllib.request.urlopen(request, timeout=15) as response:
+                      result = json.load(response)
+              except urllib.error.HTTPError as error:
+                  fail("Telegram HTTP error " + str(error.code) + ". No retry performed.")
+              except Exception:
+                  fail("Telegram request did not complete. If sending, check the chat before retrying.")
+              if result.get("ok") is not True:
+                  fail("Telegram rejected the request. No retry performed.")
+              return result["result"]
+
+          bot = api("getMe")
+          if bot.get("username", "").lower() != "socialora_publisher_2026_bot":
+              fail("Bot identity mismatch. Expected @socialora_publisher_2026_bot.")
+          chat = api("getChat", {"chat_id": target})
+          expected_type = "channel" if target == "@SocialoraOfficial" else "supergroup"
+          if chat.get("type") != expected_type:
+              fail("Destination type mismatch.")
+          if chat.get("username", "").lower() != target[1:].lower():
+              fail("Destination identity mismatch.")
+          member = api("getChatMember", {"chat_id": chat["id"], "user_id": bot["id"]})
+          status = member.get("status")
+          if status not in {"creator", "administrator", "member"}:
+              fail("Bot is not an active member of the destination.")
+          can_send = (
+              status == "creator"
+              or (status == "administrator" and member.get("can_post_messages") is True)
+              if target == "@SocialoraOfficial"
+              else status in {"creator", "administrator"} or chat.get("permissions", {}).get("can_send_messages") is True
+          )
+          print(json.dumps({
+              "bot": bot["username"], "target": target,
+              "membership": status, "can_send": can_send,
+          }))
+          if operation == "inspect":
+              count = api("getChatMemberCount", {"chat_id": chat["id"]})
+              webhook = api("getWebhookInfo")
+              print(json.dumps({
+                  "member_count": count,
+                  "existing_webhook_configured": bool(webhook.get("url")),
+                  "webhook_changed": False,
+              }))
+              raise SystemExit(0)
+          if not can_send:
+              fail("The bot lacks permission to send to the selected destination.")
+          sent = api("sendMessage", {
+              "chat_id": chat["id"], "text": text,
+              "link_preview_options": {"is_disabled": True},
+          })
+          print(json.dumps({
+              "sent": True, "target": target, "message_id": sent["message_id"],
+              "url": "https://t.me/" + target[1:] + "/" + str(sent["message_id"]),
+          }))
+          PY
