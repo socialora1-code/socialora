@@ -1,0 +1,58 @@
+{
+  "checked_on": "2026-11-07",
+  "automated_tests": 27,
+  "automated_tests_result": "passed",
+  "simulation": "32/32 posts across 14 days, no duplicate sends; persistence checked",
+  "public_site_links": [
+    {
+      "url": "https://www.getsocialora.com/faq",
+      "status": 200,
+      "final_url": "https://www.getsocialora.com/faq"
+    },
+    {
+      "url": "https://www.getsocialora.com/tools",
+      "status": 200,
+      "final_url": "https://www.getsocialora.com/tools"
+    },
+    {
+      "url": "https://www.getsocialora.com/tools/instagram-bio-generator",
+      "status": 200,
+      "final_url": "https://www.getsocialora.com/tools/instagram-bio-generator"
+    },
+    {
+      "url": "https://www.getsocialora.com/tools/instagram-content-ideas-generator",
+      "status": 200,
+      "final_url": "https://www.getsocialora.com/tools/instagram-content-ideas-generator"
+    },
+    {
+      "url": "https://www.getsocialora.com/tools/instagram-no-crop-blur-background",
+      "status": 200,
+      "final_url": "https://www.getsocialora.com/tools/instagram-no-crop-blur-background"
+    },
+    {
+      "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide",
+      "status": 200,
+      "final_url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide"
+    },
+    {
+      "url": "https://www.getsocialora.com/tools/social-media-photo-resizer",
+      "status": 200,
+      "final_url": "https://www.getsocialora.com/tools/social-media-photo-resizer"
+    },
+    {
+      "url": "https://www.getsocialora.com/tools/video-frame-to-thumbnail",
+      "status": 200,
+      "final_url": "https://www.getsocialora.com/tools/video-frame-to-thumbnail"
+    },
+    {
+      "url": "https://www.getsocialora.com/track",
+      "status": 200,
+      "final_url": "https://www.getsocialora.com/track"
+    }
+  ],
+  "real_telegram_send_tested": false,
+  "phone_installation_tested": false,
+  "inbound_group_messages_enabled": false,
+  "ai_api_calls_in_worker": 0,
+  "website_code_changed": false
+}

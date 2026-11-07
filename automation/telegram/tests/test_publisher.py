@@ -1,0 +1,314 @@
+import contextlib
+import datetime as dt
+import importlib.util
+import io
+import json
+from pathlib import Path
+import tempfile
+import unittest
+from unittest.mock import patch
+import urllib.error
+
+SPEC = importlib.util.spec_from_file_location('socialora', Path(__file__).parents[1] / 'socialora.py')
+app = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(app)
+
+
+class FakeTelegram:
+    def __init__(self, error=None, bot=app.BOT, permission=True, wrong_chat=False):
+        self.calls, self.error, self.bot, self.permission, self.wrong_chat = [], error, bot, permission, wrong_chat
+
+    def call(self, method, payload=None):
+        self.calls.append((method, payload))
+        if method == 'getMe':
+            return {'id': 123, 'username': self.bot}
+        if method == 'getChat':
+            name = payload['chat_id'][1:]
+            return {'id': -1001 if name == 'SocialoraOfficial' else -1002,
+                    'username': 'wrong' if self.wrong_chat else name,
+                    'type': 'channel' if name == 'SocialoraOfficial' else 'supergroup'}
+        if method == 'getChatMember':
+            return {'status': 'administrator', 'can_post_messages': self.permission}
+        if method == 'sendMessage':
+            if self.error:
+                raise self.error
+            return {'message_id': 900, 'chat': {'id': payload['chat_id']}}
+        if method == 'getChatMemberCount':
+            return 100
+        if method == 'getWebhookInfo':
+            return {'url': 'https://unseen.example/private-secret'}
+        raise AssertionError('Forbidden method ' + method)
+
+
+class PublisherTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        root = Path(self.temp.name)
+        self.state_patch = patch.object(app, 'STATE', root / 'state')
+        self.config_patch = patch.object(app, 'CONFIG', root / 'config.json')
+        self.state_patch.start()
+        self.config_patch.start()
+        self.addCleanup(self.state_patch.stop)
+        self.addCleanup(self.config_patch.stop)
+        self.db = app.connect()
+        self.addCleanup(self.db.close)
+        self.now = int(dt.datetime(2030, 1, 1, 11, tzinfo=app.TZ).timestamp())
+
+    def enqueue(self, pid='test_one', due=None, target='channel', text=None):
+        due = self.now if due is None else due
+        text = text or 'A clear, useful post about making the next product description easier to understand. ' + pid
+        self.db.execute('INSERT INTO posts(id,target,text,digest,due,expires) VALUES(?,?,?,?,?,?)',
+                        (pid, target, text, pid, due, due + 5400))
+        self.db.commit()
+
+    def status(self, pid='test_one'):
+        return self.db.execute('SELECT * FROM posts WHERE id=?', (pid,)).fetchone()
+
+    def test_success_is_persisted_and_never_sent_twice(self):
+        self.enqueue()
+        api = FakeTelegram()
+        self.assertTrue(app.publish_one(self.db, api, self.now))
+        self.assertFalse(app.publish_one(self.db, api, self.now + 60))
+        app.recover(self.db)
+        self.assertFalse(app.publish_one(self.db, api, self.now + 120))
+        self.assertEqual(1, sum(m == 'sendMessage' for m, p in api.calls))
+        self.assertEqual(900, self.status()['message_id'])
+        self.assertEqual('sent', self.status()['status'])
+
+    def test_timeout_is_unknown_and_pauses_all_sends(self):
+        self.enqueue()
+        self.enqueue('test_two')
+        api = FakeTelegram(error=app.TelegramError(0, uncertain=True))
+        self.assertFalse(app.publish_one(self.db, api, self.now))
+        self.assertEqual('unknown', self.status()['status'])
+        self.assertTrue((app.STATE / 'PAUSED').exists())
+        self.assertFalse(app.publish_one(self.db, api, self.now + 3600))
+        self.assertEqual(1, sum(m == 'sendMessage' for m, p in api.calls))
+
+    def test_crash_after_request_is_not_replayed_on_restart(self):
+        self.enqueue()
+        self.db.execute("UPDATE posts SET status='sending'")
+        self.db.commit()
+        app.recover(self.db)
+        self.assertEqual('unknown', self.status()['status'])
+        api = FakeTelegram()
+        app.publish_one(self.db, api, self.now)
+        self.assertEqual([], api.calls)
+
+    def test_stale_slots_are_skipped_without_catchup(self):
+        self.enqueue(due=self.now - 6000)
+        api = FakeTelegram()
+        self.assertFalse(app.publish_one(self.db, api, self.now))
+        self.assertEqual('expired', self.status()['status'])
+        self.assertEqual([], api.calls)
+
+    def test_rate_limit_respects_wait_and_then_sends(self):
+        self.enqueue()
+        api = FakeTelegram(error=app.TelegramError(429, 120))
+        app.publish_one(self.db, api, self.now)
+        self.assertEqual('pending', self.status()['status'])
+        self.assertEqual(self.now + 120, self.status()['next_attempt'])
+        self.assertFalse(app.publish_one(self.db, api, self.now + 119))
+        api.error = None
+        self.assertTrue(app.publish_one(self.db, api, self.now + 120))
+
+    def test_repeated_429_has_a_finite_retry_limit(self):
+        self.enqueue()
+        api = FakeTelegram(error=app.TelegramError(429, 60))
+        for i in range(6):
+            app.publish_one(self.db, api, self.now + i * 60)
+        self.assertEqual('failed', self.status()['status'])
+        self.assertEqual(4, sum(m == 'sendMessage' for m, p in api.calls))
+
+    def test_permanent_denial_is_failed_and_paused(self):
+        self.enqueue()
+        api = FakeTelegram(error=app.TelegramError(403))
+        app.publish_one(self.db, api, self.now)
+        self.assertEqual('failed', self.status()['status'])
+        self.assertTrue((app.STATE / 'PAUSED').exists())
+
+    def test_server_error_is_ambiguous_not_retried(self):
+        self.enqueue()
+        api = FakeTelegram(error=app.TelegramError(500, uncertain=True))
+        app.publish_one(self.db, api, self.now)
+        self.assertEqual('unknown', self.status()['status'])
+
+    def test_identity_destination_and_permission_guards(self):
+        for kwargs in [{'bot': 'wrong_bot'}, {'permission': False}, {'wrong_chat': True}]:
+            with self.subTest(**kwargs):
+                self.db.execute('DELETE FROM posts')
+                self.db.commit()
+                (app.STATE / 'PAUSED').unlink(missing_ok=True)
+                self.enqueue()
+                api = FakeTelegram(**kwargs)
+                app.publish_one(self.db, api, self.now)
+                self.assertFalse(any(m == 'sendMessage' for m, p in api.calls))
+                self.assertTrue((app.STATE / 'PAUSED').exists())
+
+    def test_wrong_response_chat_is_unknown(self):
+        self.enqueue()
+        api = FakeTelegram()
+        original = api.call
+        def call(method, payload=None):
+            if method == 'sendMessage':
+                return {'message_id': 999, 'chat': {'id': -9999}}
+            return original(method, payload)
+        api.call = call
+        app.publish_one(self.db, api, self.now)
+        self.assertEqual('unknown', self.status()['status'])
+
+    def test_pause_prevents_even_preflight(self):
+        self.enqueue()
+        app.pause()
+        api = FakeTelegram()
+        app.publish_one(self.db, api, self.now)
+        self.assertEqual([], api.calls)
+
+    def test_two_targets_do_not_burst_after_delay(self):
+        self.enqueue()
+        self.enqueue('test_two', target='group')
+        api = FakeTelegram()
+        self.assertTrue(app.publish_one(self.db, api, self.now))
+        self.assertFalse(app.publish_one(self.db, api, self.now + 10))
+        self.assertTrue(app.publish_one(self.db, api, self.now + 1800))
+
+    def test_daily_ceiling_across_separate_batches(self):
+        self.enqueue()
+        self.enqueue('test_two')
+        self.enqueue('test_three')
+        api = FakeTelegram()
+        self.assertTrue(app.publish_one(self.db, api, self.now))
+        self.assertTrue(app.publish_one(self.db, api, self.now + 1800))
+        self.assertFalse(app.publish_one(self.db, api, self.now + 3600))
+
+    def test_durable_delivery_marker_exists_before_http_request(self):
+        self.enqueue()
+        api = FakeTelegram()
+        original = api.call
+        def call(method, payload=None):
+            if method == 'sendMessage':
+                other = app.connect()
+                try:
+                    self.assertEqual('sending', other.execute('SELECT status FROM posts').fetchone()[0])
+                finally:
+                    other.close()
+            return original(method, payload)
+        api.call = call
+        self.assertTrue(app.publish_one(self.db, api, self.now))
+
+    def test_duplicate_worker_is_rejected(self):
+        with app.worker_lock():
+            with self.assertRaises(app.SafeError):
+                with app.worker_lock():
+                    self.fail('Second worker acquired the lock')
+
+    def test_service_lock_allows_queue_administration(self):
+        with app.worker_lock('runner.lock'):
+            with app.worker_lock():
+                pass
+
+    def test_import_is_idempotent_and_preserves_original_schedule(self):
+        start = (dt.datetime.now(app.TZ).date() + dt.timedelta(days=1)).isoformat()
+        source = app.ROOT / 'content.json'
+        self.assertEqual(32, app.import_content(self.db, source, start))
+        original_due = self.db.execute('SELECT MIN(due) FROM posts').fetchone()[0]
+        tomorrow = (dt.date.fromisoformat(start) + dt.timedelta(days=1)).isoformat()
+        self.assertEqual(0, app.import_content(self.db, source, tomorrow))
+        self.assertEqual(original_due, self.db.execute('SELECT MIN(due) FROM posts').fetchone()[0])
+
+    def test_modified_existing_id_rolls_back_entire_batch(self):
+        start = (dt.datetime.now(app.TZ).date() + dt.timedelta(days=1)).isoformat()
+        source = json.loads((app.ROOT / 'content.json').read_text())
+        app.import_content(self.db, app.ROOT / 'content.json', start)
+        new = dict(source['posts'][0], id='new_post', text='A new and different useful post for our community to read today.', day=20)
+        source['posts'] = [new, dict(source['posts'][0], text='This existing ID was changed and must cause the import to roll back completely.')]
+        file = Path(self.temp.name) / 'changed.json'
+        file.write_text(json.dumps(source))
+        with self.assertRaises(app.SafeError):
+            app.import_content(self.db, file, start)
+        self.assertEqual(32, self.db.execute('SELECT COUNT(*) FROM posts').fetchone()[0])
+
+    def test_content_bundle_has_correct_targets_and_tracked_links(self):
+        posts = app.validate_posts(json.loads((app.ROOT / 'content.json').read_text()))
+        self.assertEqual(28, sum(p['target'] == 'channel' for p in posts))
+        self.assertEqual(4, sum(p['target'] == 'group' for p in posts))
+        for day in range(14):
+            self.assertEqual(2, sum(p['target'] == 'channel' and p['day'] == day for p in posts))
+
+    def test_non_socialora_external_link_is_rejected(self):
+        source = json.loads((app.ROOT / 'content.json').read_text())
+        source['posts'][0]['text'] += '\nhttps://example.com/phishing'
+        with self.assertRaises(app.SafeError):
+            app.validate_posts(source)
+
+    def test_report_does_not_invent_traffic_or_publish_to_group(self):
+        text = app.report(self.db, self.now)
+        self.assertLessEqual(len(text.splitlines()), 8)
+        self.assertIn('analitik verisi yok', text)
+        self.assertIn('AI/API çağrısı: 0', text)
+
+    def test_snapshot_does_not_change_webhook_and_runs_once_per_day(self):
+        api = FakeTelegram()
+        app.snapshot(self.db, api, self.now)
+        n = len(api.calls)
+        app.snapshot(self.db, api, self.now + 3600)
+        self.assertEqual(n, len(api.calls))
+        self.assertFalse(any('Webhook' in m or m == 'getUpdates' for m, p in api.calls))
+
+    def test_private_config_and_state_permissions(self):
+        app.atomic_text(app.CONFIG, json.dumps({'bot_token': '123456:secret_placeholder_not_real_123456'}))
+        self.assertEqual(0o600, app.CONFIG.stat().st_mode & 0o777)
+        self.assertEqual(0o700, app.STATE.stat().st_mode & 0o777)
+        app.CONFIG.chmod(0o644)
+        with self.assertRaises(app.SafeError):
+            app.load_config()
+
+    def test_transport_errors_never_expose_the_token(self):
+        token = '123456:fake_secret_for_test_only_12345'
+        api = app.Telegram(token)
+        api.opener.open = lambda *a, **k: (_ for _ in ()).throw(OSError('sensitive ' + token))
+        with self.assertRaises(app.TelegramError) as err:
+            api.call('sendMessage', {'text': 'test'})
+        self.assertNotIn(token, str(err.exception))
+        self.assertTrue(err.exception.uncertain)
+
+    def test_http_errors_do_not_retry_or_forward_token(self):
+        api = app.Telegram('123456:not_a_real_token_1234567890123')
+        calls = []
+        def fail(req, timeout):
+            calls.append(req)
+            raise urllib.error.HTTPError(req.full_url, 429, 'private', {}, io.BytesIO(b'{"parameters":{"retry_after":42}}'))
+        api.opener.open = fail
+        with self.assertRaises(app.TelegramError) as err:
+            api.call('sendMessage', {'text': 'test'})
+        self.assertEqual(42, err.exception.retry_after)
+        self.assertEqual(1, len(calls))
+
+    def test_webhook_mutation_methods_are_impossible(self):
+        api = app.Telegram('not-real')
+        for method in ['getUpdates', 'setWebhook', 'deleteWebhook', 'deleteMessage', 'banChatMember']:
+            with self.assertRaises(app.SafeError):
+                api.call(method)
+
+    def test_full_fourteen_day_calendar_survives_restart(self):
+        start = (dt.datetime.now(app.TZ).date() + dt.timedelta(days=1)).isoformat()
+        self.assertEqual(32, app.import_content(self.db, app.ROOT / 'content.json', start))
+        dates = list(self.db.execute('SELECT due FROM posts ORDER BY due'))
+        api = FakeTelegram()
+        for n, row in enumerate(dates):
+            self.assertTrue(app.publish_one(self.db, api, row['due']))
+            self.assertFalse(app.publish_one(self.db, api, row['due'] + 1))
+            if n == 12:
+                other = app.connect()
+                try:
+                    app.recover(other)
+                    self.assertEqual(13, other.execute("SELECT COUNT(*) FROM posts WHERE status='sent'").fetchone()[0])
+                finally:
+                    other.close()
+        self.assertEqual(32, self.db.execute("SELECT COUNT(*) FROM posts WHERE status='sent'").fetchone()[0])
+        self.assertEqual(32, sum(m == 'sendMessage' for m, p in api.calls))
+
+
+if __name__ == '__main__':
+    unittest.main()

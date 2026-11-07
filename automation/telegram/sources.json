@@ -1,0 +1,29 @@
+{
+  "brand": "Socialora",
+  "verified_on": "2026-11-07",
+  "scope": "Public site pages checked through web retrieval. No customer/order data used.",
+  "facts": [
+    {"fact": "Socialora has a public directory of free creator tools.", "url": "https://www.getsocialora.com/tools"},
+    {"fact": "The bio tool provides editable bio suggestions from a topic and optional detail.", "url": "https://www.getsocialora.com/tools/instagram-bio-generator"},
+    {"fact": "The safe zone tool provides approximate overlays for Reels, TikTok and Shorts; preview in the app too.", "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide"},
+    {"fact": "The content ideas tool provides starting formats; the author supplies their own concrete examples.", "url": "https://www.getsocialora.com/tools/instagram-content-ideas-generator"},
+    {"fact": "The photo resizer provides destination sizes and a crop preview.", "url": "https://www.getsocialora.com/tools/social-media-photo-resizer"},
+    {"fact": "The no-crop tool fits a photo inside a blurred background.", "url": "https://www.getsocialora.com/tools/instagram-no-crop-blur-background"},
+    {"fact": "The video frame tool lets the visitor save a selected video frame as an image.", "url": "https://www.getsocialora.com/tools/video-frame-to-thumbnail"},
+    {"fact": "Order tracking uses the order reference and order email on the website.", "url": "https://www.getsocialora.com/track"},
+    {"fact": "The FAQ explains the general ordering process; service terms are specific to the chosen service.", "url": "https://www.getsocialora.com/faq"},
+    {"fact": "Published support email: info@getsocialora.com. Do not request private order data in the public group.", "url": "https://www.getsocialora.com/faq"}
+  ],
+  "excluded_from_automatic_posts": [
+    "Prices, refill periods, delivery time promises, success stories and giveaways",
+    "Free views quantities or availability that might change during the 14-day schedule",
+    "Claims that any service guarantees followers, safety, rankings, sales or reach"
+  ],
+  "technical_sources": [
+    "https://core.telegram.org/bots/api",
+    "https://core.telegram.org/bots/faq",
+    "https://github.com/termux/termux-app",
+    "https://github.com/termux/termux-boot",
+    "https://github.com/termux/termux-services"
+  ]
+}

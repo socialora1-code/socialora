@@ -34,3 +34,10 @@ Read-only inspections succeeded with the repository secret and expected publishe
 - Group `@SocialoraChat`: bot is an administrator, `can_send=true`. Run: https://github.com/socialora1-code/socialora/actions/runs/42390063725
 
 No messages were sent. An existing webhook is configured and was not changed. Preserve it; do not enable polling or replace its consumer without an integration plan and owner approval. The token value was never inspected. Automatic scheduling and inbound group-message reading remain unconfigured.
+
+
+## Termux publisher package — prepared 2026-11-07
+
+`automation/telegram/` now contains a standalone no-AI-cost editorial publisher, a 14-day content queue, tests and installation instructions. It is prepared for the owner's Android phone; it is not deployed to that phone by this repository change. See its README for activation and device checks.
+
+Do not schedule the same content through both this manual GitHub bridge and the phone. The phone keeps the authoritative delivery ledger after activation. Existing ControllerBot schedules must be checked before activation; this package cannot inspect that queue. The existing webhook stays unchanged; inbound group reading and contextual AI replies are still not enabled.

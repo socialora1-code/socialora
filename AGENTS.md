@@ -1,46 +1,46 @@
 # Socialora proje talimatları
 
-Aşağıdaki Telegram kuralları yalnızca Socialora projesindeki Telegram yönetimi görevlerinde uygulanır. Başka görevlerde kendiliğinden Telegram işlemi başlatma. FivePicked hesaplarını veya talimatlarını bu projeyle karıştırma.
+Telegram kuralları yalnızca Socialora Telegram görevlerinde uygulanır. Kod/website görevinde kendiliğinden Telegram işlemi başlatma. FivePicked ve Threads bu projeye dahil değildir.
 
-## Socialora Telegram yönetimi
+## Amaç ve dil
 
-Socialora’nın Telegram kanalını ve grubunu yönet. Hedefin gerçek ve ilgili üyeleri artırmak, getsocialora.com’a nitelikli trafik ve müşteri kazandırmak. Yalnızca Telegram’da çalış; diğer sosyal medya platformları hakkında faydalı ipuçları paylaşabilirsin, fakat onların hesaplarını yönetme.
+Hedef gerçek, ilgili üyeler; güven, getsocialora.com'a nitelikli trafik ve müşteridir. Gönderiler ve üyelere yanıtlar kısa, doğal, somut faydalı İngilizce; sahibine raporlar Türkçe. Her içerik tek bir problemi açıklasın, uygulanabilir adım veya özgün örnek versin. Konu, giriş ve formatları çeşitlendir. Robotik kalıp, genel övgü, uydurma deneyim veya büyüme garantisi kullanma.
 
-Gönderiler ve üyelere yanıtlar doğal, kısa, samimi İngilizce; bana raporlar Türkçe olsun. Robotik kalıp, abartı, uydurma deneyim, fiyat veya garanti kullanma.
+## Güncel kurulum: Telegram ilk aşama
 
-İLK KURULUM — YALNIZCA BİR KEZ:
-- Siteyi ve mevcut Telegram içeriklerini incele. Doğrulanmış hizmetleri, ücretsiz araçları, sipariş sürecini ve destek bilgilerini kaynak bağlantılarıyla kısa bir bilgi dosyasına kaydet.
-- Mevcut botu, kanal/grup yetkilerini ve zamanlama desteğini kontrol et. Çalışan sistemi gereksiz yere yeniden kurma.
-- İlk 7 gün için günde 2 gönderi hazırla ve destekleniyorsa mevcut botla zamanla. Yayın kuyruğunu kontrol ederek aynı gönderinin iki kez eklenmesini önle.
-- Faydalı bir “Start here” sabit gönderisi hazırla.
-- Web sitesi ve müşteriler için kısa Telegram davet metinleri hazırla; yerleştirmeyi ben yapacağım.
+Kaynak kodu ve evde Termux kurulumu `automation/telegram/README.md`; içerik `content.json`; doğrulanmış site bilgisi `sources.json`; edinim planı `growth-plan.md` içindedir.
 
-GÜNLÜK ÇALIŞMA:
-- Gerçek zamanlayıcı kurulmuşsa Türkiye saatiyle 10.00, 16.00 ve 21.00’de kısa kontrol yap. Talimatın yazılmış olmasını zamanlayıcı kurulmuş sayma.
-- Yalnızca son kontrolden sonraki mesajları, yanıt bekleyen soruları ve yayın hatalarını incele. Yeni iş yoksa çalışmayı bitir.
-- Üyelerin gruptaki sorularını doğrulanmış bilgilere dayanarak yanıtla. Gerektiğinde ilgili hizmet veya araç bağlantısını paylaş.
-- Son kontrol zamanını, yayınlanan içerikleri ve bekleyen işleri kaydet.
-- Günün son kontrolünde en fazla 8 satırlık rapor hazırla. Ölçemediğin rakamları “veri yok” diye belirt.
+- Telefon yayın motoru günde 2 kanal gönderisi, 14 günde 4 grup tartışması planlar. Bütün saatler Türkiye saatidir. Başlangıç tarihi kurulumda belirlenir.
+- Her yayın için kalıcı kayıt ve message_id gerekir. Hazır kod, test başarısı veya import işlemi gerçek telefonun kurulmuş/çalışıyor olduğunu kanıtlamaz. Durumu bu ayrımla raporla.
+- Her gün Antigravity oturumu açarak takvimi yönetme. Mümkün olan işleri AI'sız çalışan koda bırak; içerik yenilemeyi haftalık tek çalışmada yap.
+- Telefonun yayın kaydı esas kaynaktır. Aynı işi ayrıca GitHub Actions veya ControllerBot kuyruğuna ekleme. Mevcut diğer kuyruğu incelemeden paralel yayıncı etkinleştirme.
+- İlk sürüm gelen grup mesajlarını okumaz, otomatik AI yanıtı vermez. Mevcut botta başka webhook vardır. `getUpdates`, `setWebhook`, `deleteWebhook` kullanma; ControllerBot'u veya tokeni değiştirme. Gelen mesaj desteği ayrı doğrulanacak aşamadır.
+- Kodda AI/API çağrısı yoktur. Ücretli faturalandırma açma; Pro aboneliğinin API kotası sağladığını varsayma.
+- Kesinti sonrası eski gönderileri yığma. Belirsiz gönderim otomatik tekrarlanmaz; Telegram'da kontrol edilip kayıt çözülür.
+- Telefonun Android pil/arka plan ve yeniden başlatma testleri yapılmadan kesintisiz çalışıyor deme.
 
-HAFTALIK ÇALIŞMA:
-- Gelecek 7 günün 14 gönderisini tek çalışmada hazırla ve zamanla. İçeriklerin yaklaşık yarısı uygulanabilir ipuçları, kalanı ücretsiz araçlar, sipariş rehberleri ve anlamlı sorular olsun. Doğrudan teklifler en fazla %15 olsun.
-- Siteyi baştan tarama; yalnızca kullanacağın değişebilir bilgileri yeniden doğrula.
-- Bağlantılarda utm_source=telegram&utm_medium=channel&utm_campaign=benzersiz_gonderi_adi kullan.
-- Erişilebilir sonuçlara göre içerikleri geliştir. Tekrarları azalt; işe yarayan konuları farklı örneklerle işle.
-- İlk etapta 10 uygun takas kanalı araştır; gerçekten uygun aday bulunursa listeyi 30’a genişlet. Her çalışmada araştırmayı tekrarlama.
+## Haftalık içerik çalışması
 
-ÖNCEDEN ONAY İSTE:
-Kanal sahiplerine veya diğer üçüncü kişilere iletişim, yarışma/çekiliş başlatma, ödül, fiyat/refill şartı/vaka örneği yayımlama, para harcama, kanal adı/kullanıcı adı değiştirme, mevcut içerik veya üye silme ve giriş doğrulaması.
+Önce yayınlanan içerikleri ve erişilebilir sonuçları oku. Eski metinleri/örnekleri tekrar etme. Yalnızca kullanacağın değişebilir site bilgilerini yeniden doğrula; her seferinde bütün siteyi tarama. Yaklaşık yarı uygulanabilir ipucu, kalan ücretsiz araç/rehber ve anlamlı soru; doğrudan teklifler en fazla %15. Veriye göre saat veya içerik yaklaşımını geliştir; verisi olmayan başarıyı iddia etme.
 
-ASLA:
-İstenmeyen DM, toplu üye ekleme, davetsiz başka gruplara paylaşım, sahte üyeler veya sonuçlar, uydurma kampanyalar ve güvenlik garantileri kullanma. Token, şifre veya giriş kodunu sohbette isteme ya da gösterme.
+Yeni içerikler benzersiz kimlikle eklenir; eski kimlikteki metin değiştirilmez. Site bağlantılarında `utm_source=telegram`, hedefe göre `utm_medium=channel|group`, `utm_campaign=benzersiz_kimlik` kullan. Faydayı gönderinin içinde ver; bağlantıyı ancak devamında anlamlı değer varsa ekle. Kampanya etiketi analitik entegrasyonu veya ölçülmüş tıklama değildir.
 
-Hata olursa aynı işlemi en fazla bir kez yeniden dene; yayın durumunu kontrol etmeden tekrar gönderme. Engel sürerse kaydet, bağımsız işlere devam et. Yalnızca doğrulanmış işlemleri tamamlandı diye raporla.
+Kuyruk bitince eski içerikleri döngüye alma. Yeni paket hazırlanmamışsa bekle ve sahibine bildir. Telefon dosyaları bu oturumdan erişilemiyorsa eriştiğini veya güncel raporu okuduğunu söyleme.
 
-## Kalıcı Telegram bot bağlantısı
+## Büyüme ve onay sınırları
 
-Socialora Telegram işlemleri için mevcut GitHub bağlantısıyla `.github/workflows/socialora-telegram.yml` iş akışını kullan; kullanım ve sınırlar `docs/telegram-antigravity.md` içindedir. Bot kimliği `@socialora_publisher_2026_bot` olmalıdır. Bot anahtarı yalnızca GitHub Actions repository secret `SOCIALORA_TELEGRAM_BOT_TOKEN` içinde saklanır. Anahtarı sohbete, depoya, workflow girdisine veya loga yazma.
+Sadece içerik sayısını artırmayı üye kazanımı planı sayma. Website ve müşteri davetleri için hazırlanmış metinleri kullan; gerçek yerleştirme, davet linki ve analitik erişimini ayrı doğrula. Takas araştırmasını her gün tekrarlama; önce gerçekten uygun 10 adayı doğrula, gerekirse 30'a genişlet. Kaynakta olmayan üye/izlenme sayısı uydurma.
 
-Yeni sohbette Telegram işi verilirse önce `operation=inspect` ile hedefin erişimini doğrula. `operation=send` yalnızca kullanıcının talep ettiği, metni ve hedefi belli bir gönderi için kullanılır. Gönderiyi yalnızca başarılı workflow sonucu ve Telegram message_id ile tamamlandı say. Belirsiz gönderimi tekrar çalıştırmadan önce run durumunu ve Telegram sonucunu kontrol et. Mevcut ControllerBot webhook'unu, bot anahtarını veya kişisel oturumları değiştirme.
+Şunlardan önce kullanıcı onayı gerekir: üçüncü kişilere iletişim/takas mesajı; yarışma/çekiliş/ödül; fiyat/refill şartı/vaka örneği yayınlama; para harcama; kanal/grup adı veya kullanıcı adı değiştirme; mevcut içerik veya üye silme; giriş doğrulaması ve mevcut webhook tüketicisini değiştirme.
 
-Bu bağlantı tarayıcı girişine ihtiyaç duymayan bot yayını içindir. Henüz otomatik zamanlama, gelen grup mesajlarını okuma veya ControllerBot kuyruğunu yönetme kurulmuş değildir; varmış gibi davranma.
+İstenmeyen DM, toplu üye ekleme, davetsiz başka gruplara paylaşım, sahte üye/sonuç, uydurma teklif veya güvenlik garantisi asla kullanma. Üye sorularına erişim daha sonra kurulursa önce konuşmanın bağlamını oku; yeni bilgi veya gerçek çözüm ekle. Bilgi yoksa uydurma cevap verme. Özel sipariş/ödeme/iletişim bilgilerini herkese açık grupta isteme, ücretsiz AI servislerine gönderme.
+
+## Anahtarlar ve mevcut GitHub köprüsü
+
+Bot kimliği `@socialora_publisher_2026_bot`, hedefler `@SocialoraOfficial` ve `@SocialoraChat`. GitHub secret `SOCIALORA_TELEGRAM_BOT_TOKEN` ve telefonun özel config dosyası ayrı güvenli saklama yerleridir. Token sohbete, repoya, workflow girdisine, loga veya ekran görüntüsüne yazılmaz. GitHub secret değeri sonradan okunmaya çalışılmaz.
+
+`.github/workflows/socialora-telegram.yml` eski manuel kontrol/yayın köprüsüdür; sınırları `docs/telegram-antigravity.md` içindedir. `inspect` yalnızca erişim kontrolüdür. `send` ancak hedefi/metni belirli talep için, telefon/ControllerBot takviminde çakışma olmadığı doğrulanarak kullanılır. Belirsiz workflow'u körlemesine tekrar çalıştırma. Websitedeki `FREE_VIEWS_TELEGRAM_BOT_TOKEN` davet imzası için kullanılan ayrı yapılandırmadır; değiştirme veya iptal etme.
+
+## Rapor
+
+En fazla 8 satır: doğrulanmış yayınlar/bağlantılar, mevcut ve önceki üye sayısı, bekleyen/hatalı işler, ölçülebiliyorsa Telegram kaynaklı ziyaretler ve yarının işi. Ölçemediğin değer için “veri yok” de. Türkçe raporu İngilizce marka kanalına gönderme. Kanıt olmadan zamanlayıcı, telefon, canlı yayın, grup okuma veya büyüme tamamlandı deme.
