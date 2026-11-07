@@ -71,7 +71,7 @@ jobs:
                   with urllib.request.urlopen(request, timeout=15) as response:
                       result = json.load(response)
               except urllib.error.HTTPError as error:
-                  fail("Telegram HTTP error " + str(error.code) + ". No retry performed.")
+                  fail("Telegram " + method + " HTTP error " + str(error.code) + ". No retry performed.")
               except Exception:
                   fail("Telegram request did not complete. If sending, check the chat before retrying.")
               if result.get("ok") is not True:
@@ -81,6 +81,7 @@ jobs:
           bot = api("getMe")
           if bot.get("username", "").lower() != "socialora_publisher_2026_bot":
               fail("Bot identity mismatch. Expected @socialora_publisher_2026_bot.")
+          print(json.dumps({"verified_bot": bot["username"]}))
           chat = api("getChat", {"chat_id": target})
           expected_type = "channel" if target == "@SocialoraOfficial" else "supergroup"
           if chat.get("type") != expected_type:
