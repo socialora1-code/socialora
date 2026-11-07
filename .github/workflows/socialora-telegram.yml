@@ -5,7 +5,7 @@ on:
     inputs:
       operation:
         type: choice
-        options: [inspect, send]
+        options: [inspect, send, disconnect_webhook]
         default: inspect
         required: true
       target:
@@ -54,7 +54,7 @@ jobs:
           operation = os.environ.get("OPERATION", "")
           targets = {"channel": "@SocialoraOfficial", "group": "@SocialoraChat"}
           target = targets.get(os.environ.get("TARGET", ""))
-          if operation not in {"inspect", "send"} or not target:
+          if operation not in {"inspect", "send", "disconnect_webhook"} or not target:
               fail("Unsupported operation or destination.")
           text = os.environ.get("POST_TEXT", "")
           if operation == "send":
@@ -105,6 +105,26 @@ jobs:
               "bot": bot["username"], "target": target,
               "membership": status, "can_send": can_send,
           }))
+          if operation == "disconnect_webhook":
+              webhook = api("getWebhookInfo")
+              current_url = webhook.get("url", "")
+              if current_url:
+                  fingerprint = hashlib.sha256(current_url.encode()).hexdigest()[:16]
+                  if fingerprint != "f4b1f42f6509a7b9":
+                      fail("Webhook changed since audit; no change made.")
+                  if api("deleteWebhook", {"drop_pending_updates": False}) is not True:
+                      fail("Telegram did not confirm webhook removal.")
+              verified = api("getWebhookInfo")
+              if verified.get("url"):
+                  fail("Webhook still present; removal not verified.")
+              print(json.dumps({
+                  "webhook_removed": True,
+                  "existing_webhook_configured": False,
+                  "pending_updates_preserved": True,
+                  "pending_update_count": verified.get("pending_update_count", 0),
+                  "bot": bot["username"],
+              }))
+              raise SystemExit(0)
           if operation == "inspect":
               count = api("getChatMemberCount", {"chat_id": chat["id"]})
               webhook = api("getWebhookInfo")
