@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { telegramEnabled } from '@/lib/telegram-free-views'
 import { FreeViewsForm } from '@/components/home/free-views-form'
 import { ComplianceNotice } from '@/components/site/compliance-notice'
 import { CtaSection } from '@/components/site/cta-section'
@@ -8,7 +9,7 @@ import { PageHero } from '@/components/site/page-hero'
 export const metadata: Metadata = {
   title: 'Free Instagram Views',
   description:
-    'Get up to 1,000 free Instagram views on any public reel or post. No password, no email and no sign-up needed. Limited-time offer.',
+    'Get up to 1,000 free Instagram views on any public reel or post. No Instagram password or email needed. Explore our free views offer and community.',
   alternates: { canonical: '/free-instagram-views' },
   openGraph: { url: '/free-instagram-views', title: 'Free Instagram Views · Socialora' },
 }
@@ -24,7 +25,7 @@ const STEPS = [
   },
   {
     title: 'Send the order',
-    body: 'Press the button. No password, no email and no account are needed.',
+    body: telegramEnabled() ? 'Connect Telegram once, join our community and confirm your membership. Future claims use the same connection.' : 'Press the button. No password, no email and no account are needed.',
   },
 ]
 
@@ -39,7 +40,7 @@ const FAQS = [
   },
   {
     q: 'How many free views can I get?',
-    a: 'Up to 1,000 views per reel or post. To keep the offer available for everyone, the same post cannot receive free views twice and each person can place a limited number of free orders per day.',
+    a: 'Up to 1,000 views per reel or post, with up to 3 claims in each 24-hour period. Each post is eligible once every 30 days. Shared internet connections also share an IP limit.' + (telegramEnabled() ? ' Telegram community membership is required. Connect once on this browser; we check membership when you claim.' : ''),
   },
   {
     q: 'How long does delivery take?',
@@ -79,7 +80,7 @@ export default function FreeInstagramViewsPage() {
       <PageHero
         eyebrow="Limited-time offer"
         title="Free Instagram Views"
-        description="Get up to 1,000 free views on your Instagram reel or post. No password, no email and no sign-up."
+        description={telegramEnabled() ? 'Get up to 1,000 free views on your public Instagram reel or post. Join our Telegram community to claim. No Instagram password or email needed.' : 'Get up to 1,000 free views on your Instagram reel or post. No password, no email and no sign-up.'}
       />
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
         <div className="-mt-4">
@@ -141,3 +142,4 @@ export default function FreeInstagramViewsPage() {
     </>
   )
 }
+
