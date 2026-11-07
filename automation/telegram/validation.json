@@ -1,8 +1,8 @@
 {
-  "checked_on": "2026-11-07",
-  "automated_tests": 27,
+  "checked_on": "2026-11-08",
+  "automated_tests": 28,
   "automated_tests_result": "passed",
-  "simulation": "32/32 posts across 14 days, no duplicate sends; persistence checked",
+  "simulation": "37/37 posts across 7 days: 35 channel + 2 group; no duplicates; varied daytime gaps of 3–4 hours",
   "public_site_links": [
     {
       "url": "https://www.getsocialora.com/faq",

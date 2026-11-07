@@ -14,7 +14,7 @@ Bu dosya Socialora Telegram çalışmasının güncel ana talimatıdır. Eski so
 
 Kaynak kodu ve evde Termux kurulumu `automation/telegram/README.md`; içerik `content.json`; doğrulanmış site bilgisi `sources.json`; edinim planı `growth-plan.md` içindedir.
 
-- Telefon yayın motoru günde 2 kanal gönderisi, 14 günde 4 grup tartışması planlar. Bütün saatler Türkiye saatidir. Başlangıç tarihi kurulumda belirlenir.
+- Telefon yayın motoru günde 5 kanal gönderisi, 7 günde 2 grup tartışması planlar. Bütün saatler Türkiye saatidir. Başlangıç tarihi kurulumda belirlenir.
 - Her yayın için kalıcı kayıt ve message_id gerekir. Hazır kod, test başarısı veya import işlemi gerçek telefonun kurulmuş/çalışıyor olduğunu kanıtlamaz. Durumu bu ayrımla raporla.
 - Her gün Antigravity oturumu açarak takvimi yönetme. Mümkün olan işleri AI'sız çalışan koda bırak; içerik yenilemeyi haftalık tek çalışmada yap.
 - Telefonun yayın kaydı esas kaynaktır. Aynı işi ayrıca GitHub Actions veya ControllerBot kuyruğuna ekleme. Mevcut diğer kuyruğu incelemeden paralel yayıncı etkinleştirme.
@@ -35,8 +35,8 @@ Kuyruk bitince eski içerikleri döngüye alma. Yeni paket hazırlanmamışsa be
 ## Büyüme ve onay sınırları
 
 Büyüme işi her hafta şu üç hattı ilerletsin:
-1. Telegram içinden yeni üyeler: mevcut açıklama ve sabit mesajları önce oku; ilgili arama terimlerini doğal biçimde kullan. Güvenilir ücretsiz katalogları doğrula ve uygun olanları kaydet. İlk 10 gerçek takas adayını konu, dil, boyut ve son gönderi görüntülenmeleriyle değerlendir; mesaj gönderimi kullanıcı onayına bağlıdır. Sırf listeyi doldurmak için ilgisiz aday ekleme.
-2. Üyeyi elde tutma: faydalı kanal içerikleri; gelen mesaj bağlantısı tamamlanınca grupta bize yöneltilen sorulara kısa, bağlama özel çözüm. Sürekli reklam veya herkese müdahale yok. Yayın sayısı ancak gerçek sonuçlarla değiştirilir; mevcut kod günde 2 gönderidir, 3 önerisi henüz uygulanmış değildir.
+1. Telegram içinden yeni üyeler: mevcut açıklama ve sabit mesajları önce oku; ilgili arama terimlerini doğal biçimde kullan. Güvenilir ücretsiz katalogları doğrula ve uygun olanları kaydet. Kullanıcı mevcut üyelerin bot ağırlıklı olduğunu belirtti; üye toplamını gerçek kitle diye sunma. Takası gerçek görüntülenme/etkileşim kanıtı oluşana kadar ertele. Sonrasında gerçek takas adaylarını konu, dil, boyut ve son gönderi görüntülenmeleriyle değerlendir; mesaj gönderimi kullanıcı onayına bağlıdır. Sırf listeyi doldurmak için ilgisiz aday ekleme.
+2. Üyeyi elde tutma: faydalı kanal içerikleri; gelen mesaj bağlantısı tamamlanınca grupta bize yöneltilen sorulara kısa, bağlama özel çözüm. Sürekli reklam veya herkese müdahale yok. Kullanıcı talebiyle mevcut kod günde 5 kanal gönderisi ve 7 günlük 35 içerik olarak güncellendi. Saatler günler arasında değişir; gündüz araları 3–4 saattir, gece ara verilir.
 3. Siteye nitelikli dönüş: önce faydayı mesajda sun, devamında işlem yapılacaksa doğrudan ilgili ücretsiz araca/hizmet rehberine takipli link ver. Analitikte oturum ve dönüşüm kaydını doğrula. Site üzerinden gruba gelen mevcut davet, yeni dış kitle kazanımıyla karıştırılmaz.
 
 Haftalık bir çalışma içinde içerik, aday listesi ve sonuç değerlendirmesini birlikte yap; aynı araştırmayı her gün baştan tekrarlama. Website/müşteri davet metinleri hazır olsa da gerçek yerleştirme ve gönderim ayrı doğrulanır. Kaynakta olmayan üye/izlenme veya site trafiği sayısı uydurma.

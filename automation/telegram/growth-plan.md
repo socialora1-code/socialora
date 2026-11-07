@@ -1,14 +1,14 @@
-# Socialora — ilk 14 günün büyüme planı
+# Socialora — ilk 7 günün büyüme planı
 
 ## Hedef ve ölçüm
 
 Öncelik, içerikten yararlanan gerçek üyeler ve getsocialora.com'a ilgili ziyaretçilerdir. Sadece gönderi sayısını artırmak tek başına yeni insanları kanala getirmez. Bu ilk sürüm içerik dağıtımını düzenler; dışarıdan keşif için aşağıdaki yerleşimler ve daha sonra onaylı ortaklıklar gerekir. Takipçi veya satış artışı garanti edilmez.
 
-Başlangıç ölçümleri aktivasyon gününde `doctor` ile alınır. 7 ve 14 gün sonunda kanal/grup üyesi, sitedeki Telegram UTM oturumları ve mümkünse dönüşümler karşılaştırılır. UTM linki eklemek analitik ölçümünün kurulduğu anlamına gelmez. Analitikte kampanya raporu erişimi yoksa tıklama ve satış için “veri yok” denir. Farklı günlerdeki toplam üyeden doğrudan hangi gönderinin üyelik getirdiği çıkarılmaz.
+Başlangıç ölçümleri aktivasyon gününde `doctor` ile alınır. 7 gün sonunda kanal/grup üyesi, sitedeki Telegram UTM oturumları ve mümkünse dönüşümler karşılaştırılır. UTM linki eklemek analitik ölçümünün kurulduğu anlamına gelmez. Analitikte kampanya raporu erişimi yoksa tıklama ve satış için “veri yok” denir. Farklı günlerdeki toplam üyeden doğrudan hangi gönderinin üyelik getirdiği çıkarılmaz.
 
 ## Yayın düzeni
 
-- Kanal: 11.00 ve 19.30; bunlar ilk deneme saatleridir, “en iyi saat” oldukları kanıtlanmış değildir.
+- Kanal: günde 5 yayın, 7 gün boyunca 35 içerik; content.json içinde her gün farklı saatler, gündüz araları 3–4 saat, geceleri ara; bunlar ilk deneme saatleridir, “en iyi saat” oldukları kanıtlanmış değildir.
 - Grup: haftada ikiye yakın tartışma konusu, kanalın tüm içeriklerini ayrıca kopyalamak yok.
 - İlk mesaj “Start here”. Yayınlandıktan sonra sabitlenir. Mevcut sabit mesaj otomatik değiştirilmez.
 - Haftanın sonunda veriye göre bir konu veya saat değiştirilir. Aynı anda her şeyi değiştirmeyin.
@@ -28,9 +28,11 @@ Her yerleşim için Telegram'ın yönetici menüsünden ayrı, isimlendirilmiş 
 
 Gönderim veya müşteri listesine mesaj atma yapılmadı. Web sitesinde zaten ücretsiz izlenme akışına bağlı grup daveti var; onu yeni davetlerle karıştırmayın, silmeyin veya üyelik doğrulaması varmış gibi anlatmayın. Bu pakette website kodu değiştirilmedi.
 
-## Yeni üye kazanımı: öncelikli çalışma
+## Yeni üye kazanımı: önce gerçek kitle
 
-İlgili küçük creator/marketing kanallarını konu uyumu, gönderi faydası ve gerçek görüntülenmeler üzerinden değerlendirin. Kaynak verisi olmadan üye/etkileşim rakamı uydurmayın. Önce 10 uygun aday listesi hazırlayın. Sahiplere mesaj gitmeden önce kullanıcı onayı alın. Yarışma veya ödül olmadan ücretsiz araç rehberi gibi somut faydalı içerik etrafında takas teklif edilebilir.
+Kullanıcı mevcut üyelerin bot ağırlıklı olduğunu belirtti. Bu nedenle takas şu an öncelik değildir; mevcut üye sayısı erişim kanıtı olarak sunulmaz. Önce gönüllü website/müşteri davetleri ve ücretsiz, ilgili kataloglardan gerçek ilgi oluşturulur; gerçek görüntülenme ve etkileşim oluşursa ortaklık araştırılır.
+
+İlgili küçük creator/marketing kanallarını konu uyumu, gönderi faydası ve gerçek görüntülenmeler üzerinden değerlendirin. Kaynak verisi olmadan üye/etkileşim rakamı uydurmayın. Gerçek erişim oluştuğunda uygun aday listesi hazırlayın. Sahiplere mesaj gitmeden önce kullanıcı onayı alın. Yarışma veya ödül olmadan ücretsiz araç rehberi gibi somut faydalı içerik etrafında takas teklif edilebilir.
 
 ## Grup yanıtları: sıradaki teknik iş
 
@@ -41,10 +43,10 @@ Aynı bot için yalnızca bir gelen mesaj tüketicisi hazırlanacak. Polling ön
 ## Somut uygulama sırası ve tamamlanma ölçütü
 
 1. Gelen mesaj alımı ve doğal yanıt: tek tüketici, kalıcı tekrar kontrolü, yalnızca ilgili sorular, doğrulanmış ücretsiz model kotası. Gerçek grup sorusuna test yanıtı görülmeden tamamlandı denmez.
-2. Üye edinimi: mevcut kanal açıklaması ve sabit mesajı incele; 10 uygun Telegram ortaklık adayı ve ücretsiz katalogları doğrula. Her aday için dil/konu uyumu ve erişilebilir gerçek metrikler. Dış iletişimden önce kullanıcının önceki onay sınırına uy.
+2. Üye edinimi: mevcut kanal açıklaması ve sabit mesajı incele; ücretsiz ilgili katalogları doğrula; takas adaylarını gerçek erişim oluşana kadar beklet. Her aday için dil/konu uyumu ve erişilebilir gerçek metrikler. Dış iletişimden önce kullanıcının önceki onay sınırına uy.
 3. Dönüşüm: içerikteki somut problemi ilgili araçla eşleştir. Site analitiğinde Telegram kampanyalarını gerçekten görebildiğini doğrula; erişim yoksa başarı rakamı üretme. Mevcut website→grup daveti ile dışarıdan kazanılan yeni kitleyi ayrı değerlendir.
 4. Telefon aktivasyonu: paket yükleme, gizli token girişi, canlı yayın, ekran kapalı ve yeniden başlatma testi. Bunlar henüz tamamlanmadı.
-5. Bir hafta sonra: erişilebilir görüntülenme/üyelik ve Telegram kaynaklı oturum/dönüşüm sonuçlarına göre bir değişiklik seç. Günde 3 kanal gönderisi bir deneme önerisidir; mevcut paket hâlâ 2 gönderidir. Kod ve içerik birlikte güncellenmeden bunu uygulanmış sayma.
+5. Bir hafta sonra: erişilebilir görüntülenme/üyelik ve Telegram kaynaklı oturum/dönüşüm sonuçlarına göre bir değişiklik seç. Kullanıcının günde 5 gönderi talebi kod ve 7 günlük içerik takviminde birlikte uygulandı. Yayın kalitesini ve gerçek görüntülenmeleri değerlendir.
 
 Bu liste hazırlık planıdır: katalog kaydı, ortaklık listesi, AI yanıtı veya analitik bağlantısı henüz tamamlanmış değildir.
 

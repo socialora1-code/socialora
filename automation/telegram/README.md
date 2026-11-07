@@ -4,7 +4,7 @@ Bu paket yalnızca `@SocialoraOfficial` ve `@SocialoraChat` için hazırlanmış
 
 ## Hazır olanlar
 
-- 14 gün: kanala her gün 11.00 ve 19.30'da iki farklı İngilizce gönderi; gruba 2., 5., 9. ve 13. günlerde 17.00'de dört ayrı tartışma konusu. Bütün saatler Türkiye saati.
+- 7 gün: kanala günde 5 farklı İngilizce gönderi (toplam 35); gruba 3. ve 6. günlerde 17.05'te iki ayrı tartışma konusu. Kanal saatleri her gün değişir; gündüz gönderilerinin arası 3–4 saattir, gece ara verilir. Bütün saatler Türkiye saati.
 - Siteye giden her bağlantıda ayrı UTM kampanyası. Her paylaşım reklam değildir; bağlantısız faydalı içerik de vardır.
 - Kalıcı SQLite yayın kaydı; tekrar yüklemeye ve aynı anda iki motor çalışmasına karşı koruma.
 - Kesintiden sonra 90 dakikadan eski yayın atlanır. Eski gönderiler arka arkaya gönderilmez. İki yayın arasında en az 30 dakika vardır.
@@ -57,7 +57,7 @@ socialora status
 
 Termux:Boot'u bir kez açın. Android'de Termux ve Termux:Boot için pil kullanımını kısıtlamayın; varsa otomatik başlatmaya izin verin. Termux'un kalıcı bildirimini etkin tutun. Gözetim altında kısa ekran kapalı testi ve daha sonra yeniden başlatma testi yapın. Bazı cihazlarda ilk kilit açılmadan servis başlayamaz; model bilinmeden bunun çözüldüğü varsayılmaz.
 
-İlk günün 11.00 gönderisi “Start here” metnidir. Yayınlanınca Telegram'dan sabitleyin. Paket mevcut sabit mesajı değiştirmez.
+İlk günün 08.10 gönderisi “Start here” metnidir. Yayınlanınca Telegram'dan sabitleyin. Paket mevcut sabit mesajı değiştirmez.
 
 ## Günlük kullanım
 
@@ -86,7 +86,7 @@ Yayınlanmadığı doğrulanırsa `socialora resolve tg_v1_ORNEK --skip` ile atl
 
 ## İçerik bitince
 
-Paket içerikleri tekrar döndürmez. 14 gün sonunda yeni gönderi yoksa bekler. İlk haftanın sonuçlarına göre gelecek haftayı ChatGPT/Antigravity'de **tek çalışmada** hazırlayıp `brand=Socialora`, `version=1` formatında yeni JSON ekleyin. Her yeni gönderinin benzersiz kimliği olmalı; eski kimliklerin metnini değiştirmeyin. Yeni haftayı `socialora import --file DOSYA --start YYYY-MM-DD` ile ekleyin. `import` mevcut servisi durdurmadan çalışabilir; yoğun işlemle aynı ana denk gelirse kısa süre sonra tekrar deneyin.
+Paket içerikleri tekrar döndürmez. 7 gün sonunda yeni gönderi yoksa bekler. İlk haftanın sonuçlarına göre gelecek haftayı ChatGPT/Antigravity'de **tek çalışmada** hazırlayıp `brand=Socialora`, `version=1` formatında yeni JSON ekleyin. Her yeni gönderinin benzersiz kimliği olmalı; eski kimliklerin metnini değiştirmeyin. Yeni haftayı `socialora import --file DOSYA --start YYYY-MM-DD` ile ekleyin. `import` mevcut servisi durdurmadan çalışabilir; yoğun işlemle aynı ana denk gelirse kısa süre sonra tekrar deneyin.
 
 Fiyat, refill, kampanya ve müşteri sonucu içeriklerine kullanıcı onayı gerekir. Yeni içerikteki değişebilir ürün bilgilerini yeniden doğrulayın. Bu paket fiyat/refill veya süre garantisi yayınlamaz. Metin benzerliğinin anlam düzeyindeki kontrolü editoryal incelemenin parçasıdır; otomatik kontrol tam eşleşmeleri ve URL etiketleri değiştirilmiş kopyaları yakalar.
 
@@ -104,4 +104,4 @@ python -m unittest discover -s tests -v
 python socialora.py check-content
 ```
 
-Testler Telegram'a mesaj yollamaz. Uygulama yalnızca izin verilen Telegram yöntemlerini kullanır; üçüncü taraf Python paketi gerektirmez. Sürüm: 1.0.0.
+Testler Telegram'a mesaj yollamaz. Uygulama yalnızca izin verilen Telegram yöntemlerini kullanır; üçüncü taraf Python paketi gerektirmez. Sürüm: 1.1.0.

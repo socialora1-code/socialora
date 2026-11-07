@@ -174,13 +174,15 @@ class PublisherTests(unittest.TestCase):
         self.assertTrue(app.publish_one(self.db, api, self.now + 1800))
 
     def test_daily_ceiling_across_separate_batches(self):
-        self.enqueue()
-        self.enqueue('test_two')
-        self.enqueue('test_three')
+        for n in range(6):
+            self.enqueue('test_' + str(n))
+        self.db.execute('UPDATE posts SET expires=?', (self.now + 20000,))
+        self.db.commit()
         api = FakeTelegram()
-        self.assertTrue(app.publish_one(self.db, api, self.now))
-        self.assertTrue(app.publish_one(self.db, api, self.now + 1800))
-        self.assertFalse(app.publish_one(self.db, api, self.now + 3600))
+        for n in range(5):
+            self.assertTrue(app.publish_one(self.db, api, self.now + n * 1800))
+        self.assertFalse(app.publish_one(self.db, api, self.now + 9000))
+
 
     def test_durable_delivery_marker_exists_before_http_request(self):
         self.enqueue()
@@ -211,7 +213,7 @@ class PublisherTests(unittest.TestCase):
     def test_import_is_idempotent_and_preserves_original_schedule(self):
         start = (dt.datetime.now(app.TZ).date() + dt.timedelta(days=1)).isoformat()
         source = app.ROOT / 'content.json'
-        self.assertEqual(32, app.import_content(self.db, source, start))
+        self.assertEqual(37, app.import_content(self.db, source, start))
         original_due = self.db.execute('SELECT MIN(due) FROM posts').fetchone()[0]
         tomorrow = (dt.date.fromisoformat(start) + dt.timedelta(days=1)).isoformat()
         self.assertEqual(0, app.import_content(self.db, source, tomorrow))
@@ -227,14 +229,25 @@ class PublisherTests(unittest.TestCase):
         file.write_text(json.dumps(source))
         with self.assertRaises(app.SafeError):
             app.import_content(self.db, file, start)
-        self.assertEqual(32, self.db.execute('SELECT COUNT(*) FROM posts').fetchone()[0])
+        self.assertEqual(37, self.db.execute('SELECT COUNT(*) FROM posts').fetchone()[0])
 
     def test_content_bundle_has_correct_targets_and_tracked_links(self):
         posts = app.validate_posts(json.loads((app.ROOT / 'content.json').read_text()))
-        self.assertEqual(28, sum(p['target'] == 'channel' for p in posts))
-        self.assertEqual(4, sum(p['target'] == 'group' for p in posts))
-        for day in range(14):
-            self.assertEqual(2, sum(p['target'] == 'channel' and p['day'] == day for p in posts))
+        self.assertEqual(35, sum(p['target'] == 'channel' for p in posts))
+        self.assertEqual(2, sum(p['target'] == 'group' for p in posts))
+        for day in range(7):
+            self.assertEqual(5, sum(p['target'] == 'channel' and p['day'] == day for p in posts))
+
+    def test_daytime_slots_are_varied_and_three_to_four_hours_apart(self):
+        posts = json.loads((app.ROOT / 'content.json').read_text())['posts']
+        patterns = set()
+        for day in range(7):
+            slots = sorted(p['time'] for p in posts if p['target'] == 'channel' and p['day'] == day)
+            minutes = [int(x[:2]) * 60 + int(x[3:]) for x in slots]
+            self.assertTrue(all(180 <= b-a <= 240 for a,b in zip(minutes, minutes[1:])))
+            self.assertTrue(all(480 <= x < 1380 for x in minutes))
+            patterns.add(tuple(slots))
+        self.assertEqual(7, len(patterns))
 
     def test_non_socialora_external_link_is_rejected(self):
         source = json.loads((app.ROOT / 'content.json').read_text())
@@ -291,9 +304,9 @@ class PublisherTests(unittest.TestCase):
             with self.assertRaises(app.SafeError):
                 api.call(method)
 
-    def test_full_fourteen_day_calendar_survives_restart(self):
+    def test_full_seven_day_calendar_survives_restart(self):
         start = (dt.datetime.now(app.TZ).date() + dt.timedelta(days=1)).isoformat()
-        self.assertEqual(32, app.import_content(self.db, app.ROOT / 'content.json', start))
+        self.assertEqual(37, app.import_content(self.db, app.ROOT / 'content.json', start))
         dates = list(self.db.execute('SELECT due FROM posts ORDER BY due'))
         api = FakeTelegram()
         for n, row in enumerate(dates):
@@ -306,8 +319,8 @@ class PublisherTests(unittest.TestCase):
                     self.assertEqual(13, other.execute("SELECT COUNT(*) FROM posts WHERE status='sent'").fetchone()[0])
                 finally:
                     other.close()
-        self.assertEqual(32, self.db.execute("SELECT COUNT(*) FROM posts WHERE status='sent'").fetchone()[0])
-        self.assertEqual(32, sum(m == 'sendMessage' for m, p in api.calls))
+        self.assertEqual(37, self.db.execute("SELECT COUNT(*) FROM posts WHERE status='sent'").fetchone()[0])
+        self.assertEqual(37, sum(m == 'sendMessage' for m, p in api.calls))
 
 
 if __name__ == '__main__':

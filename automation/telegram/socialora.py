@@ -25,7 +25,7 @@ CONFIG = Path(os.environ.get('SOCIALORA_CONFIG', str(Path.home() / '.config/soci
 TZ = dt.timezone(dt.timedelta(hours=3), 'Europe/Istanbul')
 TARGETS = {'channel': '@SocialoraOfficial', 'group': '@SocialoraChat'}
 BOT = 'socialora_publisher_2026_bot'
-VERSION = '1.0.0'
+VERSION = '1.1.0'
 LOG = logging.getLogger('socialora')
 
 
@@ -181,8 +181,8 @@ def validate_posts(data):
             raise SafeError('İçerik hedefi veya uzunluğu geçersiz.')
         if not isinstance(day, int) or isinstance(day, bool) or not 0 <= day <= 60:
             raise SafeError('İçerik günü geçersiz.')
-        if not isinstance(hour, str) or not re.fullmatch(r'(0[8-9]|1\d|2[01]):[0-5]\d', hour):
-            raise SafeError('Yayın saati 08.00–21.59 arasında olmalı.')
+        if not isinstance(hour, str) or not re.fullmatch(r'(0[8-9]|1\d|2[0-2]):[0-5]\d', hour):
+            raise SafeError('Yayın saati 08.00–22.59 arasında olmalı.')
         if re.search(r'\b\d{5,}:[A-Za-z0-9_-]{20,}', text) or re.search(r'\b(?:100% safe|never drops|guaranteed followers)\b', text, re.I):
             raise SafeError('İçerikte yasak bilgi veya garanti bulundu.')
         digest = hashlib.sha256(canonical_text(text).encode()).hexdigest()
@@ -191,7 +191,7 @@ def validate_posts(data):
         digests.add((target, digest))
         key = (target, day)
         perday[key] = perday.get(key, 0) + 1
-        if perday[key] > (2 if target == 'channel' else 1):
+        if perday[key] > (5 if target == 'channel' else 1):
             raise SafeError('Günlük yayın sınırı aşıldı.')
         for raw in re.findall(r'https?://[^\s]+', text):
             u = urllib.parse.urlsplit(raw)
@@ -251,12 +251,12 @@ def publish_one(db, api, now):
     post = db.execute("SELECT * FROM posts WHERE status='pending' AND due<=? AND next_attempt<=? ORDER BY due,id LIMIT 1", (now, now)).fetchone()
     if not post:
         return False
-    # Across restarts and multiple imported batches: no catch-up bursts or more than 2/day/channel.
+    # Across restarts and multiple imported batches: no catch-up bursts or more than 5/day/channel.
     local_date = dt.datetime.fromtimestamp(now, TZ).date()
     midnight = int(dt.datetime.combine(local_date, dt.time(), TZ).timestamp())
     today_count = db.execute("SELECT COUNT(*) FROM posts WHERE target=? AND status='sent' AND sent_at>=?", (post['target'], midnight)).fetchone()[0]
     last = db.execute("SELECT MAX(sent_at) FROM posts WHERE status='sent'").fetchone()[0]
-    if today_count >= (2 if post['target'] == 'channel' else 1) or (last and now - last < 1800):
+    if today_count >= (5 if post['target'] == 'channel' else 1) or (last and now - last < 1800):
         return False
     try:
         chat_id = verify(api, post['target'])
