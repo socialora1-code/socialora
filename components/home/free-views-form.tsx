@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { TelegramConnect } from '@/components/home/telegram-connect'
 
 export function FreeViewsForm() {
   const [link, setLink] = useState('')
@@ -8,15 +9,41 @@ export function FreeViewsForm() {
   const [website, setWebsite] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
   const [message, setMessage] = useState('')
+  const submitting = useRef(false)
+  const [telegram, setTelegram] = useState<{ enabled: boolean; configured: boolean; connected: boolean; botUsername: string; groupUrl: string } | null>(null)
+  const [showJoin, setShowJoin] = useState(false)
+  const [configError, setConfigError] = useState(false)
+
+  useEffect(() => {
+    let active = true
+    fetch('/api/free-views/telegram', { cache: 'no-store' })
+      .then(response => { if (!response.ok) throw new Error('Unavailable'); return response.json() })
+      .then(data => { if (active) setTelegram(data) })
+      .catch(() => { if (active) setConfigError(true) })
+    return () => { active = false }
+  }, [])
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (submitting.current || !telegram) return
     const qty = Number(quantity)
     if (!Number.isInteger(qty) || qty < 100 || qty > 1000) {
       setStatus('error')
       setMessage('Enter a quantity between 100 and 1000.')
       return
     }
+    if (telegram.enabled && !telegram.configured) {
+      setStatus('error')
+      setMessage('Free views are unavailable right now. Please try again later.')
+      return
+    }
+    if (telegram.enabled && !telegram.connected) {
+      setShowJoin(true)
+      setStatus('idle')
+      setMessage('')
+      return
+    }
+    submitting.current = true
     setStatus('loading')
     setMessage('')
     try {
@@ -30,13 +57,21 @@ export function FreeViewsForm() {
         setStatus('done')
         setMessage('Done! Your free views order was sent. Delivery can take a little while.')
         setLink('')
+        setShowJoin(false)
       } else {
+        if (data.code === 'TELEGRAM_CONNECT_REQUIRED') {
+          setTelegram(current => current ? { ...current, connected: false } : current)
+          setShowJoin(true)
+        }
+        if (data.code === 'TELEGRAM_JOIN_REQUIRED') setShowJoin(true)
         setStatus('error')
         setMessage(data.error ?? 'Something went wrong. Please try again.')
       }
     } catch {
       setStatus('error')
       setMessage('Something went wrong. Please try again.')
+    } finally {
+      submitting.current = false
     }
   }
 
@@ -47,7 +82,7 @@ export function FreeViewsForm() {
     >
       <h2 className="text-lg font-semibold tracking-tight">Free Instagram Views</h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Limited-time offer: up to 1,000 free views per reel or post. No password and no email needed.
+        Limited-time offer: up to 1,000 free views per reel or post. No password and no email needed.{telegram?.enabled ? ' Join our Telegram community to claim up to 3 times a day.' : ''}
       </p>
 
       <div className="mt-4 grid gap-3">
@@ -97,14 +132,38 @@ export function FreeViewsForm() {
           </div>
           <button
             type="submit"
-            disabled={status === 'loading'}
+            disabled={status === 'loading' || !telegram}
             className="h-12 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
           >
-            {status === 'loading' ? 'Sending...' : 'Get free views'}
+            {status === 'loading' ? 'Checking & sending...' : showJoin && telegram?.connected ? 'Check membership & get views' : 'Get free views'}
           </button>
         </div>
       </div>
 
+      {showJoin && telegram?.enabled && telegram.configured ? (
+        <div className="mt-4 rounded-xl border border-border bg-background p-4">
+          <h3 className="text-sm font-semibold">Join our Telegram community to get free views</h3>
+          {!telegram.connected ? (
+            <>
+              <p className="mb-3 mt-1 text-sm text-muted-foreground">Connect Telegram once, then join the group. We’ll remember your connection on this browser.</p>
+              <TelegramConnect botUsername={telegram.botUsername}
+                onConnected={() => {
+                  setTelegram(current => current ? { ...current, connected: true } : current)
+                  setStatus('idle')
+                  setMessage('')
+                }}
+                onError={error => { setStatus('error'); setMessage(error) }} />
+            </>
+          ) : (
+            <>
+              <p className="mb-3 mt-1 text-sm text-muted-foreground">Telegram connected. Join the group, then return here and tap “Check membership & get views”. Already a member? Just tap the button.</p>
+              <a href={telegram.groupUrl} target="_blank" rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground">Join Telegram group</a>
+            </>
+          )}
+        </div>
+      ) : null}
+      {configError ? <p role="status" className="mt-3 text-sm text-destructive">Could not load free views. Please refresh and try again.</p> : null}
       {message ? (
         <p
           role="status"
@@ -116,3 +175,4 @@ export function FreeViewsForm() {
     </form>
   )
 }
+

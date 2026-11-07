@@ -1,4 +1,8 @@
 import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
+import { TELEGRAM_COOKIE, telegramEnabled, botToken, readTelegramSession, isGroupMember, sameOrigin } from '@/lib/telegram-free-views'
+
+export const runtime = 'nodejs'
 
 const PANEL_URL = 'https://smmwiz.com/api/v2'
 const PANEL_SERVICE_ID = 19639
@@ -20,6 +24,7 @@ async function redis(command: (string | number)[]): Promise<unknown> {
   })
   if (!res.ok) throw new Error(`Redis error ${res.status}`)
   const data = await res.json()
+  if (data.error) throw new Error('Redis command failed')
   return data.result
 }
 
@@ -48,7 +53,7 @@ function fail(message: string, status: number) {
   return NextResponse.json({ ok: false, error: message }, { status })
 }
 
-async function placeOrder(apiKey: string, link: string, quantity: number): Promise<boolean> {
+async function placeOrder(apiKey: string, link: string, quantity: number): Promise<'placed' | 'rejected' | 'unknown'> {
   const params = new URLSearchParams({
     key: apiKey,
     action: 'add',
@@ -62,18 +67,20 @@ async function placeOrder(apiKey: string, link: string, quantity: number): Promi
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: params,
       cache: 'no-store',
+      signal: AbortSignal.timeout(15000),
     })
     const data = await res.json()
-    if (data && data.order) return true
+    if (res.ok && data && data.order) return 'placed'
     console.error('Free views panel error:', data?.error ?? 'unknown error')
-    return false
-  } catch (error) {
-    console.error('Free views request failed:', error)
-    return false
+    return data?.error ? 'rejected' : 'unknown'
+  } catch {
+    console.error('Free views request outcome could not be confirmed')
+    return 'unknown'
   }
 }
 
 export async function POST(request: Request) {
+  if (!sameOrigin(request)) return fail('Please try again from our website.', 403)
   let body: { link?: unknown; quantity?: unknown; website?: unknown }
   try {
     body = await request.json()
@@ -101,27 +108,58 @@ export async function POST(request: Request) {
     return fail('Free views are unavailable right now.', 500)
   }
 
+  let telegramId: string | null = null
+  if (telegramEnabled()) {
+    if (!process.env.FREE_VIEWS_TELEGRAM_BOT_TOKEN) return fail('Free views are unavailable right now. Please try again later.', 503)
+    telegramId = readTelegramSession((await cookies()).get(TELEGRAM_COOKIE)?.value, botToken())
+    if (!telegramId) {
+      return NextResponse.json({ ok: false, code: 'TELEGRAM_CONNECT_REQUIRED', error: 'Connect Telegram once to claim your free views.' }, { status: 401 })
+    }
+    try {
+      if (!await isGroupMember(telegramId)) {
+        return NextResponse.json({ ok: false, code: 'TELEGRAM_JOIN_REQUIRED', error: 'Join our Telegram group, then check your membership to get your views.' }, { status: 403 })
+      }
+    } catch {
+      return fail('We could not check your Telegram membership. Please try again shortly.', 503)
+    }
+  }
+
   const ipKey = `fv:ip:${clientIp(request)}`
   const linkKey = `fv:link:${link}`
 
   try {
-    const count = Number(await redis(['INCR', ipKey]))
-    if (count === 1) await redis(['EXPIRE', ipKey, DAY_SECONDS])
-    if (count > MAX_PER_IP_PER_DAY) {
-      return fail('Daily free limit reached. Please try again tomorrow.', 429)
-    }
-
-    const locked = await redis(['SET', linkKey, '1', 'NX', 'EX', LINK_BLOCK_SECONDS])
-    if (locked !== 'OK') {
-      await redis(['DECR', ipKey])
-      return fail('This post already received free views.', 429)
-    }
+    // Reserve quota and the post in one operation, including concurrent clicks.
+    const quotaKeys = telegramId ? [ipKey, `fv:telegram:${telegramId}`] : [ipKey]
+    const reservation = Number(await redis(['EVAL', `
+      for i = 2, #KEYS do
+        if tonumber(redis.call('GET', KEYS[i]) or '0') >= tonumber(ARGV[1]) then return 1 end
+      end
+      if redis.call('EXISTS', KEYS[1]) == 1 then return 2 end
+      redis.call('SET', KEYS[1], 'pending', 'EX', ARGV[3])
+      for i = 2, #KEYS do
+        local count = redis.call('INCR', KEYS[i])
+        if count == 1 then redis.call('EXPIRE', KEYS[i], ARGV[2]) end
+      end
+      return 0
+    `, 1 + quotaKeys.length, linkKey, ...quotaKeys, MAX_PER_IP_PER_DAY, DAY_SECONDS, LINK_BLOCK_SECONDS]))
+    if (reservation === 1) return fail('Daily free limit reached. Please try again tomorrow.', 429)
+    if (reservation === 2) return fail('This post already received free views or has a request in progress.', 429)
+    if (reservation !== 0) throw new Error('Unexpected quota result')
 
     const placed = await placeOrder(apiKey, link, quantity)
-    if (!placed) {
-      await redis(['DEL', linkKey])
-      await redis(['DECR', ipKey])
+    if (placed === 'rejected') {
+      await redis(['EVAL', `
+        redis.call('DEL', KEYS[1])
+        for i = 2, #KEYS do
+          if tonumber(redis.call('GET', KEYS[i]) or '0') > 0 then redis.call('DECR', KEYS[i]) end
+        end
+        return 1
+      `, 1 + quotaKeys.length, linkKey, ...quotaKeys])
       return fail('We could not place this order right now. Please try again later.', 502)
+    }
+    if (placed === 'unknown') {
+      // Keep the reservation: the panel may have accepted a timed-out request.
+      return fail('We could not confirm this request. Please contact support before trying this post again.', 503)
     }
     return NextResponse.json({ ok: true })
   } catch (error) {
@@ -129,3 +167,4 @@ export async function POST(request: Request) {
     return fail('Free views are unavailable right now. Please try again later.', 503)
   }
 }
+
