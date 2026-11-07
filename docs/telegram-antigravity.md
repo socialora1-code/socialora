@@ -41,3 +41,26 @@ No messages were sent. An existing webhook is configured and was not changed. Pr
 `automation/telegram/` now contains a standalone no-AI-cost editorial publisher, a 14-day content queue, tests and installation instructions. It is prepared for the owner's Android phone; it is not deployed to that phone by this repository change. See its README for activation and device checks.
 
 Do not schedule the same content through both this manual GitHub bridge and the phone. The phone keeps the authoritative delivery ledger after activation. Existing ControllerBot schedules must be checked before activation; this package cannot inspect that queue. The existing webhook stays unchanged; inbound group reading and contextual AI replies are still not enabled.
+
+## Webhook audit — 2026-11-07 20:18 UTC
+
+A fresh read-only run succeeded: https://github.com/socialora1-code/socialora/actions/runs/42410446337 (job 128517234506, workflow commit c7ff5857e266d8b411db9a43f898f932e043eea6).
+
+Observed:
+- Expected publisher bot identity verified; channel administrator with posting permission; channel count 1,202.
+- A webhook is configured. Public registrable domain: iunsvcontrbsoifj.top. URL fingerprint: f4b1f42f6509a7b9.
+- Pending updates: 0. No last delivery error was reported. These fields do not prove that the service is useful, that it processes messages correctly, or that its publishing queue is empty.
+- The workflow prints neither full webhook URL/path/query nor raw delivery error/IP. No message, webhook mutation, token rotation or pending-update deletion occurred.
+
+Attribution:
+- Historical setup reports say the publisher token was connected to ControllerBot for channel publishing. The earlier 6 November setup file documents the preceding incomplete stage, with no connected channels at that time.
+- Current public-domain research did not establish who operates the observed receiving domain. Do not present ControllerBot ownership as verified from the domain.
+- The website free-views invitation code uses a separate server-side value as a signing secret; its documented flow does not require this webhook. This is separate from proving that no other consumer depends on the publisher webhook.
+- Rose moderation is a separate bot; its current settings were not inspected in this audit.
+
+Decision and next gate:
+- The user's instruction authorizes removing the legacy connection if it proves unnecessary. Do not ask again for that same conditional authorization.
+- No removal was performed: current ControllerBot channel/queue state is not accessible through Bot API, and the new phone's inbound listener is not deployed. Inspect the owner's ControllerBot conversation before concluding that the legacy queue is unused.
+- Telegram Web in the shared browser is signed out. Its QR sign-in was reported unusable on the user's mobile client; do not claim login succeeded. Phone-number sign-in is the alternative method awaiting the user's choice.
+- When migration is concretely ready, preserve pending updates (do not use drop_pending_updates=true), verify the exact bot and previously audited webhook fingerprint, and verify the replacement receives updates before declaring completion.
+- Removing a webhook does not revoke a service's knowledge of the bot token. If ControllerBot access must be fully withdrawn, disconnect it through its supported interface; credential rotation requires the owner to perform the credential-change step and then update the GitHub/phone secret locations securely. Do not rotate casually or affect the website invitation signing configuration.
