@@ -2,11 +2,11 @@ import type { Metadata } from 'next'
 import { PlatformPage } from '@/components/services/platform-page'
 
 export const metadata: Metadata = {
-  title: 'X (Twitter) Followers',
+  title: 'Buy X (Twitter) Followers & Views — Refill Protected & No Login (2026)',
   description:
-    'Order X (Twitter) followers with three options to fit your goals. Clear USD pricing, refill guarantee on selected options and dedicated support.',
+    'Buy X (Twitter) followers and post views with three quality tiers. Refill guarantee on selected packages, clear USD pricing and no password required.',
   alternates: { canonical: '/x' },
-  openGraph: { url: '/x', title: 'X (Twitter) Followers · Socialora' },
+  openGraph: { url: '/x', title: 'Buy X (Twitter) Followers & Views · Socialora' },
 }
 
 export default function XPage() {

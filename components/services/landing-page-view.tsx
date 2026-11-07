@@ -12,21 +12,39 @@ export function LandingPageView({ page }: { page: LandingPage }) {
   const service = getService(platform, page.serviceId)!
   const others = getLandingPagesFor(platform.id).filter((p) => p.slug !== page.slug)
 
-  const faqJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: page.faqs.map((f) => ({
-      '@type': 'Question',
-      name: f.q,
-      acceptedAnswer: { '@type': 'Answer', text: f.a },
-    })),
-  }
+  const minPrice = (getStartingPriceCents(service) / 100).toFixed(2)
+  const optionCount = service.pricing.options.length
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: page.title,
+      description: page.description,
+      brand: { '@type': 'Brand', name: 'Socialora' },
+      offers: {
+        '@type': 'AggregateOffer',
+        priceCurrency: 'USD',
+        lowPrice: minPrice,
+        offerCount: optionCount,
+        availability: 'https://schema.org/InStock',
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: page.faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ]
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, '\\u003c') }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
 
       <section className="relative overflow-hidden border-b border-border">

@@ -18,11 +18,12 @@ export async function generateMetadata({
   const page = getTikTokLandingPage(slug)
   if (!page) return {}
   const url = `/tiktok/${page.slug}`
+  const ctrTitle = page.title.includes('2026') ? page.title : `${page.title} — 30-Day Refill & No Login (2026)`
   return {
-    title: page.title,
+    title: ctrTitle,
     description: page.description,
     alternates: { canonical: url },
-    openGraph: { url, title: `${page.title} · Socialora` },
+    openGraph: { url, title: `${ctrTitle} · Socialora` },
   }
 }
 

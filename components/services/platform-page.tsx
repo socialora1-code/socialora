@@ -2,7 +2,7 @@ import { KeyRound, Mail, ShieldCheck, TriangleAlert } from 'lucide-react'
 import { PlatformServices } from '@/components/services/platform-services'
 import { ComplianceNotice } from '@/components/site/compliance-notice'
 import { PlatformIcon } from '@/components/site/platform-icon'
-import { getPlatform, type PlatformId } from '@/lib/catalog'
+import { getPlatform, getStartingPriceCents, type PlatformId } from '@/lib/catalog'
 
 const PAGE_HEADINGS: Partial<Record<PlatformId, string>> = {
   instagram: 'Buy Instagram Followers, Likes & Views',
@@ -15,9 +15,29 @@ const PAGE_HEADINGS: Partial<Record<PlatformId, string>> = {
 export function PlatformPage({ platformId }: { platformId: PlatformId }) {
   const platform = getPlatform(platformId)!
   const heading = PAGE_HEADINGS[platform.id] ?? `${platform.name} growth services`
+  const minPrice = (Math.min(...platform.services.map((s) => getStartingPriceCents(s))) / 100).toFixed(2)
+  const offerCount = platform.services.reduce((sum, s) => sum + s.pricing.options.length, 0)
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: heading,
+    description: platform.description,
+    brand: { '@type': 'Brand', name: 'Socialora' },
+    offers: {
+      '@type': 'AggregateOffer',
+      priceCurrency: 'USD',
+      lowPrice: minPrice,
+      offerCount,
+      availability: 'https://schema.org/InStock',
+    },
+  }
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
       <div className="border-b border-amber-500/30 bg-amber-500/10 px-4 py-2.5 text-center text-sm font-medium text-amber-700 dark:text-amber-200">
         <span className="inline-flex items-center gap-2">
           <TriangleAlert className="size-4 shrink-0" aria-hidden="true" />

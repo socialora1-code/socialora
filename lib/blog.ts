@@ -6,6 +6,11 @@ import {
   tiktokAlgorithm,
   youtubeMonetization,
 } from '@/lib/blog-posts/long-tail'
+import {
+  instagramReelsZeroViews,
+  telegramSearchRankingGuide,
+  tiktokStuckAt200Views,
+} from '@/lib/blog-posts/problem-solvers'
 import { tiktokGrowth } from '@/lib/blog-posts/tiktok-growth'
 import { xGrowth } from '@/lib/blog-posts/x-growth'
 import { youtubeGrowth } from '@/lib/blog-posts/youtube-growth'
@@ -21,13 +26,16 @@ export interface BlogPost {
   slug: string
   title: string
   description: string
-  category: 'Instagram' | 'TikTok' | 'YouTube' | 'X'
+  category: 'Instagram' | 'TikTok' | 'YouTube' | 'X' | 'Telegram'
   date: string
   updated?: string
   blocks: readonly BlogBlock[]
 }
 
 export const POSTS: readonly BlogPost[] = [
+  tiktokStuckAt200Views,
+  instagramReelsZeroViews,
+  telegramSearchRankingGuide,
   youtubeMonetization,
   tiktokAlgorithm,
   instagramBestTime,

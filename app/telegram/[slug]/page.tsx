@@ -18,11 +18,12 @@ export async function generateMetadata({
   const page = getPlatformLandingPage('telegram', slug)
   if (!page) return {}
   const url = `/telegram/${page.slug}`
+  const ctrTitle = page.title.includes('2026') ? page.title : `${page.title} — Fast & No Login (2026)`
   return {
-    title: page.title,
+    title: ctrTitle,
     description: page.description,
     alternates: { canonical: url },
-    openGraph: { url, title: `${page.title} · Socialora` },
+    openGraph: { url, title: `${ctrTitle} · Socialora` },
   }
 }
 
