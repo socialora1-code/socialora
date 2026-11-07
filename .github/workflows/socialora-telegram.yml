@@ -40,6 +40,9 @@ jobs:
           import sys
           import urllib.error
           import urllib.request
+          import urllib.parse
+          import hashlib
+          import time
 
           def fail(message):
               print(message, file=sys.stderr)
@@ -109,6 +112,23 @@ jobs:
                   "member_count": count,
                   "existing_webhook_configured": bool(webhook.get("url")),
                   "webhook_changed": False,
+                  # Never log the webhook URL, path, query, IP or raw error text.
+                  "webhook_public_domain": ".".join((urllib.parse.urlsplit(webhook.get("url", "")).hostname or "").lower().split(".")[-2:]),
+                  "webhook_fingerprint": hashlib.sha256(webhook.get("url", "").encode()).hexdigest()[:16] if webhook.get("url") else None,
+                  "pending_update_count": webhook.get("pending_update_count", 0),
+                  "last_error_age_seconds": max(0, int(time.time()) - int(webhook["last_error_date"])) if webhook.get("last_error_date") else None,
+                  "last_error_category": (
+                      "http_404" if "404" in webhook.get("last_error_message", "") else
+                      "http_403" if "403" in webhook.get("last_error_message", "") else
+                      "http_401" if "401" in webhook.get("last_error_message", "") else
+                      "timeout" if "timeout" in webhook.get("last_error_message", "").lower() else
+                      "connection_failure" if "connect" in webhook.get("last_error_message", "").lower() else
+                      "other" if webhook.get("last_error_message") else None
+                  ),
+                  "allowed_update_types": [x for x in webhook.get("allowed_updates", []) if x in {
+                      "message", "edited_message", "channel_post", "edited_channel_post",
+                      "callback_query", "my_chat_member", "chat_member", "chat_join_request"
+                  }],
               }))
               raise SystemExit(0)
           if not can_send:
