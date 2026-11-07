@@ -352,7 +352,7 @@ def setup():
     atomic_text(CONFIG, json.dumps({'bot_token': token, 'version': 1}, indent=2) + '\n')
     pause('İlk kurulum: içerik ve mevcut botun yayın kuyruğu kontrol edilmeli.')
     print('Bot doğrulandı; anahtar telefonda özel dosyaya kaydedildi. Yayın henüz kapalı.')
-    print('Mevcut webhook korunuyor. Gelen grup mesajlarını okumuyoruz.')
+    print('Webhook ayarı değiştirilmedi. Gelen grup mesajlarını henüz okumuyoruz.')
     print('Başka webhook var:', bool(webhook.get('url')))
 
 

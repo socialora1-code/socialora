@@ -6,7 +6,11 @@ Telegram kuralları yalnızca Socialora Telegram görevlerinde uygulanır. Kod/w
 
 Hedef gerçek, ilgili üyeler; güven, getsocialora.com'a nitelikli trafik ve müşteridir. Gönderiler ve üyelere yanıtlar kısa, doğal, somut faydalı İngilizce; sahibine raporlar Türkçe. Her içerik tek bir problemi açıklasın, uygulanabilir adım veya özgün örnek versin. Konu, giriş ve formatları çeşitlendir. Robotik kalıp, genel övgü, uydurma deneyim veya büyüme garantisi kullanma.
 
-## Güncel kurulum: Telegram ilk aşama
+## Güncel kurulum ve tek çalışma talimatı
+
+Bu dosya Socialora Telegram çalışmasının güncel ana talimatıdır. Eski sohbetlerdeki 7/14 günlük aşama listeleri ve ControllerBot üzerinden çalışma taslakları operasyon talimatı olarak kullanılmaz. Yararlı dil, doğruluk ve onay kuralları aşağıda korunmuştur.
+
+## Telegram ilk aşama
 
 Kaynak kodu ve evde Termux kurulumu `automation/telegram/README.md`; içerik `content.json`; doğrulanmış site bilgisi `sources.json`; edinim planı `growth-plan.md` içindedir.
 
@@ -14,7 +18,8 @@ Kaynak kodu ve evde Termux kurulumu `automation/telegram/README.md`; içerik `co
 - Her yayın için kalıcı kayıt ve message_id gerekir. Hazır kod, test başarısı veya import işlemi gerçek telefonun kurulmuş/çalışıyor olduğunu kanıtlamaz. Durumu bu ayrımla raporla.
 - Her gün Antigravity oturumu açarak takvimi yönetme. Mümkün olan işleri AI'sız çalışan koda bırak; içerik yenilemeyi haftalık tek çalışmada yap.
 - Telefonun yayın kaydı esas kaynaktır. Aynı işi ayrıca GitHub Actions veya ControllerBot kuyruğuna ekleme. Mevcut diğer kuyruğu incelemeden paralel yayıncı etkinleştirme.
-- İlk sürüm gelen grup mesajlarını okumaz, otomatik AI yanıtı vermez. Mevcut botta başka webhook vardır. `getUpdates`, `setWebhook`, `deleteWebhook` kullanma; ControllerBot'u veya tokeni değiştirme. Gelen mesaj desteği ayrı doğrulanacak aşamadır.
+- Eski webhook, kullanıcının açık talebiyle 7 Kasım 2026 23.44 Türkiye saatinde kaldırıldı ve boş olduğu doğrulandı. ControllerBot'u yeniden bağlama. Bu işlem üçüncü tarafın daha önce aldığı tokeni iptal etmiş sayılmaz.
+- İlk sürüm gelen grup mesajlarını okumaz, otomatik AI yanıtı vermez. Sonraki teknik öncelik aynı bot için tek bir gelen mesaj tüketicisi kurmaktır. Polling ancak güncel getWebhookInfo kontrolü boşsa açılır; bekleyen güncellemeler silinmez. Gelen mesaj desteği ve ücretsiz AI kotası doğrulanmadan otomatik yanıtı çalışıyor diye anlatma.
 - Kodda AI/API çağrısı yoktur. Ücretli faturalandırma açma; Pro aboneliğinin API kotası sağladığını varsayma.
 - Kesinti sonrası eski gönderileri yığma. Belirsiz gönderim otomatik tekrarlanmaz; Telegram'da kontrol edilip kayıt çözülür.
 - Telefonun Android pil/arka plan ve yeniden başlatma testleri yapılmadan kesintisiz çalışıyor deme.
@@ -29,7 +34,12 @@ Kuyruk bitince eski içerikleri döngüye alma. Yeni paket hazırlanmamışsa be
 
 ## Büyüme ve onay sınırları
 
-Sadece içerik sayısını artırmayı üye kazanımı planı sayma. Website ve müşteri davetleri için hazırlanmış metinleri kullan; gerçek yerleştirme, davet linki ve analitik erişimini ayrı doğrula. Takas araştırmasını her gün tekrarlama; önce gerçekten uygun 10 adayı doğrula, gerekirse 30'a genişlet. Kaynakta olmayan üye/izlenme sayısı uydurma.
+Büyüme işi her hafta şu üç hattı ilerletsin:
+1. Telegram içinden yeni üyeler: mevcut açıklama ve sabit mesajları önce oku; ilgili arama terimlerini doğal biçimde kullan. Güvenilir ücretsiz katalogları doğrula ve uygun olanları kaydet. İlk 10 gerçek takas adayını konu, dil, boyut ve son gönderi görüntülenmeleriyle değerlendir; mesaj gönderimi kullanıcı onayına bağlıdır. Sırf listeyi doldurmak için ilgisiz aday ekleme.
+2. Üyeyi elde tutma: faydalı kanal içerikleri; gelen mesaj bağlantısı tamamlanınca grupta bize yöneltilen sorulara kısa, bağlama özel çözüm. Sürekli reklam veya herkese müdahale yok. Yayın sayısı ancak gerçek sonuçlarla değiştirilir; mevcut kod günde 2 gönderidir, 3 önerisi henüz uygulanmış değildir.
+3. Siteye nitelikli dönüş: önce faydayı mesajda sun, devamında işlem yapılacaksa doğrudan ilgili ücretsiz araca/hizmet rehberine takipli link ver. Analitikte oturum ve dönüşüm kaydını doğrula. Site üzerinden gruba gelen mevcut davet, yeni dış kitle kazanımıyla karıştırılmaz.
+
+Haftalık bir çalışma içinde içerik, aday listesi ve sonuç değerlendirmesini birlikte yap; aynı araştırmayı her gün baştan tekrarlama. Website/müşteri davet metinleri hazır olsa da gerçek yerleştirme ve gönderim ayrı doğrulanır. Kaynakta olmayan üye/izlenme veya site trafiği sayısı uydurma.
 
 Şunlardan önce kullanıcı onayı gerekir: üçüncü kişilere iletişim/takas mesajı; yarışma/çekiliş/ödül; fiyat/refill şartı/vaka örneği yayınlama; para harcama; kanal/grup adı veya kullanıcı adı değiştirme; mevcut içerik veya üye silme; giriş doğrulaması ve mevcut webhook tüketicisini değiştirme.
 

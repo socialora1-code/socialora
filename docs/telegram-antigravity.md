@@ -1,5 +1,8 @@
 # Socialora Telegram connection
 
+**Current status:** the legacy webhook was removed and verified empty on 7 November 2026 at 23:44 Europe/Istanbul at the owner's explicit request. The bot and posting rights remain. Do not reconnect ControllerBot. The Termux publisher is prepared but not installed; inbound message processing and AI replies are not deployed. `AGENTS.md` is the current working instruction. Earlier setup/audit sections below are historical where they conflict with this status.
+
+
 The private repository's `Socialora Telegram` GitHub Actions workflow provides a persistent **bot** connection for Antigravity. It does not log in to a personal Telegram account or depend on a browser session.
 
 ## One-time setup

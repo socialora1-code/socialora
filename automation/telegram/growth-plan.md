@@ -28,15 +28,25 @@ Her yerleşim için Telegram'ın yönetici menüsünden ayrı, isimlendirilmiş 
 
 Gönderim veya müşteri listesine mesaj atma yapılmadı. Web sitesinde zaten ücretsiz izlenme akışına bağlı grup daveti var; onu yeni davetlerle karıştırmayın, silmeyin veya üyelik doğrulaması varmış gibi anlatmayın. Bu pakette website kodu değiştirilmedi.
 
-## Daha sonra: onaylı ve ücretsiz ortaklık
+## Yeni üye kazanımı: öncelikli çalışma
 
 İlgili küçük creator/marketing kanallarını konu uyumu, gönderi faydası ve gerçek görüntülenmeler üzerinden değerlendirin. Kaynak verisi olmadan üye/etkileşim rakamı uydurmayın. Önce 10 uygun aday listesi hazırlayın. Sahiplere mesaj gitmeden önce kullanıcı onayı alın. Yarışma veya ödül olmadan ücretsiz araç rehberi gibi somut faydalı içerik etrafında takas teklif edilebilir.
 
-## Grup yanıtları için ayrı aşama
+## Grup yanıtları: sıradaki teknik iş
 
-Mevcut publisher botunun webhook'u başka tüketiciye bağlıdır. Mesaj okumak için bunu silmek doğru değildir. Gelen mesaj bağlantısı netleştirilmeden tam otomatik grup yöneticisi çalışıyor denmez.
+Eski webhook kullanıcının açık talebiyle 7 Kasım 2026 23.44 Türkiye saatinde kaldırıldı; boş olduğu API üzerinden doğrulandı. Mevcut bot ve kanal/grup yetkileri korundu. ControllerBot yeniden bağlanmayacak. Webhook kaldırılması üçüncü tarafın token erişimini iptal etmiş sayılmaz.
 
-Sonraki aşamada ya mevcut tüketicinin desteklediği bir aktarım doğrulanır ya da ayrı bir yardımcı bot kurulur. İkinci seçenek mevcut yayıncıyı korur, ancak yeni bot yetkileri kullanıcıyla tamamlanmalıdır. Doğal AI yanıtlarında önce bize yöneltilen anlamlı sorular ele alınır; konuşmanın kısa bağlamı kullanılır; herkese araya girilmez. Özel müşteri/sipariş bilgileri ücretsiz AI servisine gönderilmez. Ücretsiz API kotası doğrulanmadan ücretli çağrı veya otomatik yanıt açılmaz. Kota biterse genel kalıp yanıt üretmek yerine beklenir.
+Aynı bot için yalnızca bir gelen mesaj tüketicisi hazırlanacak. Polling öncesinde güncel webhook kontrolü boş olmalı. Bekleyen güncellemeler silinmeyecek; kalıcı update_id ve işlenmiş mesaj kaydıyla tekrar yanıt önlenecek. Telefon kurulumu ve ücretsiz model kotası doğrulanmadan canlı yanıt açılmayacak. Doğal AI yanıtlarında önce bize yöneltilen anlamlı sorular ele alınır; konuşmanın kısa bağlamı kullanılır; herkese araya girilmez. Özel müşteri/sipariş bilgileri ücretsiz AI servisine gönderilmez. Ücretsiz API kotası doğrulanmadan ücretli çağrı veya otomatik yanıt açılmaz. Kota biterse genel kalıp yanıt üretmek yerine beklenir.
+
+## Somut uygulama sırası ve tamamlanma ölçütü
+
+1. Gelen mesaj alımı ve doğal yanıt: tek tüketici, kalıcı tekrar kontrolü, yalnızca ilgili sorular, doğrulanmış ücretsiz model kotası. Gerçek grup sorusuna test yanıtı görülmeden tamamlandı denmez.
+2. Üye edinimi: mevcut kanal açıklaması ve sabit mesajı incele; 10 uygun Telegram ortaklık adayı ve ücretsiz katalogları doğrula. Her aday için dil/konu uyumu ve erişilebilir gerçek metrikler. Dış iletişimden önce kullanıcının önceki onay sınırına uy.
+3. Dönüşüm: içerikteki somut problemi ilgili araçla eşleştir. Site analitiğinde Telegram kampanyalarını gerçekten görebildiğini doğrula; erişim yoksa başarı rakamı üretme. Mevcut website→grup daveti ile dışarıdan kazanılan yeni kitleyi ayrı değerlendir.
+4. Telefon aktivasyonu: paket yükleme, gizli token girişi, canlı yayın, ekran kapalı ve yeniden başlatma testi. Bunlar henüz tamamlanmadı.
+5. Bir hafta sonra: erişilebilir görüntülenme/üyelik ve Telegram kaynaklı oturum/dönüşüm sonuçlarına göre bir değişiklik seç. Günde 3 kanal gönderisi bir deneme önerisidir; mevcut paket hâlâ 2 gönderidir. Kod ve içerik birlikte güncellenmeden bunu uygulanmış sayma.
+
+Bu liste hazırlık planıdır: katalog kaydı, ortaklık listesi, AI yanıtı veya analitik bağlantısı henüz tamamlanmış değildir.
 
 ## Haftalık editoryal brief
 

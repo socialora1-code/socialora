@@ -34,7 +34,7 @@ socialora setup
 socialora doctor
 ```
 
-GitHub'daki kayıtlı secret sonradan okunamaz; mevcut tokeni BotFather'daki kendi botunuzdan alıp bu alana girmeniz gerekir. Tokeni sohbete, dosya paylaşımına veya komut satırı argümanına yazmayın. BotFather'dan tokeni revoke etmeyin: mevcut ControllerBot bağlantısını bozabilir. `setup` hiçbir mesaj göndermez, webhook'u değiştirmez. Başarısız doğrulama tokeni kaydetmez.
+GitHub'daki kayıtlı secret sonradan okunamaz; mevcut tokeni BotFather'daki kendi botunuzdan alıp bu alana girmeniz gerekir. Tokeni sohbete, dosya paylaşımına veya komut satırı argümanına yazmayın. BotFather'dan tokeni gelişigüzel revoke etmeyin: GitHub/telefon yapılandırması da güncellenmek zorunda kalır. Eski webhook kaldırıldı; ControllerBot'u yeniden bağlamayın. `setup` hiçbir mesaj göndermez, webhook'u değiştirmez. Başarısız doğrulama tokeni kaydetmez.
 
 3. Takvimi görüntüleyip kuyruğa yükleyin. Varsayılan başlangıç **ertesi gün**dür; böylece kurulurken bir anda paylaşım olmaz:
 
@@ -92,7 +92,7 @@ Fiyat, refill, kampanya ve müşteri sonucu içeriklerine kullanıcı onayı ger
 
 ## Şu anda yapılmayanlar
 
-- Mevcut webhook başka sistemdedir. Bu paket **gelen grup mesajlarını okumaz veya otomatik cevaplamaz**; `getUpdates`, `setWebhook`, `deleteWebhook` kullanmaz. Doğal, bağlama göre AI yanıtı için ayrıca doğrulanmış gelen mesaj bağlantısı ve ücretsiz API kotası gerekir. Hazır, alakasız yanıtlarla bunun yerini doldurmaz.
+- Eski webhook 7 Kasım 2026 tarihinde sahibinin talebiyle kaldırıldı ve boş olduğu doğrulandı. Bu paket henüz **gelen grup mesajlarını okumaz veya otomatik cevaplamaz**; `getUpdates`, `setWebhook`, `deleteWebhook` kullanmaz. Doğal, bağlama göre AI yanıtı için ayrıca doğrulanmış gelen mesaj bağlantısı ve ücretsiz API kotası gerekir. Hazır, alakasız yanıtlarla bunun yerini doldurmaz.
 - Dış gruplara yazma, DM, üye ekleme, takas mesajı gönderme, çekiliş veya ödül başlatma yoktur.
 - Telefon kapalıyken veya Android uygulamayı tamamen durdurduğunda çalışamaz. Runit süreç hatalarını toparlar; işletim sisteminin tüm Termux'u kapatmasını tek başına önleyemez.
 - Bu makinedeki testler gerçek telefonun ekran kapalı çalışma testinin yerini tutmaz.
