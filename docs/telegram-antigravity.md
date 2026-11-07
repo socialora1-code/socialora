@@ -26,3 +26,11 @@ For an explicitly requested, approved plain-text Telegram post, use `operation=s
 - No getUpdates polling, webhook changes, personal-account access or ControllerBot queue modifications occur.
 - Reading and answering new group questions requires a separately verified inbound integration that preserves the existing webhook consumer.
 - Repository GitHub access and the bot secret persist across Antigravity conversations. If Telegram revokes the token or bot rights change, the next inspect fails and requires repair.
+
+## Verified connection — 2026-11-07
+
+Read-only inspections succeeded with the repository secret and expected publisher bot:
+- Channel `@SocialoraOfficial`: bot is an administrator, `can_send=true`. Run: https://github.com/socialora1-code/socialora/actions/runs/42390010416
+- Group `@SocialoraChat`: bot is an administrator, `can_send=true`. Run: https://github.com/socialora1-code/socialora/actions/runs/42390063725
+
+No messages were sent. An existing webhook is configured and was not changed. Preserve it; do not enable polling or replace its consumer without an integration plan and owner approval. The token value was never inspected. Automatic scheduling and inbound group-message reading remain unconfigured.
