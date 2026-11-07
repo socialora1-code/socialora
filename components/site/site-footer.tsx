@@ -61,6 +61,7 @@ const COLUMNS = [
     title: 'Free Tools',
     links: [
       { href: '/tools', label: 'All Free Tools' },
+      { href: '/tools/who-viewed-my-instagram-profile', label: 'Who Viewed My Profile' },
       { href: '/tools/instagram-font-generator', label: 'Instagram Font Generator' },
       { href: '/tools/instagram-bio-generator', label: 'Instagram Bio Generator' },
       { href: '/tools/instagram-hashtag-generator', label: 'Hashtag Generator' },

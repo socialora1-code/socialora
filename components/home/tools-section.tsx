@@ -4,6 +4,7 @@ import { getTool } from '@/lib/tool-list'
 import type { ToolDef } from '@/lib/tool-data/types'
 
 const FEATURED = [
+  'who-viewed-my-instagram-profile',
   'instagram-giveaway-picker',
   'instagram-grid-maker',
   'instagram-bio-generator',
