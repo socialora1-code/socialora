@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { AccountScorecard } from '@/components/tools/account-scorecard'
 import { FakeFollowerCheck } from '@/components/tools/fake-follower-check'
+import { ProfileViewerCheck } from '@/components/tools/profile-viewer-check'
 import { BlurFit } from '@/components/tools/blur-fit'
 import { CaptionGenerator } from '@/components/tools/caption-generator'
 import { Calculator } from '@/components/tools/calculator'
@@ -101,6 +102,11 @@ const STEPS: Record<string, readonly string[]> = {
     'Enter the average likes and comments of the last 10 to 20 posts. Add the 30-day growth if you know it.',
     'Read each signal and the risk level, then copy the report if you need to share it.',
   ],
+  profileviewers: [
+    'Check your follower count and your 7-day Profile Visits inside Instagram Professional Insights.',
+    'Optionally add your average 24-hour Story views and non-follower reach percentage.',
+    'Review your silent visitor breakdown and follow the 4 real methods to see who watches your Stories and Highlights.',
+  ],
   scorecard: [
     'Open your Instagram profile and your Insights, then note your numbers.',
     'Enter them in the boxes. Use the average of your last 10 to 20 posts for likes and comments.',
@@ -140,6 +146,8 @@ function Widget({ tool }: { tool: ToolDef }) {
       return <CaptionGenerator />
           case 'fakecheck':
       return <FakeFollowerCheck />
+    case 'profileviewers':
+      return <ProfileViewerCheck />
     case 'scorecard':
       return <AccountScorecard />
     default:
