@@ -13,9 +13,21 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const tool = getTool(slug)
   if (!tool) return {}
+  const rawTitle = tool.title
+  const ctrTitle =
+    rawTitle.includes('2026') || rawTitle.includes('No Login')
+      ? rawTitle
+      : rawTitle.includes('(Free)')
+        ? rawTitle.replace('(Free)', '(Free & No Login — 2026)')
+        : `${rawTitle} (Free & No Login)`
+  const rawDesc = tool.description
+  const ctrDesc =
+    rawDesc.toLowerCase().includes('no login') || rawDesc.toLowerCase().includes('no password')
+      ? rawDesc
+      : `${rawDesc} 100% free, instant results, no login or sign-up required.`
   return {
-    title: tool.title,
-    description: tool.description,
+    title: ctrTitle,
+    description: ctrDesc,
     alternates: { canonical: `/tools/${tool.slug}` },
   }
 }

@@ -5,18 +5,17 @@ import type { ToolDef } from '@/lib/tool-data/types'
 
 const FEATURED = [
   'who-viewed-my-instagram-profile',
+  'tiktok-shadowban-checker',
+  'instagram-shadowban-checker',
+  'tiktok-money-coins-calculator',
+  'instagram-sponsorship-rate-calculator',
+  'telegram-channel-money-calculator',
+  'instagram-fake-follower-checker',
   'instagram-giveaway-picker',
   'instagram-grid-maker',
   'instagram-bio-generator',
-  'instagram-content-ideas-generator',
-  'twitter-bio-generator',
-  'tiktok-bio-generator',
-  'facebook-bio-generator',
-  'snapchat-caption-generator',
-  'spotify-royalty-calculator',
   'youtube-money-calculator',
   'instagram-font-generator',
-  'instagram-hashtag-generator',
 ]
 
 export function ToolsSection() {

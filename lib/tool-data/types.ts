@@ -16,6 +16,7 @@ export type ToolKind =
   | 'caption'
   | 'fakecheck'
   | 'profileviewers'
+  | 'shadowban'
 
 export interface ToolFaq {
   q: string

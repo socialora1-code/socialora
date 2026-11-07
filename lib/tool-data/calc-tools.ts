@@ -229,4 +229,123 @@ export const CALC_TOOLS: readonly ToolDef[] = [
       label: 'See YouTube services',
     },
   },
+  {
+    slug: 'tiktok-money-coins-calculator',
+    kind: 'calc',
+    group: 'Calculators',
+    platform: 'TikTok',
+    name: 'TikTok Coins & Gift Money Calculator',
+    title: 'TikTok Coins to USD Calculator — Live Gift & Diamond Value (2026)',
+    h1: 'TikTok Coins & Gift Money Calculator',
+    description:
+      'Convert TikTok Coins and Diamonds to USD instantly. See how much TikTok Live gifts cost on Web vs App and how much creators actually get paid.',
+    intro:
+      'How much are TikTok Coins, Diamonds and Live Gifts worth in real US dollars? Enter any coin or diamond amount to compare Web recharge cost, App cost, and exact creator payout after TikTok’s cut.',
+    widget: 'tiktok-coins',
+    about: [
+      'TikTok Live uses three currencies: viewers buy Coins, send virtual Gifts during a stream, and creators receive Diamonds that can be cashed out to PayPal or a bank account.',
+      'Roughly two TikTok Coins equal one Creator Diamond, and each Diamond is worth about $0.005 USD — meaning TikTok keeps roughly 50% of the gift value. On top of that, buying coins directly at tiktok.com/coin on desktop or mobile web is 25% to 30% cheaper than recharging inside the iOS or Android app because it avoids app store fees.',
+      'Use this calculator to check the dollar value of any TikTok gift (such as a Galaxy at 1,000 coins, a Lion at 29,999 coins, or a TikTok Universe at 44,999 coins) and estimate creator earnings.',
+    ],
+    tips: [
+      'Buy TikTok Coins on a web browser (tiktok.com/coin) instead of the mobile app to save up to 25–30% on every recharge.',
+      'You need at least 1,000 TikTok followers to unlock TikTok Live and receive gifts from viewers.',
+      '1,000 TikTok Coins equals roughly 500 Diamonds, which pays the creator about $2.50 to $5.00 USD depending on regional rates.',
+    ],
+    faqs: [
+      {
+        q: 'How much is 1,000 TikTok Coins worth in USD?',
+        a: 'Recharging 1,000 TikTok Coins costs around $10.60 on TikTok Web or ~$14.80 in the mobile app. When gifted on Live, the creator receives roughly $5.00 USD after TikTok’s 50% platform fee.',
+      },
+      {
+        q: 'How much is a TikTok Lion or TikTok Universe worth to the creator?',
+        a: 'A Lion gift costs 29,999 coins (~$318 on Web) and pays the creator around $150 USD. A TikTok Universe costs 44,999 coins (~$477 on Web) and pays the creator roughly $225 USD.',
+      },
+      {
+        q: 'How do I unlock TikTok Live if I have under 1,000 followers?',
+        a: 'TikTok requires 1,000 followers to go Live and earn Diamonds. You can grow your audience faster with high-retention videos or our TikTok follower packages.',
+      },
+    ],
+    cta: {
+      text: 'Need 1,000 followers to unlock TikTok Live and start earning gifts? Check our TikTok follower and view packages.',
+      href: '/tiktok',
+      label: 'Unlock TikTok Live faster',
+    },
+  },
+  {
+    slug: 'instagram-sponsorship-rate-calculator',
+    kind: 'calc',
+    group: 'Calculators',
+    platform: 'Instagram',
+    name: 'Instagram Sponsorship & Account Worth Calculator',
+    title: 'Instagram Sponsorship Rate & Account Worth Calculator (Free 2026)',
+    h1: 'Instagram Sponsorship Rate & Account Worth Calculator',
+    description:
+      'How much should you charge for an Instagram sponsored Reel, Story or post? Calculate your exact influencer brand deal rate from your followers and engagement.',
+    intro:
+      'Wondering how much your Instagram account is worth to brands? Enter your followers, average likes and comments to calculate what to charge for a sponsored Reel, feed post, or 3-frame Story set.',
+    widget: 'instagram-sponsorship',
+    about: [
+      'Brands no longer price influencer sponsorships by follower count alone — they look at average views, likes, comments and niche authority. A 15,000-follower creator with strong engagement often earns more per Reel than a 100,000-follower page with inactive followers.',
+      'This calculator combines a baseline audience CPM with an active engagement multiplier to estimate fair market rates for a single Feed Post, a Sponsored Reel, a 3-Frame Story sequence with a link sticker, and a bundled campaign.',
+    ],
+    tips: [
+      'Always pitch brands a Reel + 3-Story bundle instead of a single post; bundles convert better for sponsors and increase your total invoice by 35–50%.',
+      'Charge an extra 20–30% per month if a brand asks for "paid usage rights" or whitelisting to run your video as an ad.',
+      'Before sending your media kit, make sure your top 3 pinned Reels have strong view counts and engagement.',
+    ],
+    faqs: [
+      {
+        q: 'How much can a 10K follower Instagram account charge per post?',
+        a: 'An active 10,000-follower Instagram creator typically charges between $100 and $250 per sponsored Reel or post, depending on niche and average views.',
+      },
+      {
+        q: 'Do brands check my Reels views before offering a deal?',
+        a: 'Yes. Brand managers check your pinned posts and last 6 Reels first. High view counts and consistent likes immediately raise your perceived value.',
+      },
+    ],
+    cta: {
+      text: 'Preparing your profile for brand deals? Boost your Reels views and follower authority with our Instagram services.',
+      href: '/instagram',
+      label: 'Boost your Instagram authority',
+    },
+  },
+  {
+    slug: 'telegram-channel-money-calculator',
+    kind: 'calc',
+    group: 'Calculators',
+    platform: 'Telegram',
+    name: 'Telegram Channel Earnings & Ad Price Calculator',
+    title: 'Telegram Channel Money Calculator — Sponsored Post & Ad Price (2026)',
+    h1: 'Telegram Channel Money & Ad Rate Calculator',
+    description:
+      'Calculate how much your Telegram channel can earn from sponsored posts and ads. Free Telegram ad price calculator based on subscribers, 24h views and niche CPM.',
+    intro:
+      'Running a Telegram channel? Enter your subscriber count, average 24-hour post views, and niche CPM to calculate how much to charge advertisers per sponsored post and per month.',
+    widget: 'telegram-earnings',
+    about: [
+      'Telegram channels earn far higher ad CPMs than most social networks because messages land directly in subscribers’ chat lists with a visible view counter on every post.',
+      'Advertisers price Telegram shoutouts based on your 24-hour post views and your niche. Crypto, finance, tech and marketing channels regularly command $15 to $40+ per 1,000 views, while general news or entertainment averages $4 to $10 CPM.',
+    ],
+    tips: [
+      'Keep your 24-hour view-to-subscriber ratio between 20% and 40% so advertisers see an active, healthy channel.',
+      'Offer 24-hour pinned ad slots at a 50% premium over regular 1/24 (1 hour top, 24 hours in feed) placements.',
+      'Growing your total subscriber base and Premium member count pushes your channel higher in Telegram global search.',
+    ],
+    faqs: [
+      {
+        q: 'How many subscribers do I need to monetize a Telegram channel?',
+        a: 'You can sell direct sponsored posts with as few as 1,000 to 2,000 active subscribers, while the official Telegram Ad Platform shares revenue with public channels once they reach 1,000 subscribers.',
+      },
+      {
+        q: 'How do Telegram channels rank higher in Telegram search?',
+        a: 'Telegram search ranks channels primarily by total subscriber count, Telegram Premium subscribers, and keyword match in the channel title.',
+      },
+    ],
+    cta: {
+      text: 'Want your Telegram channel to rank higher in search and attract advertisers? See our Telegram members & Premium subscriber services.',
+      href: '/telegram',
+      label: 'Grow your Telegram channel',
+    },
+  },
 ]

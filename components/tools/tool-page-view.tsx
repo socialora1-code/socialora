@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { AccountScorecard } from '@/components/tools/account-scorecard'
 import { FakeFollowerCheck } from '@/components/tools/fake-follower-check'
 import { ProfileViewerCheck } from '@/components/tools/profile-viewer-check'
+import { ShadowbanCheck } from '@/components/tools/shadowban-check'
 import { BlurFit } from '@/components/tools/blur-fit'
 import { CaptionGenerator } from '@/components/tools/caption-generator'
 import { Calculator } from '@/components/tools/calculator'
@@ -107,6 +108,11 @@ const STEPS: Record<string, readonly string[]> = {
     'Optionally add your average 24-hour Story views and non-follower reach percentage.',
     'Review your silent visitor breakdown and follow the 4 real methods to see who watches your Stories and Highlights.',
   ],
+  shadowban: [
+    'Enter your normal average views per video and the average views on your last 3 to 5 uploads.',
+    'Optionally enter your For You Page (FYP) or Explore non-follower reach percentage and Account Status.',
+    'Read your restriction diagnostic and follow the 48-hour recovery steps.',
+  ],
   scorecard: [
     'Open your Instagram profile and your Insights, then note your numbers.',
     'Enter them in the boxes. Use the average of your last 10 to 20 posts for likes and comments.',
@@ -148,6 +154,8 @@ function Widget({ tool }: { tool: ToolDef }) {
       return <FakeFollowerCheck />
     case 'profileviewers':
       return <ProfileViewerCheck />
+    case 'shadowban':
+      return <ShadowbanCheck defaultPlatform={tool.widget === 'tiktok' ? 'tiktok' : 'instagram'} />
     case 'scorecard':
       return <AccountScorecard />
     default:
