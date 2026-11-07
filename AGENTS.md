@@ -54,3 +54,16 @@ Bot kimliği `@socialora_publisher_2026_bot`, hedefler `@SocialoraOfficial` ve `
 ## Rapor
 
 En fazla 8 satır: doğrulanmış yayınlar/bağlantılar, mevcut ve önceki üye sayısı, bekleyen/hatalı işler, ölçülebiliyorsa Telegram kaynaklı ziyaretler ve yarının işi. Ölçemediğin değer için “veri yok” de. Türkçe raporu İngilizce marka kanalına gönderme. Kanıt olmadan zamanlayıcı, telefon, canlı yayın, grup okuma veya büyüme tamamlandı deme.
+
+
+## Antigravity yeni sohbet: başlangıç noktası — 8 Kasım 2026
+
+Kullanıcı Socialora projesinde yeni sohbet açarak buradan devam edecek. Önce GitHub'dan güncel main'i oku; eski ortamın önbelleğini veya silinmiş webhook bilgisini yeniden kullanma.
+
+Hazır: automation/telegram/ altında Termux kurulum paketi; 7 günlük 35 kanal gönderisi (günde 5, gündüz araları 3–4 saat, saatler her gün farklı) ve 2 grup konusu; 28 test geçti. Son davranış değişikliği commit'i 88896d637d8a92e2ee925d7a0e9dad2ed112b603. Eski webhook kaldırıldı; ControllerBot yeniden bağlanmayacak. Mevcut üyelerin bot ağırlıklı olduğu kullanıcı tarafından belirtildi; takası gerçek erişim oluşana kadar ertele.
+
+Hazır olmayanlar: telefon kurulumu/canlı paylaşım/ekran kapalı test, gelen grup mesajlarının okunması ve doğal AI yanıtları, ücretsiz Gemini API kotasının doğrulanması, katalog kayıtları ve ziyaret/dönüşüm ölçümü. Google AI Pro aboneliğinin API kullanımını karşıladığını varsayma. Bu hazırlıkları aktif otomasyon gibi sunma.
+
+İlk iş: mevcut paketi/testleri doğrula, ardından aynı bot için kalıcı update_id/mesaj tekrar kontrolü olan tek gelen mesaj tüketicisini hazırla. Yayın kodunu baştan yazma. Mevcut webhook durumu yeniden kontrol edilmeli; getUpdates ancak boş webhook ile kullanılabilir. Ücretsiz API erişimi kurulana kadar AI yanıtını kapalı tut; ücretli billing açma. Anahtarları chatten isteme. Telefon henüz erişilebilir değilse ondan bağımsız kod/kurulum hazırlıklarını tamamla; eve gidildiğinde yalnızca gerekli cihaz ve güvenli anahtar adımlarını tarif et.
+
+Antigravity'nin web çalışma ortamı sürekli açık bir sunucu olarak kabul edilmez; kod hazır olduğunda işi evdeki Termux servisi yürütür. Yeni sohbet açılması tek başına zamanlayıcı veya telefon servisi başlatmaz. Bir dosyaya yönerge eklenmiş olmasını Antigravity'nin okuduğuna dair kanıt sayma; yeni sohbette bu AGENTS.md dosyası açıkça okutulmalıdır.
