@@ -3,7 +3,11 @@
 import argparse
 import contextlib
 import datetime as dt
-import fcntl
+try:
+    import fcntl
+except ImportError:
+    fcntl = None
+    import msvcrt
 import getpass
 import hashlib
 import json
@@ -41,26 +45,28 @@ class TelegramError(SafeError):
 
 def private_dir(path):
     path.mkdir(parents=True, exist_ok=True)
-    path.chmod(0o700)
+    if os.name != 'nt':
+        path.chmod(0o700)
 
 
 def atomic_text(path, text):
     private_dir(path.parent)
     tmp = path.with_name(path.name + '.tmp')
     fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(fd, 'w') as handle:
+    with os.fdopen(fd, 'w', encoding='utf-8') as handle:
         handle.write(text)
         handle.flush()
         os.fsync(handle.fileno())
     os.replace(tmp, path)
-    path.chmod(0o600)
+    if os.name != 'nt':
+        path.chmod(0o600)
 
 
 def load_config():
     try:
-        if CONFIG.stat().st_mode & 0o077:
+        if os.name != 'nt' and (CONFIG.stat().st_mode & 0o077):
             raise SafeError('Config izinleri güvensiz. chmod 600 ile düzeltin.')
-        result = json.loads(CONFIG.read_text())
+        result = json.loads(CONFIG.read_text(encoding='utf-8'))
         token = result['bot_token']
         if not re.fullmatch(r'\d{5,}:[A-Za-z0-9_-]{20,}', token):
             raise ValueError()
@@ -158,12 +164,32 @@ def connect():
 @contextlib.contextmanager
 def worker_lock(name='worker.lock'):
     private_dir(STATE)
-    with (STATE / name).open('a') as lock:
-        try:
-            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            raise SafeError('Başka yayın işlemi zaten çalışıyor.') from None
-        yield
+    lock_path = STATE / name
+    with lock_path.open('a+b') as lock:
+        if fcntl is not None:
+            try:
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                raise SafeError('Başka yayın işlemi zaten çalışıyor.') from None
+            yield
+        else:
+            lock.seek(0)
+            if lock.tell() == 0 and lock_path.stat().st_size == 0:
+                lock.write(b'1')
+                lock.flush()
+            lock.seek(0)
+            try:
+                msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
+            except OSError:
+                raise SafeError('Başka yayın işlemi zaten çalışıyor.') from None
+            try:
+                yield
+            finally:
+                try:
+                    lock.seek(0)
+                    msvcrt.locking(lock.fileno(), msvcrt.LK_UNLCK, 1)
+                except OSError:
+                    pass
 
 
 def canonical_text(text):
@@ -215,7 +241,7 @@ def validate_posts(data):
 
 
 def import_content(db, file, start):
-    posts = validate_posts(json.loads(Path(file).read_text()))
+    posts = validate_posts(json.loads(Path(file).read_text(encoding='utf-8')))
     start_date = dt.date.fromisoformat(start)
     if start_date < dt.datetime.now(TZ).date():
         raise SafeError('Geçmiş tarihe yayın planlanamaz.')
@@ -254,7 +280,7 @@ def recover(db):
 
 def is_directed_to_us(msg):
     text = (msg.get('text') or msg.get('caption') or '').strip()
-    if not text:
+    if not text or len(text) < 4:
         return False
     lower = text.lower()
     if f'@{BOT}' in lower or '@socialoraofficial' in lower or 'socialora' in lower:
@@ -266,10 +292,20 @@ def is_directed_to_us(msg):
         return True
     if reply_sender_chat.get('username', '').lower() in {'socialoraofficial', 'socialorachat'}:
         return True
-    if '?' in text:
+    keywords = (
+        'views', 'stuck', 'shadowban', 'reels', 'tiktok', 'instagram', 'telegram',
+        'followers', 'likes', 'subscribers', 'reach', 'algorithm', 'price', 'pricing',
+        'order', 'refill', 'delivery', 'crypto', 'usdt', 'free', 'tool', 'drop', 'calculator',
+        'resize', 'crop', 'photo', 'bio', 'thumbnail', 'caption', 'safe zone',
+    )
+    has_keyword = any(k in lower for k in keywords)
+    if '?' in text and has_keyword:
         return True
-    keywords = ('views', 'stuck', 'shadowban', 'reels', 'tiktok', 'instagram', 'telegram', 'followers', 'reach', 'algorithm', 'price', 'free', 'tool', 'drop')
-    return len(text) >= 12 and any(k in lower for k in keywords)
+    question_starters = (
+        'how ', 'why ', 'what ', 'where ', 'when ', 'can i ', 'can you ',
+        'do you ', 'is there ', 'is it ', 'anyone know', 'help with ', 'need help',
+    )
+    return len(text) >= 12 and has_keyword and lower.startswith(question_starters)
 
 
 def consume_updates(db, api, now):
@@ -399,11 +435,46 @@ def sanitize_reply_text(text, campaign_id):
     return re.sub(r'https?://[^\s]+', replace_url, text.strip())
 
 
-def call_gemini(api_key, prompt):
-    models = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-2.0-flash']
+DAILY_GEMINI_BUDGET = 18
+
+
+def gemini_budget_status(db, now=None):
+    now = int(now or time.time())
+    day = dt.datetime.fromtimestamp(now, TZ).date().isoformat()
+    day_row = db.execute("SELECT value FROM meta WHERE key='gemini_calls_day'").fetchone()
+    cnt_row = db.execute("SELECT value FROM meta WHERE key='gemini_calls_count'").fetchone()
+    cool_row = db.execute("SELECT value FROM meta WHERE key='gemini_cooldown_until'").fetchone()
+    used = int(cnt_row['value']) if (day_row and day_row['value'] == day and cnt_row) else 0
+    cooldown_until = int(cool_row['value']) if cool_row else 0
+    return day, used, max(0, cooldown_until - now)
+
+
+def record_gemini_attempt(db, now=None):
+    now = int(now or time.time())
+    day, used, cooldown_left = gemini_budget_status(db, now)
+    if cooldown_left > 0:
+        raise SafeError(f'Gemini geri çekilme süresinde ({cooldown_left}sn kaldı).')
+    if used >= DAILY_GEMINI_BUDGET:
+        raise SafeError(f'Günlük Gemini bütçesi ({DAILY_GEMINI_BUDGET}) doldu.')
+    with db:
+        db.execute("INSERT INTO meta(key,value) VALUES('gemini_calls_day',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value", (day,))
+        db.execute("INSERT INTO meta(key,value) VALUES('gemini_calls_count',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value", (str(used + 1),))
+
+
+def set_gemini_cooldown(db, seconds, now=None):
+    now = int(now or time.time())
+    until = now + max(60, min(int(seconds), 86400))
+    with db:
+        db.execute("INSERT INTO meta(key,value) VALUES('gemini_cooldown_until',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value", (str(until),))
+
+
+def call_gemini(api_key, prompt, db=None, now=None):
+    if db is not None:
+        record_gemini_attempt(db, now)
+    models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash']
     last_error = None
     for model in models:
-        config = {'temperature': 0.8, 'maxOutputTokens': 700}
+        config = {'temperature': 0.7, 'maxOutputTokens': 700}
         if '2.5' in model:
             config['thinkingConfig'] = {'thinkingBudget': 0}
         payload = json.dumps({'contents': [{'parts': [{'text': prompt}]}], 'generationConfig': config}).encode('utf-8')
@@ -424,16 +495,33 @@ def call_gemini(api_key, prompt):
             last_error = err
             if err.code == 404:
                 continue
+            if err.code == 429:
+                if db is not None:
+                    set_gemini_cooldown(db, 1800, now)
+                raise SafeError('Gemini API kota/hız sınırı (kod 429); 30dk geri çekilme uygulandı.') from None
+            if err.code >= 500 and db is not None:
+                set_gemini_cooldown(db, 300, now)
             raise SafeError(f'Gemini API hatası (kod {err.code}).') from None
         except Exception:
+            if db is not None:
+                set_gemini_cooldown(db, 180, now)
             raise SafeError('Gemini API bağlantı hatası.') from None
     if last_error:
         raise SafeError(f'Gemini API hatası (kod {last_error.code}).')
     raise SafeError('Gemini API yanıt vermedi.')
 
 
+def record_inbox_ai_failure(db, update_id):
+    with db:
+        db.execute("UPDATE inbox SET note=note||'x' WHERE update_id=? AND status='pending'", (update_id,))
+        db.execute("UPDATE inbox SET status='failed' WHERE update_id=? AND status='pending' AND length(note)>=3", (update_id,))
+
+
 def process_inbox_with_ai(db, api, api_key, now, min_delay=120):
     if (STATE / 'PAUSED').exists():
+        return False
+    _, used, cooldown_left = gemini_budget_status(db, now)
+    if cooldown_left > 0 or used >= DAILY_GEMINI_BUDGET:
         return False
     # Human delay: wait at least min_delay seconds after the message arrived so it feels like a real person typing
     row = db.execute("SELECT * FROM inbox WHERE status='pending' AND directed=1 AND (? - received_at >= ? + (CASE WHEN ?>0 THEN update_id % 60 ELSE 0 END)) ORDER BY update_id ASC LIMIT 1", (now, min_delay, min_delay)).fetchone()
@@ -442,13 +530,15 @@ def process_inbox_with_ai(db, api, api_key, now, min_delay=120):
     update_id = row['update_id']
     campaign_id = f'reply_u{update_id}'
     prompt = (
-        f"You are a helpful, knowledgeable team member at Socialora helping users in our creator Telegram group.\n"
+        f"You are a helpful, knowledgeable team member at Socialora (getsocialora.com) helping creators in our Telegram group.\n"
+        f"Socialora provides Instagram, TikTok and Telegram followers, views and likes services, plus free creator diagnostic tools and calculators.\n"
         f"A user just asked:\n\"{row['text']}\"\n\n"
         f"Verified tools & pages if directly relevant:\n"
         f"- TikTok Shadowban Checker: https://www.getsocialora.com/tools/tiktok-shadowban-checker\n"
         f"- Instagram Shadowban Checker: https://www.getsocialora.com/tools/instagram-shadowban-checker\n"
         f"- Who Viewed My Instagram Profile: https://www.getsocialora.com/tools/who-viewed-my-instagram-profile\n"
-        f"- Order page: https://www.getsocialora.com/order\n"
+        f"- Order services page: https://www.getsocialora.com/order\n"
+        f"- Track order status: https://www.getsocialora.com/track\n"
         f"- FAQ: https://www.getsocialora.com/faq\n"
         f"- Free Creator Tools: https://www.getsocialora.com/tools\n\n"
         f"Verified payment facts (the only ones you may state): the site takes crypto. On the order page you can pay automatically and choose your coin at checkout, or pay manually with USDT (TRON TRC20, BNB Smart Chain, Solana), USDC (Ethereum) or Bitcoin; the page shows the exact address and network. Send only the matching coin on the matching network. Order status: the Track page. Private order help: info@getsocialora.com.\n"
@@ -462,22 +552,26 @@ def process_inbox_with_ai(db, api, api_key, now, min_delay=120):
         f"- Output ONLY the reply text."
     )
     try:
-        raw_reply = call_gemini(api_key, prompt)
+        raw_reply = call_gemini(api_key, prompt, db=db, now=now)
     except SafeError as e:
         LOG.warning('gemini_error: %s', e)
+        record_inbox_ai_failure(db, update_id)
         return False
     if len(raw_reply.strip()) < 15:
+        record_inbox_ai_failure(db, update_id)
         return False
     clean = sanitize_reply_text(raw_reply, campaign_id)
+    prev_dup = db.execute("SELECT 1 FROM inbox WHERE status='replied' AND lower(reply_text)=lower(?) LIMIT 1", (clean,)).fetchone()
+    if prev_dup:
+        record_inbox_ai_failure(db, update_id)
+        return False
     try:
         reply_to_inbox(db, api, update_id, clean, now)
         LOG.info('ai_replied update_id=%d', update_id)
         return True
     except SafeError as e:
         LOG.warning('reply_error: %s', e)
-        with db:
-            db.execute("UPDATE inbox SET note=note||'x' WHERE update_id=? AND status='pending'", (update_id,))
-            db.execute("UPDATE inbox SET status='failed' WHERE update_id=? AND status='pending' AND length(note)>=3", (update_id,))
+        record_inbox_ai_failure(db, update_id)
         return False
 
 
@@ -489,6 +583,7 @@ AI_TOPICS = [
     ("How to price Instagram Reels brand deals & UGC packages in 2026", "https://www.getsocialora.com/tools/instagram-sponsorship-rate-calculator", "channel"),
     ("Telegram channel CPM rates & how to rank in Telegram global search", "https://www.getsocialora.com/tools/telegram-channel-money-calculator", "channel"),
     ("Testing early view velocity on a fresh Instagram Reel upload", "https://www.getsocialora.com/free-instagram-views", "channel"),
+    ("When to combine organic hook fixes with follower & view delivery services", "https://www.getsocialora.com/order", "channel"),
     ("Creator check-in: what is your current average Reel/TikTok view count vs last month?", "https://www.getsocialora.com/tools/tiktok-shadowban-checker", "group"),
 ]
 
@@ -496,13 +591,21 @@ AI_TOPICS = [
 def auto_refill_queue_with_ai(db, api_key, now):
     if (STATE / 'PAUSED').exists() or not api_key:
         return 0
+    _, used, cooldown_left = gemini_budget_status(db, now)
+    if cooldown_left > 0 or used >= DAILY_GEMINI_BUDGET:
+        return 0
     pending = db.execute("SELECT COUNT(*) FROM posts WHERE status='pending' AND expires>?", (now,)).fetchone()[0]
     if pending >= 6:
         return 0
+    refill_cool = db.execute("SELECT value FROM meta WHERE key='ai_refill_cooldown_until'").fetchone()
+    if refill_cool and int(refill_cool['value']) > now:
+        return 0
+    with db:
+        db.execute("INSERT INTO meta(key,value) VALUES('ai_refill_cooldown_until',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value", (str(now + 21600),))
     last_due = db.execute("SELECT MAX(due) FROM posts").fetchone()[0] or now
     base_date = dt.datetime.fromtimestamp(max(now, last_due) + 86400, TZ).date()
     slots = [(10, 15), (13, 30), (16, 45), (19, 20), (22, 10)]
-    added = 0
+    batch_items = []
     for idx in range(5):
         topic, url, target = AI_TOPICS[(int(base_date.strftime('%j')) + idx) % len(AI_TOPICS)]
         post_id = f"ai_{base_date.strftime('%m%d')}_{idx+1}"
@@ -510,23 +613,43 @@ def auto_refill_queue_with_ai(db, api_key, now):
             continue
         medium = 'channel' if target == 'channel' else 'group'
         tracked_url = f"{url}?utm_source=telegram&utm_medium={medium}&utm_campaign={post_id}"
-        prompt = (
-            f"You are the Editorial Director at Socialora (@SocialoraOfficial / https://www.getsocialora.com).\n"
-            f"Write one ultra-authentic, high-retention English Telegram {target} post for creators about: {topic}.\n\n"
-            f"Master Copywriting & Brand Rules:\n"
-            f"1. Scroll-Stopping Hook: Open with a specific, relatable creator scenario or a sharp 2026 algorithm observation (never start with 'Hey creators', 'Did you know', or generic intros).\n"
-            f"2. Concrete Mini-Framework: Share a real, testable metric or step-by-step fix (e.g., 'If your FYP share drops below 10%, check...', or 'Compare 24h Story views to 7-day Profile Visits...').\n"
-            f"3. Visual Rhythm & Emojis: Use clean 1-2 sentence paragraphs and 2 to 4 well-placed, tasteful emojis (📊, ⚡, 🔍, 💡, 🎯) to guide the eye — never a dry wall of text, never spammy emoji strings.\n"
-            f"4. Zero AI/Robotic Tone: Ban words like 'unleash', 'skyrocket', 'game-changer', 'delve', 'elevate', '100% safe', 'never drops', or 'guaranteed followers'. Write like a real creator strategist.\n"
-            f"5. Searchable Keywords: Naturally weave in 1-2 terms creators search on Telegram (like TikTok shadowban, Instagram Reels reach, creator calculator).\n"
-            f"6. Soft, Helpful Call-to-Action: Transition naturally into our free tool and place this exact URL on the final line:\n{tracked_url}\n"
-            f"7. Length: 240 to 520 characters. Output ONLY the final post text."
-        )
-        try:
-            raw = call_gemini(api_key, prompt)
-        except SafeError:
-            break
-        text = raw.strip()
+        batch_items.append((idx, post_id, target, topic, tracked_url))
+    if not batch_items:
+        return 0
+    spec_lines = '\n'.join(
+        f"{i+1}. id={pid} | target={tgt} | topic={top} | url={turl}"
+        for i, (_, pid, tgt, top, turl) in enumerate(batch_items)
+    )
+    prompt = (
+        f"You are the Editorial Director at Socialora (@SocialoraOfficial / https://www.getsocialora.com).\n"
+        f"Socialora provides Instagram, TikTok and Telegram followers, views and likes services plus free creator tools.\n"
+        f"Write {len(batch_items)} distinct, authentic English Telegram posts for the items below. Return ONLY a valid JSON array of objects with keys \"id\" and \"text\".\n\n"
+        f"Items:\n{spec_lines}\n\n"
+        f"Rules for every post:\n"
+        f"1. Open with a specific creator scenario or algorithm observation (no 'Hey creators' or generic intros).\n"
+        f"2. Share one concrete, testable metric or step-by-step fix.\n"
+        f"3. Use 2 to 3 tasteful emojis (📊, ⚡, 🔍, 💡, 🎯) and short paragraphs.\n"
+        f"4. Never use '100% safe', 'never drops', 'guaranteed followers', 'skyrocket', or 'unleash'.\n"
+        f"5. Place the item's exact url on the final line of its text.\n"
+        f"6. Each post text must be 220 to 500 characters."
+    )
+    try:
+        raw = call_gemini(api_key, prompt, db=db, now=now)
+    except SafeError:
+        return 0
+    cleaned_json = re.sub(r'^```(?:json)?\s*|\s*```$', '', raw.strip(), flags=re.I)
+    try:
+        parsed = json.loads(cleaned_json)
+    except Exception:
+        return 0
+    if not isinstance(parsed, list):
+        return 0
+    by_id = {str(item.get('id', '')): str(item.get('text', '')).strip() for item in parsed if isinstance(item, dict)}
+    added = 0
+    for idx, post_id, target, topic, tracked_url in batch_items:
+        text = by_id.get(post_id, '')
+        if not text:
+            continue
         if tracked_url not in text:
             text = f"{text}\n\n{tracked_url}"
         try:
@@ -681,7 +804,12 @@ def report(db, now=None):
         config = load_config()
     except Exception:
         pass
-    ai_status = 'Gemini Flash aktif (ücretsiz kota)' if config.get('gemini_api_key') else '0 (otomatik AI kapalı)'
+    _, gemini_used, gemini_cooldown = gemini_budget_status(db, now)
+    if config.get('gemini_api_key'):
+        cool_note = f', geri çekilme={gemini_cooldown}sn' if gemini_cooldown > 0 else ''
+        ai_status = f'Gemini Flash aktif (bugün={gemini_used}/{DAILY_GEMINI_BUDGET}{cool_note})'
+    else:
+        ai_status = '0 (otomatik AI kapalı)'
     text = '\n'.join([f'Socialora — {today} — {status}', members, previous,
                       f'Bugün yayınlanan: {sent}; bekleyen: {counts.get("pending", 0)}',
                       f'Belirsiz: {counts.get("unknown", 0)}; hatalı: {counts.get("failed", 0)}; süresi geçen: {counts.get("expired", 0)}',
@@ -742,13 +870,14 @@ def doctor():
 
 
 PROFILE = {
-    'channel': 'Free creator tools and practical fixes for TikTok, Instagram and Telegram growth: shadowban checks, reach and views problems, money calculators. 5 short useful posts a day. Questions: @SocialoraChat. Tools: getsocialora.com/tools',
-    'group': 'Creator chat: ask why your TikTok views are stuck, why Reels get no reach, shadowban questions, pricing and payouts. Real answers, no spam. Free tools: getsocialora.com/tools',
+    'channel': 'Instagram, TikTok and Telegram growth: followers, views and likes services plus free tools like shadowban checkers and money calculators. Practical tips every day. Questions: @SocialoraChat. getsocialora.com',
+    'group': 'Creator chat for Instagram, TikTok and Telegram growth. Ask about stuck views, low reach, shadowban, pricing or orders. Real answers, no spam. Services and free tools: getsocialora.com',
 }
-PINNED = ('Welcome. This group is for creators with a specific problem: stuck views, no Reels reach, a suspected shadowban, '
-          'how to price a brand deal.\n\nPost your platform, what you tried and your rough numbers, and we will reply with what to check next. '
-          'No spam or links to other channels please.\n\nFree checkers and calculators: https://www.getsocialora.com/tools?utm_source=telegram&utm_medium=group&utm_campaign=pinned_welcome\n'
-          'Order questions: info@getsocialora.com (never post payment details here).')
+PINNED = ('Welcome. Socialora provides Instagram, TikTok and Telegram followers, views and likes services, plus free creator diagnostic tools.\n\n'
+          'If you have stuck views, low Reels reach, a shadowban question, or a pricing question, post your platform and rough numbers here and we will reply with what to check next.\n\n'
+          'Services & order page: https://www.getsocialora.com/order?utm_source=telegram&utm_medium=group&utm_campaign=pinned_welcome\n'
+          'Free checkers and calculators: https://www.getsocialora.com/tools?utm_source=telegram&utm_medium=group&utm_campaign=pinned_welcome\n'
+          'Private order support: info@getsocialora.com (never post payment details in public).')
 
 
 def optimize_profile(api):
@@ -760,6 +889,11 @@ def optimize_profile(api):
         except TelegramError as err:
             print(f'{TARGETS[target]}: açıklama güncellenemedi (kod {err.code}); botta "Change info" yetkisi gerekli.')
     chat_id = verify(api, 'group')
+    group_info = api.call('getChat', {'chat_id': chat_id}) or {}
+    existing_pin = (group_info.get('pinned_message') or {}).get('text') or ''
+    if 'getsocialora.com/order' in existing_pin and 'getsocialora.com/tools' in existing_pin:
+        print('Grup sabit mesajı zaten güncel; yeni pin gönderilmedi.')
+        return
     try:
         sent = api.call('sendMessage', {'chat_id': chat_id, 'text': render_html(PINNED), 'parse_mode': 'HTML', 'link_preview_options': {'is_disabled': True}})
         api.call('pinChatMessage', {'chat_id': chat_id, 'message_id': sent['message_id'], 'disable_notification': True})
@@ -769,7 +903,8 @@ def optimize_profile(api):
 
 
 def main():
-    os.umask(0o077)
+    if hasattr(os, 'umask'):
+        os.umask(0o077)
     parser = argparse.ArgumentParser(description='Socialora Telegram — yalnızca kendi kanal/grubuna yayın ve grup kutusu')
     sub = parser.add_subparsers(dest='command', required=True)
     for command in ['setup', 'set-gemini-key', 'doctor', 'status', 'pause', 'run', 'tick', 'report', 'check-content', 'poll', 'optimize-profile']:
@@ -812,7 +947,7 @@ def main():
         optimize_profile(Telegram(load_config()['bot_token']))
         return
     if args.command in {'preview', 'check-content'}:
-        posts = validate_posts(json.loads(Path(getattr(args, 'file', ROOT / 'content.json')).read_text()))
+        posts = validate_posts(json.loads(Path(getattr(args, 'file', ROOT / 'content.json')).read_text(encoding='utf-8')))
         if args.command == 'preview':
             for post in sorted(posts, key=lambda p: (p['day'], p['time'])):
                 print(f"\n[{post['day'] + 1}. gün {post['time']} — {post['target']} — {post['id']}]\n{post['text']}")

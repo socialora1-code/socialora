@@ -228,25 +228,25 @@ class PublisherTests(unittest.TestCase):
 
     def test_modified_existing_id_rolls_back_entire_batch(self):
         start = (dt.datetime.now(app.TZ).date() + dt.timedelta(days=1)).isoformat()
-        source = json.loads((app.ROOT / 'content.json').read_text())
+        source = json.loads((app.ROOT / 'content.json').read_text(encoding='utf-8'))
         app.import_content(self.db, app.ROOT / 'content.json', start)
         new = dict(source['posts'][0], id='new_post', text='A new and different useful post for our community to read today.', day=20)
         source['posts'] = [new, dict(source['posts'][0], text='This existing ID was changed and must cause the import to roll back completely.')]
         file = Path(self.temp.name) / 'changed.json'
-        file.write_text(json.dumps(source))
+        file.write_text(json.dumps(source), encoding='utf-8')
         with self.assertRaises(app.SafeError):
             app.import_content(self.db, file, start)
         self.assertEqual(37, self.db.execute('SELECT COUNT(*) FROM posts').fetchone()[0])
 
     def test_content_bundle_has_correct_targets_and_tracked_links(self):
-        posts = app.validate_posts(json.loads((app.ROOT / 'content.json').read_text()))
+        posts = app.validate_posts(json.loads((app.ROOT / 'content.json').read_text(encoding='utf-8')))
         self.assertEqual(35, sum(p['target'] == 'channel' for p in posts))
         self.assertEqual(2, sum(p['target'] == 'group' for p in posts))
         for day in range(7):
             self.assertEqual(5, sum(p['target'] == 'channel' and p['day'] == day for p in posts))
 
     def test_daytime_slots_are_varied_and_three_to_four_hours_apart(self):
-        posts = json.loads((app.ROOT / 'content.json').read_text())['posts']
+        posts = json.loads((app.ROOT / 'content.json').read_text(encoding='utf-8'))['posts']
         patterns = set()
         for day in range(7):
             slots = sorted(p['time'] for p in posts if p['target'] == 'channel' and p['day'] == day)
@@ -257,7 +257,7 @@ class PublisherTests(unittest.TestCase):
         self.assertEqual(7, len(patterns))
 
     def test_non_socialora_external_link_is_rejected(self):
-        source = json.loads((app.ROOT / 'content.json').read_text())
+        source = json.loads((app.ROOT / 'content.json').read_text(encoding='utf-8'))
         source['posts'][0]['text'] += '\nhttps://example.com/phishing'
         with self.assertRaises(app.SafeError):
             app.validate_posts(source)
@@ -276,6 +276,7 @@ class PublisherTests(unittest.TestCase):
         self.assertEqual(n, len(api.calls))
         self.assertFalse(any('Webhook' in m or m == 'getUpdates' for m, p in api.calls))
 
+    @unittest.skipIf(app.os.name == 'nt', 'POSIX mode bits only enforced on Unix/Termux')
     def test_private_config_and_state_permissions(self):
         app.atomic_text(app.CONFIG, json.dumps({'bot_token': '123456:secret_placeholder_not_real_123456'}))
         self.assertEqual(0o600, app.CONFIG.stat().st_mode & 0o777)
@@ -405,6 +406,39 @@ class PublisherTests(unittest.TestCase):
         self.assertEqual('replied', updated_row['status'])
         self.assertEqual(900, updated_row['reply_message_id'])
         self.assertIn('utm_campaign=reply_u50', updated_row['reply_text'])
+
+    def test_is_directed_to_us_ignores_casual_keyword_statements(self):
+        self.assertFalse(app.is_directed_to_us({'text': 'I love making tiktok videos all day long'}))
+        self.assertFalse(app.is_directed_to_us({'text': 'What time is dinner tonight?'}))
+        self.assertTrue(app.is_directed_to_us({'text': 'Why are my tiktok views stuck at 200?'}))
+        self.assertTrue(app.is_directed_to_us({'text': 'How can I check instagram shadowban on my account'}))
+
+    def test_gemini_daily_budget_and_429_cooldown_prevent_infinite_retries(self):
+        for i in range(app.DAILY_GEMINI_BUDGET):
+            app.record_gemini_attempt(self.db, self.now + i)
+        with self.assertRaises(app.SafeError):
+            app.record_gemini_attempt(self.db, self.now + 100)
+        # Next day resets budget
+        tomorrow = self.now + 86400
+        app.record_gemini_attempt(self.db, tomorrow)
+        _, used, _ = app.gemini_budget_status(self.db, tomorrow)
+        self.assertEqual(1, used)
+        # Cooldown blocks further attempts
+        app.set_gemini_cooldown(self.db, 1800, tomorrow)
+        with self.assertRaises(app.SafeError):
+            app.record_gemini_attempt(self.db, tomorrow + 60)
+
+    def test_failed_ai_replies_stop_after_three_attempts(self):
+        updates = [{'update_id': 77, 'message': {'message_id': 777, 'chat': {'id': -1002},
+                                                  'from': {'id': 91, 'username': 'user77', 'is_bot': False},
+                                                  'text': 'How do I check tiktok shadowban?'}}]
+        api = FakeTelegram(webhook_url='', updates=updates)
+        app.consume_updates(self.db, api, self.now)
+        with patch.object(app, 'call_gemini', return_value='too short'):
+            for _ in range(3):
+                self.assertFalse(app.process_inbox_with_ai(self.db, api, 'AQ.dummy_key_123456789012345', self.now, min_delay=0))
+        row = self.db.execute('SELECT * FROM inbox WHERE update_id=77').fetchone()
+        self.assertEqual('failed', row['status'])
 
 
 if __name__ == '__main__':
