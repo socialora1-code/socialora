@@ -213,6 +213,35 @@ export function ToolPageView({ tool }: { tool: ToolDef }) {
         <Widget tool={tool} />
       </div>
 
+      <div className="mt-6 flex flex-col justify-between gap-4 rounded-2xl border border-primary/20 bg-primary/5 p-5 sm:flex-row sm:items-center">
+        <div>
+          <p className="text-sm font-semibold text-foreground">
+            Need a live 2026 algorithm check or have a question about your reach?
+          </p>
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+            Ask inside our creator Telegram group (<strong>@SocialoraChat</strong>) for instant AI-backed diagnostics, daily growth experiments, and free view drops.
+          </p>
+        </div>
+        <div className="flex shrink-0 flex-wrap gap-2">
+          <a
+            href="https://t.me/SocialoraChat"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-10 items-center justify-center rounded-full bg-foreground px-4 text-xs font-medium text-background hover:opacity-90"
+          >
+            Ask in @SocialoraChat
+          </a>
+          <a
+            href="https://t.me/SocialoraOfficial"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-10 items-center justify-center rounded-full border border-border bg-background px-4 text-xs font-medium hover:bg-muted"
+          >
+            Join @SocialoraOfficial
+          </a>
+        </div>
+      </div>
+
       {tool.about && tool.about.length > 0 && (
         <section className="mt-12" aria-labelledby="about-title">
           <h2 id="about-title" className="text-2xl font-semibold tracking-tight">
@@ -269,12 +298,22 @@ export function ToolPageView({ tool }: { tool: ToolDef }) {
           Grow your profile
         </h2>
         <p className="mt-2 leading-relaxed text-muted-foreground">{cta.text}</p>
-        <Link
-          href={cta.href}
-          className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground"
-        >
-          {cta.label}
-        </Link>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <Link
+            href={cta.href}
+            className="inline-flex h-11 items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground"
+          >
+            {cta.label}
+          </Link>
+          <a
+            href="https://t.me/SocialoraChat"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-11 items-center justify-center rounded-full border border-border bg-background px-6 text-sm font-medium hover:bg-muted"
+          >
+            Join Creator Telegram Group
+          </a>
+        </div>
       </section>
 
       <section className="mt-12" aria-labelledby="more-title">

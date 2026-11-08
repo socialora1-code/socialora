@@ -265,7 +265,10 @@ def is_directed_to_us(msg):
         return True
     if reply_sender_chat.get('username', '').lower() in {'socialoraofficial', 'socialorachat'}:
         return True
-    return '?' in text
+    if '?' in text:
+        return True
+    keywords = ('views', 'stuck', 'shadowban', 'reels', 'tiktok', 'instagram', 'telegram', 'followers', 'reach', 'algorithm', 'price', 'free', 'tool', 'drop')
+    return len(text) >= 12 and any(k in lower for k in keywords)
 
 
 def consume_updates(db, api, now):
@@ -402,14 +405,24 @@ def process_inbox_with_ai(db, api, api_key, now):
     update_id = row['update_id']
     campaign_id = f'reply_u{update_id}'
     prompt = (
-        f"You are the community manager for Socialora (@SocialoraChat / getsocialora.com).\n"
-        f"A Telegram group member asked:\n\"{row['text']}\"\n\n"
+        f"You are the expert community manager for Socialora (@SocialoraChat / https://www.getsocialora.com).\n"
+        f"A Telegram group member posted:\n\"{row['text']}\"\n\n"
+        f"Verified Socialora Free Tools & Pages you can link to when relevant:\n"
+        f"- TikTok Shadowban Checker: https://www.getsocialora.com/tools/tiktok-shadowban-checker\n"
+        f"- Instagram Shadowban Checker: https://www.getsocialora.com/tools/instagram-shadowban-checker\n"
+        f"- Who Viewed My Instagram Profile: https://www.getsocialora.com/tools/who-viewed-my-instagram-profile\n"
+        f"- TikTok Money & Coins Calculator: https://www.getsocialora.com/tools/tiktok-money-coins-calculator\n"
+        f"- Instagram Sponsorship Rate Calculator: https://www.getsocialora.com/tools/instagram-sponsorship-rate-calculator\n"
+        f"- Telegram Channel Money Calculator: https://www.getsocialora.com/tools/telegram-channel-money-calculator\n"
+        f"- Free Instagram Views Trial: https://www.getsocialora.com/free-instagram-views\n"
+        f"- All Free Creator Tools: https://www.getsocialora.com/tools\n\n"
         f"Instructions:\n"
-        f"1. Concise, natural, helpful English response (2 to 4 sentences).\n"
-        f"2. Give concrete, actionable advice on social media growth, reach, or diagnostic steps.\n"
-        f"3. You may mention our free diagnostic tools on getsocialora.com/tools (shadowban checker, coin calculator, rate calculator) if relevant.\n"
-        f"4. Never promise 100% safety or fake guarantees, and never ask for order IDs, passwords, or personal details.\n"
-        f"5. Output ONLY the reply text, no greeting or markdown headings."
+        f"1. Write a concise, natural, genuinely helpful English reply (2 to 4 sentences).\n"
+        f"2. Give one concrete, actionable diagnostic step or algorithm tip first.\n"
+        f"3. Include the single most relevant https://www.getsocialora.com/... URL from the list above so they can test or fix it right away.\n"
+        f"4. End with a short, natural follow-up question to keep the group conversation active.\n"
+        f"5. Never promise '100% safe', 'never drops', or 'guaranteed followers', and never ask for order IDs, emails, or payment screenshots in public.\n"
+        f"6. Output ONLY the plain reply text, no markdown headings."
     )
     try:
         raw_reply = call_gemini(api_key, prompt)
@@ -424,6 +437,69 @@ def process_inbox_with_ai(db, api, api_key, now):
     except SafeError as e:
         LOG.warning('reply_error: %s', e)
         return False
+
+
+AI_TOPICS = [
+    ("TikTok 200-view jail & retention hook", "https://www.getsocialora.com/tools/tiktok-shadowban-checker", "channel"),
+    ("Instagram Reels non-follower reach & Explore signal", "https://www.getsocialora.com/tools/instagram-shadowban-checker", "channel"),
+    ("How to check silent Instagram profile visitors via Insights", "https://www.getsocialora.com/tools/who-viewed-my-instagram-profile", "channel"),
+    ("TikTok Live diamonds & gift coin payout math", "https://www.getsocialora.com/tools/tiktok-money-coins-calculator", "channel"),
+    ("Pricing brand deals & UGC sponsorships on Instagram", "https://www.getsocialora.com/tools/instagram-sponsorship-rate-calculator", "channel"),
+    ("Telegram channel CPM rates & search ranking keywords", "https://www.getsocialora.com/tools/telegram-channel-money-calculator", "channel"),
+    ("Testing early velocity on a new Instagram Reel", "https://www.getsocialora.com/free-instagram-views", "channel"),
+    ("Creator check-in: what is your current average view count vs 30 days ago?", "https://www.getsocialora.com/tools/tiktok-shadowban-checker", "group"),
+]
+
+
+def auto_refill_queue_with_ai(db, api_key, now):
+    if (STATE / 'PAUSED').exists() or not api_key:
+        return 0
+    pending = db.execute("SELECT COUNT(*) FROM posts WHERE status='pending' AND expires>?", (now,)).fetchone()[0]
+    if pending >= 6:
+        return 0
+    last_due = db.execute("SELECT MAX(due) FROM posts").fetchone()[0] or now
+    base_date = dt.datetime.fromtimestamp(max(now, last_due) + 86400, TZ).date()
+    slots = [(10, 15), (13, 30), (16, 45), (19, 20), (22, 10)]
+    added = 0
+    for idx in range(5):
+        topic, url, target = AI_TOPICS[(int(base_date.strftime('%j')) + idx) % len(AI_TOPICS)]
+        post_id = f"ai_{base_date.strftime('%m%d')}_{idx+1}"
+        if db.execute("SELECT 1 FROM posts WHERE id=?", (post_id,)).fetchone():
+            continue
+        medium = 'channel' if target == 'channel' else 'group'
+        tracked_url = f"{url}?utm_source=telegram&utm_medium={medium}&utm_campaign={post_id}"
+        prompt = (
+            f"Write one short, high-value English Telegram {target} post for creators about: {topic}.\n"
+            f"Rules:\n"
+            f"1. Length: 180 to 450 characters.\n"
+            f"2. Give a specific, practical 2026 algorithm tip or benchmark (no robotic fluff, no '100% safe' or 'guaranteed followers').\n"
+            f"3. Naturally include this exact link at the end: {tracked_url}\n"
+            f"4. Output ONLY the post text."
+        )
+        try:
+            raw = call_gemini(api_key, prompt)
+        except SafeError:
+            break
+        text = raw.strip()
+        if tracked_url not in text:
+            text = f"{text}\n\n{tracked_url}"
+        try:
+            validate_posts({'brand': 'Socialora', 'version': 1, 'posts': [{
+                'id': post_id, 'target': target, 'day': 0,
+                'time': f"{slots[idx][0]:02d}:{slots[idx][1]:02d}", 'text': text
+            }]})
+        except SafeError:
+            continue
+        due = int(dt.datetime.combine(base_date, dt.time(slots[idx][0], slots[idx][1]), TZ).timestamp())
+        digest = hashlib.sha256(canonical_text(text).encode()).hexdigest()
+        try:
+            with db:
+                db.execute('INSERT INTO posts(id,target,text,digest,due,expires) VALUES (?,?,?,?,?,?)',
+                           (post_id, target, text, digest, due, due + 90 * 60))
+            added += 1
+        except sqlite3.IntegrityError:
+            continue
+    return added
 
 
 def reply_to_inbox(db, api, update_id, text, now=None):
@@ -765,6 +841,7 @@ def main():
                             last_ai = now
                             try:
                                 process_inbox_with_ai(db, api, gemini_key, now)
+                                auto_refill_queue_with_ai(db, gemini_key, now)
                             except Exception:
                                 LOG.warning('ai_reply_unavailable')
                     if now - last_snapshot_attempt >= 1800:
