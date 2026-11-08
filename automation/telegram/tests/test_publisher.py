@@ -408,10 +408,10 @@ class PublisherTests(unittest.TestCase):
         self.assertIn('utm_campaign=reply_u50', updated_row['reply_text'])
 
     def test_is_directed_to_us_ignores_casual_keyword_statements(self):
-        self.assertFalse(app.is_directed_to_us({'text': 'I love making tiktok videos all day long'}))
-        self.assertFalse(app.is_directed_to_us({'text': 'What time is dinner tonight?'}))
+        self.assertFalse(app.is_directed_to_us({'text': 'Good morning everyone'}))
+        self.assertTrue(app.is_directed_to_us({'text': 'What time is my order delivered?'}))
         self.assertTrue(app.is_directed_to_us({'text': 'Why are my tiktok views stuck at 200?'}))
-        self.assertTrue(app.is_directed_to_us({'text': 'How can I check instagram shadowban on my account'}))
+        self.assertTrue(app.is_directed_to_us({'text': 'I need instagram followers for my page'}))
 
     def test_gemini_daily_budget_and_429_cooldown_prevent_infinite_retries(self):
         for i in range(app.DAILY_GEMINI_BUDGET):

@@ -280,7 +280,7 @@ def recover(db):
 
 def is_directed_to_us(msg):
     text = (msg.get('text') or msg.get('caption') or '').strip()
-    if not text or len(text) < 4:
+    if not text or len(text) < 3:
         return False
     lower = text.lower()
     if f'@{BOT}' in lower or '@socialoraofficial' in lower or 'socialora' in lower:
@@ -292,20 +292,16 @@ def is_directed_to_us(msg):
         return True
     if reply_sender_chat.get('username', '').lower() in {'socialoraofficial', 'socialorachat'}:
         return True
-    keywords = (
-        'views', 'stuck', 'shadowban', 'reels', 'tiktok', 'instagram', 'telegram',
-        'followers', 'likes', 'subscribers', 'reach', 'algorithm', 'price', 'pricing',
-        'order', 'refill', 'delivery', 'crypto', 'usdt', 'free', 'tool', 'drop', 'calculator',
-        'resize', 'crop', 'photo', 'bio', 'thumbnail', 'caption', 'safe zone',
-    )
-    has_keyword = any(k in lower for k in keywords)
-    if '?' in text and has_keyword:
+    if '?' in text:
         return True
-    question_starters = (
-        'how ', 'why ', 'what ', 'where ', 'when ', 'can i ', 'can you ',
-        'do you ', 'is there ', 'is it ', 'anyone know', 'help with ', 'need help',
+    keywords = (
+        'views', 'stuck', 'shadowban', 'reels', 'tiktok', 'instagram', 'telegram', 'youtube',
+        'twitter', 'followers', 'likes', 'subscribers', 'watchtime', 'watch time', 'reach',
+        'algorithm', 'price', 'pricing', 'cost', 'buy', 'order', 'refill', 'delivery', 'crypto',
+        'usdt', 'btc', 'payment', 'free', 'tool', 'drop', 'calculator', 'resize', 'crop',
+        'photo', 'bio', 'thumbnail', 'caption', 'safe zone', 'help', 'support', 'panel', 'service',
     )
-    return len(text) >= 12 and has_keyword and lower.startswith(question_starters)
+    return len(text) >= 8 and any(k in lower for k in keywords)
 
 
 def consume_updates(db, api, now):
@@ -435,7 +431,7 @@ def sanitize_reply_text(text, campaign_id):
     return re.sub(r'https?://[^\s]+', replace_url, text.strip())
 
 
-DAILY_GEMINI_BUDGET = 18
+DAILY_GEMINI_BUDGET = 40
 
 
 def gemini_budget_status(db, now=None):
