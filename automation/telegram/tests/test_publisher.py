@@ -398,7 +398,7 @@ class PublisherTests(unittest.TestCase):
         self.assertEqual('pending', row['status'])
 
         with patch.object(app, 'call_gemini', return_value='You can test whether your account is restricted by searching your hashtag from an alt account or using our free tool: https://getsocialora.com/tools/tiktok-shadowban-checker'):
-            handled = app.process_inbox_with_ai(self.db, api, 'AQ.dummy_key_123456789012345', self.now)
+            handled = app.process_inbox_with_ai(self.db, api, 'AQ.dummy_key_123456789012345', self.now, min_delay=0)
             self.assertTrue(handled)
 
         updated_row = self.db.execute('SELECT * FROM inbox WHERE update_id=50').fetchone()

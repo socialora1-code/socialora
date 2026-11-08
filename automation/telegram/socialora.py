@@ -303,7 +303,12 @@ def consume_updates(db, api, now):
             if chat.get('id') != group_chat_id:
                 continue
             sender_info = msg.get('from') or {}
-            if sender_info.get('is_bot') is True or sender_info.get('username', '').lower() == BOT:
+            sender_username = (sender_info.get('username') or '').lower()
+            if sender_info.get('is_bot') is True or sender_username in {BOT, 'telegram', 'channelsupportbot'}:
+                continue
+            # Also ignore forwarded messages from our own channel
+            forward_from_chat = msg.get('forward_from_chat') or {}
+            if forward_from_chat.get('username', '').lower() in {'socialoraofficial', 'socialorachat'}:
                 continue
             text = (msg.get('text') or msg.get('caption') or '').strip()
             if not text:
@@ -396,35 +401,32 @@ def call_gemini(api_key, prompt):
     raise SafeError('Gemini API yanıt vermedi.')
 
 
-def process_inbox_with_ai(db, api, api_key, now):
+def process_inbox_with_ai(db, api, api_key, now, min_delay=120):
     if (STATE / 'PAUSED').exists():
         return False
-    row = db.execute("SELECT * FROM inbox WHERE status='pending' AND directed=1 ORDER BY update_id ASC LIMIT 1").fetchone()
+    # Human delay: wait at least min_delay seconds after the message arrived so it feels like a real person typing
+    row = db.execute("SELECT * FROM inbox WHERE status='pending' AND directed=1 AND (? - received_at >= ?) ORDER BY update_id ASC LIMIT 1", (now, min_delay)).fetchone()
     if not row:
         return False
     update_id = row['update_id']
     campaign_id = f'reply_u{update_id}'
     prompt = (
-        f"You are the Lead Growth Strategist & Community Manager at Socialora (@SocialoraChat / https://www.getsocialora.com).\n"
-        f"A member in our creator Telegram group just wrote:\n\"{row['text']}\"\n\n"
-        f"Verified Socialora Free Tools & Pages (choose the single best fit if helpful):\n"
+        f"You are a helpful, knowledgeable team member at Socialora helping users in our creator Telegram group.\n"
+        f"A user just asked:\n\"{row['text']}\"\n\n"
+        f"Verified tools & pages if directly relevant:\n"
         f"- TikTok Shadowban Checker: https://www.getsocialora.com/tools/tiktok-shadowban-checker\n"
         f"- Instagram Shadowban Checker: https://www.getsocialora.com/tools/instagram-shadowban-checker\n"
         f"- Who Viewed My Instagram Profile: https://www.getsocialora.com/tools/who-viewed-my-instagram-profile\n"
-        f"- TikTok Money & Coins Calculator: https://www.getsocialora.com/tools/tiktok-money-coins-calculator\n"
-        f"- Instagram Sponsorship Rate Calculator: https://www.getsocialora.com/tools/instagram-sponsorship-rate-calculator\n"
-        f"- Telegram Channel Money Calculator: https://www.getsocialora.com/tools/telegram-channel-money-calculator\n"
-        f"- Free Instagram Views Trial: https://www.getsocialora.com/free-instagram-views\n"
-        f"- All 50+ Free Creator Tools: https://www.getsocialora.com/tools\n\n"
-        f"Strict Editorial & Voice Rules:\n"
-        f"1. Voice: Speak like a sharp, friendly, experienced social media strategist talking to a fellow creator in a Telegram chat. Warm, direct, and human.\n"
-        f"2. Banned AI Clichés: NEVER use robotic phrases like 'Unlock your potential', 'In today's digital landscape', 'Game-changer', 'Skyrocket', 'Elevate', 'Delve', or '100% safe / guaranteed followers'.\n"
-        f"3. Value First: Give a specific, real-world 2026 diagnostic step or algorithm insight right away (e.g., 3-second hook hold rate, non-follower Explore %, hashtag search check, or watch-time velocity).\n"
-        f"4. Tasteful Emoji: Use 1 or 2 natural emojis (e.g. 💡, 📊, 👀, ⚡) where it fits the flow — never overdo it.\n"
-        f"5. Natural Tool Link: Seamlessly mention the single most relevant https://www.getsocialora.com/... link from the list above so they can test their numbers.\n"
-        f"6. Spark Conversation: End with a brief, natural question about their niche or recent post so they reply back.\n"
-        f"7. Privacy: Never ask for order IDs, emails, or payment details in public.\n"
-        f"8. Length: 2 to 4 crisp sentences. Output ONLY the plain reply text."
+        f"- Crypto payments: Cryptos are accepted at checkout on getsocialora.com (USDT, BTC, ETH, etc. via CoinGate/NowPayments), instant order processing.\n"
+        f"- Order support: info@getsocialora.com\n"
+        f"- Free Creator Tools: https://www.getsocialora.com/tools\n\n"
+        f"STRICT RULES FOR YOUR REPLY:\n"
+        f"1. Zero emojis. Absolutely NO emojis in your reply. Real human support in chat writes plain text.\n"
+        f"2. Zero marketing/robotic fluff. Never say 'Hey there!', 'Great question!', 'We are thrilled', 'Unlock', 'Game-changer', 'Skyrocket'.\n"
+        f"3. Speak completely naturally like an experienced tech/growth specialist typing a quick, helpful response on their phone.\n"
+        f"4. Directly answer what they asked in 1 to 3 concise, clear sentences.\n"
+        f"5. If they asked about crypto or payment, explain clearly that crypto is available directly at checkout on getsocialora.com and safe.\n"
+        f"6. Output ONLY the plain text reply. Nothing else."
     )
     try:
         raw_reply = call_gemini(api_key, prompt)
