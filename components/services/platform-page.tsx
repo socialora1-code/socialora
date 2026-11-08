@@ -102,6 +102,35 @@ export function PlatformPage({ platformId }: { platformId: PlatformId }) {
           </ul>
         </section>
 
+        <section aria-labelledby="telegram-community" className="flex flex-col justify-between gap-4 rounded-3xl border border-primary/20 bg-primary/5 p-6 sm:flex-row sm:items-center">
+          <div>
+            <h2 id="telegram-community" className="text-lg font-semibold tracking-tight">
+              Follow daily {platform.name} growth notes on Telegram
+            </h2>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              Get practical retention tips, free diagnostic tools, and community Q&amp;A inside <strong>@SocialoraOfficial</strong> and <strong>@SocialoraChat</strong>.
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-wrap gap-2">
+            <a
+              href="https://t.me/SocialoraOfficial"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-10 items-center justify-center rounded-full bg-primary px-5 text-xs font-semibold text-primary-foreground hover:opacity-90"
+            >
+              Join @SocialoraOfficial
+            </a>
+            <a
+              href="https://t.me/SocialoraChat"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-10 items-center justify-center rounded-full border border-border bg-background px-5 text-xs font-semibold hover:bg-muted"
+            >
+              Ask in @SocialoraChat
+            </a>
+          </div>
+        </section>
+
         <ComplianceNotice />
       </div>
     </>

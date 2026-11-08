@@ -92,6 +92,30 @@ export function OrderSubmitted({ order }: { order: SubmittedOrder }) {
       )}
 
       <div className="mt-6 rounded-3xl border border-border bg-card p-6 text-sm leading-relaxed text-muted-foreground">
+        <div className="mb-5 rounded-2xl border border-primary/20 bg-primary/5 p-4 text-foreground">
+          <p className="font-semibold">While you wait, join Socialora on Telegram</p>
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+            Get daily algorithm tips and free creator utilities in <strong>@SocialoraOfficial</strong>, or ask general growth questions in <strong>@SocialoraChat</strong> (keep your private order reference in email only).
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <a
+              href="https://t.me/SocialoraOfficial"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-9 items-center justify-center rounded-full bg-primary px-4 text-xs font-medium text-primary-foreground hover:opacity-90"
+            >
+              Explore @SocialoraOfficial
+            </a>
+            <a
+              href="https://t.me/SocialoraChat"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-9 items-center justify-center rounded-full border border-border bg-background px-4 text-xs font-medium hover:bg-muted"
+            >
+              Join @SocialoraChat
+            </a>
+          </div>
+        </div>
         If you have questions about this order, contact{' '}
         <a href={`mailto:${SITE.supportEmail}?subject=${encodeURIComponent(`Order ${order.reference}`)}`} className="font-medium text-foreground underline underline-offset-4">
           {SITE.supportEmail}

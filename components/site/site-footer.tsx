@@ -80,6 +80,8 @@ const COLUMNS = [
       { href: '/faq', label: 'FAQ' },
       { href: '/about', label: 'About' },
       { href: '/contact', label: 'Contact' },
+      { href: 'https://t.me/SocialoraOfficial', label: 'Telegram Channel' },
+      { href: 'https://t.me/SocialoraChat', label: 'Creator Group' },
     ],
   },
   {

@@ -531,22 +531,30 @@ def process_inbox_with_ai(db, api, api_key, now, min_delay=120):
     campaign_id = f'reply_u{update_id}'
     prompt = (
         f"You are a helpful, knowledgeable team member at Socialora (getsocialora.com) helping creators in our Telegram group.\n"
-        f"Socialora provides Instagram, TikTok and Telegram followers, views and likes services, plus free creator diagnostic tools and calculators.\n"
+        f"Socialora provides Instagram, TikTok, YouTube, X (Twitter) and Telegram followers, views, likes, watch time and subscribers services, plus 50+ free creator diagnostic tools.\n"
         f"A user just asked:\n\"{row['text']}\"\n\n"
-        f"Verified tools & pages if directly relevant:\n"
+        f"Verified service & page URLs (use at most ONE URL and ONLY if it directly answers their question):\n"
+        f"- All Services / Order page: https://www.getsocialora.com/order\n"
+        f"- Instagram Followers, Views & Auto Likes (USA/Spanish/Arabic/Brazilian followers, 365-day refill options, Reels views): https://www.getsocialora.com/instagram\n"
+        f"- TikTok Followers, Auto Likes & Auto Views: https://www.getsocialora.com/tiktok\n"
+        f"- YouTube Views, Watch Time & Subscribers: https://www.getsocialora.com/youtube\n"
+        f"- X (Twitter) Followers & Views: https://www.getsocialora.com/x\n"
+        f"- Telegram Channel Members & Premium Subscribers: https://www.getsocialora.com/telegram\n"
+        f"- Free Instagram Views trial: https://www.getsocialora.com/free-instagram-views\n"
         f"- TikTok Shadowban Checker: https://www.getsocialora.com/tools/tiktok-shadowban-checker\n"
         f"- Instagram Shadowban Checker: https://www.getsocialora.com/tools/instagram-shadowban-checker\n"
         f"- Who Viewed My Instagram Profile: https://www.getsocialora.com/tools/who-viewed-my-instagram-profile\n"
-        f"- Order services page: https://www.getsocialora.com/order\n"
-        f"- Track order status: https://www.getsocialora.com/track\n"
+        f"- Track Order Status: https://www.getsocialora.com/track\n"
         f"- FAQ: https://www.getsocialora.com/faq\n"
-        f"- Free Creator Tools: https://www.getsocialora.com/tools\n\n"
-        f"Verified payment facts (the only ones you may state): the site takes crypto. On the order page you can pay automatically and choose your coin at checkout, or pay manually with USDT (TRON TRC20, BNB Smart Chain, Solana), USDC (Ethereum) or Bitcoin; the page shows the exact address and network. Send only the matching coin on the matching network. Order status: the Track page. Private order help: info@getsocialora.com.\n"
-        f"Never invent prices, delivery times, results, guarantees or policies. If you are not sure, say you are not sure and point to info@getsocialora.com or the FAQ.\n\n"
+        f"- All Free Creator Tools: https://www.getsocialora.com/tools\n\n"
+        f"Verified catalog & payment facts (state ONLY what is relevant, never invent prices or delivery times):\n"
+        f"- No password is ever needed; only a public profile, post, video or channel link/username.\n"
+        f"- Payments: the site accepts crypto. Customers can pay automatically at checkout or manually with USDT (TRON TRC20, BNB Smart Chain, Solana), USDC (Ethereum ERC20) or Bitcoin.\n"
+        f"- Order status: checked on the Track page using the order reference and email. Private order help: info@getsocialora.com.\n\n"
         f"HOW TO WRITE:\n"
-        f"- Plain text like a real person typing in a chat. No emojis, no bullet lists, no bold, no hashtags, no dashes for effect.\n"
-        f"- No greeting formula or praise ('Hey there', 'Great question', 'Happy to help'). Start with the answer.\n"
-        f"- Answer the exact thing they asked, in 1 to 3 short sentences, in their language level. If they wrote in another language, answer in that language.\n"
+        f"- Plain text like a real person typing in a chat. ZERO emojis, no bullet lists, no bold, no hashtags, no dashes for effect.\n"
+        f"- No greeting formula or praise ('Hey there', 'Great question', 'Happy to help'). Start directly with the answer.\n"
+        f"- Answer the exact thing they asked in 1 to 3 short sentences, matching their language.\n"
         f"- Add a link only if it truly helps them take the next step, and never more than one.\n"
         f"- Do not ask for order numbers, emails or payment details in public. Do not end with a marketing question.\n"
         f"- Output ONLY the reply text."
@@ -577,11 +585,17 @@ def process_inbox_with_ai(db, api, api_key, now, min_delay=120):
 
 AI_TOPICS = [
     ("TikTok 200-view jail & 3-second retention hook math", "https://www.getsocialora.com/tools/tiktok-shadowban-checker", "channel"),
+    ("How Instagram Auto Likes & Reels Views build early social proof on fresh uploads", "https://www.getsocialora.com/instagram", "channel"),
     ("Instagram Reels non-follower reach & Explore distribution signals", "https://www.getsocialora.com/tools/instagram-shadowban-checker", "channel"),
+    ("Scaling TikTok profiles with High-Quality Followers & Auto Views on new videos", "https://www.getsocialora.com/tiktok", "channel"),
     ("How to spot silent Instagram profile visitors using Insights ratios", "https://www.getsocialora.com/tools/who-viewed-my-instagram-profile", "channel"),
+    ("Why country-targeted Instagram followers (USA, Spanish, Arabic, Brazilian) matter for local brands", "https://www.getsocialora.com/buy-usa-instagram-followers", "channel"),
     ("TikTok Live diamonds & gift coin payout breakdown for creators", "https://www.getsocialora.com/tools/tiktok-money-coins-calculator", "channel"),
+    ("Growing YouTube channels: combining 30-minute video Watch Time with Subscriber momentum", "https://www.getsocialora.com/youtube", "channel"),
     ("How to price Instagram Reels brand deals & UGC packages in 2026", "https://www.getsocialora.com/tools/instagram-sponsorship-rate-calculator", "channel"),
-    ("Telegram channel CPM rates & how to rank in Telegram global search", "https://www.getsocialora.com/tools/telegram-channel-money-calculator", "channel"),
+    ("Ranking higher in Telegram global search with Channel Members & Premium Subscribers", "https://www.getsocialora.com/telegram", "channel"),
+    ("Telegram channel CPM rates & monetization benchmarks", "https://www.getsocialora.com/tools/telegram-channel-money-calculator", "channel"),
+    ("Building X (Twitter) profile authority with Followers and high-impression Tweet Views", "https://www.getsocialora.com/x", "channel"),
     ("Testing early view velocity on a fresh Instagram Reel upload", "https://www.getsocialora.com/free-instagram-views", "channel"),
     ("When to combine organic hook fixes with follower & view delivery services", "https://www.getsocialora.com/order", "channel"),
     ("Creator check-in: what is your current average Reel/TikTok view count vs last month?", "https://www.getsocialora.com/tools/tiktok-shadowban-checker", "group"),
