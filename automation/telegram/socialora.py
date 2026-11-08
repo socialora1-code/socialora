@@ -469,12 +469,16 @@ def auto_refill_queue_with_ai(db, api_key, now):
         medium = 'channel' if target == 'channel' else 'group'
         tracked_url = f"{url}?utm_source=telegram&utm_medium={medium}&utm_campaign={post_id}"
         prompt = (
-            f"Write one short, high-value English Telegram {target} post for creators about: {topic}.\n"
-            f"Rules:\n"
-            f"1. Length: 180 to 450 characters.\n"
-            f"2. Give a specific, practical 2026 algorithm tip or benchmark (no robotic fluff, no '100% safe' or 'guaranteed followers').\n"
-            f"3. Naturally include this exact link at the end: {tracked_url}\n"
-            f"4. Output ONLY the post text."
+            f"You are the senior growth lead at Socialora (@SocialoraOfficial / getsocialora.com).\n"
+            f"Write one authentic, highly engaging English Telegram {target} post for creators about: {topic}.\n"
+            f"Style & Quality Guidelines:\n"
+            f"1. Hook: Start with a punchy, relatable creator problem or 2026 algorithm fact (not generic hello).\n"
+            f"2. Value: Give a concrete, actionable benchmark or diagnostic tip (e.g., watch time %, hook retention, Explore signal).\n"
+            f"3. Formatting: Clean paragraph spacing with 2 to 4 tasteful, professional emojis (e.g. 📊, ⚡, 🔍, 💡) to make it visually engaging — no emoji spam, never a dry wall of text.\n"
+            f"4. Tone: Genuine, expert, creator-to-creator. Never use robotic clichés, corporate jargon, or fake promises ('100% safe', 'guaranteed growth').\n"
+            f"5. Length: 200 to 480 characters.\n"
+            f"6. Include this exact link naturally at the end: {tracked_url}\n"
+            f"7. Output ONLY the ready-to-post text."
         )
         try:
             raw = call_gemini(api_key, prompt)
