@@ -405,9 +405,9 @@ def process_inbox_with_ai(db, api, api_key, now):
     update_id = row['update_id']
     campaign_id = f'reply_u{update_id}'
     prompt = (
-        f"You are the expert community manager for Socialora (@SocialoraChat / https://www.getsocialora.com).\n"
-        f"A Telegram group member posted:\n\"{row['text']}\"\n\n"
-        f"Verified Socialora Free Tools & Pages you can link to when relevant:\n"
+        f"You are the Lead Growth Strategist & Community Manager at Socialora (@SocialoraChat / https://www.getsocialora.com).\n"
+        f"A member in our creator Telegram group just wrote:\n\"{row['text']}\"\n\n"
+        f"Verified Socialora Free Tools & Pages (choose the single best fit if helpful):\n"
         f"- TikTok Shadowban Checker: https://www.getsocialora.com/tools/tiktok-shadowban-checker\n"
         f"- Instagram Shadowban Checker: https://www.getsocialora.com/tools/instagram-shadowban-checker\n"
         f"- Who Viewed My Instagram Profile: https://www.getsocialora.com/tools/who-viewed-my-instagram-profile\n"
@@ -415,14 +415,16 @@ def process_inbox_with_ai(db, api, api_key, now):
         f"- Instagram Sponsorship Rate Calculator: https://www.getsocialora.com/tools/instagram-sponsorship-rate-calculator\n"
         f"- Telegram Channel Money Calculator: https://www.getsocialora.com/tools/telegram-channel-money-calculator\n"
         f"- Free Instagram Views Trial: https://www.getsocialora.com/free-instagram-views\n"
-        f"- All Free Creator Tools: https://www.getsocialora.com/tools\n\n"
-        f"Instructions:\n"
-        f"1. Write a concise, natural, genuinely helpful English reply (2 to 4 sentences).\n"
-        f"2. Give one concrete, actionable diagnostic step or algorithm tip first.\n"
-        f"3. Include the single most relevant https://www.getsocialora.com/... URL from the list above so they can test or fix it right away.\n"
-        f"4. End with a short, natural follow-up question to keep the group conversation active.\n"
-        f"5. Never promise '100% safe', 'never drops', or 'guaranteed followers', and never ask for order IDs, emails, or payment screenshots in public.\n"
-        f"6. Output ONLY the plain reply text, no markdown headings."
+        f"- All 50+ Free Creator Tools: https://www.getsocialora.com/tools\n\n"
+        f"Strict Editorial & Voice Rules:\n"
+        f"1. Voice: Speak like a sharp, friendly, experienced social media strategist talking to a fellow creator in a Telegram chat. Warm, direct, and human.\n"
+        f"2. Banned AI Clichés: NEVER use robotic phrases like 'Unlock your potential', 'In today's digital landscape', 'Game-changer', 'Skyrocket', 'Elevate', 'Delve', or '100% safe / guaranteed followers'.\n"
+        f"3. Value First: Give a specific, real-world 2026 diagnostic step or algorithm insight right away (e.g., 3-second hook hold rate, non-follower Explore %, hashtag search check, or watch-time velocity).\n"
+        f"4. Tasteful Emoji: Use 1 or 2 natural emojis (e.g. 💡, 📊, 👀, ⚡) where it fits the flow — never overdo it.\n"
+        f"5. Natural Tool Link: Seamlessly mention the single most relevant https://www.getsocialora.com/... link from the list above so they can test their numbers.\n"
+        f"6. Spark Conversation: End with a brief, natural question about their niche or recent post so they reply back.\n"
+        f"7. Privacy: Never ask for order IDs, emails, or payment details in public.\n"
+        f"8. Length: 2 to 4 crisp sentences. Output ONLY the plain reply text."
     )
     try:
         raw_reply = call_gemini(api_key, prompt)
@@ -440,14 +442,14 @@ def process_inbox_with_ai(db, api, api_key, now):
 
 
 AI_TOPICS = [
-    ("TikTok 200-view jail & retention hook", "https://www.getsocialora.com/tools/tiktok-shadowban-checker", "channel"),
-    ("Instagram Reels non-follower reach & Explore signal", "https://www.getsocialora.com/tools/instagram-shadowban-checker", "channel"),
-    ("How to check silent Instagram profile visitors via Insights", "https://www.getsocialora.com/tools/who-viewed-my-instagram-profile", "channel"),
-    ("TikTok Live diamonds & gift coin payout math", "https://www.getsocialora.com/tools/tiktok-money-coins-calculator", "channel"),
-    ("Pricing brand deals & UGC sponsorships on Instagram", "https://www.getsocialora.com/tools/instagram-sponsorship-rate-calculator", "channel"),
-    ("Telegram channel CPM rates & search ranking keywords", "https://www.getsocialora.com/tools/telegram-channel-money-calculator", "channel"),
-    ("Testing early velocity on a new Instagram Reel", "https://www.getsocialora.com/free-instagram-views", "channel"),
-    ("Creator check-in: what is your current average view count vs 30 days ago?", "https://www.getsocialora.com/tools/tiktok-shadowban-checker", "group"),
+    ("TikTok 200-view jail & 3-second retention hook math", "https://www.getsocialora.com/tools/tiktok-shadowban-checker", "channel"),
+    ("Instagram Reels non-follower reach & Explore distribution signals", "https://www.getsocialora.com/tools/instagram-shadowban-checker", "channel"),
+    ("How to spot silent Instagram profile visitors using Insights ratios", "https://www.getsocialora.com/tools/who-viewed-my-instagram-profile", "channel"),
+    ("TikTok Live diamonds & gift coin payout breakdown for creators", "https://www.getsocialora.com/tools/tiktok-money-coins-calculator", "channel"),
+    ("How to price Instagram Reels brand deals & UGC packages in 2026", "https://www.getsocialora.com/tools/instagram-sponsorship-rate-calculator", "channel"),
+    ("Telegram channel CPM rates & how to rank in Telegram global search", "https://www.getsocialora.com/tools/telegram-channel-money-calculator", "channel"),
+    ("Testing early view velocity on a fresh Instagram Reel upload", "https://www.getsocialora.com/free-instagram-views", "channel"),
+    ("Creator check-in: what is your current average Reel/TikTok view count vs last month?", "https://www.getsocialora.com/tools/tiktok-shadowban-checker", "group"),
 ]
 
 
@@ -469,16 +471,16 @@ def auto_refill_queue_with_ai(db, api_key, now):
         medium = 'channel' if target == 'channel' else 'group'
         tracked_url = f"{url}?utm_source=telegram&utm_medium={medium}&utm_campaign={post_id}"
         prompt = (
-            f"You are the senior growth lead at Socialora (@SocialoraOfficial / getsocialora.com).\n"
-            f"Write one authentic, highly engaging English Telegram {target} post for creators about: {topic}.\n"
-            f"Style & Quality Guidelines:\n"
-            f"1. Hook: Start with a punchy, relatable creator problem or 2026 algorithm fact (not generic hello).\n"
-            f"2. Value: Give a concrete, actionable benchmark or diagnostic tip (e.g., watch time %, hook retention, Explore signal).\n"
-            f"3. Formatting: Clean paragraph spacing with 2 to 4 tasteful, professional emojis (e.g. 📊, ⚡, 🔍, 💡) to make it visually engaging — no emoji spam, never a dry wall of text.\n"
-            f"4. Tone: Genuine, expert, creator-to-creator. Never use robotic clichés, corporate jargon, or fake promises ('100% safe', 'guaranteed growth').\n"
-            f"5. Length: 200 to 480 characters.\n"
-            f"6. Include this exact link naturally at the end: {tracked_url}\n"
-            f"7. Output ONLY the ready-to-post text."
+            f"You are the Editorial Director at Socialora (@SocialoraOfficial / https://www.getsocialora.com).\n"
+            f"Write one ultra-authentic, high-retention English Telegram {target} post for creators about: {topic}.\n\n"
+            f"Master Copywriting & Brand Rules:\n"
+            f"1. Scroll-Stopping Hook: Open with a specific, relatable creator scenario or a sharp 2026 algorithm observation (never start with 'Hey creators', 'Did you know', or generic intros).\n"
+            f"2. Concrete Mini-Framework: Share a real, testable metric or step-by-step fix (e.g., 'If your FYP share drops below 10%, check...', or 'Compare 24h Story views to 7-day Profile Visits...').\n"
+            f"3. Visual Rhythm & Emojis: Use clean 1-2 sentence paragraphs and 2 to 4 well-placed, tasteful emojis (📊, ⚡, 🔍, 💡, 🎯) to guide the eye — never a dry wall of text, never spammy emoji strings.\n"
+            f"4. Zero AI/Robotic Tone: Ban words like 'unleash', 'skyrocket', 'game-changer', 'delve', 'elevate', '100% safe', 'never drops', or 'guaranteed followers'. Write like a real creator strategist.\n"
+            f"5. Searchable Keywords: Naturally weave in 1-2 terms creators search on Telegram (like TikTok shadowban, Instagram Reels reach, creator calculator).\n"
+            f"6. Soft, Helpful Call-to-Action: Transition naturally into our free tool and place this exact URL on the final line:\n{tracked_url}\n"
+            f"7. Length: 240 to 520 characters. Output ONLY the final post text."
         )
         try:
             raw = call_gemini(api_key, prompt)
