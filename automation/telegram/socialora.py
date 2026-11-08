@@ -82,7 +82,7 @@ class Telegram:
     def call(self, method, payload=None):
         # This allowlist deliberately excludes webhook mutation and destructive methods.
         if method not in {'getMe', 'getChat', 'getChatMember', 'getChatMemberCount',
-                          'getWebhookInfo', 'getUpdates', 'sendMessage'}:
+                          'getWebhookInfo', 'getUpdates', 'sendMessage', 'setChatDescription', 'pinChatMessage'}:
             raise SafeError('Desteklenmeyen Telegram işlemi.')
         req = urllib.request.Request('https://api.telegram.org/bot' + self.token + '/' + method,
                                      data=json.dumps(payload or {}).encode(),
@@ -149,6 +149,7 @@ def connect():
           received_at INTEGER NOT NULL, replied_at INTEGER, note TEXT NOT NULL DEFAULT '',
           UNIQUE(chat_id, message_id));
     ''')
+    db.execute("UPDATE inbox SET status='ignored',note='Channel forward/service sender.' WHERE status='pending' AND (sender IN ('Telegram','GroupAnonymousBot','Channel_Bot') OR text LIKE '%utm_source=telegram%')")
     db.commit()
     (STATE / 'queue.sqlite3').chmod(0o600)
     return db
@@ -306,6 +307,8 @@ def consume_updates(db, api, now):
             sender_username = (sender_info.get('username') or '').lower()
             if sender_info.get('is_bot') is True or sender_username in {BOT, 'telegram', 'channelsupportbot'}:
                 continue
+            if msg.get('is_automatic_forward') or msg.get('sender_chat'):
+                continue
             # Also ignore forwarded messages from our own channel
             forward_from_chat = msg.get('forward_from_chat') or {}
             if forward_from_chat.get('username', '').lower() in {'socialoraofficial', 'socialorachat'}:
@@ -350,7 +353,38 @@ def validate_reply_text(text, campaign_id):
     return text
 
 
+EMOJI_RE = re.compile('[\U0001F000-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF\uFE0F\u200D]')
+
+
+def humanize_reply(text):
+    """Group replies read like a person typing: no emoji, markdown, or dash flourishes."""
+    text = EMOJI_RE.sub('', text)
+    text = re.sub(r'[*_`#]+', '', text).replace('\u2014', ',').replace('\u2013', '-')
+    text = re.sub(r'[!]{2,}', '!', text)
+    return re.sub(r'[ \t]{2,}', ' ', text).strip()
+
+
+def render_html(text):
+    """Show long tracked site URLs as short clickable text; the tracking stays in the href."""
+    import html as _html
+    out, last = [], 0
+    for m in re.finditer(r'https?://[^\s]+', text):
+        out.append(_html.escape(text[last:m.start()], quote=False))
+        raw = m.group(0).rstrip('.,)')
+        tail = m.group(0)[len(raw):]
+        u = urllib.parse.urlsplit(raw)
+        if u.netloc in {'www.getsocialora.com', 'getsocialora.com'}:
+            label = 'getsocialora.com' + (u.path.rstrip('/') or '')
+            out.append('<a href="' + _html.escape(raw, quote=True) + '">' + _html.escape(label, quote=False) + '</a>' + _html.escape(tail, quote=False))
+        else:
+            out.append(_html.escape(m.group(0), quote=False))
+        last = m.end()
+    out.append(_html.escape(text[last:], quote=False))
+    return ''.join(out)
+
+
 def sanitize_reply_text(text, campaign_id):
+    text = humanize_reply(text)
     def replace_url(m):
         url = m.group(0)
         u = urllib.parse.urlsplit(url)
@@ -367,15 +401,12 @@ def sanitize_reply_text(text, campaign_id):
 
 def call_gemini(api_key, prompt):
     models = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-2.0-flash']
-    payload = json.dumps({
-        'contents': [{'parts': [{'text': prompt}]}],
-        'generationConfig': {
-            'temperature': 0.7,
-            'maxOutputTokens': 250,
-        }
-    }).encode('utf-8')
     last_error = None
     for model in models:
+        config = {'temperature': 0.8, 'maxOutputTokens': 700}
+        if '2.5' in model:
+            config['thinkingConfig'] = {'thinkingBudget': 0}
+        payload = json.dumps({'contents': [{'parts': [{'text': prompt}]}], 'generationConfig': config}).encode('utf-8')
         url = f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent'
         req = urllib.request.Request(url, data=payload, headers={
             'Content-Type': 'application/json',
@@ -405,7 +436,7 @@ def process_inbox_with_ai(db, api, api_key, now, min_delay=120):
     if (STATE / 'PAUSED').exists():
         return False
     # Human delay: wait at least min_delay seconds after the message arrived so it feels like a real person typing
-    row = db.execute("SELECT * FROM inbox WHERE status='pending' AND directed=1 AND (? - received_at >= ?) ORDER BY update_id ASC LIMIT 1", (now, min_delay)).fetchone()
+    row = db.execute("SELECT * FROM inbox WHERE status='pending' AND directed=1 AND (? - received_at >= ? + (CASE WHEN ?>0 THEN update_id % 60 ELSE 0 END)) ORDER BY update_id ASC LIMIT 1", (now, min_delay, min_delay)).fetchone()
     if not row:
         return False
     update_id = row['update_id']
@@ -417,21 +448,25 @@ def process_inbox_with_ai(db, api, api_key, now, min_delay=120):
         f"- TikTok Shadowban Checker: https://www.getsocialora.com/tools/tiktok-shadowban-checker\n"
         f"- Instagram Shadowban Checker: https://www.getsocialora.com/tools/instagram-shadowban-checker\n"
         f"- Who Viewed My Instagram Profile: https://www.getsocialora.com/tools/who-viewed-my-instagram-profile\n"
-        f"- Crypto payments: Cryptos are accepted at checkout on getsocialora.com (USDT, BTC, ETH, etc. via CoinGate/NowPayments), instant order processing.\n"
-        f"- Order support: info@getsocialora.com\n"
+        f"- Order page: https://www.getsocialora.com/order\n"
+        f"- FAQ: https://www.getsocialora.com/faq\n"
         f"- Free Creator Tools: https://www.getsocialora.com/tools\n\n"
-        f"STRICT RULES FOR YOUR REPLY:\n"
-        f"1. Zero emojis. Absolutely NO emojis in your reply. Real human support in chat writes plain text.\n"
-        f"2. Zero marketing/robotic fluff. Never say 'Hey there!', 'Great question!', 'We are thrilled', 'Unlock', 'Game-changer', 'Skyrocket'.\n"
-        f"3. Speak completely naturally like an experienced tech/growth specialist typing a quick, helpful response on their phone.\n"
-        f"4. Directly answer what they asked in 1 to 3 concise, clear sentences.\n"
-        f"5. If they asked about crypto or payment, explain clearly that crypto is available directly at checkout on getsocialora.com and safe.\n"
-        f"6. Output ONLY the plain text reply. Nothing else."
+        f"Verified payment facts (the only ones you may state): the site takes crypto. On the order page you can pay automatically and choose your coin at checkout, or pay manually with USDT (TRON TRC20, BNB Smart Chain, Solana), USDC (Ethereum) or Bitcoin; the page shows the exact address and network. Send only the matching coin on the matching network. Order status: the Track page. Private order help: info@getsocialora.com.\n"
+        f"Never invent prices, delivery times, results, guarantees or policies. If you are not sure, say you are not sure and point to info@getsocialora.com or the FAQ.\n\n"
+        f"HOW TO WRITE:\n"
+        f"- Plain text like a real person typing in a chat. No emojis, no bullet lists, no bold, no hashtags, no dashes for effect.\n"
+        f"- No greeting formula or praise ('Hey there', 'Great question', 'Happy to help'). Start with the answer.\n"
+        f"- Answer the exact thing they asked, in 1 to 3 short sentences, in their language level. If they wrote in another language, answer in that language.\n"
+        f"- Add a link only if it truly helps them take the next step, and never more than one.\n"
+        f"- Do not ask for order numbers, emails or payment details in public. Do not end with a marketing question.\n"
+        f"- Output ONLY the reply text."
     )
     try:
         raw_reply = call_gemini(api_key, prompt)
     except SafeError as e:
         LOG.warning('gemini_error: %s', e)
+        return False
+    if len(raw_reply.strip()) < 15:
         return False
     clean = sanitize_reply_text(raw_reply, campaign_id)
     try:
@@ -440,6 +475,9 @@ def process_inbox_with_ai(db, api, api_key, now, min_delay=120):
         return True
     except SafeError as e:
         LOG.warning('reply_error: %s', e)
+        with db:
+            db.execute("UPDATE inbox SET note=note||'x' WHERE update_id=? AND status='pending'", (update_id,))
+            db.execute("UPDATE inbox SET status='failed' WHERE update_id=? AND status='pending' AND length(note)>=3", (update_id,))
         return False
 
 
@@ -534,7 +572,7 @@ def reply_to_inbox(db, api, update_id, text, now=None):
     try:
         sent = api.call('sendMessage', {
             'chat_id': chat_id,
-            'text': clean_text,
+            'text': render_html(clean_text), 'parse_mode': 'HTML',
             'reply_parameters': {'message_id': row['message_id']},
             'link_preview_options': {'is_disabled': True},
             'disable_notification': False,
@@ -589,7 +627,7 @@ def publish_one(db, api, now):
     if changed != 1:
         return False
     try:
-        sent = api.call('sendMessage', {'chat_id': chat_id, 'text': post['text'],
+        sent = api.call('sendMessage', {'chat_id': chat_id, 'text': render_html(post['text']), 'parse_mode': 'HTML',
                                       'link_preview_options': {'is_disabled': True},
                                       'disable_notification': False})
         if not isinstance(sent, dict) or not isinstance(sent.get('message_id'), int) or sent['message_id'] <= 0 or sent.get('chat', {}).get('id') != chat_id:
@@ -703,11 +741,38 @@ def doctor():
         print('AI/API kullanımı: yok (ücretli/otomatik AI yanıtı kapalı). Kişisel Telegram oturumu: kullanılmıyor.')
 
 
+PROFILE = {
+    'channel': 'Free creator tools and practical fixes for TikTok, Instagram and Telegram growth: shadowban checks, reach and views problems, money calculators. 5 short useful posts a day. Questions: @SocialoraChat. Tools: getsocialora.com/tools',
+    'group': 'Creator chat: ask why your TikTok views are stuck, why Reels get no reach, shadowban questions, pricing and payouts. Real answers, no spam. Free tools: getsocialora.com/tools',
+}
+PINNED = ('Welcome. This group is for creators with a specific problem: stuck views, no Reels reach, a suspected shadowban, '
+          'how to price a brand deal.\n\nPost your platform, what you tried and your rough numbers, and we will reply with what to check next. '
+          'No spam or links to other channels please.\n\nFree checkers and calculators: https://www.getsocialora.com/tools?utm_source=telegram&utm_medium=group&utm_campaign=pinned_welcome\n'
+          'Order questions: info@getsocialora.com (never post payment details here).')
+
+
+def optimize_profile(api):
+    for target, text in PROFILE.items():
+        chat_id = verify(api, target)
+        try:
+            api.call('setChatDescription', {'chat_id': chat_id, 'description': text[:255]})
+            print(f'{TARGETS[target]}: açıklama güncellendi.')
+        except TelegramError as err:
+            print(f'{TARGETS[target]}: açıklama güncellenemedi (kod {err.code}); botta "Change info" yetkisi gerekli.')
+    chat_id = verify(api, 'group')
+    try:
+        sent = api.call('sendMessage', {'chat_id': chat_id, 'text': render_html(PINNED), 'parse_mode': 'HTML', 'link_preview_options': {'is_disabled': True}})
+        api.call('pinChatMessage', {'chat_id': chat_id, 'message_id': sent['message_id'], 'disable_notification': True})
+        print('Grup karşılama mesajı gönderildi ve sabitlendi.')
+    except TelegramError as err:
+        print(f'Sabit mesaj tamamlanamadı (kod {err.code}); botta "Pin messages" yetkisi gerekli.')
+
+
 def main():
     os.umask(0o077)
     parser = argparse.ArgumentParser(description='Socialora Telegram — yalnızca kendi kanal/grubuna yayın ve grup kutusu')
     sub = parser.add_subparsers(dest='command', required=True)
-    for command in ['setup', 'set-gemini-key', 'doctor', 'status', 'pause', 'run', 'tick', 'report', 'check-content', 'poll']:
+    for command in ['setup', 'set-gemini-key', 'doctor', 'status', 'pause', 'run', 'tick', 'report', 'check-content', 'poll', 'optimize-profile']:
         sub.add_parser(command)
     inbox_cmd = sub.add_parser('inbox')
     inbox_cmd.add_argument('--all', action='store_true')
@@ -742,6 +807,9 @@ def main():
         return
     if args.command == 'doctor':
         doctor()
+        return
+    if args.command == 'optimize-profile':
+        optimize_profile(Telegram(load_config()['bot_token']))
         return
     if args.command in {'preview', 'check-content'}:
         posts = validate_posts(json.loads(Path(getattr(args, 'file', ROOT / 'content.json')).read_text()))

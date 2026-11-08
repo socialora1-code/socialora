@@ -67,3 +67,11 @@ Hazır olmayanlar: telefon kurulumu/canlı paylaşım/ekran kapalı test, gelen 
 İlk iş: mevcut paketi/testleri doğrula, ardından aynı bot için kalıcı update_id/mesaj tekrar kontrolü olan tek gelen mesaj tüketicisini hazırla. Yayın kodunu baştan yazma. Mevcut webhook durumu yeniden kontrol edilmeli; getUpdates ancak boş webhook ile kullanılabilir. Ücretsiz API erişimi kurulana kadar AI yanıtını kapalı tut; ücretli billing açma. Anahtarları chatten isteme. Telefon henüz erişilebilir değilse ondan bağımsız kod/kurulum hazırlıklarını tamamla; eve gidildiğinde yalnızca gerekli cihaz ve güvenli anahtar adımlarını tarif et.
 
 Antigravity'nin web çalışma ortamı sürekli açık bir sunucu olarak kabul edilmez; kod hazır olduğunda işi evdeki Termux servisi yürütür. Yeni sohbet açılması tek başına zamanlayıcı veya telefon servisi başlatmaz. Bir dosyaya yönerge eklenmiş olmasını Antigravity'nin okuduğuna dair kanıt sayma; yeni sohbette bu AGENTS.md dosyası açıkça okutulmalıdır.
+
+## Güncel canlı kurallar (8 Kasım 2026, kullanıcı talebi)
+
+- Telefon canlı çalışıyor; Gemini ücretsiz kota anahtarı telefonda kayıtlı. Kullanıcıya her mesajda yalnızca tek adım ve tek satır Termux komutu ver; anahtar/token isteme.
+- Gruptaki üye yanıtları: emojisiz, markdownsuz, kısa, düz insan dili; selamlama/övgü kalıbı yok; 2-3 dakika gecikmeli. Yalnızca doğrulanmış bilgi (ödeme: sitede kripto var, bkz. lib/catalog.ts PAYMENT_METHODS). Uydurma fiyat/süre/garanti yok. Kanal gönderilerinde emoji serbest.
+- Gönderi/yanıtlardaki site linkleri Telegram'da kısa metin olarak görünür (HTML anchor), UTM href içinde kalır.
+- Kanaldan gruba otomatik düşen mesajlar (@Telegram) yok sayılır.
+- Profil/Bio ve sabit mesaj: `socialora optimize-profile` (telefonda tek sefer).
