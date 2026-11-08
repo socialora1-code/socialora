@@ -88,7 +88,7 @@ class Telegram:
     def call(self, method, payload=None):
         # This allowlist deliberately excludes webhook mutation and destructive methods.
         if method not in {'getMe', 'getChat', 'getChatMember', 'getChatMemberCount',
-                          'getWebhookInfo', 'getUpdates', 'sendMessage', 'setChatDescription', 'pinChatMessage'}:
+                          'getWebhookInfo', 'getUpdates', 'sendMessage', 'setChatTitle', 'setChatDescription', 'pinChatMessage'}:
             raise SafeError('Desteklenmeyen Telegram işlemi.')
         req = urllib.request.Request('https://api.telegram.org/bot' + self.token + '/' + method,
                                      data=json.dumps(payload or {}).encode(),
@@ -883,11 +883,15 @@ def doctor():
         print('AI/API kullanımı: yok (ücretli/otomatik AI yanıtı kapalı). Kişisel Telegram oturumu: kullanılmıyor.')
 
 
-PROFILE = {
-    'channel': 'Instagram, TikTok and Telegram growth: followers, views and likes services plus free tools like shadowban checkers and money calculators. Practical tips every day. Questions: @SocialoraChat. getsocialora.com',
-    'group': 'Creator chat for Instagram, TikTok and Telegram growth. Ask about stuck views, low reach, shadowban, pricing or orders. Real answers, no spam. Services and free tools: getsocialora.com',
+TITLES = {
+    'channel': 'Socialora | Instagram, TikTok & Telegram Growth',
+    'group': 'Socialora Chat | Creator Growth & Free Tools',
 }
-PINNED = ('Welcome. Socialora provides Instagram, TikTok and Telegram followers, views and likes services, plus free creator diagnostic tools.\n\n'
+PROFILE = {
+    'channel': 'Instagram, TikTok, YouTube, X and Telegram growth: followers, views and likes services plus free tools like shadowban checkers and money calculators. Practical tips every day. Questions: @SocialoraChat. getsocialora.com',
+    'group': 'Creator chat for Instagram, TikTok, YouTube, X and Telegram growth. Ask about stuck views, low reach, shadowban, pricing or orders. Real answers, no spam. Services and free tools: getsocialora.com',
+}
+PINNED = ('Welcome. Socialora provides Instagram, TikTok, YouTube, X and Telegram followers, views and likes services, plus free creator diagnostic tools.\n\n'
           'If you have stuck views, low Reels reach, a shadowban question, or a pricing question, post your platform and rough numbers here and we will reply with what to check next.\n\n'
           'Services & order page: https://www.getsocialora.com/order?utm_source=telegram&utm_medium=group&utm_campaign=pinned_welcome\n'
           'Free checkers and calculators: https://www.getsocialora.com/tools?utm_source=telegram&utm_medium=group&utm_campaign=pinned_welcome\n'
@@ -895,6 +899,13 @@ PINNED = ('Welcome. Socialora provides Instagram, TikTok and Telegram followers,
 
 
 def optimize_profile(api):
+    for target, title in TITLES.items():
+        chat_id = verify(api, target)
+        try:
+            api.call('setChatTitle', {'chat_id': chat_id, 'title': title[:128]})
+            print(f'{TARGETS[target]}: başlık güncellendi -> {title}')
+        except TelegramError as err:
+            print(f'{TARGETS[target]}: başlık güncellenemedi (kod {err.code}); botta "Change info" yetkisi gerekli.')
     for target, text in PROFILE.items():
         chat_id = verify(api, target)
         try:
@@ -923,6 +934,9 @@ def main():
     sub = parser.add_subparsers(dest='command', required=True)
     for command in ['setup', 'set-gemini-key', 'doctor', 'status', 'pause', 'run', 'tick', 'report', 'check-content', 'poll', 'optimize-profile']:
         sub.add_parser(command)
+    rep = sub.add_parser('replace-pending')
+    rep.add_argument('--file', default=str(ROOT / 'content.json'))
+    rep.add_argument('--start', default=dt.datetime.now(TZ).date().isoformat())
     inbox_cmd = sub.add_parser('inbox')
     inbox_cmd.add_argument('--all', action='store_true')
     reply_cmd = sub.add_parser('reply')
@@ -977,6 +991,13 @@ def main():
                 if first:
                     pause('İlk içerik yüklendi; yayın başlangıcı onayı bekleniyor.')
                 print('Yeni içerik:', import_content(db, args.file, args.start), '— henüz yayınlanmadı.')
+        elif args.command == 'replace-pending':
+            with worker_lock():
+                with db:
+                    removed = db.execute("DELETE FROM posts WHERE status IN ('pending','expired')").rowcount
+                    cleared_inbox = db.execute("UPDATE inbox SET status='ignored',note='Cleared stale pending item on upgrade.' WHERE status='pending' AND length(note)>=2").rowcount
+                added = import_content(db, args.file, args.start)
+                print(f'Eski bekleyen {removed} gönderi temizlendi; {added} yeni v2 gönderi eklendi (temizlenen takılı inbox={cleared_inbox}).')
         elif args.command == 'resume':
             with worker_lock():
                 recover(db)
