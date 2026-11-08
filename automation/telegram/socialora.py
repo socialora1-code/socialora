@@ -333,13 +333,97 @@ def validate_reply_text(text, campaign_id):
         u = urllib.parse.urlsplit(raw)
         if u.scheme != 'https' or u.username or u.password or u.port:
             raise SafeError('Yanıt bağlantısı güvenli değil.')
-        if u.netloc == 'www.getsocialora.com':
+        if u.netloc in {'www.getsocialora.com', 'getsocialora.com'}:
             query = urllib.parse.parse_qs(u.query)
             if query.get('utm_source') != ['telegram'] or query.get('utm_medium') != ['group'] or query.get('utm_campaign') != [campaign_id]:
                 raise SafeError(f'Site bağlantısında takip etiketleri eksik (utm_source=telegram&utm_medium=group&utm_campaign={campaign_id}).')
         elif u.netloc != 't.me' or u.path not in {'/SocialoraOfficial', '/SocialoraChat'} or u.query:
             raise SafeError('Yanıtta beklenmeyen dış bağlantı var.')
     return text
+
+
+def sanitize_reply_text(text, campaign_id):
+    def replace_url(m):
+        url = m.group(0)
+        u = urllib.parse.urlsplit(url)
+        if u.netloc in {'getsocialora.com', 'www.getsocialora.com'}:
+            qs = urllib.parse.parse_qs(u.query)
+            qs['utm_source'] = ['telegram']
+            qs['utm_medium'] = ['group']
+            qs['utm_campaign'] = [campaign_id]
+            new_query = urllib.parse.urlencode(qs, doseq=True)
+            return urllib.parse.urlunsplit((u.scheme or 'https', 'www.getsocialora.com', u.path or '/', new_query, ''))
+        return url
+    return re.sub(r'https?://[^\s]+', replace_url, text.strip())
+
+
+def call_gemini(api_key, prompt):
+    models = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-2.0-flash']
+    payload = json.dumps({
+        'contents': [{'parts': [{'text': prompt}]}],
+        'generationConfig': {
+            'temperature': 0.7,
+            'maxOutputTokens': 250,
+        }
+    }).encode('utf-8')
+    last_error = None
+    for model in models:
+        url = f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent'
+        req = urllib.request.Request(url, data=payload, headers={
+            'Content-Type': 'application/json',
+            'x-goog-api-key': api_key,
+        }, method='POST')
+        try:
+            with urllib.request.urlopen(req, timeout=15) as res:
+                data = json.loads(res.read(1024 * 1024))
+                candidates = data.get('candidates') or []
+                if candidates:
+                    parts = candidates[0].get('content', {}).get('parts', [])
+                    if parts and parts[0].get('text'):
+                        return parts[0]['text'].strip()
+        except urllib.error.HTTPError as err:
+            last_error = err
+            if err.code == 404:
+                continue
+            raise SafeError(f'Gemini API hatası (kod {err.code}).') from None
+        except Exception:
+            raise SafeError('Gemini API bağlantı hatası.') from None
+    if last_error:
+        raise SafeError(f'Gemini API hatası (kod {last_error.code}).')
+    raise SafeError('Gemini API yanıt vermedi.')
+
+
+def process_inbox_with_ai(db, api, api_key, now):
+    if (STATE / 'PAUSED').exists():
+        return False
+    row = db.execute("SELECT * FROM inbox WHERE status='pending' AND directed=1 ORDER BY update_id ASC LIMIT 1").fetchone()
+    if not row:
+        return False
+    update_id = row['update_id']
+    campaign_id = f'reply_u{update_id}'
+    prompt = (
+        f"You are the community manager for Socialora (@SocialoraChat / getsocialora.com).\n"
+        f"A Telegram group member asked:\n\"{row['text']}\"\n\n"
+        f"Instructions:\n"
+        f"1. Concise, natural, helpful English response (2 to 4 sentences).\n"
+        f"2. Give concrete, actionable advice on social media growth, reach, or diagnostic steps.\n"
+        f"3. You may mention our free diagnostic tools on getsocialora.com/tools (shadowban checker, coin calculator, rate calculator) if relevant.\n"
+        f"4. Never promise 100% safety or fake guarantees, and never ask for order IDs, passwords, or personal details.\n"
+        f"5. Output ONLY the reply text, no greeting or markdown headings."
+    )
+    try:
+        raw_reply = call_gemini(api_key, prompt)
+    except SafeError as e:
+        LOG.warning('gemini_error: %s', e)
+        return False
+    clean = sanitize_reply_text(raw_reply, campaign_id)
+    try:
+        reply_to_inbox(db, api, update_id, clean, now)
+        LOG.info('ai_replied update_id=%d', update_id)
+        return True
+    except SafeError as e:
+        LOG.warning('reply_error: %s', e)
+        return False
 
 
 def reply_to_inbox(db, api, update_id, text, now=None):
@@ -470,14 +554,33 @@ def report(db, now=None):
     previous = f"Dün: kanal {yesterday['channel']}; grup {yesterday['members']}" if yesterday else 'Dünkü üye sayısı: veri yok'
     sent = db.execute("SELECT COUNT(*) FROM posts WHERE status='sent' AND sent_at>=?", (midnight,)).fetchone()[0]
     status = 'DURAKLATILDI' if (STATE / 'PAUSED').exists() else 'YAYIN İZNİ AÇIK'
+    config = {}
+    try:
+        config = load_config()
+    except Exception:
+        pass
+    ai_status = 'Gemini Flash aktif (ücretsiz kota)' if config.get('gemini_api_key') else '0 (otomatik AI kapalı)'
     text = '\n'.join([f'Socialora — {today} — {status}', members, previous,
                       f'Bugün yayınlanan: {sent}; bekleyen: {counts.get("pending", 0)}',
                       f'Belirsiz: {counts.get("unknown", 0)}; hatalı: {counts.get("failed", 0)}; süresi geçen: {counts.get("expired", 0)}',
                       'Site tıklaması / satış / en iyi gönderi: analitik verisi yok',
-                      f'Grup kutusu: bekleyen={inbox_counts.get("pending", 0)}, yanıtlanan={inbox_counts.get("replied", 0)}; AI/API çağrısı: 0 (otomatik AI kapalı)',
+                      f'Grup kutusu: bekleyen={inbox_counts.get("pending", 0)}, yanıtlanan={inbox_counts.get("replied", 0)}; AI/API çağrısı: {ai_status}',
                       'Plan: gelen grup sorularını kontrol et; kuyruk bitmeden yeni haftalık içerik ekle.'])
     atomic_text(STATE / 'report.txt', text + '\n')
     return text
+
+
+def set_gemini_key():
+    config = load_config()
+    if not sys.stdin.isatty():
+        raise SafeError('Anahtar yalnızca telefonun etkileşimli terminalinde girilebilir.')
+    print('Gemini API anahtarını girin (AQ... veya AIzaSy...). Yazarken ekranda görünmez.')
+    key = getpass.getpass('Gemini API Key: ').strip()
+    if not (key.startswith('AQ.') or key.startswith('AIzaSy')) or len(key) < 20:
+        raise SafeError('Geçersiz Gemini API anahtarı formatı.')
+    config['gemini_api_key'] = key
+    atomic_text(CONFIG, json.dumps(config, indent=2) + '\n')
+    print('Gemini API anahtarı başarıyla kaydedildi. Ücretsiz AI grup yanıtları aktif.')
 
 
 def setup():
@@ -502,21 +605,25 @@ def setup():
 
 
 def doctor():
-    api = Telegram(load_config()['bot_token'])
+    config = load_config()
+    api = Telegram(config['bot_token'])
     for target in TARGETS:
         chat_id = verify(api, target)
         count = api.call('getChatMemberCount', {'chat_id': chat_id})
         print(f'{TARGETS[target]}: kimlik ve yayın yetkisi doğru; üye={count}')
     webhook_url = bool(api.call('getWebhookInfo').get('url'))
     print('Mevcut webhook:', webhook_url, '(değiştirilmedi; boşsa getUpdates ile grup okuma açık)')
-    print('AI/API kullanımı: yok (ücretli/otomatik AI yanıtı kapalı). Kişisel Telegram oturumu: kullanılmıyor.')
+    if config.get('gemini_api_key'):
+        print('AI/API kullanımı: Gemini Flash aktif (ücretsiz kota; otomatik grup yanıtları açık).')
+    else:
+        print('AI/API kullanımı: yok (ücretli/otomatik AI yanıtı kapalı). Kişisel Telegram oturumu: kullanılmıyor.')
 
 
 def main():
     os.umask(0o077)
     parser = argparse.ArgumentParser(description='Socialora Telegram — yalnızca kendi kanal/grubuna yayın ve grup kutusu')
     sub = parser.add_subparsers(dest='command', required=True)
-    for command in ['setup', 'doctor', 'status', 'pause', 'run', 'tick', 'report', 'check-content', 'poll']:
+    for command in ['setup', 'set-gemini-key', 'doctor', 'status', 'pause', 'run', 'tick', 'report', 'check-content', 'poll']:
         sub.add_parser(command)
     inbox_cmd = sub.add_parser('inbox')
     inbox_cmd.add_argument('--all', action='store_true')
@@ -542,9 +649,11 @@ def main():
     action = resolve.add_mutually_exclusive_group(required=True)
     action.add_argument('--sent-message-id', type=int)
     action.add_argument('--skip', action='store_true')
-    args = parser.parse_args()
     if args.command == 'setup':
         setup()
+        return
+    if args.command == 'set-gemini-key':
+        set_gemini_key()
         return
     if args.command == 'doctor':
         doctor()
@@ -634,7 +743,7 @@ def main():
             with worker_lock('runner.lock'):
                 with worker_lock():
                     recover(db)
-                last_snapshot_attempt, last_report, last_poll, last_backup = 0, 0, 0, ''
+                last_snapshot_attempt, last_report, last_poll, last_backup, last_ai = 0, 0, 0, '', 0
                 while True:
                     now = int(time.time())
                     with worker_lock():
@@ -645,6 +754,18 @@ def main():
                                 consume_updates(db, api, now)
                             except SafeError:
                                 LOG.warning('inbox_poll_unavailable')
+                        cfg = {}
+                        try:
+                            cfg = load_config()
+                        except Exception:
+                            pass
+                        gemini_key = cfg.get('gemini_api_key')
+                        if gemini_key and (now - last_ai >= 30):
+                            last_ai = now
+                            try:
+                                process_inbox_with_ai(db, api, gemini_key, now)
+                            except Exception:
+                                LOG.warning('ai_reply_unavailable')
                     if now - last_snapshot_attempt >= 1800:
                         last_snapshot_attempt = now
                         try:

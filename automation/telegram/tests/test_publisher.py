@@ -379,6 +379,33 @@ class PublisherTests(unittest.TestCase):
         self.assertEqual(37, self.db.execute("SELECT COUNT(*) FROM posts WHERE status='sent'").fetchone()[0])
         self.assertEqual(37, sum(m == 'sendMessage' for m, p in api.calls))
 
+    def test_sanitize_reply_text_appends_utm_tags(self):
+        raw = "Check our free diagnostic tool at https://getsocialora.com/tools/tiktok-shadowban-checker to see if your account is restricted."
+        sanitized = app.sanitize_reply_text(raw, 'reply_u99')
+        self.assertIn('utm_source=telegram', sanitized)
+        self.assertIn('utm_medium=group', sanitized)
+        self.assertIn('utm_campaign=reply_u99', sanitized)
+        self.assertTrue(sanitized.startswith('Check our free diagnostic tool at https://www.getsocialora.com/tools/tiktok-shadowban-checker?'))
+
+    def test_process_inbox_with_ai_success(self):
+        updates = [{'update_id': 50, 'message': {'message_id': 700, 'chat': {'id': -1002},
+                                                  'from': {'id': 99, 'username': 'growth_seeker', 'is_bot': False},
+                                                  'text': 'How can I check if my TikTok is shadowbanned?'}}]
+        api = FakeTelegram(webhook_url='', updates=updates)
+        app.consume_updates(self.db, api, self.now)
+        row = self.db.execute('SELECT * FROM inbox WHERE update_id=50').fetchone()
+        self.assertEqual(1, row['directed'])
+        self.assertEqual('pending', row['status'])
+
+        with patch.object(app, 'call_gemini', return_value='You can test whether your account is restricted by searching your hashtag from an alt account or using our free tool: https://getsocialora.com/tools/tiktok-shadowban-checker'):
+            handled = app.process_inbox_with_ai(self.db, api, 'AQ.dummy_key_123456789012345', self.now)
+            self.assertTrue(handled)
+
+        updated_row = self.db.execute('SELECT * FROM inbox WHERE update_id=50').fetchone()
+        self.assertEqual('replied', updated_row['status'])
+        self.assertEqual(900, updated_row['reply_message_id'])
+        self.assertIn('utm_campaign=reply_u50', updated_row['reply_text'])
+
 
 if __name__ == '__main__':
     unittest.main()
