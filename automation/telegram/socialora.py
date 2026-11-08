@@ -649,6 +649,7 @@ def main():
     action = resolve.add_mutually_exclusive_group(required=True)
     action.add_argument('--sent-message-id', type=int)
     action.add_argument('--skip', action='store_true')
+    args = parser.parse_args()
     if args.command == 'setup':
         setup()
         return
