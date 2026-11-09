@@ -506,6 +506,7 @@ def call_gemini(api_key, prompt, db=None, now=None):
         record_gemini_attempt(db, now)
     models = discover_gemini_models(api_key)
     last_error = None
+    diag = []
     for model in models:
         config = {'temperature': 0.7, 'maxOutputTokens': 700}
         if '2.5' in model:
@@ -526,22 +527,29 @@ def call_gemini(api_key, prompt, db=None, now=None):
                         return parts[0]['text'].strip()
         except urllib.error.HTTPError as err:
             last_error = err
-            if err.code in {400, 404, 429, 500, 502, 503}:
-                continue
-            raise SafeError(f'Gemini API hatası (kod {err.code}).') from None
-        except Exception:
-            if db is not None:
-                set_gemini_cooldown(db, 120, now)
-            raise SafeError('Gemini API bağlantı hatası.') from None
+            detail = ''
+            try:
+                detail = str(json.loads(err.read(4096)).get('error', {}).get('message', ''))[:90]
+            except Exception:
+                pass
+            diag.append(f'{model}:{err.code} {detail}'.strip())
+            continue
+        except Exception as exc:
+            diag.append(f'{model}:{type(exc).__name__} {str(exc)[:60]}'.replace(api_key, '***'))
+            continue
+    _MODEL_CACHE['at'] = 0
+    if last_error is None and diag:
+        if db is not None:
+            set_gemini_cooldown(db, 120, now)
+        raise SafeError('Gemini bağlantı hatası: ' + ' | '.join(diag)[:300])
     if last_error is not None:
-        _MODEL_CACHE['at'] = 0
         if last_error.code == 429:
             if db is not None:
                 set_gemini_cooldown(db, 180, now)
             raise SafeError('Gemini API kota/hız sınırı (kod 429); 3dk geri çekilme uygulandı.') from None
         if last_error.code >= 500 and db is not None:
             set_gemini_cooldown(db, 180, now)
-        raise SafeError(f'Gemini API hatası (kod {last_error.code}).')
+        raise SafeError(f'Gemini API hatası (kod {last_error.code}): ' + ' | '.join(diag)[:300])
     raise SafeError('Gemini API yanıt vermedi.')
 
 
