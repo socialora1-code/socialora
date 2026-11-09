@@ -17,7 +17,9 @@ bash -n "$tmp/health-report.sh"
 cp "$tmp/auto-update.sh" "$HOME/.local/bin/socialora-auto-update"
 cp "$tmp/health-report.sh" "$HOME/.local/bin/socialora-health-report"
 chmod 700 "$HOME/.local/bin/socialora-auto-update" "$HOME/.local/bin/socialora-health-report"
-# Ensure the existing publisher is up; unlike installing, do not stop it.
+# Original installer leaves a runit "normally down" marker. Remove the
+# marker to allow reliable automatic restarts without touching queue/state.
+rm -f "$PREFIX/var/service/socialora-telegram/down"
 sv up "$PREFIX/var/service/socialora-telegram" || true
 sleep 4
 echo 'Service status:'
