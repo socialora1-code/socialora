@@ -53,7 +53,7 @@ once() {
 import json,sys,urllib.request,urllib.error
 data=json.load(open(sys.argv[1]))
 token=open(sys.argv[2]).read().strip()
-payload=json.dumps({'body':'Sanitized automated health snapshot (not live monitoring):\\n\\x60\\x60\\x60json\\n'+json.dumps(data,indent=2)+'\\n\\x60\\x60\\x60'}).encode()
+payload=json.dumps({'body':'Sanitized automated health snapshot (not live monitoring):'+chr(10)+chr(96)*3+'json'+chr(10)+json.dumps(data,indent=2)+chr(10)+chr(96)*3'}).encode()
 req=urllib.request.Request(sys.argv[3],data=payload,method='POST',headers={
  'Accept':'application/vnd.github+json','Content-Type':'application/json',
  'Authorization':'Bearer '+token,'User-Agent':'SocialoraHealth/1.0'})
