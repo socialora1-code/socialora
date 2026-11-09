@@ -597,6 +597,30 @@ def record_inbox_ai_failure(db, update_id, reason=''):
         db.execute("UPDATE inbox SET status='failed' WHERE update_id=? AND status='pending' AND length(note)>=3", (update_id,))
 
 
+def process_toolkit_commands(db, api, now):
+    """Reply to requested tools quickly, without Gemini or the human-chat delay."""
+    if (STATE / 'PAUSED').exists():
+        return False
+    # Only exact opted-in commands are answered. Normal questions keep their delay.
+    rows = db.execute(
+        "SELECT update_id, text FROM inbox WHERE status='pending' AND directed=1 "
+        "AND text LIKE '/%' ORDER BY received_at, update_id LIMIT 20"
+    ).fetchall()
+    for row in rows:
+        command = toolkit_command(row['text'])
+        if command is None:
+            continue
+        update_id = row['update_id']
+        try:
+            reply_to_inbox(db, api, update_id, toolkit_reply(command, f'reply_u{update_id}'), now)
+            LOG.info('toolkit_replied command=%s update_id=%d', command, update_id)
+            return True
+        except SafeError:
+            LOG.warning('toolkit_reply_unavailable')
+            return False
+    return False
+
+
 def process_inbox_with_ai(db, api, api_key, now, min_delay=120, verbose=False):
     if (STATE / 'PAUSED').exists():
         return False
@@ -1216,12 +1240,14 @@ def main():
                     now = int(time.time())
                     with worker_lock():
                         publish_one(db, api, now)
-                        if now - last_poll >= 60:
+                        if now - last_poll >= 20:
                             last_poll = now
                             try:
                                 consume_updates(db, api, now)
                             except SafeError:
                                 LOG.warning('inbox_poll_unavailable')
+                        # Tool commands are a separate opt-in fast lane, even without Gemini.
+                        process_toolkit_commands(db, api, now)
                         cfg = {}
                         try:
                             cfg = load_config()
@@ -1256,7 +1282,7 @@ def main():
                     atomic_text(STATE / 'heartbeat', str(now))
                     if args.command == 'tick':
                         break
-                    time.sleep(30)
+                    time.sleep(10)
         else:
             print(report(db))
             if args.command == 'status':
