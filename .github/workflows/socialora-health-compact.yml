@@ -1,0 +1,58 @@
+name: Socialora Health Report Compact
+on:
+  issue_comment:
+    types: [created]
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/socialora-health-compact.yml
+permissions:
+  issues: write
+concurrency:
+  group: socialora-health-issue-2
+  cancel-in-progress: false
+jobs:
+  consolidate:
+    if: >-
+      (github.event_name == 'push') ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.number == 2 &&
+       github.event.comment.user.login == 'socialora1-code')
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Keep only the latest sanitized device health report
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = 2;
+            const marker = 'Sanitized automated health snapshot';
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number, per_page: 100
+            });
+            const reports = comments
+              .filter(c => c.user?.login === 'socialora1-code' &&
+                           c.body?.startsWith(marker))
+              .sort((a, b) => a.id - b.id);
+            if (!reports.length) {
+              core.info('No phone health reports yet; nothing to compact.');
+              return;
+            }
+            const newest = reports[reports.length - 1];
+            const keeper = reports[0];
+            // Never invent device status or change its values; copy the actual latest report.
+            if (keeper.id !== newest.id && keeper.body !== newest.body) {
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: keeper.id, body: newest.body
+              });
+            }
+            // Preserve unrelated human comments and all issue history outside this one issue.
+            for (const item of reports.slice(1)) {
+              await github.rest.issues.deleteComment({
+                owner, repo, comment_id: item.id
+              });
+            }
+            core.info(`Health report compacted: ${reports.length} -> 1; most recent id ${newest.id}.`);
