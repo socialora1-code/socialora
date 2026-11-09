@@ -45,7 +45,7 @@ PY
   done
   # Documentation-only changes do not warrant restarting the publisher.
   if cmp -s "$tmp/socialora.py" "$APP/socialora.py"; then
-    printf '%s\\n' "$sha" > "$STATE/installed-github-sha"
+    printf '%s\n' "$sha" > "$STATE/installed-github-sha"
     log 'Code unchanged; service left running'
     return 0
   fi
