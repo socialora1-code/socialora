@@ -53,3 +53,39 @@ Bu liste hazırlık planıdır: katalog kaydı, ortaklık listesi, AI yanıtı v
 ## Haftalık editoryal brief
 
 Yeni paketi hazırlarken önce yayın kaydını, geçen haftanın metinlerini ve erişilebilir analitik sonuçlarını okuyun. Yeni paket için benzersiz `tg_v2_...` kimlikleri kullanın. Aynı giriş, örnek, konu sırası veya CTA'yı tekrar etmeyin. Yaklaşık yarı pratik ipucu, kalan ücretsiz araç/rehber ve az sayıda anlamlı soru. Fiyat, refill, müşteri sonucu veya kampanya varsa önce kaynak ve kullanıcı onayı gerekir. İngilizce kısa, açık, markaya uygun; Türkçe rapor yalnızca sahibine. İyileştirme önerisini ve dayandığı ölçümü kaydedin.
+
+
+## 9 Kasım 2026 — canlı durum ve 30 günlük organik büyüme işletim planı
+
+Bu bölüm önceki kurulum öncesi notlarından daha günceldir. 9 Kasım'da kullanıcı `socialora reply-now` komutunun iki grup mesajını başarıyla yanıtladığını doğruladı (`update_id=341189560` ve `341189569`). Bu, **iki yanıtın Telegram'a gönderildiğini** kanıtlar; gün boyu kesintisiz otomatik yanıtı, cevapların kalite kontrolünü, yeni üye kazanımını veya satışları kanıtlamaz. Telefonda kayıtlı SQLite durumu ana kaynaktır; GitHub commit'i tek başına kurulu sürümü göstermez.
+
+### Kuzey yıldızı: bot aktivitesi değil gerçek büyüme
+
+1. Her hafta: Telegram kaynaklı **doğrulanmış** site oturumları, ilgili hizmet sayfası geçişleri ve mümkünse ödeme/sipariş dönüşümü. Ölçüm yoksa `veri yok`.
+2. Gerçek katılım: yeni gerçek üyeler, birbirinden farklı gerçek katılımcıların özgün soruları ve faydalı konuşmalar. Mevcut bot ağırlıklı üye tabanı başarı metriği değildir.
+3. Kalite: özgün içerik, kullanıcı sorusuna uygun doğru yanıt, yanlış fiyat/garanti içermeyen iletişim, spam şikâyetinden kaçınma. Yayın sayısı tek başına KPI değildir.
+
+### Sürekli çalışan üç halka
+
+**1. Keşif / edinim:** Mevcut sitedeki Telegram davetleri kontrol edilir: ücretsiz araç sonucu, hizmet sayfası, sipariş sonrası ve ilgili rehber. Her yerde net fayda vaadi ve doğru hedef (kanal veya grup) kullanılmalı; ücretsiz izlenme için mevcut bir defalık davet akışı bozulmaz. Sadece organik ve opt-in davet. Telegram araması için başlık/bio/pin doğal anahtar kelimeleri içerir. Ücretsiz kanal katalogları doğrulanır; CAPTCHA geçme veya davetsiz mesaj otomasyonu yok. İş ortaklığı adayları ancak gerçek görüntülenme kanıtından sonra değerlendirilir; dış mesaj kullanıcı onayı olmadan atılmaz.
+
+**2. Tutundurma / güven:** Kanalda günde en fazla beş **kaliteli ve farklı** yayın (asla sayı doldurmak için değil): somut problem → hemen uygulanabilir çözüm → gerekirse ilgili link. İçerik karması başlangıç hipotezi: %50 uygulanabilir ipucu, %25 ücretsiz araç açıklaması, %15 kaynaklı hizmet eğitimi, %10 tartışma/SSS. Bu yüzdeler gözlenen performansa göre değişir. Grup gündeminde haftada yaklaşık iki özgün soru, kanaldan otomatik kopya yok. Gerçek sorulara bağlamlı, kısa, insan diliyle yanıt; emin olunmayan fiyat/teslimat/algoritma iddiaları yok; hassas müşteri verileri AI API'sine iletilmez. Yapay sohbet, sahte kullanıcı, toplu DM veya rastgele gruplara tanıtım yapılmaz. Robotik dil tespit edilirse otomatik yanıtı iyileştir; kullanıcıyı spam ile meşgul etme.
+
+**3. Dönüşüm / ölçüm:** Site bağlantılarının `utm_source=telegram`, `utm_medium=channel|group`, `utm_campaign=<benzersiz_gonderi_id>` parametreleri korunur. Bunlar yalnızca izleme etiketidir; oturum/satış analitiği kurulu olmalıdır. Her 7 günde kampanya bazlı oturumlar, ilgili sayfa etkileşimi, siparişler ve gerçek üye değişimi değerlendirilir. Kaynaklara göre yeni üyeler için Telegram yönetici arayüzündeki adlandırılmış davet bağlantıları ve mevcut erişim varsa kanal istatistikleri kullanılır. Bot API `getChatMemberCount` yalnız toplamı verir; gerçek insan sayısı veya bireysel gönderi görüntülenmesi sağlamaz.
+
+### Otonomi için öncelikli teknik işler (mevcut canlı motoru kırmadan)
+
+- **P0 / güvenilirlik:** Tek poller/worker, servis yeniden açılışı, Android ekran kilidi, pil istisnası, otomatik başlatma ve yedek testlerini gerçek telefonda ayrı doğrula. Telegram'a yanıt gönderilmesi, tüm bu kontrollerin geçtiği anlamına gelmez. 429 ve diğer Gemini API hatalarını günlükte anahtar sızdırmadan raporla; belirsiz Telegram gönderimini körlemesine tekrar deneme.
+- **P0 / içerik bitmesi:** Şu anki 37 öğelik `v2` kuyruğu yaklaşık 7 gün sürer ve otomatik sonsuz üretim yoktur. Günlük `status` raporunda önümüzdeki 72 saatte yeterli planlı içerik kalıp kalmadığı kontrol edilmeli. Eksilirse raporda açıkça belirtilmeli. Önceden gönderilmiş metinleri yeniden döndürme veya kontrolsüz AI içerik üretip yayınlama. Yeni haftalık paket benzersiz ID, kaynak kontrolü, editoryal doğrulama ve atomik içe aktarmayla hazırlanır; cihazdaki mevcut SQLite kuyruğu korunur.
+- **P1 / editoryal kontrol:** Haftada bir, yanıtlanan ve yok sayılan gerçek soruların *kişisel verisiz* konu özeti; yayınlanan son içeriklerin teması ve açılış cümleleri incelenir. Benzer format/CTA yinelenirse yeni pakette çeşitlendir. İçerik kategorisi ve haftalık gönderi dağılımını ayrıca raporla.
+- **P1 / ölçüm:** Site analitik erişimi sağlanırsa Telegram UTM oturumları ve sipariş dönüşümleri haftalık rapora eklenir. Erişim sağlanamazsa `veri yok` de; tıklama, kâr ve müşteri sayısı uydurma.
+- **P2 / kaynak edinimi:** Sitedeki ilgili organik ziyaretçilere katılım davetini iyileştir; Telegram katalog başvurularının onay/durumunu takip et; gerçek görüntülenme oluştuğunda mikro topluluklarla iş birliği adaylarını *taslak* olarak hazırla. İlk mesajı veya takası kullanıcıdan yeni onay almadan gönderme.
+
+### 30 gün uygulama sırası
+
+- **1. hafta:** Telefon servis dayanıklılığı + 7 günlük kuyruk ve kaliteli cevaplar. Analytics ölçümü için gerçek erişimi doğrula. Sitedeki davet yerleşimlerinin mobil görünüm ve doğru hedef kontrolü.
+- **2. hafta:** Önceki içeriklere bakarak ikinci özgün paket; gelen gerçek sorulara dayalı mini rehberler, açıklayıcı konuşmalar. UTM bazlı trafik ve üye değişimini karşılaştır.
+- **3. hafta:** İşe yarayan iki formatı sürdür, düşük kaliteli olanı değiştir. Ücretsiz ilgili katalogların onay durumlarını kontrol et; reklam veya spam yok.
+- **4. hafta:** 28 günlük net tablo: doğrulanmış site oturumu, mümkünse dönüşüm, gerçek katılım, yayın kalite/hata durumu. Veriye göre bir sonraki ayın ritmini belirle. Dört haftalık büyüme için sayı garantisi verilmez.
+
+**Tam otonomi sınırı:** GitHub'daki bir plan dosyası Termux üzerinde kendiliğinden zamanlanmış iş başlatmaz. Şu an içerik otomatik gönderiliyor ve iki cevap test edildi; 7 günden sonra özgün içerik üretme, harici katalog/iş birliği ve gerçek web analitiği ayrıca bağlanmadıkça tamamen insansız çalıştığı iddia edilemez. Gönderi/yanıt sistemini baştan yazmak yerine önce bu üç boşluğu kapat.
