@@ -1,0 +1,98 @@
+{
+  "brand": "Socialora Creator Tools",
+  "channel": "pinterest",
+  "status": "draft_not_published",
+  "schedule_intent": "One original vertical pin per day for first week after publication is authorized; confirm platform publishing access first.",
+  "image_spec": {
+    "format": "PNG",
+    "aspect_ratio": "2:3",
+    "recommended_dimensions": "1000x1500",
+    "brand_colors": "dark violet, black, purple glow; accessible light typography",
+    "rules": [
+      "Each Pin uses a unique original image; no unrelated stock photography",
+      "One clear useful tip per Pin",
+      "No fake stats, reviews, before/after outcomes or platform endorsement",
+      "Destination is the exact relevant free tool, not a generic landing page",
+      "Verify all destination pages and image accessibility before publishing"
+    ]
+  },
+  "pins": [
+    {
+      "id": "pnt_photo_resize_01",
+      "status": "draft",
+      "board": "Free Instagram & Photo Tools",
+      "title": "Instagram Photo Resizer: Fit Your Photo for Posts & Stories",
+      "description": "Posting the same photo everywhere? Start with the right format. Upload your own image, choose a platform and preview the crop before downloading. Free browser tool, no sign-up required.",
+      "url": "https://www.getsocialora.com/tools/social-media-photo-resizer?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_photo_resize_01",
+      "image_brief": "A bold vertical before-and-after layout showing the same original portrait as a feed post and Story preview. Labels 'Before' and 'Sized for Instagram', no fake results.",
+      "image_url": null,
+      "published_pin_id": null
+    },
+    {
+      "id": "pnt_nocrop_blur_02",
+      "status": "draft",
+      "board": "Free Instagram & Photo Tools",
+      "title": "Instagram No Crop: Keep the Whole Photo",
+      "description": "Don't cut people out of the frame just to fit an Instagram post. Add a subtle blurred background and keep the entire image visible. Try this free no-crop photo tool.",
+      "url": "https://www.getsocialora.com/tools/instagram-no-crop-blur-background?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_nocrop_blur_02",
+      "image_brief": "Original photo centered with softened blurred sidebars; short headline 'No Crop. Keep the Whole Shot.'",
+      "image_url": null,
+      "published_pin_id": null
+    },
+    {
+      "id": "pnt_safezone_03",
+      "status": "draft",
+      "board": "Reels & TikTok Creator Tips",
+      "title": "Reels & TikTok Safe Zones for Text",
+      "description": "Your subtitles might be hiding under on-screen buttons. Preview where captions and key text belong before you publish. Use the free Reels and TikTok safe-zone guide.",
+      "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_safezone_03",
+      "image_brief": "Simple vertical phone mockup with distinct safe central text area and lightly shaded UI-edge zones; label diagram as illustrative, not pixel-exact.",
+      "image_url": null,
+      "published_pin_id": null
+    },
+    {
+      "id": "pnt_thumbnail_04",
+      "status": "draft",
+      "board": "YouTube & Video Creator Tools",
+      "title": "How to Turn a Video Frame Into a Thumbnail",
+      "description": "A useful thumbnail can start with a frame you already filmed. Pick a clear moment, capture it from your own video, then export a cover image using this free browser tool.",
+      "url": "https://www.getsocialora.com/tools/video-frame-to-thumbnail?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_thumbnail_04",
+      "image_brief": "Video filmstrip with one frame selected and displayed as a thumbnail card, simple 3-step visual.",
+      "image_url": null,
+      "published_pin_id": null
+    },
+    {
+      "id": "pnt_scorecard_05",
+      "status": "draft",
+      "board": "Free Instagram & Photo Tools",
+      "title": "Free Instagram Account Scorecard & Growth Plan",
+      "description": "Not sure what to improve next on Instagram? Enter your profile numbers to get an indicative scorecard and practical ideas to test. This is an independent tool, not official Instagram data.",
+      "url": "https://www.getsocialora.com/tools/instagram-account-scorecard?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_scorecard_05",
+      "image_brief": "Illustrative scorecard showing neutral sample values, explicitly marked 'Example only'—never imply direct access to the user's analytics.",
+      "image_url": null,
+      "published_pin_id": null
+    },
+    {
+      "id": "pnt_gridmaker_06",
+      "status": "draft",
+      "board": "Free Instagram & Photo Tools",
+      "title": "Instagram Grid Maker: Split One Photo Into Tiles",
+      "description": "Planning a multi-post Instagram grid? Divide your own image into tiles and download them in posting order. No sign-up required.",
+      "url": "https://www.getsocialora.com/tools/instagram-grid-maker?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_gridmaker_06",
+      "image_brief": "A single photo visually divided into a 3x3 grid with arrows showing tile sequence; use generic illustration.",
+      "image_url": null,
+      "published_pin_id": null
+    },
+    {
+      "id": "pnt_video_safe_07",
+      "status": "draft",
+      "board": "Reels & TikTok Creator Tips",
+      "title": "3 Checks Before Publishing Your Next Reel",
+      "description": "Check your opening visual, make captions easy to read and keep important text away from app controls. Use this free overlay guide to inspect your layout.",
+      "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_video_safe_07",
+      "image_brief": "Three illustrated checkpoints: opening frame, readable captions, safe text placement. No fabricated metrics.",
+      "image_url": null,
+      "published_pin_id": null
+    }
+  ]
+}
