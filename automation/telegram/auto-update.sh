@@ -23,12 +23,20 @@ healthy() {
   return 1
 }
 once() {
-  mkdir "$STATE/.updater.lock" 2>/dev/null || { log 'already updating; skip'; return 0; }
+  if ! mkdir "$STATE/.updater.lock" 2>/dev/null; then
+    # Recover an empty lock left by a previously interrupted/buggy run.
+    # Never remove an active updater lock containing its process marker.
+    if [ -d "$STATE/.updater.lock" ] && [ ! -e "$STATE/.updater.lock/pid" ]; then
+      rmdir "$STATE/.updater.lock" 2>/dev/null || true
+    fi
+    mkdir "$STATE/.updater.lock" 2>/dev/null || { log 'already updating; skip'; return 0; }
+  fi
+  printf '%s\n' "$" > "$STATE/.updater.lock/pid"
   local tmp sha prior url item
   tmp="$(mktemp -d "$STATE/.upgrade.XXXXXXXX")"
   # EXIT runs after once() returns; capture the local temp path now.
   local cleanup_cmd
-  printf -v cleanup_cmd 'rm -rf -- %q; rmdir -- %q 2>/dev/null || true' "$tmp" "$STATE/.updater.lock"
+  printf -v cleanup_cmd 'rm -rf -- %q; rm -f -- %q; rmdir -- %q 2>/dev/null || true' "$tmp" "$STATE/.updater.lock/pid" "$STATE/.updater.lock"
   trap "$cleanup_cmd" EXIT
   [ -f "$APP/socialora.py" ] && [ -f "$PUB/run" ] || { log 'Existing installation absent; stop'; return 1; }
   curl -fsSL --retry 2 --max-time 40 "https://api.github.com/repos/$REPO/commits/main" -o "$tmp/commit.json" || { log 'GitHub not available; no changes'; return 1; }
