@@ -36,9 +36,11 @@
       "title": "Instagram No Crop: Keep the Whole Photo",
       "description": "Don't cut people out of the frame just to fit an Instagram post. Add a subtle blurred background and keep the entire image visible. Try this free no-crop photo tool.",
       "url": "https://www.getsocialora.com/tools/instagram-no-crop-blur-background?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_nocrop_blur_02",
-      "image_brief": "Original photo centered with softened blurred sidebars; short headline 'No Crop. Keep the Whole Shot.'",
+      "image_brief": "Premium light editorial Pinterest poster, not generic dark-purple template. Illustrate the SAME imaginary cafe portrait subject in a true composition comparison: left awkward tight crop, right full portrait fitted with softly blurred background. Headline 5 words, small Socialora footer, readable at phone width; label example, do not claim a real customer result.",
       "image_url": null,
-      "published_pin_id": null
+      "published_pin_id": null,
+      "cover_hook": "Stop Cropping Your Best Photos",
+      "visual_style": "photo-comparison-editorial"
     },
     {
       "id": "pnt_safezone_03",
@@ -49,7 +51,9 @@
       "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_safezone_03",
       "image_brief": "Simple vertical phone mockup with distinct safe central text area and lightly shaded UI-edge zones; label diagram as illustrative, not pixel-exact.",
       "image_url": null,
-      "published_pin_id": null
+      "published_pin_id": null,
+      "cover_hook": "Keep Captions Off the Buttons",
+      "visual_style": "annotation-phone-guide"
     },
     {
       "id": "pnt_thumbnail_04",
@@ -60,7 +64,9 @@
       "url": "https://www.getsocialora.com/tools/video-frame-to-thumbnail?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_thumbnail_04",
       "image_brief": "Video filmstrip with one frame selected and displayed as a thumbnail card, simple 3-step visual.",
       "image_url": null,
-      "published_pin_id": null
+      "published_pin_id": null,
+      "cover_hook": "Find a Better Thumbnail Frame",
+      "visual_style": "video-storyboard"
     },
     {
       "id": "pnt_scorecard_05",
@@ -71,7 +77,9 @@
       "url": "https://www.getsocialora.com/tools/instagram-account-scorecard?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_scorecard_05",
       "image_brief": "Illustrative scorecard showing neutral sample values, explicitly marked 'Example only'—never imply direct access to the user's analytics.",
       "image_url": null,
-      "published_pin_id": null
+      "published_pin_id": null,
+      "cover_hook": "What Can Your Profile Improve?",
+      "visual_style": "clean-data-explainer"
     },
     {
       "id": "pnt_gridmaker_06",
@@ -82,7 +90,9 @@
       "url": "https://www.getsocialora.com/tools/instagram-grid-maker?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_gridmaker_06",
       "image_brief": "A single photo visually divided into a 3x3 grid with arrows showing tile sequence; use generic illustration.",
       "image_url": null,
-      "published_pin_id": null
+      "published_pin_id": null,
+      "cover_hook": "One Photo, Nine Perfect Tiles",
+      "visual_style": "real-illustrated-grid"
     },
     {
       "id": "pnt_video_safe_07",
@@ -93,7 +103,9 @@
       "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_video_safe_07",
       "image_brief": "Three illustrated checkpoints: opening frame, readable captions, safe text placement. No fabricated metrics.",
       "image_url": null,
-      "published_pin_id": null
+      "published_pin_id": null,
+      "cover_hook": "Three Checks Before You Post",
+      "visual_style": "editorial-checklist"
     },
     {
       "id": "pnt_08_bio-3line",
@@ -475,5 +487,6 @@
     "link": "Link directly to relevant existing free-tool page and preserve unique UTM; check website link resolves.",
     "posting": "Before each Pin, verify previous 24h topic/board and actual Pinterest IDs. Avoid duplicate URLs in same day when possible. New account: prioritize fresh ideas over sheer volume."
   },
-  "strategy_version": "2026-11-09_global_quality_4_daily"
+  "strategy_version": "2026-11-09_global_quality_4_daily",
+  "playbook": "automation/pinterest/growth-playbook.md"
 }
