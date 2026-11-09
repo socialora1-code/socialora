@@ -509,5 +509,46 @@ class PublisherTests(unittest.TestCase):
 
 
 
+    def test_ai_refill_creates_unique_future_posts_once_without_real_api_calls(self):
+        def simulated_gemini(key, prompt, db=None, now=None):
+            specs = app.re.findall(
+                r'id=(ai_[a-z0-9_]+) \| target=(channel|group) \| topic=(.*?) \| url=(https://\S+)',
+                prompt,
+            )
+            self.assertEqual(5, len(specs))
+            return json.dumps([
+                {'id': pid, 'text': (
+                    'Compare the opening seconds of your next creator video with your previous post. '
+                    'Choose one clear hook, test it on the same audience, and record reach and retention '
+                    'before making another change. This is a practical, repeatable experiment.\n\n' + url
+                )}
+                for pid, target, topic, url in specs
+            ])
+
+        with patch.object(app, 'call_gemini', side_effect=simulated_gemini) as mock_model:
+            self.assertEqual(5, app.auto_refill_queue_with_ai(self.db, 'dummy_local_key', self.now))
+            self.assertEqual(0, app.auto_refill_queue_with_ai(self.db, 'dummy_local_key', self.now))
+            self.assertEqual(1, mock_model.call_count)
+
+        posts = self.db.execute('SELECT * FROM posts ORDER BY due').fetchall()
+        self.assertEqual(5, len(posts))
+        self.assertEqual(5, len({p['id'] for p in posts}))
+        self.assertTrue(all(p['status'] == 'pending' and p['due'] > self.now for p in posts))
+        for p in posts:
+            self.assertIn('utm_source=telegram', p['text'])
+            self.assertIn('utm_campaign=' + p['id'], p['text'])
+
+    def test_ai_refill_respects_pending_threshold_and_rejects_invalid_model_output(self):
+        for n in range(6):
+            self.enqueue('refill_guard_' + str(n), due=self.now + 86400)
+        with patch.object(app, 'call_gemini', side_effect=AssertionError('must not call Gemini')):
+            self.assertEqual(0, app.auto_refill_queue_with_ai(self.db, 'dummy_local_key', self.now))
+        self.db.execute('DELETE FROM posts')
+        self.db.commit()
+        with patch.object(app, 'call_gemini', return_value='not a JSON array'):
+            self.assertEqual(0, app.auto_refill_queue_with_ai(self.db, 'dummy_local_key', self.now))
+        self.assertEqual(0, self.db.execute('SELECT COUNT(*) FROM posts').fetchone()[0])
+
+
 if __name__ == '__main__':
     unittest.main()
