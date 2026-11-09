@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Socialora's token-local, no-AI-cost Telegram editorial publisher."""
+# Remote deployment verification marker 2026-11-09: no runtime behavior changed.
 import argparse
 import contextlib
 import datetime as dt
