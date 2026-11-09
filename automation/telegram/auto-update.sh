@@ -26,7 +26,10 @@ once() {
   mkdir "$STATE/.updater.lock" 2>/dev/null || { log 'already updating; skip'; return 0; }
   local tmp sha prior url item
   tmp="$(mktemp -d "$STATE/.upgrade.XXXXXXXX")"
-  trap 'rm -rf "$tmp"; rmdir "$STATE/.updater.lock" 2>/dev/null || true' EXIT
+  # EXIT runs after once() returns; capture the local temp path now.
+  local cleanup_cmd
+  printf -v cleanup_cmd 'rm -rf -- %q; rmdir -- %q 2>/dev/null || true' "$tmp" "$STATE/.updater.lock"
+  trap "$cleanup_cmd" EXIT
   [ -f "$APP/socialora.py" ] && [ -f "$PUB/run" ] || { log 'Existing installation absent; stop'; return 1; }
   curl -fsSL --retry 2 --max-time 40 "https://api.github.com/repos/$REPO/commits/main" -o "$tmp/commit.json" || { log 'GitHub not available; no changes'; return 1; }
   sha="$(python3 - "$tmp/commit.json" <<'PY'
