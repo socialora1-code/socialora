@@ -43,11 +43,25 @@ PY
   for item in socialora.py content.json tests/test_publisher.py; do
     curl -fsSL --retry 2 --max-time 60 "$url/$item" -o "$tmp/$item" || { log "Download failed ($item); untouched"; return 1; }
   done
+  # Documentation-only changes do not warrant restarting the publisher.
+  if cmp -s "$tmp/socialora.py" "$APP/socialora.py"; then
+    printf '%s\\n' "$sha" > "$STATE/installed-github-sha"
+    log 'Code unchanged; service left running'
+    return 0
+  fi
   python3 -m py_compile "$tmp/socialora.py" "$tmp/tests/test_publisher.py" || { log 'Python validation failed'; return 1; }
   (cd "$tmp" && python3 -m unittest discover -s tests -q) || { log 'Tests failed; old code remains'; return 1; }
   cp "$APP/socialora.py" "$tmp/old.py"
   [ ! -f "$MIRROR/socialora.py" ] || cp "$MIRROR/socialora.py" "$tmp/old-mirror.py"
   sv down "$PUB" || { log 'Publisher not stoppable; no changes'; return 1; }
+  for attempt in 1 2 3 4 5 6 7 8 9 10; do
+    sv status "$PUB" 2>/dev/null | grep -q '^down:' && break
+    sleep 1
+  done
+  if ! sv status "$PUB" 2>/dev/null | grep -q '^down:'; then
+    log 'Publisher did not stop; aborting before file replacement'
+    return 1
+  fi
   if ! (cp "$tmp/socialora.py" "$APP/.new.py" && mv -f "$APP/.new.py" "$APP/socialora.py" && cp "$tmp/socialora.py" "$MIRROR/.new.py" && mv -f "$MIRROR/.new.py" "$MIRROR/socialora.py"); then
     log 'Install failed, rolling back'
     cp "$tmp/old.py" "$APP/socialora.py"
