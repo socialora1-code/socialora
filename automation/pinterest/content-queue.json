@@ -1,8 +1,8 @@
 {
   "brand": "Socialora Creator Tools",
   "channel": "pinterest",
-  "status": "draft_not_published",
-  "schedule_intent": "One original vertical pin per day for first week after publication is authorized; confirm platform publishing access first.",
+  "status": "one_published_six_drafts",
+  "schedule_intent": "Publish no more than one new original Pin per day, after checking existing account Pins; vary publishing times over days to test global audience reach. No automated comments, mass follows or fabricated engagement.",
   "image_spec": {
     "format": "PNG",
     "aspect_ratio": "2:3",
@@ -19,14 +19,15 @@
   "pins": [
     {
       "id": "pnt_photo_resize_01",
-      "status": "draft",
+      "status": "published",
       "board": "Free Instagram & Photo Tools",
-      "title": "Instagram Photo Resizer: Fit Your Photo for Posts & Stories",
-      "description": "Posting the same photo everywhere? Start with the right format. Upload your own image, choose a platform and preview the crop before downloading. Free browser tool, no sign-up required.",
+      "title": "Social Media Photo Resizer: One Photo, Multiple Formats",
+      "description": "The same photo won't fit every layout. Start with a sharp original, choose a format, preview the crop, then download the size you need. This free browser tool supports Instagram posts, Stories, YouTube thumbnails and more. Your photo stays on your device.",
       "url": "https://www.getsocialora.com/tools/social-media-photo-resizer?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_photo_resize_01",
       "image_brief": "A bold vertical before-and-after layout showing the same original portrait as a feed post and Story preview. Labels 'Before' and 'Sized for Instagram', no fake results.",
-      "image_url": null,
-      "published_pin_id": null
+      "image_url": "https://i.pinimg.com/1200x/0a/e3/9f/0ae39f442857f955e8f85a3a829c8159.jpg",
+      "published_pin_id": "267753140343754783",
+      "published_at": "2026-11-09T18:58:36Z"
     },
     {
       "id": "pnt_nocrop_blur_02",
@@ -94,5 +95,6 @@
       "image_url": null,
       "published_pin_id": null
     }
-  ]
+  ],
+  "audience": "Global English-speaking creators and small businesses; no single-country targeting"
 }
