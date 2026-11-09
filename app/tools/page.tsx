@@ -31,8 +31,20 @@ export default function ToolsPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:py-16">
       <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">Free Social Media Tools</h1>
-      <p className="mb-8 mt-3 leading-relaxed text-muted-foreground">
+      <p className="mt-3 leading-relaxed text-muted-foreground">
         Simple tools for creators and brands. They are free, work in your browser and need no sign-up.
+      </p>
+      <p className="mb-8 mt-3 text-sm text-muted-foreground">
+        Want practical creator tips between projects?{' '}
+        <a
+          href="https://t.me/SocialoraOfficial"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-primary underline underline-offset-4 hover:no-underline"
+        >
+          Join our free Telegram channel
+        </a>
+        . No sign-up is required to use these tools.
       </p>
       <ToolsExplorer items={ITEMS} />
     </div>
