@@ -300,8 +300,10 @@ def is_directed_to_us(msg):
         'algorithm', 'price', 'pricing', 'cost', 'buy', 'order', 'refill', 'delivery', 'crypto',
         'usdt', 'btc', 'payment', 'free', 'tool', 'drop', 'calculator', 'resize', 'crop',
         'photo', 'bio', 'thumbnail', 'caption', 'safe zone', 'help', 'support', 'panel', 'service',
+        'how', 'why', 'what', 'where', 'when', 'who', 'can ', 'anyone', 'admin', 'work',
+        'grow', 'account', 'video', 'page', 'channel', 'trial', 'legit', 'nasıl', 'fiyat', 'yardım',
     )
-    return len(text) >= 8 and any(k in lower for k in keywords)
+    return len(text) >= 6 and any(k in lower for k in keywords)
 
 
 def consume_updates(db, api, now):
@@ -352,11 +354,13 @@ def consume_updates(db, api, now):
             reply_to = (msg.get('reply_to_message') or {}).get('message_id')
             directed = 1 if is_directed_to_us(msg) else 0
             status = 'pending' if directed else 'ignored'
+            msg_date = msg.get('date')
+            received_ts = min(now, int(msg_date)) if isinstance(msg_date, int) and msg_date > 0 else now
             cur = db.execute('''
                 INSERT OR IGNORE INTO inbox
                 (update_id, chat_id, message_id, sender, reply_to_message_id, text, directed, status, received_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (uid, group_chat_id, msg['message_id'], str(sender)[:80], reply_to, text[:2000], directed, status, now))
+            ''', (uid, group_chat_id, msg['message_id'], str(sender)[:80], reply_to, text[:2000], directed, status, received_ts))
             if cur.rowcount == 1 and directed:
                 stored += 1
         if max_uid is not None:
@@ -372,7 +376,8 @@ def validate_reply_text(text, campaign_id):
         raise SafeError('Yanıtta yasak bilgi veya garanti bulundu.')
     if re.search(r'\b(?:send your email|share your order id|what is your order number|send payment screenshot)\b', text, re.I):
         raise SafeError('Herkese açık grupta özel sipariş/iletişim bilgisi istenemez.')
-    for raw in re.findall(r'https?://[^\s]+', text):
+    for raw_match in re.findall(r'https?://[^\s]+', text):
+        raw = raw_match.rstrip('.,!?)')
         u = urllib.parse.urlsplit(raw)
         if u.scheme != 'https' or u.username or u.password or u.port:
             raise SafeError('Yanıt bağlantısı güvenli değil.')
@@ -402,7 +407,7 @@ def render_html(text):
     out, last = [], 0
     for m in re.finditer(r'https?://[^\s]+', text):
         out.append(_html.escape(text[last:m.start()], quote=False))
-        raw = m.group(0).rstrip('.,)')
+        raw = m.group(0).rstrip('.,!?)')
         tail = m.group(0)[len(raw):]
         u = urllib.parse.urlsplit(raw)
         if u.netloc in {'www.getsocialora.com', 'getsocialora.com'}:
@@ -418,7 +423,9 @@ def render_html(text):
 def sanitize_reply_text(text, campaign_id):
     text = humanize_reply(text)
     def replace_url(m):
-        url = m.group(0)
+        full = m.group(0)
+        url = full.rstrip('.,!?)')
+        tail = full[len(url):]
         u = urllib.parse.urlsplit(url)
         if u.netloc in {'getsocialora.com', 'www.getsocialora.com'}:
             qs = urllib.parse.parse_qs(u.query)
@@ -426,8 +433,8 @@ def sanitize_reply_text(text, campaign_id):
             qs['utm_medium'] = ['group']
             qs['utm_campaign'] = [campaign_id]
             new_query = urllib.parse.urlencode(qs, doseq=True)
-            return urllib.parse.urlunsplit((u.scheme or 'https', 'www.getsocialora.com', u.path or '/', new_query, ''))
-        return url
+            return urllib.parse.urlunsplit((u.scheme or 'https', 'www.getsocialora.com', u.path or '/', new_query, '')) + tail
+        return full
     return re.sub(r'https?://[^\s]+', replace_url, text.strip())
 
 
@@ -467,7 +474,7 @@ def set_gemini_cooldown(db, seconds, now=None):
 def call_gemini(api_key, prompt, db=None, now=None):
     if db is not None:
         record_gemini_attempt(db, now)
-    models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash']
+    models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.5-flash-lite', 'gemini-1.5-flash']
     last_error = None
     for model in models:
         config = {'temperature': 0.7, 'maxOutputTokens': 700}
@@ -489,20 +496,20 @@ def call_gemini(api_key, prompt, db=None, now=None):
                         return parts[0]['text'].strip()
         except urllib.error.HTTPError as err:
             last_error = err
-            if err.code == 404:
+            if err.code in {400, 404, 429, 500, 502, 503}:
                 continue
-            if err.code == 429:
-                if db is not None:
-                    set_gemini_cooldown(db, 1800, now)
-                raise SafeError('Gemini API kota/hız sınırı (kod 429); 30dk geri çekilme uygulandı.') from None
-            if err.code >= 500 and db is not None:
-                set_gemini_cooldown(db, 300, now)
             raise SafeError(f'Gemini API hatası (kod {err.code}).') from None
         except Exception:
             if db is not None:
-                set_gemini_cooldown(db, 180, now)
+                set_gemini_cooldown(db, 120, now)
             raise SafeError('Gemini API bağlantı hatası.') from None
-    if last_error:
+    if last_error is not None:
+        if last_error.code == 429:
+            if db is not None:
+                set_gemini_cooldown(db, 180, now)
+            raise SafeError('Gemini API kota/hız sınırı (kod 429); 3dk geri çekilme uygulandı.') from None
+        if last_error.code >= 500 and db is not None:
+            set_gemini_cooldown(db, 180, now)
         raise SafeError(f'Gemini API hatası (kod {last_error.code}).')
     raise SafeError('Gemini API yanıt vermedi.')
 
@@ -519,8 +526,8 @@ def process_inbox_with_ai(db, api, api_key, now, min_delay=120):
     _, used, cooldown_left = gemini_budget_status(db, now)
     if cooldown_left > 0 or used >= DAILY_GEMINI_BUDGET:
         return False
-    # Human delay: wait at least min_delay seconds after the message arrived so it feels like a real person typing
-    row = db.execute("SELECT * FROM inbox WHERE status='pending' AND directed=1 AND (? - received_at >= ? + (CASE WHEN ?>0 THEN update_id % 60 ELSE 0 END)) ORDER BY update_id ASC LIMIT 1", (now, min_delay, min_delay)).fetchone()
+    # Prioritize fresh untried questions (length(note)=0, newest update_id) so an old stuck row never blocks new messages
+    row = db.execute("SELECT * FROM inbox WHERE status='pending' AND directed=1 AND (? - received_at >= ? + (CASE WHEN ?>0 THEN update_id % 60 ELSE 0 END)) ORDER BY length(note) ASC, update_id DESC LIMIT 1", (now, min_delay, min_delay)).fetchone()
     if not row:
         return False
     update_id = row['update_id']
@@ -1062,6 +1069,14 @@ def main():
             with worker_lock('runner.lock'):
                 with worker_lock():
                     recover(db)
+                    now_init = int(time.time())
+                    with db:
+                        db.execute("DELETE FROM meta WHERE key='gemini_cooldown_until'")
+                        db.execute("UPDATE inbox SET status='ignored',note='Expired stale pending.' WHERE status='pending' AND received_at < ?", (now_init - 86400,))
+                        db.execute("UPDATE inbox SET note='' WHERE status='pending' AND received_at >= ?", (now_init - 86400,))
+                        for r in db.execute("SELECT update_id,text FROM inbox WHERE status IN ('ignored','failed') AND reply_message_id IS NULL AND received_at >= ? AND sender NOT IN ('Telegram','GroupAnonymousBot','Channel_Bot') AND text NOT LIKE '%utm_source=telegram%' AND note NOT LIKE '%Manually%'", (now_init - 86400,)).fetchall():
+                            if is_directed_to_us({'text': r['text']}):
+                                db.execute("UPDATE inbox SET status='pending',directed=1,note='' WHERE update_id=?", (r['update_id'],))
                 last_snapshot_attempt, last_report, last_poll, last_backup, last_ai = 0, 0, 0, '', 0
                 while True:
                     now = int(time.time())
