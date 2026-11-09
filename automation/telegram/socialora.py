@@ -471,10 +471,40 @@ def set_gemini_cooldown(db, seconds, now=None):
         db.execute("INSERT INTO meta(key,value) VALUES('gemini_cooldown_until',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value", (str(until),))
 
 
+_MODEL_CACHE = {'at': 0, 'models': []}
+
+
+def discover_gemini_models(api_key):
+    """Ask the API which flash models this key can use; static names get retired."""
+    now = time.time()
+    if _MODEL_CACHE['models'] and now - _MODEL_CACHE['at'] < 21600:
+        return _MODEL_CACHE['models']
+    found = []
+    try:
+        req = urllib.request.Request('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200',
+                                     headers={'x-goog-api-key': api_key})
+        with urllib.request.urlopen(req, timeout=15) as res:
+            data = json.loads(res.read(1024 * 1024))
+        for m in data.get('models', []):
+            name = str(m.get('name', '')).replace('models/', '')
+            if 'flash' in name and 'generateContent' in (m.get('supportedGenerationMethods') or []) \
+                    and not re.search(r'image|tts|live|audio|preview|exp|thinking|robotics|computer|embedding', name):
+                found.append(name)
+    except Exception:
+        found = []
+    def rank(n):
+        ver = re.search(r'gemini-(\d+(?:\.\d+)?)', n)
+        return (-(float(ver.group(1)) if ver else 0), 'lite' in n, len(n))
+    found.sort(key=rank)
+    models = found[:4] or ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-flash-lite-latest']
+    _MODEL_CACHE.update({'at': now, 'models': models})
+    return models
+
+
 def call_gemini(api_key, prompt, db=None, now=None):
     if db is not None:
         record_gemini_attempt(db, now)
-    models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.5-flash-lite', 'gemini-1.5-flash']
+    models = discover_gemini_models(api_key)
     last_error = None
     for model in models:
         config = {'temperature': 0.7, 'maxOutputTokens': 700}
@@ -504,6 +534,7 @@ def call_gemini(api_key, prompt, db=None, now=None):
                 set_gemini_cooldown(db, 120, now)
             raise SafeError('Gemini API bağlantı hatası.') from None
     if last_error is not None:
+        _MODEL_CACHE['at'] = 0
         if last_error.code == 429:
             if db is not None:
                 set_gemini_cooldown(db, 180, now)
