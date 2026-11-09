@@ -117,3 +117,23 @@ Bu bölüm önceki kurulum öncesi notlarından daha günceldir. 9 Kasım'da kul
 5. **Ölçüm:** Komutlara verilen bot yanıtlarını (kişisel veri toplamadan) SQLite kayıtlarından say. UTM kampanyalarına bağlı gerçek site oturumları analitik erişim varsa kontrol edilir. Komut kullanımı = site tıklaması veya yeni üye **değildir**. Gerçek üyeleri ve dönüşümleri haftalık gözle.
 
 **İkinci aşama opsiyonu:** Kullanıcıların Telegram sohbetinden çıkmadan araç kullanması istenirse, ayrı bir Telegram Mini App veya doğrudan bot içinde sınırlı metin tabanlı hesaplama modülü tasarla. Fotoğraf/kapak düzenleme mevcut tarayıcıda tutulur. İhtiyaç ve kullanım kanıtı olmadan 50 aracı yeniden yazma.
+
+
+## 9 Kasım — izinli Creator Toolkit dağıtımı: ilk doğrulanmış adaylar
+
+Dış topluluklara otomatik paylaşım, üye ekleme veya toplu DM yapılmaz. Bu tablo yalnızca herkese açık Telegram sayfalarından bulunmuş **iletişim araştırmasıdır**; iş birliği veya yöneticiden izin alınmış değildir.
+
+| Aday | Herkese açık kaynak | Somut uyum | Durum |
+| --- | --- | --- | --- |
+| Trybe — Bloggers, influencers and collaborations | https://t.me/s/socialkyte | Creator büyümesi ve öğrenme içerikleri; ücretsiz fotoğraf boyutlandırma rehberi uygun olabilir | Aday; yönetici ve paylaşım kuralları doğrulanmalı |
+| Creatorskit.app — UGC Jobs | https://t.me/s/creatorskit_app | UGC üreticileri; kendi videosundan thumbnail alma ve safe-zone açıklaması faydalı olabilir | Aday; ayrı platform/işletme, izinsiz tanıtım yok |
+| SG Influencers & Content Creator | https://t.me/s/sgigshare | Mikro üreticiler ve içerik üretimi; no-crop örneği konuya uyabilir | Aday; yerel dil ve kurallar doğrulanmalı |
+| BEST COLLABS FOR INFLUENCERS | https://t.me/collabsforinstainfluencers | Instagram içerik üreticileri, iş birliklerine odaklı | Aday; aktif moderasyon ve izin yolu doğrulanmalı |
+
+İlk teklif: **tek bir ücretsiz, tarayıcıda çalışan araç** için kısa örnek + yöneticinin açık izni. İlk temas, yöneticinin yayımladığı resmî iletişim yöntemi üzerinden kişiye özel ve bir kez yapılır; olumlu yanıt alınmazsa gruba link gönderilmez. Başarılı iş birliği sayısını yalnız izin ve yayımlanmış bağlantı kanıtıyla raporla.
+
+### Telegram Creator Toolkit canlı doğrulama sınırı
+
+- GitHub'da Python testinin geçmesi veya botun canlı olması, Termux'un Toolkit içeren yeni `socialora.py` dosyasını kullandığını **kanıtlamaz**.
+- Mevcut GitHub Actions `inspect` işlemi bot kimliği/yetkileri ölçer; Toolkit komutunu bir **gerçek grup üyesi** adına gönderip yanıtını doğrulamaz. Bot kendi mesajını göndermekle kullanıcı komutunu taklit etmiş olmaz.
+- İlk gerçek `/tools` yanıtı görülene kadar durumu **canlı test edilmedi** olarak koru. Mevcut takvimi, Gemini cevaplarını ve sıraya alınmış gönderileri değiştirme.
