@@ -697,12 +697,13 @@ def auto_refill_queue_with_ai(db, api_key, now):
         f"Write {len(batch_items)} distinct, authentic English Telegram posts for the items below. Return ONLY a valid JSON array of objects with keys \"id\" and \"text\".\n\n"
         f"Items:\n{spec_lines}\n\n"
         f"Rules for every post:\n"
-        f"1. Open with a specific creator scenario or algorithm observation (no 'Hey creators' or generic intros).\n"
-        f"2. Share one concrete, testable metric or step-by-step fix.\n"
-        f"3. Use 2 to 3 tasteful emojis (📊, ⚡, 🔍, 💡, 🎯) and short paragraphs.\n"
-        f"4. Never use '100% safe', 'never drops', 'guaranteed followers', 'skyrocket', or 'unleash'.\n"
-        f"5. Place the item's exact url on the final line of its text.\n"
-        f"6. Each post text must be 220 to 500 characters."
+        f"1. Open with a specific, relatable creator problem. Vary openings; no 'Hey creators', hype, or generic intros.\n"
+        f"2. Give one concrete action readers can perform even without clicking. Be helpful, not a sales pitch.\n"
+        f"3. Use zero or one emoji at most; use short paragraphs and natural, plain English.\n"
+        f"4. Do not invent algorithm rules, statistics, customer results, delivery promises, prices, or platform policies. If uncertain, say so.\n"
+        f"5. Never use '100% safe', 'never drops', 'guaranteed followers', 'skyrocket', or 'unleash'.\n"
+        f"6. Place the item's exact url on the final line, framed as an optional next step. Avoid pushy calls to action.\n"
+        f"7. Each post text must be 220 to 500 characters."
     )
     try:
         raw = call_gemini(api_key, prompt, db=db, now=now)
@@ -881,12 +882,17 @@ def report(db, now=None):
         ai_status = f'Gemini Flash aktif (bugün={gemini_used}/{DAILY_GEMINI_BUDGET}{cool_note})'
     else:
         ai_status = '0 (otomatik AI kapalı)'
+    # Read-only runway check: do not claim AI refill has succeeded until posts exist in SQLite.
+    next_72h = db.execute("SELECT COUNT(*) FROM posts WHERE status='pending' AND due BETWEEN ? AND ?", (now, now + 72 * 3600)).fetchone()[0]
+    upcoming = db.execute("SELECT MAX(due) FROM posts WHERE status='pending' AND expires>?", (now,)).fetchone()[0]
+    runway = dt.datetime.fromtimestamp(upcoming, TZ).strftime('%d.%m %H:%M') if upcoming else 'yok'
+    ai_queued = db.execute("SELECT COUNT(*) FROM posts WHERE status='pending' AND id LIKE 'ai_%' AND expires>?", (now,)).fetchone()[0]
     text = '\n'.join([f'Socialora — {today} — {status}', members, previous,
                       f'Bugün yayınlanan: {sent}; bekleyen: {counts.get("pending", 0)}',
                       f'Belirsiz: {counts.get("unknown", 0)}; hatalı: {counts.get("failed", 0)}; süresi geçen: {counts.get("expired", 0)}',
                       'Site tıklaması / satış / en iyi gönderi: analitik verisi yok',
                       f'Grup kutusu: bekleyen={inbox_counts.get("pending", 0)}, yanıtlanan={inbox_counts.get("replied", 0)}; AI/API çağrısı: {ai_status}',
-                      'Plan: gelen grup sorularını kontrol et; kuyruk bitmeden yeni haftalık içerik ekle.'])
+                      f'Önümüzdeki 72 saat: {next_72h} planlı; son yayın: {runway}; AI bekleyen: {ai_queued}.'])
     atomic_text(STATE / 'report.txt', text + '\n')
     return text
 
