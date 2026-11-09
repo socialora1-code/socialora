@@ -115,3 +115,18 @@ python socialora.py check-content
 ```
 
 Testler Telegram'a mesaj yollamaz. Uygulama yalnızca izin verilen Telegram yöntemlerini kullanır; üçüncü taraf Python paketi gerektirmez. Sürüm: 1.2.0.
+
+
+## Tek seferlik GitHub → Termux otomatik güncelleme (9 Kasım 2026)
+
+Canlı `socialora-telegram` yayın servisi çalışırken **yalnızca kod** güncellemek için ayrı `socialora-updater` servisi vardır. Günlük **04:15 Türkiye saati** GitHub `main` sürümü kontrol edilir. Değişiklik yoksa mevcut yayıncı yeniden başlatılmaz. Kod değişmişse `socialora.py` ile o commite ait testler ve içerik paketi **aynı sabit commit SHA** üzerinden indirilir; Python derleme ve unittest kontrolü başarılı olmadan çalışan dosyaya dokunulmaz. Ardından önce çalışan Python dosyaları geçici yere yedeklenir, yayıncı durdurulur, iki yerel dosya güncellenir, servis yeniden başlatılır ve yeni kalp atışı kontrol edilir. Sağlık testi başarısızsa eski Python dosyaları geri getirilir.
+
+**Bir defalık kurulum** (yalnız mevcut kurulu Socialora/termux-services olan telefonda):
+
+```bash
+curl -fsSL --retry 2 "https://raw.githubusercontent.com/socialora1-code/socialora/main/automation/telegram/auto-update.sh" -o "$HOME/socialora-auto-update-install.sh" && bash "$HOME/socialora-auto-update-install.sh" --install
+```
+
+Bu komut güncellemeyi aynı anda bir kez dener. Gerekirse Termux'u kapatıp yeniden açarak yeni runit servisinin göründüğünü kontrol et. Kontrol: `sv status socialora-updater` ve `tail -n 12 ~/.local/share/socialora-telegram/auto-update.log`. Manuel tek güncelleme: `~/.local/bin/socialora-auto-update --once`.
+
+Önemli sınırlar: Hatalı kodun **her tür davranışsal hatasını** yerel unit test + heartbeat yakalayamaz. GitHub `main` erişim yetkileri sıkı tutulmalı; yalnız test edilmiş değişiklikler commit edilmelidir. Telefon kapalıysa güncelleme ve bot çalışmaz; Android arka plan kısıtları ayrıca yönetilmelidir. Bu mekanizma `config.json`, bot/Gemini anahtarları, SQLite kuyruk, eski gönderiler veya içerik importu üzerinde işlem yapmaz. Telegram komutlarını test etmek için yine grupta kendi hesabından `/tools` yazmak gerekir.
