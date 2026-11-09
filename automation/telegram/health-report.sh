@@ -41,21 +41,27 @@ PY
 }
 once() {
   if [ ! -s "$TOKEN_FILE" ]; then log 'disabled: token not configured'; return 0; fi
-  local tempfile payload status
+  local tempfile code
   tempfile="$(mktemp "$STATE/.health.XXXXXXXX")"
   trap 'rm -f "$tempfile"' EXIT
   collect > "$tempfile" || { log 'collect_failed'; return 1; }
-  payload="$(python3 - "$tempfile" <<'PY'
-import json,sys
+  # Credential is read from a private file, never passed in shell process arguments.
+  code="$(python3 - "$tempfile" "$TOKEN_FILE" "$ISSUE_URL" <<'PY'
+import json,sys,urllib.request,urllib.error
 data=json.load(open(sys.argv[1]))
-print(json.dumps({'body':'Automated sanitized health snapshot (not a live chat monitoring feed):\n\x60\x60\x60json\n'+json.dumps(data,indent=2)+'\n\x60\x60\x60'}))
+token=open(sys.argv[2]).read().strip()
+payload=json.dumps({'body':'Sanitized automated health snapshot (not live monitoring):\\n\\x60\\x60\\x60json\\n'+json.dumps(data,indent=2)+'\\n\\x60\\x60\\x60'}).encode()
+req=urllib.request.Request(sys.argv[3],data=payload,method='POST',headers={
+ 'Accept':'application/vnd.github+json','Content-Type':'application/json',
+ 'Authorization':'Bearer '+token,'User-Agent':'SocialoraHealth/1.0'})
+try:
+ with urllib.request.urlopen(req,timeout=20) as response: print(response.status)
+except urllib.error.HTTPError as err: print(err.code)
+except Exception: print('network')
 PY
 )"
-  # Avoid placing credentials in process arguments, log messages, or URLs.
-  status="$(printf '%s' "$payload" | curl -sS --max-time 20 -o "$tempfile.response" -w '%{http_code}' -X POST "$ISSUE_URL" -H 'Accept: application/vnd.github+json' -H 'Content-Type: application/json' -H "Authorization: Bearer $(cat "$TOKEN_FILE")" --data-binary @- || true)"
-  rm -f "$tempfile.response"
-  [ "$status" = 201 ] && { log 'health_report_sent'; return 0; }
-  log "health_report_failed_http_${status:-network}"
+  [ "$code" = 201 ] && { log 'health_report_sent'; return 0; }
+  log "health_report_failed_http_${code:-network}"
   return 1
 }
 setup() {
