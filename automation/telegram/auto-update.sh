@@ -31,7 +31,7 @@ once() {
     fi
     mkdir "$STATE/.updater.lock" 2>/dev/null || { log 'already updating; skip'; return 0; }
   fi
-  printf '%s\n' "$" > "$STATE/.updater.lock/pid"
+  printf '%s\n' "$BASHPID" > "$STATE/.updater.lock/pid"
   local tmp sha prior url item
   tmp="$(mktemp -d "$STATE/.upgrade.XXXXXXXX")"
   # EXIT runs after once() returns; capture the local temp path now.
@@ -54,6 +54,8 @@ PY
   for item in socialora.py content.json tests/test_publisher.py; do
     curl -fsSL --retry 2 --max-time 60 "$url/$item" -o "$tmp/$item" || { log "Download failed ($item); untouched"; return 1; }
   done
+  # A previous install can leave the marker absent even while the same code is deployed.
+  # Never identify an unverified checkout as installed solely from GitHub's latest SHA.
   # Documentation-only changes do not warrant restarting the publisher.
   if cmp -s "$tmp/socialora.py" "$APP/socialora.py"; then
     printf '%s\n' "$sha" > "$STATE/installed-github-sha"
