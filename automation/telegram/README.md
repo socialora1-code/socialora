@@ -130,3 +130,20 @@ curl -fsSL --retry 2 "https://raw.githubusercontent.com/socialora1-code/socialor
 Bu komut güncellemeyi aynı anda bir kez dener. Gerekirse Termux'u kapatıp yeniden açarak yeni runit servisinin göründüğünü kontrol et. Kontrol: `sv status socialora-updater` ve `tail -n 12 ~/.local/share/socialora-telegram/auto-update.log`. Manuel tek güncelleme: `~/.local/bin/socialora-auto-update --once`.
 
 Önemli sınırlar: Hatalı kodun **her tür davranışsal hatasını** yerel unit test + heartbeat yakalayamaz. GitHub `main` erişim yetkileri sıkı tutulmalı; yalnız test edilmiş değişiklikler commit edilmelidir. Telefon kapalıysa güncelleme ve bot çalışmaz; Android arka plan kısıtları ayrıca yönetilmelidir. Bu mekanizma `config.json`, bot/Gemini anahtarları, SQLite kuyruk, eski gönderiler veya içerik importu üzerinde işlem yapmaz. Telegram komutlarını test etmek için yine grupta kendi hesabından `/tools` yazmak gerekir.
+
+
+## GitHub'dan uzaktan raporlama + 5 dakikalık güncelleme (9 Kasım)
+
+Önceki günlük güncelleme yönergesi yerine **tek adımlı yeni kurulum**:
+
+```bash
+curl -fsSL --retry 2 https://raw.githubusercontent.com/socialora1-code/socialora/main/automation/telegram/bootstrap-remote.sh -o "$HOME/socialora-bootstrap.sh" && bash "$HOME/socialora-bootstrap.sh"
+```
+
+Kurulum iki ayrı runit hizmeti oluşturur:
+- `socialora-updater`: GitHub `main` sürümünü yaklaşık **5 dakikada bir** kontrol eder. Sadece çalışan Python kodu değiştiğinde test eder ve yayıncıyı kontrollü yeniden başlatır. Python/ünite testleri veya servis heartbeat kontrolü başarısızsa güncellemeyi reddeder / eski Python koduna geri döner. Yapılandırma, SQLite kuyruğu ve API anahtarları korunur.
+- `socialora-health`: yaklaşık **6 saatte bir** yalnız toplu sayıları (servis durumu, heartbeat yaşı, yayın/yanıt ve bekleyen/hata sayıları, kurulu commit) `socialora1-code/socialora` GitHub issue **#2** yorumuna gönderir. Ham Telegram mesajı, kullanıcı adı, token, e-posta, sipariş veya log göndermez. **Issue public olduğu için yalnız anonim toplamlar** yayımlanır.
+
+**Raporlama için gerekli bir defalık izin:** GitHub'da `Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token` kısmından owner `socialora1-code`, **Only selected repositories → socialora**, `Repository permissions → Issues: Read and write`, diğer izinler mümkün olan en az düzeyde. Kısa süreli expiration seçilebilir ama süresi dolunca raporlar durur. Terminal gizli giriş alanına tokeni yapıştır; **sohbete, GitHub dosyasına, ekran görüntüsüne veya loga koyma**. Bu yetki yalnız sağlık yorumları için kullanılmalı; kod yazma izni verme. Token boş bırakılırsa otomatik güncelleme çalışabilir fakat uzaktan sağlık raporu **çalışmaz**. Rapor gönderimi yalnız GitHub issue #2'ye ilk gerçek yorum geldiğinde doğrulanmış sayılır.
+
+Kurulumdan sonra `sv status socialora-telegram socialora-updater socialora-health` ile üç hizmeti kontrol et. Kullanıcıya normal yayınların kesintisiz olduğuna dair garanti verilmez: telefon çevrimdışıysa, Android uygulamayı öldürürse veya GitHub limit/izin sorunu olursa rapor ve güncelleme aksayabilir. GitHub Issue raporlarında ham hata günlükleri yoktur; sadece hata sayılarından ayrıntı teşhis edilemeyebilir. İlk gerçek rapordan sonra 6 saatte bir çalışan ChatGPT otomasyonu son kaydı izler ve anormallik varsa kullanıcıya haber verir; bu otomasyon cihazı uzaktan yönetmez.
