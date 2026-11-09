@@ -512,7 +512,7 @@ class PublisherTests(unittest.TestCase):
     def test_ai_refill_creates_unique_future_posts_once_without_real_api_calls(self):
         def simulated_gemini(key, prompt, db=None, now=None):
             specs = app.re.findall(
-                r'id=(ai_[a-z0-9_]+) \\| target=(channel|group) \\| topic=(.*?) \\| url=(https://\\S+)',
+                r'id=(ai_[a-z0-9_]+) \| target=(channel|group) \| topic=(.*?) \| url=(https://\S+)',
                 prompt,
             )
             self.assertEqual(5, len(specs))
@@ -520,7 +520,7 @@ class PublisherTests(unittest.TestCase):
                 {'id': pid, 'text': (
                     'Compare the opening seconds of your next creator video with your previous post. '
                     'Choose one clear hook, test it on the same audience, and record reach and retention '
-                    'before making another change. This is a practical, repeatable experiment.\\n\\n' + url
+                    'before making another change. This is a practical, repeatable experiment.\n\n' + url
                 )}
                 for pid, target, topic, url in specs
             ])
