@@ -278,11 +278,46 @@ def recover(db):
         pause('Kesinti sırasında sonucu belirsiz yayın veya yanıt var; Telegram kontrolü gerekiyor.')
 
 
+# Optional creator toolkit commands. Existing publishing and normal AI replies are untouched.
+TOOLKIT_LINKS = {
+    'photo': ('Photo Studio', 'Resize your image for Instagram, Stories, TikTok or YouTube.', '/tools/social-media-photo-resizer'),
+    'blur': ('No-Crop Photo', 'Fit a full photo into a post or Story with a soft blurred background.', '/tools/instagram-no-crop-blur-background'),
+    'score': ('Instagram Scorecard', 'Enter your public profile numbers to get an indicative score and a shareable card. Not official Instagram data.', '/tools/instagram-account-scorecard'),
+    'thumbnail': ('Video Thumbnail Studio', 'Pick a frame from your own video and export a cover image.', '/tools/video-frame-to-thumbnail'),
+    'safezone': ('Reels Safe Zone', 'Check where to place text so interface buttons do not cover it.', '/tools/reels-tiktok-safe-zone-guide'),
+}
+
+
+def toolkit_command(text):
+    """Recognize exact explicit commands only. Never take over conversational replies."""
+    match = re.fullmatch(r'/([a-z]+)(?:@socialora_publisher_2026_bot)?', text.strip(), flags=re.I)
+    if not match:
+        return None
+    command = match.group(1).lower()
+    if command in {'tools', 'toolkit'} or command in TOOLKIT_LINKS:
+        return command
+    return None
+
+
+def toolkit_reply(command, campaign_id):
+    """Short, non-promotional guidance; editing stays in the existing browser tools."""
+    if command in {'tools', 'toolkit'}:
+        return ('Socialora Creator Toolkit: /photo for image resizing, /blur for no-crop photos, '
+                '/score for an Instagram profile scorecard, /thumbnail for video covers, '
+                'and /safezone for Reels or TikTok overlays. Choose a command to open its free tool.')
+    title, advice, path = TOOLKIT_LINKS[command]
+    url = ('https://www.getsocialora.com' + path + '?utm_source=telegram&utm_medium=group&utm_campaign='
+           + urllib.parse.quote(campaign_id, safe=''))
+    return f'{title}: {advice}\n\nOpen the free tool: {url}'
+
+
 def is_directed_to_us(msg):
     text = (msg.get('text') or msg.get('caption') or '').strip()
     if not text or len(text) < 3:
         return False
     lower = text.lower()
+    if toolkit_command(text) is not None:
+        return True
     if f'@{BOT}' in lower or '@socialoraofficial' in lower or 'socialora' in lower:
         return True
     reply = msg.get('reply_to_message') or {}
@@ -564,15 +599,28 @@ def record_inbox_ai_failure(db, update_id, reason=''):
 def process_inbox_with_ai(db, api, api_key, now, min_delay=120, verbose=False):
     if (STATE / 'PAUSED').exists():
         return False
-    _, used, cooldown_left = gemini_budget_status(db, now)
-    if cooldown_left > 0 or used >= DAILY_GEMINI_BUDGET:
-        return False
     # Prioritize fresh untried questions (length(note)=0, newest update_id) so an old stuck row never blocks new messages
     row = db.execute("SELECT * FROM inbox WHERE status='pending' AND directed=1 AND (? - received_at >= ? + (CASE WHEN ?>0 THEN update_id % 60 ELSE 0 END)) ORDER BY length(note) ASC, update_id DESC LIMIT 1", (now, min_delay, min_delay)).fetchone()
     if not row:
         return False
     update_id = row['update_id']
     campaign_id = f'reply_u{update_id}'
+    command = toolkit_command(row['text'])
+    if command is not None:
+        try:
+            reply_to_inbox(db, api, update_id, toolkit_reply(command, campaign_id), now)
+            LOG.info('toolkit_replied command=%s update_id=%d', command, update_id)
+            if verbose:
+                print(f'update_id={update_id}: araç bağlantısı gönderildi.')
+            return True
+        except SafeError as exc:
+            LOG.warning('toolkit_reply_unavailable: %s', exc)
+            if verbose:
+                print(f'update_id={update_id}: araç bağlantısı gönderilemedi.')
+            return False
+    _, used, cooldown_left = gemini_budget_status(db, now)
+    if cooldown_left > 0 or used >= DAILY_GEMINI_BUDGET:
+        return False
     prompt = (
         f"You are a helpful, knowledgeable team member at Socialora (getsocialora.com) helping creators in our Telegram group.\n"
         f"Socialora provides Instagram, TikTok, YouTube, X (Twitter) and Telegram followers, views, likes, watch time and subscribers services, plus 50+ free creator diagnostic tools.\n"
