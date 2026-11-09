@@ -90,15 +90,14 @@ install() {
   cat > "$UP/run" <<EOF
 #!$PREFIX/bin/sh
 while true; do
-  n=\$(TZ=Europe/Istanbul $PREFIX/bin/python -c 'import datetime as d; from zoneinfo import ZoneInfo; now=d.datetime.now(ZoneInfo("Europe/Istanbul")); target=now.replace(hour=4,minute=15,second=0,microsecond=0); target+=d.timedelta(days=target<=now); print(max(30,int((target-now).total_seconds())))')
-  sleep "\$n"
+  sleep 300
   "$HOME/.local/bin/socialora-auto-update" --once >> "$STATE/auto-update.log" 2>&1 || true
 done
 EOF
   chmod 700 "$UP/run"
   rm -f "$UP/down"
   sv up "$UP" || true
-  echo 'Updater installed. Daily at 04:15 Istanbul time.'
+  echo 'Updater installed. Checks GitHub about every 5 minutes while Termux runs.'
   "$HOME/.local/bin/socialora-auto-update" --once
 }
 case "${1:---once}" in
