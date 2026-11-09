@@ -43,7 +43,10 @@ once() {
   if [ ! -s "$TOKEN_FILE" ]; then log 'disabled: token not configured'; return 0; fi
   local tempfile code
   tempfile="$(mktemp "$STATE/.health.XXXXXXXX")"
-  trap 'rm -f "$tempfile"' EXIT
+  # EXIT runs after once() returns; capture the path while the local exists.
+  local cleanup_cmd
+  printf -v cleanup_cmd 'rm -f -- %q' "$tempfile"
+  trap "$cleanup_cmd" EXIT
   collect > "$tempfile" || { log 'collect_failed'; return 1; }
   # Credential is read from a private file, never passed in shell process arguments.
   code="$(python3 - "$tempfile" "$TOKEN_FILE" "$ISSUE_URL" <<'PY'
