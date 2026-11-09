@@ -169,6 +169,13 @@ export function ToolPageView({ tool }: { tool: ToolDef }) {
   const related = relatedTools(tool)
 
   const url = `${SITE.url}/tools/${tool.slug}`
+  const sharedToolUrl = new URL(url)
+  sharedToolUrl.searchParams.set('utm_source', 'telegram')
+  sharedToolUrl.searchParams.set('utm_medium', 'share')
+  sharedToolUrl.searchParams.set('utm_campaign', `creator_tool_${tool.slug}`)
+  const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(sharedToolUrl.toString())}&text=${encodeURIComponent(
+    `Useful free tool: ${tool.name}. Works in your browser, no sign-up required.`,
+  )}`
   const jsonLd = [
     {
       '@context': 'https://schema.org',
@@ -212,6 +219,16 @@ export function ToolPageView({ tool }: { tool: ToolDef }) {
       <div className="mt-8">
         <Widget tool={tool} />
       </div>
+      <p className="mt-4 text-right text-sm">
+        <a
+          href={telegramShareUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-primary underline underline-offset-4 hover:no-underline"
+        >
+          Share this free tool on Telegram
+        </a>
+      </p>
 
       <div className="mt-6 flex flex-col justify-between gap-4 rounded-2xl border border-primary/20 bg-primary/5 p-5 sm:flex-row sm:items-center">
         <div>
