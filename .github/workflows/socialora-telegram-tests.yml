@@ -1,0 +1,37 @@
+name: Socialora Telegram Python Tests
+
+on:
+  pull_request:
+    paths:
+      - 'automation/telegram/socialora.py'
+      - 'automation/telegram/content.json'
+      - 'automation/telegram/tests/**'
+      - '.github/workflows/socialora-telegram-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'automation/telegram/socialora.py'
+      - 'automation/telegram/content.json'
+      - 'automation/telegram/tests/**'
+      - '.github/workflows/socialora-telegram-tests.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: telegram-unit-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate Python syntax
+        run: python -m py_compile automation/telegram/socialora.py automation/telegram/tests/test_publisher.py
+      - name: Run Telegram publisher unit tests (no bot API calls)
+        run: python -m unittest discover -s automation/telegram/tests -v

@@ -471,5 +471,43 @@ class PublisherTests(unittest.TestCase):
         self.assertIn('social-media-photo-resizer', row['reply_text'])
 
 
+    def test_toolkit_fast_lane_replies_without_gemini_and_keeps_normal_delay(self):
+        updates = [
+            {'update_id': 9010, 'message': {'message_id': 9010,
+                'chat': {'id': -1002}, 'from': {'id': 10, 'username': 'regular_admin', 'is_bot': False},
+                'text': '/photo'}},
+            {'update_id': 9011, 'message': {'message_id': 9011,
+                'chat': {'id': -1002}, 'from': {'id': 11, 'username': 'creator', 'is_bot': False},
+                'text': 'How do I improve my Instagram reach?'}},
+        ]
+        api = FakeTelegram(webhook_url='', updates=updates)
+        self.assertEqual(2, app.consume_updates(self.db, api, self.now))
+        with patch.object(app, 'call_gemini', side_effect=AssertionError('no Gemini for commands')):
+            self.assertTrue(app.process_toolkit_commands(self.db, api, self.now))
+            self.assertFalse(app.process_toolkit_commands(self.db, api, self.now))
+        self.assertEqual('replied', self.db.execute(
+            'SELECT status FROM inbox WHERE update_id=9010').fetchone()['status'])
+        self.assertEqual('pending', self.db.execute(
+            'SELECT status FROM inbox WHERE update_id=9011').fetchone()['status'])
+        self.assertEqual(1, sum(method == 'sendMessage' for method, _ in api.calls))
+
+    def test_toolkit_fast_lane_does_not_handle_anonymous_admin_or_unrelated_text(self):
+        updates = [
+            {'update_id': 9020, 'message': {'message_id': 9020, 'chat': {'id': -1002},
+                'from': {'id': 20, 'username': 'admin', 'is_bot': False},
+                'sender_chat': {'id': -1002}, 'text': '/tools'}},
+            {'update_id': 9021, 'message': {'message_id': 9021, 'chat': {'id': -1002},
+                'from': {'id': 21, 'username': 'creator', 'is_bot': False},
+                'text': '/photo extra'}},
+        ]
+        api = FakeTelegram(webhook_url='', updates=updates)
+        app.consume_updates(self.db, api, self.now)
+        self.assertFalse(app.process_toolkit_commands(self.db, api, self.now))
+        self.assertFalse(any(method == 'sendMessage' for method, _ in api.calls))
+        self.assertIsNone(self.db.execute(
+            'SELECT status FROM inbox WHERE update_id=9020').fetchone())
+
+
+
 if __name__ == '__main__':
     unittest.main()
