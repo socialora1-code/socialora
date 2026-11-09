@@ -89,3 +89,31 @@ Bu bölüm önceki kurulum öncesi notlarından daha günceldir. 9 Kasım'da kul
 - **4. hafta:** 28 günlük net tablo: doğrulanmış site oturumu, mümkünse dönüşüm, gerçek katılım, yayın kalite/hata durumu. Veriye göre bir sonraki ayın ritmini belirle. Dört haftalık büyüme için sayı garantisi verilmez.
 
 **Tam otonomi sınırı:** GitHub'daki bir plan dosyası Termux üzerinde kendiliğinden zamanlanmış iş başlatmaz. Şu an içerik otomatik gönderiliyor ve iki cevap test edildi; 7 günden sonra özgün içerik üretme, harici katalog/iş birliği ve gerçek web analitiği ayrıca bağlanmadıkça tamamen insansız çalıştığı iddia edilemez. Gönderi/yanıt sistemini baştan yazmak yerine önce bu üç boşluğu kapat.
+
+
+## 9 Kasım — Socialora Creator Toolkit: yeni kullanıcı kazanım ürünü
+
+**Uygulanan GitHub kodu:** `automation/telegram/socialora.py` içinde yalnızca özel komutlara cevap veren araç yönlendiricisi. Var olan gönderi takvimi ve doğal AI yanıt yönergeleri değiştirilmedi. **Canlı Termux dağıtımı ayrıca gereklidir; commit tek başına telefona kod yüklemez.**
+
+### Kodları incelenerek seçilen araçlar
+
+| Telegram grup komutu | Gerçek site aracı | Kullanıcıya sağladığı değer |
+| --- | --- | --- |
+| `/tools` | Komut listesi | Tek mesajda 5 ilgili seçenek |
+| `/photo` | `/tools/social-media-photo-resizer` | Instagram, TikTok, YouTube için tarayıcıda fotoğraf boyutlandırma |
+| `/blur` | `/tools/instagram-no-crop-blur-background` | Kırpma olmadan bulanık arka plan |
+| `/score` | `/tools/instagram-account-scorecard` | Girilen profil verilerinden tahmini puan, paylaşılabilir kart; resmi Instagram verisi değil |
+| `/thumbnail` | `/tools/video-frame-to-thumbnail` | Kullanıcının kendi videosundan kapak kare seçme |
+| `/safezone` | `/tools/reels-tiktok-safe-zone-guide` | Reels / TikTok yazı güvenli alan kılavuzu |
+
+**Doğruluk:** Bot doğrudan fotoğraf düzenlemez, dosya yüklemez veya puan hesaplamaz; kullanıcıyı mevcut tarayıcı tabanlı aracın **gerçek** işlevine götürür. Görüntü/özel veriler Telegram komutuyla bot sistemine gönderilmez. Bot yanıtında UTM etiketli tek araç bağlantısı yer alır. Komutlar yalnızca `@SocialoraChat` içinde ve kullanıcı tarafından istek gelince çalışır; kendi kendine reklam/DM/başka gruplara gönderi yapmaz. Gemini çağrısı gerektirmez, dolayısıyla pahalı API harcaması olmadan yönlendirme yapılır.
+
+### Sıfır trafikten tanıtım yöntemi
+
+1. **Önce ürünün çalıştığını ispatla:** Telefonun mevcut Python dosyasını yedekle. GitHub'daki yeni dosyayı ayrı geçici konuma alıp Python derleme doğrulaması yap. Mevcut tek servisi kontrollü yeniden başlat; `/tools` ve `/photo` komutlarını **kendi grup hesabından** göndererek tek yanıt, doğru URL, UTM ve eski AI soru yanıtlarının çalıştığını test et. Hata olursa hemen yedeğe dön; boş veritabanına geçme, tokeni açığa çıkarma.
+2. **Yumuşak lansman:** Grup sabit karşılama mesajı uygun zamanda, mevcut kurallar ve izinlerle uyumlu şekilde komut listesini gösterebilir; zaten sabitlenmiş olan önemli kuralları silme/değiştirme. Kanala yalnızca **bir** yararlı tanıtım mesajı (örnek: fotoğrafı kırpmadan 4:5 boyuta getirme) eklenebilir; mevcut 5/gün takvimini spam yapacak biçimde çoğaltma. Tanıtım mesajları İngilizce ve doğal olacak.
+3. **Paylaşılabilir çıktı:** Özellikle Account Scorecard'ın indirilebilir görsel kartını ve Photo Studio'nun önce/sonra örneklerini gerçek verilerle paylaşılabilir hale getir. Sahte sonuç, sahte kullanıcı yorumları, uydurma başarı hikâyesi ve Telegram'da spam yok.
+4. **Dış topluluklar:** Yalnız ilgili creator/eğitim gruplarının kurallarına uygun, yöneticiye izinli tekil iş birliği önerileri hazırla. Kullanıcının onayı alınmadan üçüncü kişilere iletişim yok. Sadece dizin başvuruları ile organik büyüme garantisi verilmez.
+5. **Ölçüm:** Komutlara verilen bot yanıtlarını (kişisel veri toplamadan) SQLite kayıtlarından say. UTM kampanyalarına bağlı gerçek site oturumları analitik erişim varsa kontrol edilir. Komut kullanımı = site tıklaması veya yeni üye **değildir**. Gerçek üyeleri ve dönüşümleri haftalık gözle.
+
+**İkinci aşama opsiyonu:** Kullanıcıların Telegram sohbetinden çıkmadan araç kullanması istenirse, ayrı bir Telegram Mini App veya doğrudan bot içinde sınırlı metin tabanlı hesaplama modülü tasarla. Fotoğraf/kapak düzenleme mevcut tarayıcıda tutulur. İhtiyaç ve kullanım kanıtı olmadan 50 aracı yeniden yazma.
