@@ -514,13 +514,15 @@ def call_gemini(api_key, prompt, db=None, now=None):
     raise SafeError('Gemini API yanıt vermedi.')
 
 
-def record_inbox_ai_failure(db, update_id):
+def record_inbox_ai_failure(db, update_id, reason=''):
     with db:
+        if reason:
+            db.execute("UPDATE inbox SET reply_text=? WHERE update_id=? AND status='pending'", (('FAIL: ' + str(reason))[:200], update_id))
         db.execute("UPDATE inbox SET note=note||'x' WHERE update_id=? AND status='pending'", (update_id,))
         db.execute("UPDATE inbox SET status='failed' WHERE update_id=? AND status='pending' AND length(note)>=3", (update_id,))
 
 
-def process_inbox_with_ai(db, api, api_key, now, min_delay=120):
+def process_inbox_with_ai(db, api, api_key, now, min_delay=120, verbose=False):
     if (STATE / 'PAUSED').exists():
         return False
     _, used, cooldown_left = gemini_budget_status(db, now)
@@ -566,24 +568,37 @@ def process_inbox_with_ai(db, api, api_key, now, min_delay=120):
         raw_reply = call_gemini(api_key, prompt, db=db, now=now)
     except SafeError as e:
         LOG.warning('gemini_error: %s', e)
-        record_inbox_ai_failure(db, update_id)
+        if verbose:
+            print(f'update_id={update_id}: Gemini hatası: {e}')
+        record_inbox_ai_failure(db, update_id, f'gemini: {e}')
         return False
     if len(raw_reply.strip()) < 15:
-        record_inbox_ai_failure(db, update_id)
+        if verbose:
+            print(f'update_id={update_id}: Gemini çok kısa/boş yanıt verdi.')
+        record_inbox_ai_failure(db, update_id, 'gemini: too short')
         return False
     clean = sanitize_reply_text(raw_reply, campaign_id)
     prev_dup = db.execute("SELECT 1 FROM inbox WHERE status='replied' AND lower(reply_text)=lower(?) LIMIT 1", (clean,)).fetchone()
     if prev_dup:
-        record_inbox_ai_failure(db, update_id)
-        return False
-    try:
-        reply_to_inbox(db, api, update_id, clean, now)
-        LOG.info('ai_replied update_id=%d', update_id)
-        return True
-    except SafeError as e:
-        LOG.warning('reply_error: %s', e)
-        record_inbox_ai_failure(db, update_id)
-        return False
+        clean = clean + ' Let me know your platform and what you tried, and I can be more specific.'
+    last_err = None
+    for candidate in (clean, re.sub(r'\s*https?://\S+', '', clean).strip()):
+        try:
+            reply_to_inbox(db, api, update_id, candidate, now)
+            LOG.info('ai_replied update_id=%d', update_id)
+            if verbose:
+                print(f'update_id={update_id}: yanıt gönderildi.')
+            return True
+        except SafeError as e:
+            last_err = e
+            LOG.warning('reply_error: %s', e)
+            row_now = db.execute('SELECT status FROM inbox WHERE update_id=?', (update_id,)).fetchone()
+            if row_now and row_now['status'] != 'pending':
+                break
+    if verbose:
+        print(f'update_id={update_id}: gönderim reddedildi: {last_err}')
+    record_inbox_ai_failure(db, update_id, f'send: {last_err}')
+    return False
 
 
 AI_TOPICS = [
@@ -937,6 +952,7 @@ def main():
     sub = parser.add_subparsers(dest='command', required=True)
     for command in ['setup', 'set-gemini-key', 'doctor', 'status', 'pause', 'run', 'tick', 'report', 'check-content', 'poll', 'optimize-profile']:
         sub.add_parser(command)
+    sub.add_parser('reply-now')
     rep = sub.add_parser('replace-pending')
     rep.add_argument('--file', default=str(ROOT / 'content.json'))
     rep.add_argument('--start', default=dt.datetime.now(TZ).date().isoformat())
@@ -994,6 +1010,36 @@ def main():
                 if first:
                     pause('İlk içerik yüklendi; yayın başlangıcı onayı bekleniyor.')
                 print('Yeni içerik:', import_content(db, args.file, args.start), '— henüz yayınlanmadı.')
+        elif args.command == 'reply-now':
+            cfg = load_config()
+            api = Telegram(cfg['bot_token'])
+            if not cfg.get('gemini_api_key'):
+                raise SafeError('Gemini anahtarı yok.')
+            for _try in range(40):
+                try:
+                    lock_cm = worker_lock()
+                    lock_cm.__enter__()
+                    break
+                except SafeError:
+                    time.sleep(2)
+            else:
+                raise SafeError('Motor meşgul; 1 dakika sonra tekrar deneyin.')
+            try:
+                now_r = int(time.time())
+                with db:
+                    db.execute("DELETE FROM meta WHERE key='gemini_cooldown_until'")
+                    db.execute("UPDATE inbox SET status='pending',note='',reply_text='' WHERE status='failed' AND reply_message_id IS NULL AND received_at >= ?", (now_r - 86400,))
+                consume_updates(db, api, now_r)
+                handled = 0
+                for _ in range(5):
+                    if not process_inbox_with_ai(db, api, cfg['gemini_api_key'], int(time.time()), min_delay=0, verbose=True):
+                        break
+                    handled += 1
+                print('Gönderilen yanıt:', handled)
+                for r in db.execute("SELECT update_id,status,substr(text,1,60) t,substr(reply_text,1,120) why FROM inbox WHERE status IN ('pending','failed') ORDER BY update_id DESC LIMIT 5"):
+                    print(dict(r))
+            finally:
+                lock_cm.__exit__(None, None, None)
         elif args.command == 'replace-pending':
             with worker_lock():
                 with db:
@@ -1077,7 +1123,7 @@ def main():
                         for r in db.execute("SELECT update_id,text FROM inbox WHERE status IN ('ignored','failed') AND reply_message_id IS NULL AND received_at >= ? AND sender NOT IN ('Telegram','GroupAnonymousBot','Channel_Bot') AND text NOT LIKE '%utm_source=telegram%' AND note NOT LIKE '%Manually%'", (now_init - 86400,)).fetchall():
                             if is_directed_to_us({'text': r['text']}):
                                 db.execute("UPDATE inbox SET status='pending',directed=1,note='' WHERE update_id=?", (r['update_id'],))
-                last_snapshot_attempt, last_report, last_poll, last_backup, last_ai = 0, 0, 0, '', 0
+                last_snapshot_attempt, last_report, last_poll, last_backup, last_ai, last_requeue = 0, 0, 0, '', 0, 0
                 while True:
                     now = int(time.time())
                     with worker_lock():
@@ -1094,6 +1140,10 @@ def main():
                         except Exception:
                             pass
                         gemini_key = cfg.get('gemini_api_key')
+                        if now - last_requeue >= 900:
+                            last_requeue = now
+                            with db:
+                                db.execute("UPDATE inbox SET status='pending',note='' WHERE status='failed' AND reply_message_id IS NULL AND directed=1 AND received_at >= ?", (now - 6 * 3600,))
                         if gemini_key and (now - last_ai >= 30):
                             last_ai = now
                             try:
