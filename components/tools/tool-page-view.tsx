@@ -216,10 +216,10 @@ export function ToolPageView({ tool }: { tool: ToolDef }) {
       <div className="mt-6 flex flex-col justify-between gap-4 rounded-2xl border border-primary/20 bg-primary/5 p-5 sm:flex-row sm:items-center">
         <div>
           <p className="text-sm font-semibold text-foreground">
-            Need a live 2026 algorithm check or have a question about your reach?
+            Have a creator question or need ideas for your next post?
           </p>
           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-            Ask inside our creator Telegram group (<strong>@SocialoraChat</strong>) for instant AI-backed diagnostics, daily growth experiments, and free view drops.
+            Join our creator Telegram group (<strong>@SocialoraChat</strong>) for practical tips, useful free tools and help with specific questions when available.
           </p>
         </div>
         <div className="flex shrink-0 flex-wrap gap-2">
