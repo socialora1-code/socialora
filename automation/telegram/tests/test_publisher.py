@@ -441,5 +441,35 @@ class PublisherTests(unittest.TestCase):
         self.assertEqual('failed', row['status'])
 
 
+    def test_toolkit_commands_are_opt_in_and_include_campaign_tracking(self):
+        self.assertEqual('photo', app.toolkit_command('/photo'))
+        self.assertEqual('score', app.toolkit_command('/score@socialora_publisher_2026_bot'))
+        self.assertEqual('tools', app.toolkit_command('/tools'))
+        self.assertIsNone(app.toolkit_command('please review my photo'))
+        self.assertIsNone(app.toolkit_command('/photo extra'))
+        for command in ('photo', 'blur', 'score', 'thumbnail', 'safezone'):
+            message = app.toolkit_reply(command, 'reply_u999')
+            self.assertIn('utm_campaign=reply_u999', message)
+            self.assertIn('utm_medium=group', message)
+            self.assertEqual(1, message.count('https://'))
+            app.validate_reply_text(message, 'reply_u999')
+            self.assertTrue(app.is_directed_to_us({'text': '/' + command}))
+        self.assertNotIn('https://', app.toolkit_reply('tools', 'reply_u999'))
+
+    def test_toolkit_command_uses_no_gemini_api_and_replies_only_once(self):
+        updates = [{'update_id': 8801, 'message': {
+            'message_id': 8801, 'chat': {'id': -1002},
+            'from': {'id': 81, 'username': 'tester', 'is_bot': False},
+            'text': '/photo'}}]
+        api = FakeTelegram(webhook_url='', updates=updates)
+        app.consume_updates(self.db, api, self.now)
+        with patch.object(app, 'call_gemini', side_effect=AssertionError('Gemini must not be called')):
+            self.assertTrue(app.process_inbox_with_ai(self.db, api, 'dummy', self.now, min_delay=0))
+            self.assertFalse(app.process_inbox_with_ai(self.db, api, 'dummy', self.now, min_delay=0))
+        row = self.db.execute('SELECT * FROM inbox WHERE update_id=8801').fetchone()
+        self.assertEqual('replied', row['status'])
+        self.assertIn('social-media-photo-resizer', row['reply_text'])
+
+
 if __name__ == '__main__':
     unittest.main()
