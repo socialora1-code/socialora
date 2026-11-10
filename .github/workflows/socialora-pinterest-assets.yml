@@ -20,7 +20,7 @@ concurrency:
 jobs:
   build-assets:
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
@@ -35,8 +35,22 @@ jobs:
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           from pathlib import Path
+          import re
+          from urllib.parse import urlsplit, urlunsplit
           queue=json.loads(Path("automation/pinterest/content-queue.json").read_text())
-          missing=[p for p in queue["pins"] if p.get("status")=="draft" and not Path("public/pinterest/"+p["id"]+".png").exists()]
+          code=Path("automation/pinterest/build_visual_assets.py").read_text()
+          version=re.search(r'^RENDERER_VERSION = "([^"]+)"',code,re.M).group(1)
+          manifest_path=Path("public/pinterest/visual-manifest.json")
+          manifest=json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
+          missing=[]
+          for p in queue["pins"]:
+              if p.get("status")!="draft":
+                  continue
+              source=urlsplit(p["url"])
+              clean=urlunsplit((source.scheme,source.netloc,source.path,"",""))
+              item=manifest.get(p["id"],{})
+              if not Path("public/pinterest/"+p["id"]+".png").exists() or item.get("renderer_version")!=version or item.get("cover_hook")!=p.get("cover_hook") or item.get("source_url")!=clean:
+                  missing.append(p["id"])
           print("needed="+("yes" if missing else "no"))
           print("count="+str(len(missing)))
           PY
@@ -47,7 +61,7 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Capture and compose verified premium images
         if: steps.needed.outputs.needed == 'yes'
-        run: python automation/pinterest/build_visual_assets.py --limit 6
+        run: python automation/pinterest/build_visual_assets.py --limit 30
       - name: Commit images only (never publish Pins)
         if: steps.needed.outputs.needed == 'yes'
         run: |
