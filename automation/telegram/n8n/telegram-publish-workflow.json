@@ -74,26 +74,24 @@
     },
     {
       "parameters": {
-        "url": "https://t.me/s/SocialoraOfficial",
-        "authentication": "none",
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "text"
-            }
-          },
-          "timeout": 15000
-        }
+        "operation": "fetchText",
+        "targetUrl": "https://t.me/s/SocialoraOfficial"
       },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.5,
+      "type": "CUSTOM.telegramGrowth",
+      "typeVersion": 1,
       "position": [
         620,
         380
       ],
       "id": "tg-pub-live-01",
       "name": "Canlı Kanal Geçmişini Kontrol Et",
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "telegramApi": {
+          "id": "telegramSocialora01",
+          "name": "Telegram Bot (@socialora_publisher_2026_bot)"
+        }
+      }
     },
     {
       "parameters": {
@@ -170,7 +168,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const { post, nowSec } = $input.first()?.json || {};\nconst text = String(post?.text || '').trim();\nif (text.length < 30 || text.length > 3500) {\n  throw new Error('İçerik uzunluğu sınır dışında (' + text.length + ').');\n}\nif (/\\b\\d{5,}:[A-Za-z0-9_-]{20,}/.test(text) || /\\b(?:100% safe|never drops|guaranteed followers|skyrocket|unleash)\\b/i.test(text) || /(?:\\bsonuç olarak\\b|\\bunutmayın\\b|\\bkapsamlı\\b|\\bin conclusion\\b)/i.test(text)) {\n  throw new Error('İçerikte yasak/robotik kalıp veya gizli bilgi bulundu.');\n}\n\nconst escHtml = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst escAttr = (s) => escHtml(s).replace(/\"/g, '&quot;');\n\nlet out = '';\nlet last = 0;\nconst urlRe = /https?:\\/\\/[^\\s]+/g;\nlet m;\nwhile ((m = urlRe.exec(text)) !== null) {\n  out += escHtml(text.slice(last, m.index));\n  const raw = m[0].replace(/[.,!?)]+$/, '');\n  const tail = m[0].slice(raw.length);\n  try {\n    const u = new URL(raw);\n    if (u.protocol !== 'https:' || u.username || u.password || u.port) {\n      throw new Error('Güvensiz URL: ' + raw);\n    }\n    if (u.hostname === 'www.getsocialora.com' || u.hostname === 'getsocialora.com') {\n      u.hostname = 'www.getsocialora.com';\n      u.searchParams.set('utm_source', 'telegram');\n      u.searchParams.set('utm_medium', post.target);\n      u.searchParams.set('utm_campaign', post.id);\n      const cleanPath = u.pathname.replace(/\\/+$/, '');\n      const label = 'getsocialora.com' + cleanPath;\n      out += '<a href=\"' + escAttr(u.toString()) + '\">' + escHtml(label) + '</a>' + escHtml(tail);\n    } else if (u.hostname === 't.me' && ['/SocialoraOfficial', '/SocialoraChat'].includes(u.pathname) && !u.search) {\n      out += escHtml(m[0]);\n    } else {\n      throw new Error('Beklenmeyen dış bağlantı: ' + raw);\n    }\n  } catch (e) {\n    throw new Error('Bağlantı doğrulama hatası: ' + e.message);\n  }\n  last = m.index + m[0].length;\n}\nout += escHtml(text.slice(last));\n\nreturn [{\n  json: {\n    post,\n    nowSec,\n    chatId: post.target === 'group' ? '@SocialoraChat' : '@SocialoraOfficial',\n    htmlText: out,\n  }\n}];"
+        "jsCode": "const { post, nowSec } = $input.first()?.json || {};\nconst text = String(post?.text || '').trim();\nif (text.length < 30 || text.length > 3500) {\n  throw new Error('İçerik uzunluğu sınır dışında (' + text.length + ').');\n}\nif (/\\b\\d{5,}:[A-Za-z0-9_-]{20,}/.test(text) || /\\b(?:100% safe|never drops|guaranteed followers|skyrocket|unleash)\\b/i.test(text) || /(?:\\bsonuç olarak\\b|\\bunutmayın\\b|\\bkapsamlı\\b|\\bin conclusion\\b)/i.test(text)) {\n  throw new Error('İçerikte yasak/robotik kalıp veya gizli bilgi bulundu.');\n}\n\nconst escHtml = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst escAttr = (s) => escHtml(s).replace(/\"/g, '&quot;');\nconst parseSafeHttpsUrl = (rawStr) => {\n  if (!/^https:\\/\\//i.test(rawStr)) return null;\n  const rest = rawStr.slice(8);\n  const cut = rest.search(/[/?#]/);\n  const auth = cut === -1 ? rest : rest.slice(0, cut);\n  if (!auth || auth.includes('..') || !/^[a-z0-9.-]+$/i.test(auth)) return null;\n  const host = auth.toLowerCase();\n  const tailAll = cut === -1 ? '' : rest.slice(cut);\n  const hIdx = tailAll.indexOf('#');\n  const noHash = hIdx === -1 ? tailAll : tailAll.slice(0, hIdx);\n  const hash = hIdx === -1 ? '' : tailAll.slice(hIdx);\n  const qIdx = noHash.indexOf('?');\n  const pathRaw = qIdx === -1 ? noHash : noHash.slice(0, qIdx);\n  const searchRaw = qIdx === -1 ? '' : noHash.slice(qIdx + 1);\n  const pathname = pathRaw ? (pathRaw.startsWith('/') ? pathRaw : '/' + pathRaw) : '/';\n  return { host, pathname, searchRaw, hash };\n};\nconst buildSocialoraUrl = (parsed, utms) => {\n  const pairs = [];\n  const seen = new Set();\n  if (parsed.searchRaw) {\n    for (const part of parsed.searchRaw.split('&')) {\n      if (!part) continue;\n      const eq = part.indexOf('=');\n      const k = eq === -1 ? part : part.slice(0, eq);\n      const v = eq === -1 ? '' : part.slice(eq + 1);\n      if (Object.prototype.hasOwnProperty.call(utms, k)) {\n        if (!seen.has(k)) {\n          pairs.push(encodeURIComponent(k) + '=' + encodeURIComponent(String(utms[k])));\n          seen.add(k);\n        }\n      } else {\n        pairs.push(part);\n      }\n    }\n  }\n  for (const [k, val] of Object.entries(utms)) {\n    if (!seen.has(k)) pairs.push(encodeURIComponent(k) + '=' + encodeURIComponent(String(val)));\n  }\n  return 'https://www.getsocialora.com' + parsed.pathname + (pairs.length ? '?' + pairs.join('&') : '') + parsed.hash;\n};\n\nlet out = '';\nlet last = 0;\nconst urlRe = /https?:\\/\\/[^\\s]+/g;\nlet m;\nwhile ((m = urlRe.exec(text)) !== null) {\n  out += escHtml(text.slice(last, m.index));\n  const raw = m[0].replace(/[.,!?)]+$/, '');\n  const tail = m[0].slice(raw.length);\n  const u = parseSafeHttpsUrl(raw);\n  if (!u) {\n    throw new Error('Bağlantı doğrulama hatası: Güvensiz veya geçersiz URL: ' + raw);\n  }\n  if (u.host === 'www.getsocialora.com' || u.host === 'getsocialora.com') {\n    const finalUrl = buildSocialoraUrl(u, {\n      utm_source: 'telegram',\n      utm_medium: post.target,\n      utm_campaign: post.id,\n    });\n    const cleanPath = u.pathname.replace(/\\/+$/, '');\n    const label = 'getsocialora.com' + cleanPath;\n    out += '<a href=\"' + escAttr(finalUrl) + '\">' + escHtml(label) + '</a>' + escHtml(tail);\n  } else if (u.host === 't.me' && ['/SocialoraOfficial', '/SocialoraChat'].includes(u.pathname) && !u.searchRaw) {\n    out += escHtml(m[0]);\n  } else {\n    throw new Error('Bağlantı doğrulama hatası: Beklenmeyen dış bağlantı: ' + raw);\n  }\n  last = m.index + m[0].length;\n}\nout += escHtml(text.slice(last));\n\nreturn [{\n  json: {\n    post,\n    nowSec,\n    chatId: post.target === 'group' ? '@SocialoraChat' : '@SocialoraOfficial',\n    htmlText: out,\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
