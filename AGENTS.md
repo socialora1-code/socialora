@@ -84,7 +84,7 @@ Kullanıcının hedefi: sosyal medya hesaplarını tek tek ekleyip içerik payla
 
 | Platform | Tek yayıncı | Not |
 |---|---|---|
-| Telegram (@SocialoraOfficial, @SocialoraChat) | Geçiş aşamasında: canlı yayıncı şu an evdeki telefon (Termux); hedef yayıncı yerel n8n (`tgPublishSocial01`, `tgGroupAssistant01`) | n8n akışları ve `telegramPolling` özel düğümü hazırlandı (`active: 0`). Kullanıcı Telegram Bot Tokenini n8n'e girip telefonda `sv down socialora-telegram socialora-updater` ile durdurmadan n8n Telegram akışları aktif EDİLMEZ. Geçişte `tgPublishSocial01` canlı `t.me/s/SocialoraOfficial` geçmişini okuyarak çift yayını önler. |
+| Telegram (@SocialoraOfficial, @SocialoraChat) | Yerel n8n (`tgPublishSocial01`, `tgGroupAssistant01`, özel düğüm `telegramPolling`) | 10 Kasım 2026 21:32 TSİ itibarıyla canlı geçiş yapıldı (`active: 1`). Telefondaki Termux servisi durduruldu (`sv down socialora-telegram socialora-updater`); Termux'u paralel yeniden açma. `tgPublishSocial01` (10 dk) canlı `t.me/s/SocialoraOfficial` geçmişini okuyup çift yayını önler; `tgGroupAssistant01` (30 sn) `/tools` komutlarına anında, grup sorularına 2–3 dk gecikmeyle Gemini yanıtı verir. |
 | Pinterest | Yerel n8n, workflow `KsUuvklaYVqughM0` (`pinterest-otomasyon.json`) | GitHub Actions yayın yapmaz (`socialora-pinterest-assets.yml` devre dışı). Kullanıcı 10 Kasım 2026'da ChatGPT tarafındaki harici Pinterest görevini kapattığını bildirdi; Pinterest OAuth anahtarı girilip tek Pin denenene kadar zamanlayıcı kapalı kalır. |
 | Yeni platformlar | Yalnızca yerel n8n | Önce mevcut başka yayıncı var mı kontrol edilir. |
 
