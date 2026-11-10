@@ -14,7 +14,9 @@
       "Cover hooks must be 4–7 honest words; every Pin contains one immediately usable takeaway and a modest Socialora signature.",
       "Before a scheduled Pin, check the verified publicly served generated asset at /pinterest/{id}.png and the matching visual-manifest.json; if absent or inaccessible, skip rather than use a generic illustration.",
       "Never imply mock platform analytics, fabricated user results or functionality not confirmed on the website.",
-      "The official Pinterest API must return actual pin ID and media URL before marking queue status published."
+      "The official Pinterest API must return actual pin ID and media URL before marking queue status published.",
+      "Prioritize organic outbound website clicks without misleading clickbait: one clear creator problem + helpful instruction + exact matching free tool, naturally keyword-optimized title and description.",
+      "No two consecutive published Pins may reuse the same composition when alternative ready drafts are available; do not merely recolor an identical layout."
     ],
     "asset_pipeline": {
       "source": "Authentic site screenshots captured with Playwright on GitHub Actions",
@@ -23,7 +25,10 @@
       "image_url_pattern": "https://www.getsocialora.com/pinterest/{id}.png",
       "manifest_url": "https://www.getsocialora.com/pinterest/visual-manifest.json",
       "generation_does_not_publish": true,
-      "notes": "Assets are prebuilt and publicly served from /public/pinterest. Only validated assets with a matching source_url may be used. Do not use draft image_url:null as evidence an image was already published."
+      "notes": "Assets are prebuilt and publicly served from /public/pinterest. Only validated assets with a matching source_url may be used. Do not use draft image_url:null as evidence an image was already published.",
+      "layout_system": "Six genuinely different verified screenshot-based compositions: editorial_split, mobile_showcase, tutorial_steps, magazine_feature, browser_insight, gallery_feature",
+      "required_renderer_version": "2026-11-10-v3-layouts",
+      "publish_checks": "Only use an existing manifest asset with same ID, cover_hook, source URL, required renderer version and a varied composition. Reject broken link, illegible screenshot or repeat design from recent Pins."
     }
   },
   "pins": [
