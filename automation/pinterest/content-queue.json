@@ -44,16 +44,17 @@
     },
     {
       "id": "pnt_safezone_03",
-      "status": "draft",
+      "status": "published",
       "board": "Reels & TikTok Creator Tips",
-      "title": "Reels & TikTok Safe Zones for Text",
-      "description": "Your subtitles might be hiding under on-screen buttons. Preview where captions and key text belong before you publish. Use the free Reels and TikTok safe-zone guide.",
+      "title": "Reels & TikTok Safe Zones: Keep Captions Visible",
+      "description": "Important subtitles can disappear behind on-screen controls. Keep key text near the clear center and preview your layout before publishing. Use the free safe-zone guide to check your next short video.",
       "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_safezone_03",
       "image_brief": "Simple vertical phone mockup with distinct safe central text area and lightly shaded UI-edge zones; label diagram as illustrative, not pixel-exact.",
-      "image_url": null,
-      "published_pin_id": null,
+      "image_url": "https://i.pinimg.com/1200x/ca/2d/9a/ca2d9abc1c2bdb776523928822aeaaba.jpg",
+      "published_pin_id": "267753140343764268",
       "cover_hook": "Keep Captions Off the Buttons",
-      "visual_style": "annotation-phone-guide"
+      "visual_style": "annotation-phone-guide",
+      "published_at": "2026-11-10T00:28:03Z"
     },
     {
       "id": "pnt_thumbnail_04",
