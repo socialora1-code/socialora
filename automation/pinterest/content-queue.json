@@ -323,17 +323,19 @@
     },
     {
       "id": "pnt_22_igengagement",
-      "status": "draft",
+      "status": "published",
       "board": "Social Media Calculators & Insights",
-      "title": "Instagram Engagement Rate: What Does It Tell You?",
-      "description": "Likes alone don't show the full picture. Compare relevant interactions against the chosen audience size, and use the result as one signal—not proof of overall success. Try the free calculator.",
+      "title": "Instagram Engagement Rate: Look Beyond Likes",
+      "description": "Likes alone don't show the full picture. Compare interactions against the same audience size and timeframe to make your own posts easier to evaluate. Try Socialora's free Instagram Engagement Rate Calculator.",
       "url": "https://www.getsocialora.com/tools/instagram-engagement-rate-calculator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_22_igengagement",
       "cover_hook": "Look Beyond Instagram Likes",
       "image_brief": "A clean, labeled illustrative equation layout with no unsupported industry benchmark.",
-      "visual_style": "data",
+      "visual_style": "magazine_feature",
       "content_pillar": "calc",
-      "image_url": null,
-      "published_pin_id": null
+      "image_url": "https://i.pinimg.com/1200x/2f/45/82/2f4582c3ec170199d832ff34ce5b8ff8.jpg",
+      "published_pin_id": "267753140343776911",
+      "published_at": "2026-11-10T09:43:43Z",
+      "composition": "magazine_feature"
     },
     {
       "id": "pnt_23_tiktokengagement",
