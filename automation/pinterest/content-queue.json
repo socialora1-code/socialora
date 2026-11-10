@@ -155,17 +155,19 @@
     },
     {
       "id": "pnt_10_captionhook",
-      "status": "draft",
+      "status": "published",
       "board": "Free Caption & Content Ideas",
-      "title": "Instagram Caption Formula: Hook, Context, Next Step",
-      "description": "You don't need a long caption to say something useful. Start with one clear point, add a practical detail, then invite a specific next step. Generate a starting draft and personalize it.",
+      "title": "Instagram Caption Generator: A Hook, Context, and Next Step",
+      "description": "Start your Instagram caption with one specific hook, add the context your audience needs, and finish with a useful next step. Draft a version in Socialora’s free Instagram Caption Generator, then edit it to sound like you.",
       "url": "https://www.getsocialora.com/tools/instagram-caption-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_10_captionhook",
       "cover_hook": "Write Captions People Read",
       "image_brief": "A typography-led 3-section stack: hook, value, action; show one short original caption example.",
-      "visual_style": "type",
+      "visual_style": "magazine_feature",
       "content_pillar": "writing",
-      "image_url": null,
-      "published_pin_id": null
+      "image_url": "https://i.pinimg.com/1200x/3d/4e/3a/3d4e3a4b7a1ecee705e453ced38e51d4.jpg",
+      "published_pin_id": "267753140343782351",
+      "published_at": "2026-11-10T13:07:09Z",
+      "composition": "magazine_feature"
     },
     {
       "id": "pnt_11_reelideas",
