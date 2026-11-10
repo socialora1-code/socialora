@@ -58,5 +58,65 @@
     "cover_hook": "A Better TikTok Bio",
     "dimensions": "1000x1500",
     "status": "asset_only_not_published"
+  },
+  "pnt_10_captionhook": {
+    "image_path": "/pinterest/pnt_10_captionhook.png",
+    "source_url": "https://www.getsocialora.com/tools/instagram-caption-generator",
+    "verified_h1": "Instagram Caption Generator",
+    "captured_at": "2026-11-10T08:17:25.055718+00:00",
+    "visual_type": "authentic_site_screenshot_editorial",
+    "cover_hook": "Write Captions People Read",
+    "dimensions": "1000x1500",
+    "status": "asset_only_not_published"
+  },
+  "pnt_11_reelideas": {
+    "image_path": "/pinterest/pnt_11_reelideas.png",
+    "source_url": "https://www.getsocialora.com/tools/instagram-content-ideas-generator",
+    "verified_h1": "Instagram Content Ideas Generator",
+    "captured_at": "2026-11-10T08:17:26.628468+00:00",
+    "visual_type": "authentic_site_screenshot_editorial",
+    "cover_hook": "Stuck on Reel Ideas?",
+    "dimensions": "1000x1500",
+    "status": "asset_only_not_published"
+  },
+  "pnt_12_tiktokcaption": {
+    "image_path": "/pinterest/pnt_12_tiktokcaption.png",
+    "source_url": "https://www.getsocialora.com/tools/tiktok-caption-generator",
+    "verified_h1": "TikTok Caption Generator",
+    "captured_at": "2026-11-10T08:17:28.109274+00:00",
+    "visual_type": "authentic_site_screenshot_editorial",
+    "cover_hook": "Make Every Word Count",
+    "dimensions": "1000x1500",
+    "status": "asset_only_not_published"
+  },
+  "pnt_14_username": {
+    "image_path": "/pinterest/pnt_14_username.png",
+    "source_url": "https://www.getsocialora.com/tools/instagram-username-generator",
+    "verified_h1": "Instagram Username Generator",
+    "captured_at": "2026-11-10T08:17:30.964902+00:00",
+    "visual_type": "authentic_site_screenshot_editorial",
+    "cover_hook": "Easy to Say. Easy to Find.",
+    "dimensions": "1000x1500",
+    "status": "asset_only_not_published"
+  },
+  "pnt_15_facebookcaption": {
+    "image_path": "/pinterest/pnt_15_facebookcaption.png",
+    "source_url": "https://www.getsocialora.com/tools/facebook-caption-generator",
+    "verified_h1": "Facebook Caption Generator",
+    "captured_at": "2026-11-10T08:17:32.449935+00:00",
+    "visual_type": "authentic_site_screenshot_editorial",
+    "cover_hook": "Lead With a Useful Tip",
+    "dimensions": "1000x1500",
+    "status": "asset_only_not_published"
+  },
+  "pnt_16_xbio": {
+    "image_path": "/pinterest/pnt_16_xbio.png",
+    "source_url": "https://www.getsocialora.com/tools/twitter-bio-generator",
+    "verified_h1": "Twitter / X Bio Generator",
+    "captured_at": "2026-11-10T08:17:33.964367+00:00",
+    "visual_type": "authentic_site_screenshot_editorial",
+    "cover_hook": "Your Bio, One Clear Line",
+    "dimensions": "1000x1500",
+    "status": "asset_only_not_published"
   }
 }
