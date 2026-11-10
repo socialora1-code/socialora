@@ -1,5 +1,5 @@
 # Socialora Pinterest — Global Organic Growth Playbook
-Updated 2026-11-09. Account: @socialoratools (BUSINESS). Website: https://www.getsocialora.com/tools.
+Updated 2026-11-10. Account: @socialoratools (BUSINESS). Website: https://www.getsocialora.com/tools.
 
 ## Objective and audience
 Verified outbound website clicks to specific free creator tools; support with saves and organic impressions. Do not use follower count alone as the main success measure. Global English-speaking creators, freelancers and small businesses; do not target the U.S. exclusively.
@@ -32,3 +32,22 @@ No automated mass-follow, bot comments, purchased traffic, engagement swaps, mis
 
 Reference: https://help.pinterest.com/en/business/article/pin-performance-and-distribution
 Reference: https://business.pinterest.com/en-us/blog/how-to-build-audience-pinterest/
+
+
+## Screenshot-first premium visual engine — effective immediately
+A scheduled Pin may only use a new **verified asset** or a demonstrably superior, independently checked original design. Do not silently fall back to another purple gradient or an unverified generated UI illustration.
+
+**Automatic preproduction:** GitHub Actions `.github/workflows/socialora-pinterest-assets.yml` runs `automation/pinterest/build_visual_assets.py` daily and on playbook/script updates. Playwright visits the REAL public tool page and verifies 200 response and readable H1; Pillow crops the authentic UI and composes an original mobile-readable 1000×1500 PNG. Generated image files live at `public/pinterest/{queue_id}.png`, and independent audit records live at `public/pinterest/visual-manifest.json`. This job creates VISUAL ASSETS ONLY; it never calls Pinterest, updates a published status, or sets a Pin ID. Wait for GitHub Action success and the publicly accessible file before treating it as ready. Missing/unreadable screenshot = SKIP, not fabricated UI.
+
+**At each scheduled posting run:**
+1. Read current queue + this playbook and verify the connected `@socialoratools` Pinterest profile, list of recent Pins, and 3-hour / 4-per-day / board-rotation gates. Do not duplicate a pending Pin just because a prior queue write failed.
+2. Select the strongest eligible draft with a fresh topic and exact tool URL. Check `https://www.getsocialora.com/pinterest/visual-manifest.json` has the entry and `https://www.getsocialora.com/pinterest/{id}.png` serves a genuine image; compare source URL in manifest with the draft URL without UTM, status `asset_only_not_published`, dimensions `1000x1500` and cover hook. If Vercel has not deployed it or the image fails review, skip this slot and use no older fallback artwork.
+3. **Visual QA:** view the image if tooling supports it. Big 4–7-word specific claim, 1 actionable tip, actual readable crop of the relevant tool, clear screenshot provenance, original color/layout, small brand signature, no false metrics or watermarks. Reject empty/awkward screenshots, clipped text and tiny illegible tips. Styles should rotate between bright editorial, photo/device contextual examples (when authentic), helpful comparisons, annotated walkthroughs and clean infographics. A screenshot is a component, NOT an excuse to paste an unedited website screenshot as the entire Pin. No contrived Before/After results.
+4. Give an accurate English search-title whose first 40 chars carry the specific user intent, a natural 2–3-sentence description with concrete advice and no keyword stuffing, a precise real-image ALT_TEXT, matching board and original UTM destination. Publish at MOST ONE using official `PINTEREST_CREATE_PIN` with URL media source. A real returned ID + media URL are required before updating queue; check account Pins after ambiguous network failures to prevent a duplicate.
+5. On confirmed success update **only** the selected pin entry with status, id, time, returned image URL, exact title and description. Never alter the existing published items, Telegram, or FivePicked. If the asset is pending, keep the draft, do not claim success.
+
+**Search and creative strategy:** The hook sells an idea, not fabricated results: e.g. "Make Your Instagram Bio Clearer" over "Gain 10K Followers". Real screenshots should use clean crop and contrasting colorful framing, varied screenshot position and prominent short practical text. Use the target tool name + problem keyword naturally in title/description, and choose 1 related phrase; do not repeat brand/hashtags to fill space.
+
+**Organic performance diagnostic:** A few new Pins with zero impressions are not proof of a permanent reach problem. Before aggressive creative or frequency changes check public Pin visibility, website claiming/verification, indexed images/landing pages and reporting latency. After 7–14 days compare actual impressions, saves, outbound clicks by visual and topic and revise based on evidence; never invent impressions or visits.
+
+**Failure isolation:** GitHub Actions asset generation is independent of the existing scheduled Pinterest publisher. Generation commits must touch only `public/pinterest/`. The publisher may only create a Pin once a validated asset is available; do not add a second automatic publisher or a fifth daily publishing slot.
