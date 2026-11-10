@@ -75,3 +75,51 @@ Antigravity'nin web çalışma ortamı sürekli açık bir sunucu olarak kabul e
 - Gönderi/yanıtlardaki site linkleri Telegram'da kısa metin olarak görünür (HTML anchor), UTM href içinde kalır.
 - Kanaldan gruba otomatik düşen mesajlar (@Telegram) yok sayılır.
 - Profil/Bio ve sabit mesaj: `socialora optimize-profile` (telefonda tek sefer).
+
+## Çok platformlu otomasyon ana talimatı (10 Kasım 2026, kullanıcı talebi)
+
+Kullanıcının hedefi: sosyal medya hesaplarını tek tek ekleyip içerik paylaşımını, büyümeyi ve getsocialora.com trafiğini otomatik, insan uzmanı kalitesinde ve ban/spam riski olmadan yürütmek. Kullanıcı manuel iş istemez; ajan anahtar giriş ekranına kadar her adımı kendisi yapar, ekranı açar, kullanıcı yalnızca anahtarı yapıştırır/Connect der.
+
+### Platform başına tek yayıncı (çakışma yasağı)
+
+| Platform | Tek yayıncı | Not |
+|---|---|---|
+| Telegram (@SocialoraOfficial, @SocialoraChat) | Evdeki telefon, Termux `socialora` servisi | 10 Kasım 2026'da kanalda günlük gönderiler canlı doğrulandı. n8n bu bota yayın yapmaz, getUpdates/webhook kurmaz. |
+| Pinterest | Yerel n8n, workflow `KsUuvklaYVqughM0` (`pinterest-otomasyon.json`) | GitHub Actions yayın yapmaz (`socialora-pinterest-assets.yml` devre dışı). ChatGPT'deki harici Scheduled Task kullanıcı tarafından kapatılmalı; kapanmadan n8n zamanlayıcısı açılmaz. |
+| Yeni platformlar | Yalnızca yerel n8n | Önce mevcut başka yayıncı var mı kontrol edilir. |
+
+### Yeni platform ekleme sırası
+
+1. Resmi API ve izin verilen işlemleri doğrula (resmi dokümandan). Resmi API yoksa tarayıcı otomasyonu/bot ile hesap yönetme; kullanıcıya açıkça söyle.
+2. n8n'de credential şablonunu ve workflow'u CLI/API ile hazırla; workflow pasif (inactive) kalsın.
+3. Credential ekranını Chrome'da (CDP 9222, SocialoraChromeProfile) aç; anahtarı kullanıcı girer. Anahtar sohbete, repoya, loga yazılmaz/istenmez.
+4. Tek içerikle test et, sonucu platformda gör (id/URL). Sonra zamanlayıcıyı aç.
+5. Durumu "hazır kod" / "canlı doğrulandı" ayrımıyla raporla.
+
+### İçerik kalitesi (bütün platformlar)
+
+- Her gönderi tek problem, somut adım veya özgün örnek. Kanca ile başla, doğal konuşma dili, platformun formatına uygun uzunluk.
+- Yasak kalıplar: "sonuç olarak", "unutmayın", "kapsamlı", "in conclusion", "game-changer", "unlock", "dive into", "elevate", genel övgü, uydurma deneyim/istatistik, büyüme veya güvenlik garantisi.
+- Aynı metni platformlar arasında kopyalama; her platform için yeniden yaz. Konu, açılış ve formatı döndür.
+- Site linkleri UTM'li: `utm_source=<platform>`, `utm_medium=<channel|group|pin|post>`, `utm_campaign=<icerik_id>`. Doğrudan satış içeriği en fazla %15.
+
+### Hız sınırları (ban önleme)
+
+- Pinterest: günde en fazla 4 Pin, 12:00–02:00 TSİ, aralar en az 3 saat, saatler rastgele kaydırılır. Aynı URL'ye art arda Pin yok.
+- Telegram: telefon takvimi (günde 5 kanal, haftada 2 grup konusu); ek yayın eklenmez.
+- Yeni hesap/platform ilk 2 hafta normal hacmin yarısıyla başlar.
+- Hata/429 gelirse tekrar yığma; bekle, kaydı çöz, sonra devam.
+
+### Etkileşim (beğeni, takip, yorum) kuralları
+
+- Yalnızca resmi API'nin izin verdiği işlemler yapılır. Pinterest API v5'te yorum yapma ve beğeni uç noktası yoktur; sadece Pin oluşturma, panoya kaydetme ve metrik okuma vardır. Bunu varmış gibi gösterme.
+- Başkalarının hesaplarına toplu/otomatik takip, beğeni, yorum veya DM yapılmaz (platform kuralları ihlali, ban sebebi). Davetsiz gruplara paylaşım yok.
+- İzin verilen otomatik etkileşim: kendi gönderilerimize/grubumuza gelen sorulara bağlamı okuyarak, gecikmeli (2–3 dk), kısa, emojisiz, doğrulanmış bilgiyle yanıt. Bilgi yoksa yanıt verme.
+- Üçüncü kişilere iletişim/takas, çekiliş, para harcama: önce kullanıcı onayı.
+
+### Ajanın çalışma biçimi
+
+- Kullanıcı Türkçe, kısa ve samimi rapor ister. Her mesajda tek net adım ver.
+- Mümkün olan her şeyi CLI/API ile ajan yapar; tarayıcıda kullanıcıya sadece anahtar/giriş ekranı bırakılır.
+- n8n: `n8n.cmd` `C:\Users\idoca\AppData\Local\Programs\nodejs` içinde, arayüz http://localhost:5678, veri `C:\Users\idoca\.n8n`. JSON dosyalarını BOM'suz UTF-8 yaz. n8n sekmesinde browser-id başlığı olmadan `/rest` çağrısı yapma (oturumu düşürür).
+- Kanıt olmadan "canlı", "çalışıyor", "büyüdü" deme; ölçülemeyen değer için "veri yok".
