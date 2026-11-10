@@ -1,18 +1,11 @@
-name: Socialora Pinterest Visual Assets
+name: Socialora Pinterest Visual Assets (Disabled)
 
+# Disabled per user request: Pinterest automation moved to local n8n.
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "8 1 * * *"
-  push:
-    paths:
-      - automation/pinterest/build_visual_assets.py
-      - automation/pinterest/content-queue.json
-      - automation/pinterest/growth-playbook.md
-      - .github/workflows/socialora-pinterest-assets.yml
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: socialora-pinterest-assets-main
@@ -20,6 +13,7 @@ concurrency:
 
 jobs:
   build-assets:
+    if: false
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
