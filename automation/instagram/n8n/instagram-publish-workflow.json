@@ -1,0 +1,331 @@
+{
+  "id": "igPublishSocial01",
+  "name": "Socialora Instagram - Planlı Paylaşım (@socialora1)",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Socialora Instagram Yayıncısı (@socialora1)\n- Resmi **Instagram API with Unified Login** (`graph.facebook.com/v21.0`, IG ID `17841440817947810`) kullanır.\n- İlk 2 hafta güvenli başlangıç: günde en fazla **1** paylaşım (`13:00–21:59` TSİ), önce canlı IG geçmişini kontrol edip çift paylaşımı önler.\n- Yalnızca herkese açık **4:5 (`1080x1350`) JPEG** görsellerle yayın yapar; tek canlı test onaylanana kadar pasif kalır.",
+        "height": 190,
+        "width": 460,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        100,
+        60
+      ],
+      "id": "ig-pub-note-01",
+      "name": "Kurulum Notu"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        120,
+        300
+      ],
+      "id": "ig-pub-sched-01",
+      "name": "Zamanlayıcı (1 Saat)"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        120,
+        480
+      ],
+      "id": "ig-pub-man-01",
+      "name": "Manuel Tetikle"
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v21.0/17841440817947810?fields=id,username,name,media_count",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        380
+      ],
+      "id": "ig-pub-me-01",
+      "name": "Instagram Hesabı Doğrula",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "FHKGjqwlc4mZYCqj",
+          "name": "Instagram API (@socialora1)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v21.0/17841440817947810/media?fields=id,caption,timestamp,permalink&limit=15",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        620,
+        380
+      ],
+      "id": "ig-pub-recent-01",
+      "name": "Son Paylaşımları Çek",
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "FHKGjqwlc4mZYCqj",
+          "name": "Instagram API (@socialora1)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://raw.githubusercontent.com/socialora1-code/socialora/main/automation/instagram/content-queue.json",
+        "authentication": "none",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 15000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        860,
+        380
+      ],
+      "id": "ig-pub-gh-01",
+      "name": "GitHub - Kuyruğu Çek",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const me = $('Instagram Hesabı Doğrula').first()?.json || {};\nconst igUserId = String(me.user_id || me.id || '').trim();\nif (!igUserId) {\n  throw new Error('Instagram hesabı doğrulanamadı. Token veya hesap türünü kontrol edin.');\n}\n\nconst recentRaw = $('Son Paylaşımları Çek').first()?.json || {};\nconst recentPosts = Array.isArray(recentRaw.data) ? recentRaw.data : [];\n\nconst ghRaw = $input.first()?.json || {};\nlet posts = [];\ntry {\n  const parsed = typeof ghRaw === 'string' ? JSON.parse(ghRaw) : (typeof ghRaw.data === 'string' ? JSON.parse(ghRaw.data) : ghRaw);\n  if (Array.isArray(parsed.posts)) posts = parsed.posts;\n} catch {}\n\nif (posts.length === 0) {\n  posts = [\n    {\n      id: 'ig_01_nocrop_blur',\n      image_url: 'https://www.getsocialora.com/instagram/ig_01_nocrop_blur.jpg',\n      caption: 'Vertical shots get cut awkwardly when Instagram forces a tighter feed crop.\\n\\nKeep the whole frame and pad the edges with a soft blur instead.\\n\\nFree browser No-Crop Blur tool in bio: getsocialora.com/tools/instagram-no-crop-blur-background\\n\\n#instagramtips #creatortools #contentcreation #socialmediatips'\n    }\n  ];\n}\n\nconst sd = $getWorkflowStaticData('global');\nif (!Array.isArray(sd.sentIds)) sd.sentIds = [];\nif (!Array.isArray(sd.sentHistory)) sd.sentHistory = [];\nsd.lastPublishedAt = Number(sd.lastPublishedAt || 0);\n\nconst nowSec = Math.floor(Date.now() / 1000);\nconst trtNow = new Date((nowSec + 3 * 3600) * 1000);\nconst todayTrt = trtNow.toISOString().slice(0, 10);\nconst hourTrt = trtNow.getUTCHours();\n\nconst mode = this.getMode ? this.getMode() : 'trigger';\nconst isManual = mode === 'manual';\n\n// Live dedup against Instagram recent media\nlet latestLiveTs = 0;\nlet liveTodayCount = 0;\nconst liveCaptions = [];\nfor (const m of recentPosts) {\n  if (m.caption) liveCaptions.push(String(m.caption).toLowerCase().trim());\n  if (m.timestamp) {\n    const ts = Math.floor(Date.parse(m.timestamp) / 1000);\n    if (Number.isFinite(ts) && ts > 0) {\n      if (ts > latestLiveTs) latestLiveTs = ts;\n      const dStr = new Date((ts + 3 * 3600) * 1000).toISOString().slice(0, 10);\n      if (dStr === todayTrt) liveTodayCount += 1;\n    }\n  }\n}\n\nif (!isManual) {\n  if (hourTrt < 13 || hourTrt > 21) return [];\n  const effectiveLast = Math.max(sd.lastPublishedAt, latestLiveTs);\n  if (liveTodayCount >= 1) return [];\n  if (effectiveLast && (nowSec - effectiveLast < 20 * 3600)) return [];\n  // Pseudo-random minute window per calendar day so hourly triggers don't post on the exact same hour every day\n  const dayNum = Number(todayTrt.replace(/-/g, ''));\n  const targetHour = 14 + (dayNum % 7);\n  if (hourTrt < targetHour) return [];\n}\n\nconst sentSet = new Set(sd.sentIds);\nconst candidate = posts.find((p) => {\n  if (!p || !p.id || !p.image_url || !p.caption) return false;\n  if (sentSet.has(p.id)) return false;\n  if (!/^https:\\/\\//i.test(p.image_url) || !/\\.jpe?g(?:\\?|$)/i.test(p.image_url)) return false;\n  const firstLine = String(p.caption).split('\\n')[0].toLowerCase().trim();\n  if (firstLine.length >= 20 && liveCaptions.some((c) => c.includes(firstLine))) return false;\n  return true;\n});\n\nif (!candidate) return [];\n\nreturn [{\n  json: {\n    igUserId,\n    username: String(me.username || 'socialora1'),\n    postId: candidate.id,\n    imageUrl: candidate.image_url,\n    caption: candidate.caption,\n    nowSec\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        380
+      ],
+      "id": "ig-pub-pick-01",
+      "name": "İçerik Seç & Tekrar Kontrolü"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{ $json.igUserId }}/media",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ image_url: $json.imageUrl, caption: $json.caption }) }}",
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1340,
+        380
+      ],
+      "id": "ig-pub-cont-01",
+      "name": "Medya Konteyneri Oluştur",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "FHKGjqwlc4mZYCqj",
+          "name": "Instagram API (@socialora1)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 5,
+        "unit": "seconds"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1560,
+        380
+      ],
+      "id": "ig-pub-wait-01",
+      "name": "Konteyner İşlenmesini Bekle"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{ $('İçerik Seç & Tekrar Kontrolü').first().json.igUserId }}/media_publish",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ creation_id: $('Medya Konteyneri Oluştur').first().json.id }) }}",
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1780,
+        380
+      ],
+      "id": "ig-pub-send-01",
+      "name": "Gönderiyi Yayınla",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "FHKGjqwlc4mZYCqj",
+          "name": "Instagram API (@socialora1)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const picked = $('İçerik Seç & Tekrar Kontrolü').first().json;\nconst published = $input.first()?.json || {};\nconst sd = $getWorkflowStaticData('global');\nif (!Array.isArray(sd.sentIds)) sd.sentIds = [];\nif (!Array.isArray(sd.sentHistory)) sd.sentHistory = [];\nif (!sd.sentIds.includes(picked.postId)) sd.sentIds.push(picked.postId);\nsd.lastPublishedAt = Math.floor(Date.now() / 1000);\nsd.sentHistory.push({\n  postId: picked.postId,\n  igMediaId: String(published.id || ''),\n  sentAt: sd.lastPublishedAt\n});\nsd.sentHistory = sd.sentHistory.slice(-50);\nreturn [{ json: { ok: true, postId: picked.postId, igMediaId: published.id || null, username: picked.username } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        380
+      ],
+      "id": "ig-pub-save-01",
+      "name": "Yayın Kaydını Güncelle"
+    }
+  ],
+  "connections": {
+    "Zamanlayıcı (1 Saat)": {
+      "main": [
+        [
+          {
+            "node": "Instagram Hesabı Doğrula",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manuel Tetikle": {
+      "main": [
+        [
+          {
+            "node": "Instagram Hesabı Doğrula",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Instagram Hesabı Doğrula": {
+      "main": [
+        [
+          {
+            "node": "Son Paylaşımları Çek",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Son Paylaşımları Çek": {
+      "main": [
+        [
+          {
+            "node": "GitHub - Kuyruğu Çek",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub - Kuyruğu Çek": {
+      "main": [
+        [
+          {
+            "node": "İçerik Seç & Tekrar Kontrolü",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "İçerik Seç & Tekrar Kontrolü": {
+      "main": [
+        [
+          {
+            "node": "Medya Konteyneri Oluştur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Medya Konteyneri Oluştur": {
+      "main": [
+        [
+          {
+            "node": "Konteyner İşlenmesini Bekle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Konteyner İşlenmesini Bekle": {
+      "main": [
+        [
+          {
+            "node": "Gönderiyi Yayınla",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gönderiyi Yayınla": {
+      "main": [
+        [
+          {
+            "node": "Yayın Kaydını Güncelle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Istanbul",
+    "saveExecutionProgress": true
+  },
+  "pinData": {},
+  "tags": []
+}

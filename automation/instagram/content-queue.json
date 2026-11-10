@@ -1,0 +1,50 @@
+{
+  "brand": "Socialora Creator Tools",
+  "channel": "instagram",
+  "account": "@socialora1",
+  "schedule_intent": "First 2 weeks ramp-up: max 1 post per Europe/Istanbul day between 13:00 and 21:59 TRT at varied minutes. JPEG 4:5 (1080x1350) images only.",
+  "posts": [
+    {
+      "id": "ig_01_nocrop_blur",
+      "category": "tool",
+      "title": "Stop Cropping Out the Best Part of Your Photo",
+      "image_url": "https://www.getsocialora.com/instagram/ig_01_nocrop_blur.jpg",
+      "caption": "Vertical shots get cut awkwardly when Instagram forces a tighter feed crop.\n\nInstead of slicing heads or background details off, keep the whole frame and pad the edges with a clean soft blur.\n\nSave this tip for your next carousel, and test our free browser No-Crop Blur tool via the link in bio (getsocialora.com/tools/instagram-no-crop-blur-background).\n\n#instagramtips #creatortools #contentcreation #socialmediatips #instagramgrowth"
+    },
+    {
+      "id": "ig_02_safezone",
+      "category": "tool",
+      "title": "Keep Reel Captions Out of the UI Buttons",
+      "image_url": "https://www.getsocialora.com/instagram/ig_02_safezone.jpg",
+      "caption": "If your subtitles sit in the bottom 25% of a Reel, the caption box and like buttons cover half your words.\n\nKeep hook text above the lower third and inside the center safe zone before you export.\n\nYou can preview your frame against the real Reels overlay with our free Safe Zone Guide (link in bio: getsocialora.com/tools/reels-tiktok-safe-zone-guide).\n\n#reelstips #videoediting #contentcreator #instagramreels #creatortools"
+    },
+    {
+      "id": "ig_03_bio_clarity",
+      "category": "tool",
+      "title": "3-Line Bio Formula That Turns Visitors Into Followers",
+      "image_url": "https://www.getsocialora.com/instagram/ig_03_bio_clarity.jpg",
+      "caption": "People decide in about two seconds whether your profile is worth following.\n\nDrop vague buzzwords and stick to three lines:\n1. Who you help and with what\n2. One concrete reason they get value every week\n3. One clear next step for your link\n\nWant quick variations for your niche? Try the free Bio Generator in our bio link (getsocialora.com/tools/instagram-bio-generator).\n\n#instagrambio #profileoptimization #creatortips #smallbusinessmarketing #socialora"
+    },
+    {
+      "id": "ig_04_shadowban_check",
+      "category": "tool",
+      "title": "Low Views Usually Mean Weak Hook, Not a Shadowban",
+      "image_url": "https://www.getsocialora.com/instagram/ig_04_shadowban_check.jpg",
+      "caption": "Before assuming your account is restricted, check two things first: Account Status in settings and your 3-second retention on recent Reels.\n\nMost reach dips come from slow openings or repeated banned hashtags rather than an account penalty.\n\nRun a quick hashtag and reach sanity check with our free Instagram Shadowban Checker (link in bio: getsocialora.com/tools/instagram-shadowban-checker).\n\n#instagramalgorithm #reelstips #reachdrop #creatoradvice #instagramtips"
+    },
+    {
+      "id": "ig_05_sponsorship_calc",
+      "category": "tool",
+      "title": "Stop Guessing What to Charge for a Brand Reel",
+      "image_url": "https://www.getsocialora.com/instagram/ig_05_sponsorship_calc.jpg",
+      "caption": "Follower count alone is a bad way to price a brand integration.\n\nBase your quote on your real 30-day average views, saves, usage rights, and exclusivity window.\n\nGet a realistic starting range before replying to a brand email with our free Sponsorship Rate Calculator (link in bio: getsocialora.com/tools/instagram-sponsorship-rate-calculator).\n\n#ugccreator #branddeals #influencertips #creatorbusiness #socialmediamarketing"
+    },
+    {
+      "id": "ig_06_photo_resizer",
+      "category": "tool",
+      "title": "One Sharp Photo Sized Cleanly for Every Feed",
+      "image_url": "https://www.getsocialora.com/instagram/ig_06_photo_resizer.jpg",
+      "caption": "Uploading the wrong aspect ratio lets the platform re-compress your image and soften text.\n\nExport 4:5 (1080x1350) for Instagram feed posts and 9:16 (1080x1920) for Stories so your edges stay sharp.\n\nResize in seconds right in your browser without uploading to a server — link in bio (getsocialora.com/tools/social-media-photo-resizer).\n\n#instagramcarousel #designforcreators #socialmediadesign #creatortools #contenttips"
+    }
+  ]
+}
