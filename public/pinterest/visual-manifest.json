@@ -388,5 +388,44 @@
     "composition": "tutorial_steps",
     "alt_text": "Original Pinterest guide: Keep the Whole Picture. Authentic screenshot of Socialora Instagram No Crop Photo Maker (Blur Background) with one practical tip.",
     "status": "asset_only_not_published"
+  },
+  "pnt_photo_resize_redesign_34": {
+    "image_path": "/pinterest/pnt_photo_resize_redesign_34.png",
+    "source_url": "https://www.getsocialora.com/tools/social-media-photo-resizer",
+    "verified_h1": "Social Media Photo Resizer",
+    "captured_at": "2026-11-10T09:12:16.594010+00:00",
+    "visual_type": "authentic_site_screenshot_editorial",
+    "cover_hook": "One Photo, Different Social Formats",
+    "dimensions": "1000x1500",
+    "renderer_version": "2026-11-10-v3-layouts",
+    "composition": "magazine_feature",
+    "alt_text": "Original Pinterest guide: One Photo, Different Social Formats. Authentic screenshot of Socialora Social Media Photo Resizer with one practical tip.",
+    "status": "asset_only_not_published"
+  },
+  "pnt_safezone_redesign_35": {
+    "image_path": "/pinterest/pnt_safezone_redesign_35.png",
+    "source_url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide",
+    "verified_h1": "Reels, TikTok and YouTube Shorts Safe Zone Guide",
+    "captured_at": "2026-11-10T09:12:19.013430+00:00",
+    "visual_type": "authentic_site_screenshot_editorial",
+    "cover_hook": "Keep Your Reel Captions Visible",
+    "dimensions": "1000x1500",
+    "renderer_version": "2026-11-10-v3-layouts",
+    "composition": "browser_insight",
+    "alt_text": "Original Pinterest guide: Keep Your Reel Captions Visible. Authentic screenshot of Socialora Reels, TikTok and YouTube Shorts Safe Zone Guide with one practical tip.",
+    "status": "asset_only_not_published"
+  },
+  "pnt_thumbnail_redesign_36": {
+    "image_path": "/pinterest/pnt_thumbnail_redesign_36.png",
+    "source_url": "https://www.getsocialora.com/tools/video-frame-to-thumbnail",
+    "verified_h1": "Video Frame to Thumbnail Maker",
+    "captured_at": "2026-11-10T09:12:21.317433+00:00",
+    "visual_type": "authentic_site_screenshot_editorial",
+    "cover_hook": "Choose A Clear Thumbnail Frame",
+    "dimensions": "1000x1500",
+    "renderer_version": "2026-11-10-v3-layouts",
+    "composition": "gallery_feature",
+    "alt_text": "Original Pinterest guide: Choose A Clear Thumbnail Frame. Authentic screenshot of Socialora Video Frame to Thumbnail Maker with one practical tip.",
+    "status": "asset_only_not_published"
   }
 }
