@@ -20,6 +20,17 @@
       "name": "Kurulum Notu"
     },
     {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        120,
+        480
+      ],
+      "id": "ig-pub-man-01",
+      "name": "Manuel Tetikle"
+    },
+    {
       "parameters": {
         "rule": {
           "interval": [
@@ -38,17 +49,6 @@
       ],
       "id": "ig-pub-sched-01",
       "name": "Zamanlayıcı (1 Saat)"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        120,
-        480
-      ],
-      "id": "ig-pub-man-01",
-      "name": "Manuel Tetikle"
     },
     {
       "parameters": {
@@ -124,7 +124,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const me = $('Instagram Hesabı Doğrula').first()?.json || {};\nconst igUserId = String(me.user_id || me.id || '').trim();\nif (!igUserId) {\n  throw new Error('Instagram hesabı doğrulanamadı. Token veya hesap türünü kontrol edin.');\n}\n\nconst recentRaw = $('Son Paylaşımları Çek').first()?.json || {};\nconst recentPosts = Array.isArray(recentRaw.data) ? recentRaw.data : [];\n\nconst ghRaw = $input.first()?.json || {};\nlet posts = [];\ntry {\n  const parsed = typeof ghRaw === 'string' ? JSON.parse(ghRaw) : (typeof ghRaw.data === 'string' ? JSON.parse(ghRaw.data) : ghRaw);\n  if (Array.isArray(parsed.posts)) posts = parsed.posts;\n} catch {}\n\nif (posts.length === 0) {\n  posts = [\n    {\n      id: 'ig_01_nocrop_blur',\n      image_url: 'https://www.getsocialora.com/instagram/ig_01_nocrop_blur.jpg',\n      caption: 'Vertical shots get cut awkwardly when Instagram forces a tighter feed crop.\\n\\nKeep the whole frame and pad the edges with a soft blur instead.\\n\\nFree browser No-Crop Blur tool in bio: getsocialora.com/tools/instagram-no-crop-blur-background\\n\\n#instagramtips #creatortools #contentcreation #socialmediatips'\n    }\n  ];\n}\n\nconst sd = $getWorkflowStaticData('global');\nif (!Array.isArray(sd.sentIds)) sd.sentIds = [];\nif (!Array.isArray(sd.sentHistory)) sd.sentHistory = [];\nsd.lastPublishedAt = Number(sd.lastPublishedAt || 0);\n\nconst nowSec = Math.floor(Date.now() / 1000);\nconst trtNow = new Date((nowSec + 3 * 3600) * 1000);\nconst todayTrt = trtNow.toISOString().slice(0, 10);\nconst hourTrt = trtNow.getUTCHours();\n\nconst mode = this.getMode ? this.getMode() : 'trigger';\nconst isManual = mode === 'manual';\n\n// Live dedup against Instagram recent media\nlet latestLiveTs = 0;\nlet liveTodayCount = 0;\nconst liveCaptions = [];\nfor (const m of recentPosts) {\n  if (m.caption) liveCaptions.push(String(m.caption).toLowerCase().trim());\n  if (m.timestamp) {\n    const ts = Math.floor(Date.parse(m.timestamp) / 1000);\n    if (Number.isFinite(ts) && ts > 0) {\n      if (ts > latestLiveTs) latestLiveTs = ts;\n      const dStr = new Date((ts + 3 * 3600) * 1000).toISOString().slice(0, 10);\n      if (dStr === todayTrt) liveTodayCount += 1;\n    }\n  }\n}\n\nif (!isManual) {\n  if (hourTrt < 13 || hourTrt > 21) return [];\n  const effectiveLast = Math.max(sd.lastPublishedAt, latestLiveTs);\n  if (liveTodayCount >= 1) return [];\n  if (effectiveLast && (nowSec - effectiveLast < 20 * 3600)) return [];\n  // Pseudo-random minute window per calendar day so hourly triggers don't post on the exact same hour every day\n  const dayNum = Number(todayTrt.replace(/-/g, ''));\n  const targetHour = 14 + (dayNum % 7);\n  if (hourTrt < targetHour) return [];\n}\n\nconst sentSet = new Set(sd.sentIds);\nconst candidate = posts.find((p) => {\n  if (!p || !p.id || !p.image_url || !p.caption) return false;\n  if (sentSet.has(p.id)) return false;\n  if (!/^https:\\/\\//i.test(p.image_url) || !/\\.jpe?g(?:\\?|$)/i.test(p.image_url)) return false;\n  const firstLine = String(p.caption).split('\\n')[0].toLowerCase().trim();\n  if (firstLine.length >= 20 && liveCaptions.some((c) => c.includes(firstLine))) return false;\n  return true;\n});\n\nif (!candidate) return [];\n\nreturn [{\n  json: {\n    igUserId,\n    username: String(me.username || 'socialora1'),\n    postId: candidate.id,\n    imageUrl: candidate.image_url,\n    caption: candidate.caption,\n    nowSec\n  }\n}];"
+        "jsCode": "const me = $('Instagram Hesabı Doğrula').first()?.json || {};\nconst igUserId = String(me.user_id || me.id || '').trim();\nif (!igUserId) {\n  throw new Error('Instagram hesabı doğrulanamadı. Token veya hesap türünü kontrol edin.');\n}\n\nconst recentRaw = $('Son Paylaşımları Çek').first()?.json || {};\nconst recentPosts = Array.isArray(recentRaw.data) ? recentRaw.data : [];\n\nconst ghRaw = $input.first()?.json || {};\nlet posts = [];\ntry {\n  const parsed = typeof ghRaw === 'string' ? JSON.parse(ghRaw) : (typeof ghRaw.data === 'string' ? JSON.parse(ghRaw.data) : ghRaw);\n  if (Array.isArray(parsed.posts)) posts = parsed.posts;\n} catch {}\n\nif (posts.length === 0) {\n  posts = [\n    {\n      id: 'ig_01_nocrop_blur',\n      image_url: 'https://www.getsocialora.com/instagram/ig_01_nocrop_blur.jpg',\n      caption: 'Vertical shots get cut awkwardly when Instagram forces a tighter feed crop.\\n\\nKeep the whole frame and pad the edges with a soft blur instead.\\n\\nFree browser No-Crop Blur tool in bio: getsocialora.com/tools/instagram-no-crop-blur-background\\n\\n#instagramtips #creatortools #contentcreation #socialmediatips'\n    }\n  ];\n}\n\nconst sd = $getWorkflowStaticData('global');\nif (!Array.isArray(sd.sentIds)) sd.sentIds = [];\nif (!Array.isArray(sd.sentHistory)) sd.sentHistory = [];\nsd.lastPublishedAt = Number(sd.lastPublishedAt || 0);\n\nconst nowSec = Math.floor(Date.now() / 1000);\nconst trtNow = new Date((nowSec + 3 * 3600) * 1000);\nconst todayTrt = trtNow.toISOString().slice(0, 10);\nconst hourTrt = trtNow.getUTCHours();\n\nlet execMode = 'trigger';\ntry { if (typeof $execution !== 'undefined' && $execution.mode) execMode = String($execution.mode); } catch {}\ntry { if (typeof $('Manuel Tetikle') !== 'undefined' && $('Manuel Tetikle').isExecuted) execMode = 'manual'; } catch {}\nconst isManual = execMode === 'manual';\n\n// Live dedup against Instagram recent media\nlet latestLiveTs = 0;\nlet liveTodayCount = 0;\nconst liveCaptions = [];\nfor (const m of recentPosts) {\n  if (m.caption) liveCaptions.push(String(m.caption).toLowerCase().trim());\n  if (m.timestamp) {\n    const ts = Math.floor(Date.parse(m.timestamp) / 1000);\n    if (Number.isFinite(ts) && ts > 0) {\n      if (ts > latestLiveTs) latestLiveTs = ts;\n      const dStr = new Date((ts + 3 * 3600) * 1000).toISOString().slice(0, 10);\n      if (dStr === todayTrt) liveTodayCount += 1;\n    }\n  }\n}\n\nif (!isManual) {\n  if (hourTrt < 13 || hourTrt > 21) return [];\n  const effectiveLast = Math.max(sd.lastPublishedAt, latestLiveTs);\n  if (liveTodayCount >= 1) return [];\n  if (effectiveLast && (nowSec - effectiveLast < 20 * 3600)) return [];\n  // Pseudo-random minute window per calendar day so hourly triggers don't post on the exact same hour every day\n  const dayNum = Number(todayTrt.replace(/-/g, ''));\n  const targetHour = 14 + (dayNum % 7);\n  if (hourTrt < targetHour) return [];\n}\n\nconst sentSet = new Set(sd.sentIds);\nconst candidate = posts.find((p) => {\n  if (!p || !p.id || !p.image_url || !p.caption) return false;\n  if (sentSet.has(p.id)) return false;\n  if (!/^https:\\/\\//i.test(p.image_url) || !/\\.jpe?g(?:\\?|$)/i.test(p.image_url)) return false;\n  const firstLine = String(p.caption).split('\\n')[0].toLowerCase().trim();\n  if (firstLine.length >= 20 && liveCaptions.some((c) => c.includes(firstLine))) return false;\n  return true;\n});\n\nif (!candidate) return [];\n\nreturn [{\n  json: {\n    igUserId,\n    username: String(me.username || 'socialora1'),\n    postId: candidate.id,\n    imageUrl: candidate.image_url,\n    caption: candidate.caption,\n    nowSec\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
