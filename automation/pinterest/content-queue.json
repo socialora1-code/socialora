@@ -7,14 +7,24 @@
     "format": "PNG",
     "aspect_ratio": "2:3",
     "recommended_dimensions": "1000x1500",
-    "brand_colors": "dark violet, black, purple glow; accessible light typography",
+    "brand_colors": "Rotating bright editorial palettes: coral/cream, mint/teal, cobalt/lemon, lilac/pink, peach/navy, pale-yellow/ink. No repeated dark violet gradients.",
     "rules": [
-      "Each Pin uses a unique original image; no unrelated stock photography",
-      "One clear useful tip per Pin",
-      "No fake stats, reviews, before/after outcomes or platform endorsement",
-      "Destination is the exact relevant free tool, not a generic landing page",
-      "Verify all destination pages and image accessibility before publishing"
-    ]
+      "For drafts, prefer the genuine captured page screenshot inside a distinct high-contrast editorial 1000x1500 composition.",
+      "Screenshot capture requires live HTTP 200 + a real readable h1; never create a fake screenshot.",
+      "Cover hooks must be 4–7 honest words; every Pin contains one immediately usable takeaway and a modest Socialora signature.",
+      "Before a scheduled Pin, check the verified publicly served generated asset at /pinterest/{id}.png and the matching visual-manifest.json; if absent or inaccessible, skip rather than use a generic illustration.",
+      "Never imply mock platform analytics, fabricated user results or functionality not confirmed on the website.",
+      "The official Pinterest API must return actual pin ID and media URL before marking queue status published."
+    ],
+    "asset_pipeline": {
+      "source": "Authentic site screenshots captured with Playwright on GitHub Actions",
+      "generator": "automation/pinterest/build_visual_assets.py",
+      "workflow": ".github/workflows/socialora-pinterest-assets.yml",
+      "image_url_pattern": "https://www.getsocialora.com/pinterest/{id}.png",
+      "manifest_url": "https://www.getsocialora.com/pinterest/visual-manifest.json",
+      "generation_does_not_publish": true,
+      "notes": "Assets are prebuilt and publicly served from /public/pinterest. Only validated assets with a matching source_url may be used. Do not use draft image_url:null as evidence an image was already published."
+    }
   },
   "pins": [
     {
