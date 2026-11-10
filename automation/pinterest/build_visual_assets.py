@@ -216,14 +216,19 @@ def main():
         browser = playwright.chromium.launch(headless=True)
         page = browser.new_page(viewport={"width": 1100, "height": 950}, device_scale_factor=1)
         for pin in drafts:
-            if made >= max(0, min(args.limit, 8)):
+            if made >= max(0, min(args.limit, 32)):
                 break
             pin_id = pin["id"]
             if not re.fullmatch(r"[a-zA-Z0-9_-]{5,100}", pin_id):
                 print(f"SKIP invalid ID {pin_id!r}")
                 continue
             target = OUT / f"{pin_id}.png"
-            if target.exists() and manifest.get(pin_id, {}).get("renderer_version") == RENDERER_VERSION:
+            existing = manifest.get(pin_id, {})
+            source = urlsplit(pin["url"])
+            expected_url = urlunsplit((source.scheme, source.netloc, source.path, "", ""))
+            if (target.exists() and existing.get("renderer_version") == RENDERER_VERSION
+                    and existing.get("cover_hook") == pin.get("cover_hook")
+                    and existing.get("source_url") == expected_url):
                 continue
             try:
                 screens, heading, clean_url = actual_screenshot(page, pin["url"])
