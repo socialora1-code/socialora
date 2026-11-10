@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 QUEUE = ROOT / "automation/pinterest/content-queue.json"
 OUT = ROOT / "public/pinterest"
 MANIFEST = OUT / "visual-manifest.json"
+RENDERER_VERSION = "2026-11-10-v2"
 PALETTES = [
     ("#FFF8F0", "#29243A", "#FF705D", "#FFE1CF"),
     ("#D8F4E5", "#093D41", "#EF7D35", "#FFFFFF"),
@@ -92,9 +93,11 @@ def draw_visual(pin, screenshot):
     hook = pin.get("cover_hook", "").strip()
     if not 4 <= len(hook.split()) <= 7:
         raise ValueError("Cover hook must contain 4–7 words")
-    first_tip = re.split(r"(?<=[.!?])\s+", pin.get("description", "").strip())[0]
-    if not 25 <= len(first_tip) <= 200:
-        raise ValueError("No usable educational takeaway")
+    sentences = re.split(r"(?<=[.!?])\s+", pin.get("description", "").strip())
+    tips = [x for x in sentences if not x.endswith("?") and 28 <= len(x) <= 175]
+    first_tip = tips[0] if tips else ""
+    if len(first_tip) < 28:
+        raise ValueError("No actionable takeaway")
     index = int(hashlib.sha256(pin["id"].encode()).hexdigest()[:6], 16) % len(PALETTES)
     bg, ink, accent, muted = PALETTES[index]
     image = Image.new("RGB", (1000, 1500), bg)
@@ -123,10 +126,10 @@ def draw_visual(pin, screenshot):
     image.paste(inner, (84, frame_y + 78))
     d.rounded_rectangle((63, frame_y + 760, 937, frame_y + 922), radius=25, fill=muted)
     d.rectangle((87, frame_y + 789, 96, frame_y + 884), fill=accent)
-    takeaway(d, first_tip, 119, frame_y + 787, 780, ink)
+    takeaway(d, first_tip, 119, frame_y + 787, 780, "#1F2733" if index == 2 else ink)
     d.text((73, 1438), "TRY THE FREE TOOL", font=font(25, True), fill=ink)
     d.rounded_rectangle((791, 1425, 937, 1478), radius=26, fill=accent)
-    d.text((835, 1434), "OPEN  >", font=font(19, True), fill=bg if index == 2 else "#FFFFFF")
+    d.text((835, 1434), "OPEN  >", font=font(19, True), fill="#1F2733" if index == 2 else "#FFFFFF")
     return image
 
 def main():
@@ -152,14 +155,16 @@ def main():
                 print(f"SKIP invalid ID {pin_id!r}")
                 continue
             target = OUT / f"{pin_id}.png"
-            if target.exists():
+            if target.exists() and manifest.get(pin_id, {}).get("renderer_version") == RENDERER_VERSION:
                 continue
             try:
                 crop, heading, clean_url = actual_screenshot(page, pin["url"])
                 visual = draw_visual(pin, crop)
                 if visual.size != (1000, 1500):
                     raise ValueError("Wrong dimensions")
-                visual.save(target, "PNG", optimize=True)
+                temporary = target.with_suffix(".partial.png")
+                visual.save(temporary, "PNG", optimize=True)
+                temporary.replace(target)
                 manifest[pin_id] = {
                     "image_path": f"/pinterest/{pin_id}.png",
                     "source_url": clean_url,
@@ -168,13 +173,15 @@ def main():
                     "visual_type": "authentic_site_screenshot_editorial",
                     "cover_hook": pin["cover_hook"],
                     "dimensions": "1000x1500",
+                    "renderer_version": RENDERER_VERSION,
                     "status": "asset_only_not_published",
                 }
                 made += 1
                 print(f"CREATED {pin_id} {target.stat().st_size} bytes [{heading}]")
             except Exception as exc:
-                if target.exists():
-                    target.unlink()
+                temporary = target.with_suffix(".partial.png")
+                if temporary.exists():
+                    temporary.unlink()
                 print(f"SKIP {pin_id}: {type(exc).__name__}: {exc}")
         browser.close()
     MANIFEST.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
