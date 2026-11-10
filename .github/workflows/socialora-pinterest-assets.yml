@@ -1,0 +1,63 @@
+name: Socialora Pinterest Visual Assets
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "8 1 * * *"
+  push:
+    paths:
+      - automation/pinterest/build_visual_assets.py
+      - automation/pinterest/growth-playbook.md
+      - .github/workflows/socialora-pinterest-assets.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: socialora-pinterest-assets-main
+  cancel-in-progress: false
+
+jobs:
+  build-assets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check for unpublished draft assets
+        id: needed
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          queue=json.loads(Path("automation/pinterest/content-queue.json").read_text())
+          missing=[p for p in queue["pins"] if p.get("status")=="draft" and not Path("public/pinterest/"+p["id"]+".png").exists()]
+          print("needed="+("yes" if missing else "no"))
+          print("count="+str(len(missing)))
+          PY
+      - name: Install screenshot and image tools
+        if: steps.needed.outputs.needed == 'yes'
+        run: |
+          python -m pip install --disable-pip-version-check pillow==11.3.0 playwright==1.55.0
+          python -m playwright install --with-deps chromium
+      - name: Capture and compose verified premium images
+        if: steps.needed.outputs.needed == 'yes'
+        run: python automation/pinterest/build_visual_assets.py --limit 6
+      - name: Commit images only (never publish Pins)
+        if: steps.needed.outputs.needed == 'yes'
+        run: |
+          git config user.name "socialora-asset-bot"
+          git config user.email "socialora-asset-bot@users.noreply.github.com"
+          git add public/pinterest/
+          if git diff --cached --quiet; then
+            echo "No validated images to commit."
+            exit 0
+          fi
+          git commit -m "assets(pinterest): verified tool screenshots and premium pin covers"
+          git pull --rebase origin main
+          git push origin HEAD:main
