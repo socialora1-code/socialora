@@ -1,0 +1,394 @@
+{
+  "id": "tgPublishSocial01",
+  "name": "Socialora Telegram - Planlı Kanal & Grup Yayını",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Socialora Telegram Yayıncısı\n- **Dikkat:** Telefondaki Termux servisi durdurulmadan aktif ETMEYİN.\n- Yayın sırasından önce canlı `@SocialoraOfficial` geçmişini okur; daha önce atılan postları ASLA çiftlemez.\n- Kanal günde max **5**, grup günde max **1** gönderi, aralarda min **30 dk** korur.\n- Kuyruk 6'nın altına düşerse Gemini Flash ile yeni 5'li paket hazırlar.",
+        "height": 210,
+        "width": 440,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        120,
+        40
+      ],
+      "id": "tg-pub-note-01",
+      "name": "Kurulum Notu"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        140,
+        300
+      ],
+      "id": "tg-pub-sched-01",
+      "name": "Zamanlayıcı (10 Dk)"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        140,
+        480
+      ],
+      "id": "tg-pub-man-01",
+      "name": "Manuel Tetikle"
+    },
+    {
+      "parameters": {
+        "url": "https://raw.githubusercontent.com/socialora1-code/socialora/main/automation/telegram/content.json",
+        "authentication": "none",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 15000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        380
+      ],
+      "id": "tg-pub-gh-01",
+      "name": "GitHub - İçerik Kuyruğunu Çek"
+    },
+    {
+      "parameters": {
+        "url": "https://t.me/s/SocialoraOfficial",
+        "authentication": "none",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 15000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        620,
+        380
+      ],
+      "id": "tg-pub-live-01",
+      "name": "Canlı Kanal Geçmişini Kontrol Et",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const ghRaw = $('GitHub - İçerik Kuyruğunu Çek').first().json;\nconst ghData = typeof ghRaw === 'string' ? JSON.parse(ghRaw) : (typeof ghRaw.data === 'string' ? JSON.parse(ghRaw.data) : ghRaw);\nconst posts = Array.isArray(ghData.posts) ? ghData.posts : [];\n\nconst liveItem = $input.first()?.json || {};\nconst liveHtml = String(liveItem.data ?? liveItem.body ?? '');\n\nconst sd = $getWorkflowStaticData('global');\nsd.startDate = sd.startDate || '2026-11-09';\nif (!Array.isArray(sd.sentIds)) {\n  sd.sentIds = [\n    'tg_v2_d0_s1_ig_velocity',\n    'tg_v2_d0_s2_tt_jail',\n    'tg_v2_d0_s3_usa_geo',\n    'tg_v2_d0_s4_safe_zone',\n    'tg_v2_d0_s5_tt_auto',\n    'tg_v2_d1_s1_profile_lurkers',\n    'tg_v2_d1_s2_yt_watchtime',\n    'tg_v2_d1_s3_bio_clarity',\n    'tg_v2_d1_s4_tg_search'\n  ];\n}\nif (!Array.isArray(sd.sentDigests)) sd.sentDigests = [];\nif (!Array.isArray(sd.sentHistory)) sd.sentHistory = [];\nif (!Array.isArray(sd.aiQueue)) sd.aiQueue = [];\nsd.lastPublishedAt = Number(sd.lastPublishedAt || 0);\nsd.lastRefillAt = Number(sd.lastRefillAt || 0);\nsd.geminiDay = String(sd.geminiDay || '');\nsd.geminiCountToday = Number(sd.geminiCountToday || 0);\n\nconst canonical = (text) => String(text || '')\n  .toLowerCase()\n  .replace(/https?:\\/\\/[^\\s\"'<>]+/g, (u) => u.split('?')[0])\n  .replace(/\\s+/g, ' ')\n  .trim();\n\nconst simpleDigest = (text) => {\n  const s = canonical(text);\n  let h1 = 0x811c9dc5;\n  let h2 = 0x9e3779b9;\n  for (let i = 0; i < s.length; i++) {\n    const c = s.charCodeAt(i);\n    h1 = Math.imul(h1 ^ c, 0x01000193) >>> 0;\n    h2 = Math.imul(h2 ^ (c + i), 0x85ebca6b) >>> 0;\n  }\n  return h1.toString(16).padStart(8, '0') + '_' + h2.toString(16).padStart(8, '0') + '_' + s.length;\n};\n\n// Auto-sync live channel posts from t.me/s/SocialoraOfficial so Termux handoff never double-posts\nconst sentIdSet = new Set(sd.sentIds);\nconst liveIdMatches = liveHtml.match(/\\b(?:tg_v[0-9]+_[a-z0-9_]+|ai_[0-9]{4}_[0-9]+)\\b/g) || [];\nfor (const lid of liveIdMatches) {\n  if (!sentIdSet.has(lid)) {\n    sentIdSet.add(lid);\n    sd.sentIds.push(lid);\n  }\n}\nconst sentDigestSet = new Set(sd.sentDigests);\n\nlet latestLiveTs = 0;\nconst liveDateMatches = [...liveHtml.matchAll(/datetime=\"([^\"]+)\"/g)];\nconst todayLiveChannelSet = new Set();\n\nconst nowSec = Math.floor(Date.now() / 1000);\nconst trtNow = new Date((nowSec + 3 * 3600) * 1000);\nconst todayTrt = trtNow.toISOString().slice(0, 10);\nif (sd.geminiDay !== todayTrt) {\n  sd.geminiDay = todayTrt;\n  sd.geminiCountToday = 0;\n}\n\nfor (const m of liveDateMatches) {\n  const ts = Math.floor(Date.parse(m[1]) / 1000);\n  if (Number.isFinite(ts) && ts > 0) {\n    if (ts > latestLiveTs) latestLiveTs = ts;\n    const dStr = new Date((ts + 3 * 3600) * 1000).toISOString().slice(0, 10);\n    if (dStr === todayTrt) todayLiveChannelSet.add(m[1]);\n  }\n}\n\nconst effectiveLastPub = Math.max(sd.lastPublishedAt, latestLiveTs);\n\nconst parseDue = (baseIso, dayOffset, hhmm) => {\n  const [y, mo, da] = baseIso.split('-').map(Number);\n  const [hh, mm] = String(hhmm).split(':').map(Number);\n  return Math.floor(Date.UTC(y, mo - 1, da + Number(dayOffset || 0), hh - 3, mm, 0) / 1000);\n};\n\n// Merge GitHub scheduled posts + AI refilled queue\nconst allCandidates = [];\nfor (const p of posts) {\n  if (!p || !p.id || !p.text || !p.time) continue;\n  const due = parseDue(sd.startDate, p.day || 0, p.time);\n  allCandidates.push({\n    id: p.id,\n    target: p.target === 'group' ? 'group' : 'channel',\n    text: p.text,\n    due,\n    expires: due + 5400,\n    source: 'github',\n  });\n}\nfor (const ap of sd.aiQueue) {\n  if (!ap || !ap.id || !ap.text || !ap.due || ap.status !== 'pending') continue;\n  allCandidates.push({\n    id: ap.id,\n    target: ap.target === 'group' ? 'group' : 'channel',\n    text: ap.text,\n    due: Number(ap.due),\n    expires: Number(ap.expires || ap.due + 5400),\n    source: 'ai',\n  });\n}\n\n// Mark AI items older than 90m as expired\nfor (const ap of sd.aiQueue) {\n  if (ap.status === 'pending' && Number(ap.expires || 0) < nowSec) {\n    ap.status = 'expired';\n  }\n}\n\n// Count today's sent per target (combine static history + live t.me today posts)\nconst trtMidnight = parseDue(todayTrt, 0, '00:00');\nlet sentTodayChannel = sd.sentHistory.filter((h) => h.target === 'channel' && Number(h.sentAt) >= trtMidnight).length;\nsentTodayChannel = Math.max(sentTodayChannel, todayLiveChannelSet.size);\nconst sentTodayGroup = sd.sentHistory.filter((h) => h.target === 'group' && Number(h.sentAt) >= trtMidnight).length;\n\nconst unsentSorted = allCandidates\n  .filter((c) => !sentIdSet.has(c.id) && !sentDigestSet.has(simpleDigest(c.text)) && c.expires >= nowSec)\n  .sort((a, b) => a.due - b.due);\n\nconst spacingOk = !effectiveLastPub || (nowSec - effectiveLastPub >= 1800);\nlet picked = null;\nfor (const c of unsentSorted) {\n  if (c.due > nowSec) continue;\n  const targetCount = c.target === 'group' ? sentTodayGroup : sentTodayChannel;\n  const targetCap = c.target === 'group' ? 1 : 5;\n  if (targetCount >= targetCap) continue;\n  if (!spacingOk) continue;\n  picked = c;\n  break;\n}\n\nif (picked) {\n  return [{ json: { route: 'publish', nowSec, post: picked } }];\n}\n\n// Check if remaining upcoming queue needs AI refill (< 6 pending)\nconst futurePendingCount = unsentSorted.length;\nconst refillCooldownOk = !sd.lastRefillAt || (nowSec - sd.lastRefillAt >= 21600);\nif (futurePendingCount < 6 && refillCooldownOk && sd.geminiCountToday < 40) {\n  const maxDue = Math.max(nowSec, ...allCandidates.map((c) => c.due));\n  const nextDate = new Date((maxDue + 3 * 3600 + 86400) * 1000);\n  const baseDateIso = nextDate.toISOString().slice(0, 10);\n  const mmdd = baseDateIso.slice(5, 7) + baseDateIso.slice(8, 10);\n  const dayOfYear = Math.floor((nextDate - new Date(Date.UTC(nextDate.getUTCFullYear(), 0, 0))) / 86400000);\n\n  const AI_TOPICS = [\n    [\"TikTok 200-view jail & 3-second retention hook math\", \"https://www.getsocialora.com/tools/tiktok-shadowban-checker\", \"channel\"],\n    [\"How Instagram Auto Likes & Reels Views build early social proof on fresh uploads\", \"https://www.getsocialora.com/instagram\", \"channel\"],\n    [\"Instagram Reels non-follower reach & Explore distribution signals\", \"https://www.getsocialora.com/tools/instagram-shadowban-checker\", \"channel\"],\n    [\"Scaling TikTok profiles with High-Quality Followers & Auto Views on new videos\", \"https://www.getsocialora.com/tiktok\", \"channel\"],\n    [\"How to spot silent Instagram profile visitors using Insights ratios\", \"https://www.getsocialora.com/tools/who-viewed-my-instagram-profile\", \"channel\"],\n    [\"Why country-targeted Instagram followers (USA, Spanish, Arabic, Brazilian) matter for local brands\", \"https://www.getsocialora.com/buy-usa-instagram-followers\", \"channel\"],\n    [\"TikTok Live diamonds & gift coin payout breakdown for creators\", \"https://www.getsocialora.com/tools/tiktok-money-coins-calculator\", \"channel\"],\n    [\"Growing YouTube channels: combining 30-minute video Watch Time with Subscriber momentum\", \"https://www.getsocialora.com/youtube\", \"channel\"],\n    [\"How to price Instagram Reels brand deals & UGC packages in 2026\", \"https://www.getsocialora.com/tools/instagram-sponsorship-rate-calculator\", \"channel\"],\n    [\"Ranking higher in Telegram global search with Channel Members & Premium Subscribers\", \"https://www.getsocialora.com/telegram\", \"channel\"],\n    [\"Telegram channel CPM rates & monetization benchmarks\", \"https://www.getsocialora.com/tools/telegram-channel-money-calculator\", \"channel\"],\n    [\"Building X (Twitter) profile authority with Followers and high-impression Tweet Views\", \"https://www.getsocialora.com/x\", \"channel\"],\n    [\"Testing early view velocity on a fresh Instagram Reel upload\", \"https://www.getsocialora.com/free-instagram-views\", \"channel\"],\n    [\"When to combine organic hook fixes with follower & view delivery services\", \"https://www.getsocialora.com/order\", \"channel\"],\n    [\"Creator check-in: what is your current average Reel/TikTok view count vs last month?\", \"https://www.getsocialora.com/tools/tiktok-shadowban-checker\", \"group\"]\n  ];\n  const slots = [\"10:15\", \"13:30\", \"16:45\", \"19:20\", \"22:10\"];\n  const batchItems = [];\n  for (let i = 0; i < 5; i++) {\n    const [topic, url, target] = AI_TOPICS[(dayOfYear + i) % AI_TOPICS.length];\n    const id = 'ai_' + mmdd + '_' + (i + 1);\n    if (sentIdSet.has(id) || sd.aiQueue.some((q) => q.id === id)) continue;\n    const trackedUrl = url + '?utm_source=telegram&utm_medium=' + target + '&utm_campaign=' + id;\n    const due = parseDue(baseDateIso, 0, slots[i]);\n    batchItems.push({ idx: i, id, target, topic, trackedUrl, time: slots[i], due, expires: due + 5400 });\n  }\n  if (batchItems.length > 0) {\n    sd.lastRefillAt = nowSec;\n    sd.geminiCountToday += 1;\n    const specLines = batchItems.map((b, idx) => (idx + 1) + '. id=' + b.id + ' | target=' + b.target + ' | topic=' + b.topic + ' | url=' + b.trackedUrl).join('\\n');\n    return [{ json: { route: 'refill', nowSec, baseDateIso, batchItems, specLines } }];\n  }\n}\n\nreturn [];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        860,
+        380
+      ],
+      "id": "tg-pub-dedup-01",
+      "name": "Takvim, Kuyruk & Tekrar Kontrolü"
+    },
+    {
+      "parameters": {
+        "mode": "rules",
+        "rules": {
+          "values": [
+            {
+              "outputKey": "publish",
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "publish",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "outputKey": "refill",
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "refill",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1100,
+        380
+      ],
+      "id": "tg-pub-sw-01",
+      "name": "Yönlendir (Yayın / AI Yenile)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const { post, nowSec } = $input.first()?.json || {};\nconst text = String(post?.text || '').trim();\nif (text.length < 30 || text.length > 3500) {\n  throw new Error('İçerik uzunluğu sınır dışında (' + text.length + ').');\n}\nif (/\\b\\d{5,}:[A-Za-z0-9_-]{20,}/.test(text) || /\\b(?:100% safe|never drops|guaranteed followers|skyrocket|unleash)\\b/i.test(text) || /(?:\\bsonuç olarak\\b|\\bunutmayın\\b|\\bkapsamlı\\b|\\bin conclusion\\b)/i.test(text)) {\n  throw new Error('İçerikte yasak/robotik kalıp veya gizli bilgi bulundu.');\n}\n\nconst escHtml = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst escAttr = (s) => escHtml(s).replace(/\"/g, '&quot;');\n\nlet out = '';\nlet last = 0;\nconst urlRe = /https?:\\/\\/[^\\s]+/g;\nlet m;\nwhile ((m = urlRe.exec(text)) !== null) {\n  out += escHtml(text.slice(last, m.index));\n  const raw = m[0].replace(/[.,!?)]+$/, '');\n  const tail = m[0].slice(raw.length);\n  try {\n    const u = new URL(raw);\n    if (u.protocol !== 'https:' || u.username || u.password || u.port) {\n      throw new Error('Güvensiz URL: ' + raw);\n    }\n    if (u.hostname === 'www.getsocialora.com' || u.hostname === 'getsocialora.com') {\n      u.hostname = 'www.getsocialora.com';\n      u.searchParams.set('utm_source', 'telegram');\n      u.searchParams.set('utm_medium', post.target);\n      u.searchParams.set('utm_campaign', post.id);\n      const cleanPath = u.pathname.replace(/\\/+$/, '');\n      const label = 'getsocialora.com' + cleanPath;\n      out += '<a href=\"' + escAttr(u.toString()) + '\">' + escHtml(label) + '</a>' + escHtml(tail);\n    } else if (u.hostname === 't.me' && ['/SocialoraOfficial', '/SocialoraChat'].includes(u.pathname) && !u.search) {\n      out += escHtml(m[0]);\n    } else {\n      throw new Error('Beklenmeyen dış bağlantı: ' + raw);\n    }\n  } catch (e) {\n    throw new Error('Bağlantı doğrulama hatası: ' + e.message);\n  }\n  last = m.index + m[0].length;\n}\nout += escHtml(text.slice(last));\n\nreturn [{\n  json: {\n    post,\n    nowSec,\n    chatId: post.target === 'group' ? '@SocialoraChat' : '@SocialoraOfficial',\n    htmlText: out,\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        260
+      ],
+      "id": "tg-pub-html-01",
+      "name": "HTML Link & Güvenlik Filtresi"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.htmlText }}",
+        "replyMarkup": "none",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_web_page_preview": true,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1600,
+        260
+      ],
+      "id": "tg-pub-send-01",
+      "name": "Telegram - Kanala/Gruba Gönder",
+      "credentials": {
+        "telegramApi": {
+          "id": "telegramSocialora01",
+          "name": "Telegram Bot (@socialora_publisher_2026_bot)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const src = $('HTML Link & Güvenlik Filtresi').first().json;\nconst tgRes = $input.first().json;\nconst sd = $getWorkflowStaticData('global');\n\nconst post = src.post;\nconst nowSec = Math.floor(Date.now() / 1000);\nconst msgId = tgRes?.result?.message_id ?? tgRes?.message_id ?? null;\n\nconst canonical = (text) => String(text || '')\n  .toLowerCase()\n  .replace(/https?:\\/\\/[^\\s\"'<>]+/g, (u) => u.split('?')[0])\n  .replace(/\\s+/g, ' ')\n  .trim();\n\nconst simpleDigest = (text) => {\n  const s = canonical(text);\n  let h1 = 0x811c9dc5;\n  let h2 = 0x9e3779b9;\n  for (let i = 0; i < s.length; i++) {\n    const c = s.charCodeAt(i);\n    h1 = Math.imul(h1 ^ c, 0x01000193) >>> 0;\n    h2 = Math.imul(h2 ^ (c + i), 0x85ebca6b) >>> 0;\n  }\n  return h1.toString(16).padStart(8, '0') + '_' + h2.toString(16).padStart(8, '0') + '_' + s.length;\n};\n\nif (!Array.isArray(sd.sentIds)) sd.sentIds = [];\nif (!Array.isArray(sd.sentDigests)) sd.sentDigests = [];\nif (!Array.isArray(sd.sentHistory)) sd.sentHistory = [];\n\nif (!sd.sentIds.includes(post.id)) sd.sentIds.push(post.id);\nconst dig = simpleDigest(post.text);\nif (!sd.sentDigests.includes(dig)) sd.sentDigests.push(dig);\nif (sd.sentDigests.length > 400) sd.sentDigests = sd.sentDigests.slice(-400);\n\nsd.sentHistory.push({ id: post.id, target: post.target, messageId: msgId, sentAt: nowSec });\nif (sd.sentHistory.length > 200) sd.sentHistory = sd.sentHistory.slice(-200);\nsd.lastPublishedAt = nowSec;\n\nif (Array.isArray(sd.aiQueue)) {\n  for (const item of sd.aiQueue) {\n    if (item.id === post.id) {\n      item.status = 'sent';\n      item.messageId = msgId;\n      item.sentAt = nowSec;\n    }\n  }\n}\n\nreturn [{ json: { status: 'published', id: post.id, target: post.target, message_id: msgId, sentAt: nowSec } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        260
+      ],
+      "id": "tg-pub-rec-01",
+      "name": "Gönderim Kaydını Güncelle"
+    },
+    {
+      "parameters": {
+        "resource": "text",
+        "operation": "message",
+        "modelId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "models/gemini-flash-latest"
+        },
+        "messages": {
+          "values": [
+            {
+              "role": "user",
+              "content": "=Write {{ $json.batchItems.length }} distinct, authentic English Telegram posts for the items below. Return ONLY a valid JSON array of objects with keys \"id\" and \"text\".\n\nItems:\n{{ $json.specLines }}\n\nRules for every post:\n1. Open with a specific creator scenario or platform algorithm observation (never generic greetings).\n2. Share one concrete, testable metric or actionable step.\n3. Use 2 to 3 tasteful emojis and short scannable paragraphs.\n4. Never use \"100% safe\", \"never drops\", \"guaranteed followers\", \"skyrocket\", \"unleash\", or \"in conclusion\".\n5. Place the item's exact url on the final line of its text.\n6. Keep each post between 220 and 520 characters."
+            }
+          ]
+        },
+        "simplify": true,
+        "jsonOutput": true,
+        "builtInTools": {},
+        "options": {
+          "systemMessage": "You are the Editorial Director at Socialora (@SocialoraOfficial / https://www.getsocialora.com). Socialora provides Instagram, TikTok, YouTube, X and Telegram followers, views, likes and watch time services plus 50+ free creator diagnostic tools. Write like a real creator strategist, never robotic AI fluff.",
+          "temperature": 0.7,
+          "topP": 0.9,
+          "maxOutputTokens": 2048,
+          "includeMergedResponse": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        1360,
+        520
+      ],
+      "id": "tg-pub-gem-01",
+      "name": "Google Gemini - Kuyruk Yenile",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GKMR8LAL70kOA0mV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const ctx = $('Takvim, Kuyruk & Tekrar Kontrolü').first().json;\nconst gRes = $input.first().json;\nconst rawText = String(gRes?.mergedResponse ?? gRes?.content?.parts?.[0]?.text ?? '');\nconst cleaned = rawText.trim().replace(new RegExp('^\\\\x60{3}(?:json)?\\\\s*|\\\\s*\\\\x60{3}$', 'gi'), '');\n\nlet parsed;\ntry {\n  parsed = JSON.parse(cleaned);\n} catch {\n  return [{ json: { added: 0, reason: 'invalid_json' } }];\n}\nconst arr = Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.posts) ? parsed.posts : []);\nif (!arr.length) return [{ json: { added: 0, reason: 'empty_array' } }];\n\nconst sd = $getWorkflowStaticData('global');\nif (!Array.isArray(sd.aiQueue)) sd.aiQueue = [];\nif (!Array.isArray(sd.sentIds)) sd.sentIds = [];\n\nconst byId = new Map();\nfor (const x of arr) {\n  if (x && typeof x.id === 'string' && typeof x.text === 'string') {\n    byId.set(x.id.trim(), x.text.trim());\n  }\n}\n\nconst bannedRe = /\\b(?:100% safe|never drops|guaranteed followers|skyrocket|unleash)\\b|\\b\\d{5,}:[A-Za-z0-9_-]{20,}/i;\nlet added = 0;\nfor (const b of (ctx.batchItems || [])) {\n  let text = byId.get(b.id) || '';\n  if (!text) continue;\n  if (!text.includes(b.trackedUrl)) {\n    text = text + '\\n\\n' + b.trackedUrl;\n  }\n  if (text.length < 180 || text.length > 900 || bannedRe.test(text)) continue;\n  if (sd.sentIds.includes(b.id) || sd.aiQueue.some((q) => q.id === b.id)) continue;\n  sd.aiQueue.push({\n    id: b.id,\n    target: b.target,\n    text,\n    due: b.due,\n    expires: b.expires,\n    status: 'pending',\n  });\n  added += 1;\n}\n\nif (sd.aiQueue.length > 60) {\n  sd.aiQueue = sd.aiQueue.slice(-60);\n}\n\nreturn [{ json: { added, baseDateIso: ctx.baseDateIso, totalQueue: sd.aiQueue.length } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        520
+      ],
+      "id": "tg-pub-saveai-01",
+      "name": "AI Paket Doğrula & Kuyruğa Ekle"
+    }
+  ],
+  "connections": {
+    "Zamanlayıcı (10 Dk)": {
+      "main": [
+        [
+          {
+            "node": "GitHub - İçerik Kuyruğunu Çek",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manuel Tetikle": {
+      "main": [
+        [
+          {
+            "node": "GitHub - İçerik Kuyruğunu Çek",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub - İçerik Kuyruğunu Çek": {
+      "main": [
+        [
+          {
+            "node": "Canlı Kanal Geçmişini Kontrol Et",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Canlı Kanal Geçmişini Kontrol Et": {
+      "main": [
+        [
+          {
+            "node": "Takvim, Kuyruk & Tekrar Kontrolü",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Takvim, Kuyruk & Tekrar Kontrolü": {
+      "main": [
+        [
+          {
+            "node": "Yönlendir (Yayın / AI Yenile)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Yönlendir (Yayın / AI Yenile)": {
+      "main": [
+        [
+          {
+            "node": "HTML Link & Güvenlik Filtresi",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Gemini - Kuyruk Yenile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Link & Güvenlik Filtresi": {
+      "main": [
+        [
+          {
+            "node": "Telegram - Kanala/Gruba Gönder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram - Kanala/Gruba Gönder": {
+      "main": [
+        [
+          {
+            "node": "Gönderim Kaydını Güncelle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini - Kuyruk Yenile": {
+      "main": [
+        [
+          {
+            "node": "AI Paket Doğrula & Kuyruğa Ekle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Istanbul"
+  }
+}

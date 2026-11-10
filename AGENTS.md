@@ -84,8 +84,8 @@ Kullanıcının hedefi: sosyal medya hesaplarını tek tek ekleyip içerik payla
 
 | Platform | Tek yayıncı | Not |
 |---|---|---|
-| Telegram (@SocialoraOfficial, @SocialoraChat) | Evdeki telefon, Termux `socialora` servisi | 10 Kasım 2026'da kanalda günlük gönderiler canlı doğrulandı. n8n bu bota yayın yapmaz, getUpdates/webhook kurmaz. |
-| Pinterest | Yerel n8n, workflow `KsUuvklaYVqughM0` (`pinterest-otomasyon.json`) | GitHub Actions yayın yapmaz (`socialora-pinterest-assets.yml` devre dışı). ChatGPT'deki harici Scheduled Task kullanıcı tarafından kapatılmalı; kapanmadan n8n zamanlayıcısı açılmaz. |
+| Telegram (@SocialoraOfficial, @SocialoraChat) | Geçiş aşamasında: canlı yayıncı şu an evdeki telefon (Termux); hedef yayıncı yerel n8n (`tgPublishSocial01`, `tgGroupAssistant01`) | n8n akışları ve `telegramPolling` özel düğümü hazırlandı (`active: 0`). Kullanıcı Telegram Bot Tokenini n8n'e girip telefonda `sv down socialora-telegram socialora-updater` ile durdurmadan n8n Telegram akışları aktif EDİLMEZ. Geçişte `tgPublishSocial01` canlı `t.me/s/SocialoraOfficial` geçmişini okuyarak çift yayını önler. |
+| Pinterest | Yerel n8n, workflow `KsUuvklaYVqughM0` (`pinterest-otomasyon.json`) | GitHub Actions yayın yapmaz (`socialora-pinterest-assets.yml` devre dışı). Kullanıcı 10 Kasım 2026'da ChatGPT tarafındaki harici Pinterest görevini kapattığını bildirdi; Pinterest OAuth anahtarı girilip tek Pin denenene kadar zamanlayıcı kapalı kalır. |
 | Yeni platformlar | Yalnızca yerel n8n | Önce mevcut başka yayıncı var mı kontrol edilir. |
 
 ### Yeni platform ekleme sırası
@@ -106,7 +106,7 @@ Kullanıcının hedefi: sosyal medya hesaplarını tek tek ekleyip içerik payla
 ### Hız sınırları (ban önleme)
 
 - Pinterest: günde en fazla 4 Pin, 12:00–02:00 TSİ, aralar en az 3 saat, saatler rastgele kaydırılır. Aynı URL'ye art arda Pin yok.
-- Telegram: telefon takvimi (günde 5 kanal, haftada 2 grup konusu); ek yayın eklenmez.
+- Telegram: günde en fazla 5 kanal gönderisi (08:00–22:59 TSİ, en az 30 dk ara), haftada 2 grup konusu (günde max 1); AI kuyruk yenileme ve grup soru yanıtları günlük max 40 Gemini Flash çağrısıyla sınırlıdır, sorulara 2–3 dk gecikmeyle yanıt verilir. İlk hafta içerik kimlikleri ve canlı kanal geçmişi korunarak devam edilir.
 - Yeni hesap/platform ilk 2 hafta normal hacmin yarısıyla başlar.
 - Hata/429 gelirse tekrar yığma; bekle, kaydı çöz, sonra devam.
 
