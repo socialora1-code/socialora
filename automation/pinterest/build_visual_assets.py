@@ -57,9 +57,9 @@ def headline(draw, message, x, y, color, width, max_height):
     raise ValueError("Headline does not fit")
 
 def takeaway(draw, message, x, y, width, color, max_height=130):
-    for size in (30, 28, 26, 24):
+    for size in (30, 28, 26, 24, 22, 20, 18):
         face = font(size)
-        lines = wrap(draw, message, face, width, 4)
+        lines = wrap(draw, message, face, width, 20)
         if lines and len(lines) * (size + 10) <= max_height:
             for i, line in enumerate(lines):
                 draw.text((x, y + i * (size + 10)), line, font=face, fill=color)
@@ -108,7 +108,8 @@ def draw_visual(pin, screenshots, style_index):
         raise ValueError("Cover hook must contain 4–7 words")
     sentences = re.split(r"(?<=[.!?])\s+", pin.get("description", "").strip())
     tips = [x for x in sentences if not x.endswith("?") and 28 <= len(x) <= 175]
-    tip = tips[0] if tips else ""
+    actionable = [x for x in tips if re.search(r"\b(try|start|choose|check|keep|compare|use|make|divide|add|write|preview|pick|name|turn|lead)\b", x.lower())]
+    tip = min(actionable or tips, key=len) if tips else ""
     if len(tip) < 28:
         raise ValueError("No actionable takeaway")
     # Color selection and LAYOUT selection are intentionally independent.
