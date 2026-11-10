@@ -1,7 +1,7 @@
 {
   "brand": "Socialora Creator Tools",
   "channel": "pinterest",
-  "status": "one_published_32_drafts",
+  "status": "3_published_30_drafts",
   "schedule_intent": "Up to four distinct fresh, high-quality original Pins daily at globally staggered times (03:30, 09:30, 15:30, 21:30 Europe/Istanbul), not quota filling. The fifth only if validated performance and original content justify it. Never duplicate content or flood one board/site.",
   "image_spec": {
     "format": "PNG",
@@ -58,16 +58,18 @@
     },
     {
       "id": "pnt_thumbnail_04",
-      "status": "draft",
+      "status": "published",
       "board": "YouTube & Video Creator Tools",
-      "title": "How to Turn a Video Frame Into a Thumbnail",
-      "description": "A useful thumbnail can start with a frame you already filmed. Pick a clear moment, capture it from your own video, then export a cover image using this free browser tool.",
+      "title": "YouTube Thumbnail Maker: Find a Clear Video Frame",
+      "description": "A useful thumbnail starts with a sharp, readable moment. Scrub your own video, choose a clear frame with room for text, then save it as an image using this free browser tool.",
       "url": "https://www.getsocialora.com/tools/video-frame-to-thumbnail?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_thumbnail_04",
       "image_brief": "Video filmstrip with one frame selected and displayed as a thumbnail card, simple 3-step visual.",
-      "image_url": null,
-      "published_pin_id": null,
+      "image_url": "https://i.pinimg.com/1200x/97/9f/38/979f383aefa6b040a46e0bbf917245e7.jpg",
+      "published_pin_id": "267753140343773531",
       "cover_hook": "Find a Better Thumbnail Frame",
-      "visual_style": "video-storyboard"
+      "visual_style": "video-storyboard",
+      "alt_text": "Editorial illustrated guide with three video filmstrip frames labeled blurry, clear and busy; the clear middle frame is selected and enlarged, alongside tips for a strong thumbnail.",
+      "published_at": "2026-11-10T06:35:37Z"
     },
     {
       "id": "pnt_scorecard_05",
