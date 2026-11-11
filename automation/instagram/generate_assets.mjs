@@ -782,7 +782,22 @@ function buildReelHtml({ post, shotBase64, toolHostPath, palette }) {
 function encodeFramesToMp4(ffmpegBin, outMp4, framesGenerator, fps = 24) {
   return new Promise((resolve, reject) => {
     const tmpMp4 = outMp4.replace(/\.mp4$/, '.partial.mp4');
-    const audioExpr = "0.06*(sin(2*PI*330*t)+0.5*sin(2*PI*660*t))*(exp(-45*t)*lt(t,0.12)+exp(-38*(t-1.9))*gte(t,1.9)*lt(t,2.05)+exp(-38*(t-4.5))*gte(t,4.5)*lt(t,4.65)+exp(-38*(t-7.0))*gte(t,7.0)*lt(t,7.15))";
+    const chordL = [
+      'lt(mod(t,5.0),1.25)*(sin(2*PI*293.66*t)+0.65*sin(2*PI*349.23*t)+0.55*sin(2*PI*440*t)+0.45*sin(2*PI*523.25*t))*exp(-1.6*mod(t,1.25))',
+      'gte(mod(t,5.0),1.25)*lt(mod(t,5.0),2.5)*(sin(2*PI*246.94*t)+0.65*sin(2*PI*329.63*t)+0.55*sin(2*PI*392*t)+0.45*sin(2*PI*493.88*t))*exp(-1.6*mod(t,1.25))',
+      'gte(mod(t,5.0),2.5)*lt(mod(t,5.0),3.75)*(sin(2*PI*261.63*t)+0.65*sin(2*PI*329.63*t)+0.55*sin(2*PI*392*t)+0.45*sin(2*PI*493.88*t))*exp(-1.6*mod(t,1.25))',
+      'gte(mod(t,5.0),3.75)*(sin(2*PI*220*t)+0.65*sin(2*PI*277.18*t)+0.55*sin(2*PI*329.63*t)+0.45*sin(2*PI*440*t))*exp(-1.6*mod(t,1.25))',
+    ].join('+');
+    const chordR = [
+      'lt(mod(t,5.0),1.25)*(sin(2*PI*294.2*t)+0.65*sin(2*PI*349.9*t)+0.55*sin(2*PI*440.6*t)+0.45*sin(2*PI*659.25*t))*exp(-1.5*mod(t,1.25))',
+      'gte(mod(t,5.0),1.25)*lt(mod(t,5.0),2.5)*(sin(2*PI*247.4*t)+0.65*sin(2*PI*330.1*t)+0.55*sin(2*PI*392.6*t)+0.45*sin(2*PI*587.33*t))*exp(-1.5*mod(t,1.25))',
+      'gte(mod(t,5.0),2.5)*lt(mod(t,5.0),3.75)*(sin(2*PI*262.1*t)+0.65*sin(2*PI*330.1*t)+0.55*sin(2*PI*392.6*t)+0.45*sin(2*PI*587.33*t))*exp(-1.5*mod(t,1.25))',
+      'gte(mod(t,5.0),3.75)*(sin(2*PI*220.4*t)+0.65*sin(2*PI*277.6*t)+0.55*sin(2*PI*330.2*t)+0.45*sin(2*PI*523.25*t))*exp(-1.5*mod(t,1.25))',
+    ].join('+');
+    const kick = '0.24*sin(2*PI*(55+75*exp(-28*mod(t,0.625)))*mod(t,0.625))*exp(-14*mod(t,0.625))';
+    const shaker = '0.018*(sin(2*PI*4800*t)+0.6*sin(2*PI*6700*t))*exp(-42*mod(t+0.3125,0.625))';
+    const audioL = `0.075*(${chordL})+${kick}+${shaker}`;
+    const audioR = `0.075*(${chordR})+${kick}-${shaker}`;
     const args = [
       '-y',
       '-f', 'image2pipe',
@@ -790,15 +805,16 @@ function encodeFramesToMp4(ffmpegBin, outMp4, framesGenerator, fps = 24) {
       '-framerate', String(fps),
       '-i', 'pipe:0',
       '-f', 'lavfi',
-      '-i', `aevalsrc='${audioExpr}':s=44100:c=stereo`,
+      '-i', `aevalsrc='${audioL}|${audioR}':s=44100`,
       '-c:v', 'libx264',
       '-pix_fmt', 'yuv420p',
       '-profile:v', 'high',
       '-level', '4.1',
       '-crf', '24',
       '-preset', 'veryfast',
+      '-af', 'lowpass=f=2800,aecho=0.8:0.75:45|75:0.22|0.15,volume=9dB,afade=t=in:st=0:d=0.18',
       '-c:a', 'aac',
-      '-b:a', '64k',
+      '-b:a', '128k',
       '-shortest',
       '-movflags', '+faststart',
       tmpMp4,
