@@ -1,12 +1,13 @@
 import fs from 'node:fs';
 import http from 'node:http';
+import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const QUEUE_PATH = path.join(ROOT, 'automation', 'instagram', 'content-queue.json');
-const OUT_DIR = path.join(ROOT, 'public', 'instagram');
+const OUT_DIR = path.join(OUT_BASE(), 'instagram');
 const REELS_DIR = path.join(OUT_DIR, 'reels');
 const CAROUSELS_DIR = path.join(OUT_DIR, 'carousels');
 const CDP_URL = 'http://127.0.0.1:9222';
@@ -16,14 +17,192 @@ const FFMPEG_CANDIDATES = [
   'ffmpeg',
 ].filter(Boolean);
 
+function OUT_BASE() {
+  return path.join(ROOT, 'public');
+}
+
+// Alternating Apple / Linear studio palettes (light porcelain + dark obsidian)
 const PALETTES = [
-  { bg: '#F7F5FF', ink: '#17172E', accent: '#6D28D9', accentText: '#FFFFFF', card: '#FFFFFF', muted: '#E9E3FF', sub: '#4C4F6B', isDark: false },
-  { bg: '#F2FAF6', ink: '#102A22', accent: '#0F766E', accentText: '#FFFFFF', card: '#FFFFFF', muted: '#D7F1E5', sub: '#3C5B51', isDark: false },
-  { bg: '#FFF7F0', ink: '#261911', accent: '#C2410C', accentText: '#FFFFFF', card: '#FFFFFF', muted: '#FCE3D2', sub: '#644B3C', isDark: false },
-  { bg: '#111422', ink: '#F8FAFC', accent: '#A3E635', accentText: '#0F172A', card: '#1B2034', muted: '#252B45', sub: '#CBD5E1', isDark: true },
-  { bg: '#FFFDF0', ink: '#181E2E', accent: '#2563EB', accentText: '#FFFFFF', card: '#FFFFFF', muted: '#DBEAFE', sub: '#475569', isDark: false },
-  { bg: '#161326', ink: '#F9FAFB', accent: '#F472B6', accentText: '#161326', card: '#221D38', muted: '#2E274B', sub: '#D1D5DB', isDark: true },
+  {
+    bg: '#F8FAFC',
+    ink: '#0F172A',
+    sub: '#475569',
+    accent: '#4F46E5',
+    accentLight: '#4338CA',
+    accentText: '#FFFFFF',
+    hlBg: 'rgba(79, 70, 229, 0.11)',
+    card: '#FFFFFF',
+    border: 'rgba(15, 23, 42, 0.09)',
+    muted: '#E2E8F0',
+    gridInk: 'rgba(15, 23, 42, 0.045)',
+    isDark: false,
+  },
+  {
+    bg: '#090D16',
+    ink: '#F8FAFC',
+    sub: '#94A3B8',
+    accent: '#38BDF8',
+    accentLight: '#38BDF8',
+    accentText: '#06131F',
+    hlBg: 'rgba(56, 189, 248, 0.15)',
+    card: '#111827',
+    border: 'rgba(255, 255, 255, 0.11)',
+    muted: '#1E293B',
+    gridInk: 'rgba(255, 255, 255, 0.045)',
+    isDark: true,
+  },
+  {
+    bg: '#F4FAF7',
+    ink: '#0B1F19',
+    sub: '#3E5B50',
+    accent: '#059669',
+    accentLight: '#047857',
+    accentText: '#FFFFFF',
+    hlBg: 'rgba(5, 150, 105, 0.11)',
+    card: '#FFFFFF',
+    border: 'rgba(11, 31, 25, 0.09)',
+    muted: '#D1FAE5',
+    gridInk: 'rgba(11, 31, 25, 0.045)',
+    isDark: false,
+  },
+  {
+    bg: '#0B0F17',
+    ink: '#F9FAFB',
+    sub: '#9CA3AF',
+    accent: '#A3E635',
+    accentLight: '#A3E635',
+    accentText: '#0F172A',
+    hlBg: 'rgba(163, 230, 53, 0.15)',
+    card: '#131926',
+    border: 'rgba(255, 255, 255, 0.11)',
+    muted: '#1F2937',
+    gridInk: 'rgba(255, 255, 255, 0.045)',
+    isDark: true,
+  },
+  {
+    bg: '#F7F9FC',
+    ink: '#0F172A',
+    sub: '#475569',
+    accent: '#2563EB',
+    accentLight: '#1D4ED8',
+    accentText: '#FFFFFF',
+    hlBg: 'rgba(37, 99, 235, 0.11)',
+    card: '#FFFFFF',
+    border: 'rgba(15, 23, 42, 0.09)',
+    muted: '#DBEAFE',
+    gridInk: 'rgba(15, 23, 42, 0.045)',
+    isDark: false,
+  },
+  {
+    bg: '#0C0A16',
+    ink: '#F8FAFC',
+    sub: '#A1A1AA',
+    accent: '#A78BFA',
+    accentLight: '#A78BFA',
+    accentText: '#0C0A16',
+    hlBg: 'rgba(167, 139, 250, 0.16)',
+    card: '#151226',
+    border: 'rgba(255, 255, 255, 0.12)',
+    muted: '#241E3E',
+    gridInk: 'rgba(255, 255, 255, 0.05)',
+    isDark: true,
+  },
 ];
+
+// 6 distinct warm stereo lo-fi / ambient profiles (76-94 BPM, different keys, sub-bass & vinyl dust)
+const AUDIO_PROFILES = [
+  {
+    name: 'Warm Vinyl Dusk (Fmaj9)',
+    bpm: 76,
+    chords: [
+      [174.61, 220.00, 261.63, 329.63, 392.00],
+      [146.83, 220.00, 261.63, 329.63, 349.23],
+      [233.08, 293.66, 349.23, 440.00, 523.25],
+      [130.81, 233.08, 329.63, 392.00, 440.00],
+    ],
+    bass: [87.31, 73.42, 116.54, 65.41],
+  },
+  {
+    name: 'Velvet Midnight (Ebmaj9)',
+    bpm: 80,
+    chords: [
+      [155.56, 196.00, 233.08, 293.66, 349.23],
+      [130.81, 196.00, 233.08, 293.66, 311.13],
+      [207.65, 261.63, 311.13, 392.00, 466.16],
+      [233.08, 261.63, 311.13, 349.23, 415.30],
+    ],
+    bass: [77.78, 65.41, 103.83, 116.54],
+  },
+  {
+    name: 'Studio Tape (Am9)',
+    bpm: 84,
+    chords: [
+      [220.00, 261.63, 329.63, 392.00, 493.88],
+      [146.83, 261.63, 329.63, 369.99, 493.88],
+      [196.00, 246.94, 293.66, 369.99, 440.00],
+      [164.81, 207.65, 293.66, 392.00, 523.25],
+    ],
+    bass: [110.00, 73.42, 98.00, 82.41],
+  },
+  {
+    name: 'Morning Focus (Bm9)',
+    bpm: 87,
+    chords: [
+      [246.94, 293.66, 369.99, 440.00, 554.37],
+      [164.81, 246.94, 293.66, 415.30, 554.37],
+      [220.00, 277.18, 329.63, 415.30, 493.88],
+      [185.00, 220.00, 277.18, 329.63, 415.30],
+    ],
+    bass: [123.47, 82.41, 110.00, 92.50],
+  },
+  {
+    name: 'Warm Rhodes Drift (Em9)',
+    bpm: 90,
+    chords: [
+      [164.81, 246.94, 293.66, 369.99, 493.88],
+      [220.00, 277.18, 369.99, 392.00, 493.88],
+      [146.83, 220.00, 277.18, 329.63, 440.00],
+      [246.94, 311.13, 392.00, 440.00, 587.33],
+    ],
+    bass: [82.41, 110.00, 73.42, 123.47],
+  },
+  {
+    name: 'Clean Creator Pulse (Fm9)',
+    bpm: 94,
+    chords: [
+      [174.61, 207.65, 261.63, 311.13, 392.00],
+      [233.08, 293.66, 349.23, 392.00, 415.30],
+      [155.56, 233.08, 293.66, 349.23, 466.16],
+      [130.81, 207.65, 293.66, 392.00, 493.88],
+    ],
+    bass: [87.31, 116.54, 77.78, 65.41],
+  },
+];
+
+const TOOL_DOCK_META = {
+  'reels-tiktok-safe-zone-guide': { label: 'SAFE ZONE CHECK', score: '96/100', pct: 96, status: 'CLEAR' },
+  'instagram-no-crop-blur-background': { label: '4:5 FRAME FIT', score: '100%', pct: 100, status: 'NO CROP' },
+  'instagram-bio-generator': { label: 'BIO CLARITY', score: '94/100', pct: 94, status: 'SHARP' },
+  'instagram-account-scorecard': { label: 'PROFILE AUDIT', score: '89/100', pct: 89, status: 'BENCHMARK' },
+  'instagram-sponsorship-rate-calculator': { label: 'RATE ESTIMATOR', score: '91/100', pct: 91, status: 'PRICED' },
+  'instagram-caption-generator': { label: 'HOOK FOLD TEST', score: '93/100', pct: 93, status: 'SCANNED' },
+  'instagram-shadowban-checker': { label: 'REACH HEALTH', score: '95/100', pct: 95, status: 'CLEAN' },
+  'instagram-engagement-rate-calculator': { label: 'ENGAGEMENT INDEX', score: '90/100', pct: 90, status: 'VERIFIED' },
+  'instagram-fake-follower-checker': { label: 'AUDIENCE AUDIT', score: '92/100', pct: 92, status: 'HEALTHY' },
+  'instagram-hashtag-generator': { label: 'SEARCH TAGS', score: '88/100', pct: 88, status: 'INDEXED' },
+  'video-frame-to-thumbnail': { label: 'COVER CONTRAST', score: '97/100', pct: 97, status: 'CRISP' },
+  'social-media-photo-resizer': { label: '1080x1350 EXPORT', score: '100%', pct: 100, status: 'EXACT' },
+  'follower-goal-calculator': { label: 'GROWTH PACE', score: '87/100', pct: 87, status: 'ON TRACK' },
+};
+
+function hashString(str) {
+  let h = 2166136261;
+  const s = String(str || '');
+  for (let i = 0; i < s.length; i++) {
+    h = Math.imul(h ^ s.charCodeAt(i), 16777619) >>> 0;
+  }
+  return h;
+}
 
 function resolveFfmpeg() {
   for (const c of FFMPEG_CANDIDATES) {
@@ -91,6 +270,83 @@ function escapeHtml(text) {
     .replace(/"/g, '&quot;');
 }
 
+// Highlight 2-3 high-signal words in Apple / Linear accent style
+function highlightHeadlineHtml(text) {
+  const clean = String(text || '').trim();
+  if (!clean) return '';
+  const words = clean.split(/\s+/);
+  if (words.length <= 2) {
+    return `<span class="hl">${escapeHtml(clean)}</span>`;
+  }
+  if (words.length === 3) {
+    return `${escapeHtml(words[0])} <span class="hl">${escapeHtml(words.slice(1).join(' '))}</span>`;
+  }
+  const keyRe = /\b(\d+(?:\.\d+)?\s*(?:Seconds?|Saves?|Likes?|Views?|Minutes?|Hours?|Days?|Checks?|Things?|Tags?|Hooks?|Lines?|Posts?|Deals?|Numbers?|%)|\d+:\d+|Slide\s+\d+|Safe\s+Zone|Bio\s+Formula|Mute\s+Test|Watch\s+Time|Grid\s+Crop|Profile\s+Visits|Brand\s+Reels|Swipe\s+Off|Subtitles|Shadowban|Hashtags?|Engagement\s+Rate|Follower\s+Count|Inactive\s+Followers|Search\s+SEO|Hook|Hooks|Bio|Caption|Pricing|Growth|Retention|Saves|Checklist|Contrast|Framing|Loop|Carousels?|Reels?)\b/i;
+  const m = clean.match(keyRe);
+  if (m && m.index !== undefined) {
+    // Find word range containing the match and expand to 2-3 words
+    let charPos = 0;
+    let startIdx = 0;
+    let endIdx = 0;
+    for (let i = 0; i < words.length; i++) {
+      const wStart = clean.indexOf(words[i], charPos);
+      const wEnd = wStart + words[i].length;
+      if (wStart <= m.index && m.index < wEnd) startIdx = i;
+      if (wStart < m.index + m[0].length && m.index + m[0].length <= wEnd) {
+        endIdx = i;
+        break;
+      }
+      charPos = wEnd;
+    }
+    while (endIdx - startIdx + 1 < 2 && startIdx > 0) startIdx--;
+    while (endIdx - startIdx + 1 < 3 && endIdx < words.length - 1) endIdx++;
+    const before = words.slice(0, startIdx).join(' ');
+    const hit = words.slice(startIdx, endIdx + 1).join(' ');
+    const after = words.slice(endIdx + 1).join(' ');
+    return `${before ? escapeHtml(before) + ' ' : ''}<span class="hl">${escapeHtml(hit)}</span>${after ? ' ' + escapeHtml(after) : ''}`;
+  }
+  const splitAt = Math.max(1, words.length - 2);
+  return `${escapeHtml(words.slice(0, splitAt).join(' '))} <span class="hl">${escapeHtml(words.slice(splitAt).join(' '))}</span>`;
+}
+
+function getEditorialBadgeLabel(post, index, overrideEyebrow = '') {
+  const num = String((Number.isFinite(index) ? index : 0) + 1).padStart(2, '0');
+  const raw = String(overrideEyebrow || post.reel_beats?.eyebrow || '').trim();
+  if (raw) {
+    return `${raw.replace(/#\d+$/, '').trim()} #${num}`;
+  }
+  if (post.media_type === 'CAROUSEL') return `CREATOR PLAYBOOK #${num}`;
+  if (post.media_type === 'IMAGE' || post.tool_slug) return `CREATOR DIAGNOSTIC #${num}`;
+  if (post.category === 'mythbuster') return `ALGORITHM REALITY #${num}`;
+  return `REELS DIAGNOSTIC #${num}`;
+}
+
+function getToolDockMeta(post) {
+  const slug = post.tool_slug || (String(post.caption || '').match(/getsocialora\.com\/tools\/([a-z0-9-]+)/i) || [])[1] || '';
+  if (slug && TOOL_DOCK_META[slug]) {
+    return {
+      toolPath: `getsocialora.com/tools/${slug}`,
+      ...TOOL_DOCK_META[slug],
+    };
+  }
+  if (slug) {
+    return {
+      toolPath: `getsocialora.com/tools/${slug}`,
+      label: 'TOOL PREVIEW',
+      score: '92/100',
+      pct: 92,
+      status: 'READY',
+    };
+  }
+  return {
+    toolPath: 'getsocialora.com/tools',
+    label: post.category === 'mythbuster' ? 'RETENTION BENCHMARK' : 'CREATOR DIAGNOSTIC',
+    score: '92/100',
+    pct: 92,
+    status: 'LIVE CHECK',
+  };
+}
+
 function extractToolUrl(post) {
   if (post.tool_slug) {
     return `https://www.getsocialora.com/tools/${post.tool_slug}`;
@@ -125,20 +381,35 @@ async function captureToolScreenshot(call, toolUrl, width = 1040, height = 640) 
     if (ready.result.value) break;
   }
   await call('Runtime.evaluate', { expression: 'document.fonts.ready' });
+  await call('Runtime.evaluate', {
+    expression: `(() => {
+      const hdr = document.querySelector('header');
+      if (hdr) hdr.style.display = 'none';
+      const inputs = [...document.querySelectorAll('input[type="file"]')];
+      for (const inp of inputs) {
+        const badge = document.createElement('div');
+        badge.textContent = 'Select image or frame  ·  Ready in browser';
+        badge.style.cssText = 'display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:999px;background:#7C3AED;color:#FFFFFF;font-weight:700;font-size:14px;letter-spacing:0.01em;';
+        inp.style.display = 'none';
+        inp.parentNode?.insertBefore(badge, inp.nextSibling);
+      }
+    })()`,
+  });
   const boxRes = await call('Runtime.evaluate', {
     expression: `(() => {
       const m = document.querySelector('main') || document.body;
       const r = m.getBoundingClientRect();
-      return { x: Math.max(0, Math.round(r.left)), y: Math.max(80, Math.round(r.top)), w: Math.min(1120, Math.round(r.width || 1120)) };
+      return { x: Math.max(0, Math.round(r.left)), y: Math.max(0, Math.round(r.top)), w: Math.min(1120, Math.round(r.width || 1120)) };
     })()`,
     returnByValue: true,
   });
   const b = boxRes.result.value;
-  await call('Runtime.evaluate', { expression: `window.scrollTo(0, ${Math.max(0, b.y - 20)})` });
+  await call('Runtime.evaluate', { expression: `window.scrollTo(0, ${Math.max(0, b.y)})` });
   await new Promise((r) => setTimeout(r, 300));
+  const clipX = Math.max(0, Math.min(1120 - width, Math.round((1120 - width) / 2)));
   const shot = await call('Page.captureScreenshot', {
     format: 'png',
-    clip: { x: 40, y: Math.max(20, b.y - 10), width, height, scale: 1 },
+    clip: { x: clipX, y: Math.max(0, b.y), width, height, scale: 1 },
   });
   if (!shot.data || Buffer.from(shot.data, 'base64').length < 15000) {
     throw new Error(`Blank screenshot for ${toolUrl}`);
@@ -146,7 +417,9 @@ async function captureToolScreenshot(call, toolUrl, width = 1040, height = 640) 
   return shot.data;
 }
 
-function buildSingleCardHtml({ post, tip, toolHostPath, shotBase64, palette }) {
+function buildSingleCardHtml({ post, index, tip, toolHostPath, shotBase64, palette }) {
+  const badgeText = getEditorialBadgeLabel(post, index);
+  const dock = getToolDockMeta(post);
   return `<!doctype html>
 <html>
 <head>
@@ -159,56 +432,110 @@ function buildSingleCardHtml({ post, tip, toolHostPath, shotBase64, palette }) {
     overflow: hidden;
     background: ${palette.bg};
     color: ${palette.ink};
-    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
   .frame {
     width: 1080px;
     height: 1350px;
-    padding: 58px 64px 52px;
+    padding: 54px 62px 46px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     position: relative;
+    background-image:
+      radial-gradient(${palette.gridInk} 1.5px, transparent 1.5px),
+      radial-gradient(circle at 86% 10%, ${palette.hlBg} 0%, transparent 45%);
+    background-size: 28px 28px, 100% 100%;
   }
-  .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 18px; background: ${palette.accent}; }
-  .eyebrow { display: inline-flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: ${palette.accent}; margin-bottom: 18px; }
-  .dot { width: 11px; height: 11px; border-radius: 999px; background: ${palette.accent}; }
-  h1 { font-size: 56px; line-height: 1.08; font-weight: 800; letter-spacing: -0.025em; color: ${palette.ink}; max-width: 940px; }
-  .shot-card { background: ${palette.card}; border-radius: 26px; padding: 16px; box-shadow: 0 22px 48px rgba(0, 0, 0, 0.14); margin: 26px 0 22px; }
-  .shot-chrome { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px 14px; font-size: 16px; font-weight: 700; letter-spacing: 0.08em; color: #5C6178; text-transform: uppercase; }
-  .traffic { display: flex; gap: 8px; }
-  .traffic span { width: 11px; height: 11px; border-radius: 999px; background: #D6DAE8; }
-  .shot-wrap { width: 100%; height: 580px; border-radius: 16px; overflow: hidden; border: 1px solid #E5E7F0; background: #FFFFFF; }
+  .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 10px; background: ${palette.accent}; }
+  .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .ed-badge {
+    display: inline-flex; align-items: center; gap: 11px;
+    padding: 10px 20px; border-radius: 999px;
+    background: ${palette.card}; border: 1.5px solid ${palette.border};
+    font-size: 17px; font-weight: 800; letter-spacing: 0.12em;
+    text-transform: uppercase; color: ${palette.ink};
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    font-variant-numeric: tabular-nums;
+  }
+  .live-dot {
+    width: 10px; height: 10px; border-radius: 999px;
+    background: #10B981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.22);
+  }
+  .status-chip {
+    font-size: 16px; font-weight: 800; letter-spacing: 0.08em;
+    color: ${palette.accentLight}; background: ${palette.hlBg};
+    padding: 9px 18px; border-radius: 999px;
+  }
+  h1 { font-size: 54px; line-height: 1.14; font-weight: 900; letter-spacing: -0.03em; color: ${palette.ink}; max-width: 950px; }
+  h1 .hl { color: ${palette.accentLight}; background: ${palette.hlBg}; padding: 1px 10px; border-radius: 10px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  .shot-card {
+    background: ${palette.card}; border: 1.5px solid ${palette.border};
+    border-radius: 24px; padding: 14px;
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.14);
+    margin: 22px 0 18px;
+  }
+  .shot-chrome { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px 12px; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; color: ${palette.sub}; text-transform: uppercase; }
+  .traffic { display: flex; gap: 7px; }
+  .traffic span { width: 10px; height: 10px; border-radius: 999px; background: ${palette.muted}; }
+  .shot-wrap { width: 100%; height: 530px; border-radius: 14px; overflow: hidden; border: 1px solid ${palette.border}; background: #FFFFFF; }
   .shot-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
-  .tip-box { background: ${palette.card}; border-left: 10px solid ${palette.accent}; border-radius: 20px; padding: 24px 30px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); }
-  .tip-label { font-size: 17px; font-weight: 800; letter-spacing: 0.12em; color: ${palette.accent}; text-transform: uppercase; margin-bottom: 8px; }
-  .tip-text { font-size: 27px; line-height: 1.35; font-weight: 600; color: ${palette.ink}; }
-  .footer { display: flex; align-items: center; justify-content: space-between; padding-top: 20px; }
-  .footer-url { font-size: 22px; font-weight: 700; color: ${palette.ink}; opacity: 0.85; }
-  .cta-pill { background: ${palette.accent}; color: ${palette.accentText}; padding: 15px 30px; border-radius: 999px; font-size: 21px; font-weight: 800; letter-spacing: 0.04em; }
+  .tip-box {
+    background: ${palette.card}; border: 1.5px solid ${palette.border};
+    border-left: 8px solid ${palette.accent};
+    border-radius: 18px; padding: 20px 26px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+  .tip-label { font-size: 15px; font-weight: 800; letter-spacing: 0.12em; color: ${palette.accentLight}; text-transform: uppercase; margin-bottom: 6px; }
+  .tip-text { font-size: 25px; line-height: 1.35; font-weight: 600; color: ${palette.ink}; }
+  .dock {
+    background: ${palette.card}; border: 1.5px solid ${palette.border};
+    border-radius: 18px; padding: 16px 22px; margin-top: 16px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .dock-top { display: flex; align-items: center; justify-content: space-between; font-size: 17px; font-weight: 700; }
+  .dock-path { display: inline-flex; align-items: center; gap: 9px; color: ${palette.sub}; }
+  .dock-metric { color: ${palette.ink}; font-variant-numeric: tabular-nums; }
+  .dock-metric span { color: ${palette.accentLight}; font-weight: 900; margin-left: 8px; }
+  .dock-track { width: 100%; height: 8px; border-radius: 999px; background: ${palette.muted}; overflow: hidden; }
+  .dock-fill { height: 100%; width: ${dock.pct}%; border-radius: 999px; background: ${palette.accent}; }
+  .footer { display: flex; align-items: center; justify-content: space-between; padding-top: 16px; }
+  .footer-url { font-size: 20px; font-weight: 700; color: ${palette.sub}; }
+  .cta-pill { background: ${palette.accent}; color: ${palette.accentText}; padding: 13px 26px; border-radius: 999px; font-size: 19px; font-weight: 800; letter-spacing: 0.04em; }
 </style>
 </head>
 <body>
   <div class="frame">
     <div class="top-bar"></div>
     <div>
-      <div class="eyebrow"><span class="dot"></span>SOCIALORA / FREE CREATOR TOOL</div>
-      <h1>${escapeHtml(post.title)}</h1>
+      <div class="header-row">
+        <div class="ed-badge"><span class="live-dot"></span>${escapeHtml(badgeText)}</div>
+        <div class="status-chip">${escapeHtml(dock.status)}</div>
+      </div>
+      <h1>${highlightHeadlineHtml(post.title)}</h1>
     </div>
     <div class="shot-card">
       <div class="shot-chrome">
         <div class="traffic"><span></span><span></span><span></span></div>
-        <div>REAL TOOL PREVIEW — ${escapeHtml(toolHostPath)}</div>
+        <div>TOOL UI: ${escapeHtml(toolHostPath)}</div>
       </div>
       <div class="shot-wrap"><img src="data:image/png;base64,${shotBase64}" /></div>
     </div>
     <div class="tip-box">
-      <div class="tip-label">Quick Takeaway</div>
+      <div class="tip-label">Key Takeaway</div>
       <div class="tip-text">${escapeHtml(tip)}</div>
     </div>
+    <div class="dock">
+      <div class="dock-top">
+        <div class="dock-path"><span class="live-dot"></span>${escapeHtml(dock.toolPath)}</div>
+        <div class="dock-metric">${escapeHtml(dock.label)} <span>${escapeHtml(dock.score)}</span></div>
+      </div>
+      <div class="dock-track"><div class="dock-fill"></div></div>
+    </div>
     <div class="footer">
-      <div class="footer-url">getsocialora.com/tools</div>
+      <div class="footer-url">@socialora1 · getsocialora.com/tools</div>
       <div class="cta-pill">LINK IN BIO &rarr;</div>
     </div>
   </div>
@@ -216,7 +543,7 @@ function buildSingleCardHtml({ post, tip, toolHostPath, shotBase64, palette }) {
 </html>`;
 }
 
-function buildCarouselSlideHtml({ post, slide, slideIdx, totalSlides, shotBase64, toolHostPath, palette }) {
+function buildCarouselSlideHtml({ post, index, slide, slideIdx, totalSlides, shotBase64, toolHostPath, palette }) {
   const isCover = slideIdx === 0;
   const isLast = slideIdx === totalSlides - 1;
   const showShot = Boolean(shotBase64 && (slideIdx === totalSlides - 2 || (isLast && totalSlides <= 4)));
@@ -225,6 +552,9 @@ function buildCarouselSlideHtml({ post, slide, slideIdx, totalSlides, shotBase64
   const teaserTags = isCover
     ? allSlides.slice(1, -1).map((s) => s.headline).filter(Boolean).slice(0, 3)
     : [];
+  const badgeText = getEditorialBadgeLabel(post, index, slide.eyebrow);
+  const dock = getToolDockMeta(post);
+  const slideProgressPct = Math.round(((slideIdx + 1) / totalSlides) * 100);
 
   return `<!doctype html>
 <html>
@@ -238,125 +568,155 @@ function buildCarouselSlideHtml({ post, slide, slideIdx, totalSlides, shotBase64
     overflow: hidden;
     background: ${palette.bg};
     color: ${palette.ink};
-    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
   .frame {
     width: 1080px;
     height: 1350px;
-    padding: 68px 70px 58px;
+    padding: 58px 66px 50px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     position: relative;
     background-image:
-      radial-gradient(circle at 88% 12%, ${palette.muted} 0%, transparent 45%),
-      radial-gradient(circle at 12% 85%, ${palette.muted} 0%, transparent 40%);
+      radial-gradient(${palette.gridInk} 1.5px, transparent 1.5px),
+      radial-gradient(circle at 88% 12%, ${palette.hlBg} 0%, transparent 44%),
+      radial-gradient(circle at 10% 88%, ${palette.hlBg} 0%, transparent 40%);
+    background-size: 28px 28px, 100% 100%, 100% 100%;
   }
-  .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 18px; background: ${palette.accent}; }
-  .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-  .eyebrow { display: inline-flex; align-items: center; gap: 12px; font-size: 21px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: ${palette.accent}; }
-  .dot { width: 12px; height: 12px; border-radius: 999px; background: ${palette.accent}; }
-  .counter { font-size: 20px; font-weight: 800; padding: 10px 22px; border-radius: 999px; background: ${palette.muted}; color: ${palette.ink}; }
+  .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 10px; background: ${palette.accent}; }
+  .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .ed-badge {
+    display: inline-flex; align-items: center; gap: 11px;
+    padding: 10px 22px; border-radius: 999px;
+    background: ${palette.card}; border: 1.5px solid ${palette.border};
+    font-size: 18px; font-weight: 800; letter-spacing: 0.12em;
+    text-transform: uppercase; color: ${palette.ink};
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    font-variant-numeric: tabular-nums;
+  }
+  .live-dot {
+    width: 10px; height: 10px; border-radius: 999px;
+    background: #10B981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.22);
+  }
+  .counter {
+    font-size: 18px; font-weight: 800; padding: 10px 20px; border-radius: 999px;
+    background: ${palette.card}; border: 1.5px solid ${palette.border};
+    color: ${palette.ink}; font-variant-numeric: tabular-nums;
+  }
   .main-stage {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: ${isCover || (isLast && !showShot) ? 'center' : 'flex-start'};
-    padding: ${isCover || (isLast && !showShot) ? '10px 0 30px' : '18px 0 18px'};
+    justify-content: center;
+    padding: 8px 0 18px;
   }
   h1 {
-    font-size: ${isCover ? '82px' : '62px'};
-    line-height: 1.06;
+    font-size: ${isCover ? '72px' : '58px'};
+    line-height: 1.14;
     font-weight: 900;
     letter-spacing: -0.03em;
     color: ${palette.ink};
-    margin-bottom: ${isCover ? '34px' : '32px'};
+    margin-bottom: ${isCover ? '28px' : '28px'};
   }
+  h1 .hl { color: ${palette.accentLight}; background: ${palette.hlBg}; padding: 1px 12px; border-radius: 12px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
   .cover-body {
     background: ${palette.card};
-    border-left: 12px solid ${palette.accent};
-    border-radius: 26px;
-    padding: 42px 46px;
-    font-size: 36px;
-    line-height: 1.42;
+    border: 1.5px solid ${palette.border};
+    border-left: 10px solid ${palette.accent};
+    border-radius: 24px;
+    padding: 36px 40px;
+    font-size: 33px;
+    line-height: 1.4;
     font-weight: 600;
     color: ${palette.sub};
-    box-shadow: 0 22px 48px rgba(0,0,0,0.09);
+    box-shadow: 0 18px 42px rgba(0,0,0,0.08);
   }
-  .teaser-wrap {
-    margin-top: 34px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .teaser-label { font-size: 17px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: ${palette.accent}; }
+  .teaser-wrap { margin-top: 26px; display: flex; flex-direction: column; gap: 12px; }
+  .teaser-label { font-size: 16px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: ${palette.accentLight}; }
   .teaser-pills { display: flex; flex-wrap: wrap; gap: 12px; }
   .teaser-pill {
-    background: ${palette.card};
-    border: 2px solid ${palette.muted};
-    border-radius: 16px;
-    padding: 14px 22px;
-    font-size: 22px;
-    font-weight: 700;
-    color: ${palette.ink};
-    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    background: ${palette.card}; border: 1.5px solid ${palette.border};
+    border-radius: 14px; padding: 12px 20px; font-size: 20px; font-weight: 700;
+    color: ${palette.ink}; box-shadow: 0 6px 16px rgba(0,0,0,0.05);
   }
-  .bullets { display: flex; flex-direction: column; gap: 26px; margin-top: 8px; }
+  .bullets { display: flex; flex-direction: column; gap: 26px; margin-top: 6px; }
   .bullet-card {
     background: ${palette.card};
-    border-radius: 26px;
-    padding: ${showShot ? '30px 36px' : '42px 44px'};
-    border-left: 12px solid ${palette.accent};
-    box-shadow: 0 16px 38px rgba(0,0,0,0.08);
-    font-size: ${showShot ? '27px' : '34px'};
+    border: 1.5px solid ${palette.border};
+    border-left: 10px solid ${palette.accent};
+    border-radius: 22px;
+    padding: ${showShot ? '24px 30px' : '38px 42px'};
+    box-shadow: 0 14px 34px rgba(0,0,0,0.07);
+    font-size: ${showShot ? '25px' : '32px'};
     line-height: 1.42;
     font-weight: 600;
     color: ${palette.ink};
   }
   .shot-card {
-    background: ${palette.card};
-    border-radius: 24px;
-    padding: 16px;
-    box-shadow: 0 20px 44px rgba(0,0,0,0.13);
-    margin-top: 26px;
+    background: ${palette.card}; border: 1.5px solid ${palette.border};
+    border-radius: 22px; padding: 14px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+    margin-top: 20px;
   }
-  .shot-label { font-size: 16px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: ${palette.sub}; margin-bottom: 10px; }
-  .shot-wrap { width: 100%; height: 420px; border-radius: 14px; overflow: hidden; border: 1px solid rgba(128,128,128,0.2); background: #fff; }
+  .shot-label { font-size: 15px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: ${palette.sub}; margin-bottom: 8px; }
+  .shot-wrap { width: 100%; height: 370px; border-radius: 12px; overflow: hidden; border: 1px solid ${palette.border}; background: #fff; }
   .shot-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
-  .dots { display: flex; gap: 10px; align-items: center; }
-  .dots span { width: 12px; height: 12px; border-radius: 999px; background: ${palette.muted}; }
-  .dots span.active { width: 34px; background: ${palette.accent}; }
-  .footer { display: flex; align-items: center; justify-content: space-between; padding-top: 24px; border-top: 2px solid ${palette.muted}; }
-  .brand-sig { font-size: 22px; font-weight: 700; color: ${palette.sub}; }
-  .tag-pill { background: ${palette.accent}; color: ${palette.accentText}; padding: 16px 32px; border-radius: 999px; font-size: 21px; font-weight: 800; letter-spacing: 0.04em; }
+  .dock {
+    background: ${palette.card}; border: 1.5px solid ${palette.border};
+    border-radius: 18px; padding: 14px 20px; margin-bottom: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .dock-top { display: flex; align-items: center; justify-content: space-between; font-size: 16px; font-weight: 700; }
+  .dock-path { display: inline-flex; align-items: center; gap: 8px; color: ${palette.sub}; }
+  .dock-metric { color: ${palette.ink}; font-variant-numeric: tabular-nums; }
+  .dock-metric span { color: ${palette.accentLight}; font-weight: 900; margin-left: 8px; }
+  .dock-track { width: 100%; height: 8px; border-radius: 999px; background: ${palette.muted}; overflow: hidden; }
+  .dock-fill { height: 100%; width: ${showShot ? dock.pct : slideProgressPct}%; border-radius: 999px; background: ${palette.accent}; }
+  .dots { display: flex; gap: 9px; align-items: center; }
+  .dots span { width: 11px; height: 11px; border-radius: 999px; background: ${palette.muted}; }
+  .dots span.active { width: 32px; background: ${palette.accent}; }
+  .footer { display: flex; align-items: center; justify-content: space-between; padding-top: 18px; border-top: 1.5px solid ${palette.border}; }
+  .brand-sig { font-size: 20px; font-weight: 700; color: ${palette.sub}; }
+  .tag-pill { background: ${palette.accent}; color: ${palette.accentText}; padding: 14px 28px; border-radius: 999px; font-size: 19px; font-weight: 800; letter-spacing: 0.04em; }
 </style>
 </head>
 <body>
   <div class="frame">
     <div class="top-bar"></div>
     <div class="header-row">
-      <div class="eyebrow"><span class="dot"></span>${escapeHtml(slide.eyebrow || 'CREATOR PLAYBOOK')}</div>
+      <div class="ed-badge"><span class="live-dot"></span>${escapeHtml(badgeText)}</div>
       <div class="counter">0${slideIdx + 1} / 0${totalSlides}</div>
     </div>
     <div class="main-stage">
-      <h1>${escapeHtml(slide.headline)}</h1>
+      <h1>${highlightHeadlineHtml(slide.headline)}</h1>
       ${slide.body ? `<div class="cover-body">${escapeHtml(slide.body)}</div>` : ''}
       ${teaserTags.length ? `<div class="teaser-wrap"><div class="teaser-label">INSIDE THIS GUIDE</div><div class="teaser-pills">${teaserTags.map((t, i) => `<div class="teaser-pill">0${i + 2}. ${escapeHtml(t)}</div>`).join('')}</div></div>` : ''}
       ${bullets.length ? `<div class="bullets">${bullets.map((b) => `<div class="bullet-card">${escapeHtml(b)}</div>`).join('')}</div>` : ''}
-      ${showShot ? `<div class="shot-card"><div class="shot-label">REAL TOOL PREVIEW — ${escapeHtml(toolHostPath)}</div><div class="shot-wrap"><img src="data:image/png;base64,${shotBase64}" /></div></div>` : ''}
+      ${showShot ? `<div class="shot-card"><div class="shot-label">TOOL UI: ${escapeHtml(toolHostPath)}</div><div class="shot-wrap"><img src="data:image/png;base64,${shotBase64}" /></div></div>` : ''}
     </div>
-    <div class="footer">
-      <div class="dots">${Array.from({ length: totalSlides }, (_, idx) => `<span class="${idx === slideIdx ? 'active' : ''}"></span>`).join('')}</div>
-      <div class="brand-sig">@socialora1 · getsocialora.com</div>
-      <div class="tag-pill">${escapeHtml(slide.tag || (isLast ? 'SAVE THIS' : 'SWIPE →'))}</div>
+    <div>
+      <div class="dock">
+        <div class="dock-top">
+          <div class="dock-path"><span class="live-dot"></span>${escapeHtml(dock.toolPath)}</div>
+          <div class="dock-metric">${escapeHtml(dock.label)} <span>${escapeHtml(showShot ? dock.score : `${slideIdx + 1}/${totalSlides}`)}</span></div>
+        </div>
+        <div class="dock-track"><div class="dock-fill"></div></div>
+      </div>
+      <div class="footer">
+        <div class="dots">${Array.from({ length: totalSlides }, (_, idx) => `<span class="${idx === slideIdx ? 'active' : ''}"></span>`).join('')}</div>
+        <div class="brand-sig">@socialora1 · getsocialora.com</div>
+        <div class="tag-pill">${escapeHtml(slide.tag || (isLast ? 'SAVE THIS' : 'SWIPE ->'))}</div>
+      </div>
     </div>
   </div>
 </body>
 </html>`;
 }
 
-function buildReelHtml({ post, shotBase64, toolHostPath, palette }) {
+function buildReelHtml({ post, index, shotBase64, toolHostPath, palette }) {
   const rb = post.reel_beats || {};
   const duration = Number(post.duration_sec || 8);
   const beats = Array.isArray(rb.beats) ? rb.beats : [];
@@ -364,17 +724,19 @@ function buildReelHtml({ post, shotBase64, toolHostPath, palette }) {
   const isSafeZone = post.tool_slug === 'reels-tiktok-safe-zone-guide';
   const isNoCrop = post.tool_slug === 'instagram-no-crop-blur-background';
   const hookWords = String(rb.hook || post.title || '').trim();
-  const hookSize = hookWords.length > 44 ? '76px' : (hookWords.length > 32 ? '84px' : '92px');
+  const hookSize = hookWords.length > 44 ? '68px' : (hookWords.length > 32 ? '74px' : '82px');
+  const badgeText = getEditorialBadgeLabel(post, index);
+  const dock = getToolDockMeta(post);
 
   const scene2CompareHtml = hasCompare ? `
     <div class="s2-stack">
       <div class="big-cmp bad" id="s2Bad">
-        <div class="cmp-pill bad-pill">❌ ${escapeHtml(rb.compare_bad_label || 'AVOID THIS')}</div>
+        <div class="cmp-pill bad-pill">${escapeHtml(rb.compare_bad_label || 'AVOID THIS')}</div>
         <div class="big-cmp-txt">${escapeHtml(rb.compare_bad_text)}</div>
         <div class="strike-bar" id="s2Strike"></div>
       </div>
       <div class="big-cmp good" id="s2Good">
-        <div class="cmp-pill good-pill">✅ ${escapeHtml(rb.compare_good_label || 'USE THIS')}</div>
+        <div class="cmp-pill good-pill">${escapeHtml(rb.compare_good_label || 'USE THIS')}</div>
         <div class="big-cmp-txt">${escapeHtml(rb.compare_good_text)}</div>
       </div>
     </div>` : isSafeZone ? `
@@ -382,20 +744,20 @@ function buildReelHtml({ post, shotBase64, toolHostPath, palette }) {
       <div class="phone-screen">
         <div class="danger-top">TOP UI / REELS HEADER</div>
         <div class="safe-center">
-          <div class="safe-tag">✅ CENTER SAFE ZONE</div>
+          <div class="safe-tag">CENTER SAFE ZONE</div>
           <div class="moving-sub" id="szText">YOUR HOOK SUBTITLES</div>
         </div>
         <div class="right-icons"><span>♥</span><span>💬</span><span>✈</span></div>
-        <div class="danger-bot">❌ CAPTION &amp; AUDIO BAR COVER THIS</div>
+        <div class="danger-bot">CAPTION &amp; AUDIO BAR</div>
       </div>
     </div>` : isNoCrop ? `
     <div class="crop-demo">
       <div class="crop-box bad-crop">
-        <div class="crop-lbl bad-pill">❌ FORCED 1:1 / TIGHT CROP</div>
+        <div class="crop-lbl bad-pill">FORCED 1:1 / TIGHT CROP</div>
         <div class="wide-photo sliced"><div class="slice-mask left"></div><div class="slice-mask right"></div><span>WIDE PHOTO EDGES CUT OFF</span></div>
       </div>
       <div class="crop-box good-crop">
-        <div class="crop-lbl good-pill">✅ 4:5 SOFT BLUR PAD</div>
+        <div class="crop-lbl good-pill">4:5 SOFT BLUR PAD</div>
         <div class="blur-pad-frame"><div class="full-wide-inner">100% OF PHOTO KEPT INTACT</div></div>
       </div>
     </div>` : `
@@ -403,15 +765,15 @@ function buildReelHtml({ post, shotBase64, toolHostPath, palette }) {
       ${beats.slice(0, 2).map((b, i) => `
       <div class="giant-beat" id="s2Beat_${i}">
         <div class="g-badge">${escapeHtml(b.badge)}</div>
-        <div class="g-head">${escapeHtml(b.headline)}</div>
+        <div class="g-head">${highlightHeadlineHtml(b.headline)}</div>
         <div class="g-sub">${escapeHtml(b.sub)}</div>
       </div>`).join('')}
     </div>`;
 
   const scene3Html = shotBase64 ? `
     <div class="s3-tool-stage">
-      <div class="s3-eyebrow">⚡ TRY IT FREE IN BROWSER</div>
-      <div class="s3-headline">${escapeHtml((beats[beats.length - 1]?.headline) || 'Preview & export in seconds')}</div>
+      <div class="s3-eyebrow">FREE BROWSER TOOL PREVIEW</div>
+      <div class="s3-headline">${highlightHeadlineHtml((beats[beats.length - 1]?.headline) || 'Preview & export in seconds')}</div>
       <div class="s3-device" id="s3Device">
         <div class="s3-chrome"><span></span><span></span><span></span><div class="s3-url">${escapeHtml(toolHostPath)}</div></div>
         <div class="s3-img-wrap">
@@ -419,15 +781,15 @@ function buildReelHtml({ post, shotBase64, toolHostPath, palette }) {
           <div class="cursor-ring" id="cursorRing"></div>
         </div>
       </div>
-      <div class="s3-sub">${escapeHtml((beats[beats.length - 1]?.sub) || 'Zero sign-up required — runs directly on your device.')}</div>
+      <div class="s3-sub">${escapeHtml((beats[beats.length - 1]?.sub) || 'Zero sign-up required, runs directly on your device.')}</div>
     </div>` : `
     <div class="s3-beats-stage">
-      <div class="s3-eyebrow">⚡ THE EXACT FIX</div>
+      <div class="s3-eyebrow">THE EXACT FIX</div>
       <div class="s3-beats-list">
         ${(beats.length > 2 ? beats.slice(1) : beats).map((b, i) => `
         <div class="giant-beat s3-card" id="s3Beat_${i}">
           <div class="g-badge">${escapeHtml(b.badge)}</div>
-          <div class="g-head">${escapeHtml(b.headline)}</div>
+          <div class="g-head">${highlightHeadlineHtml(b.headline)}</div>
           <div class="g-sub">${escapeHtml(b.sub)}</div>
         </div>`).join('')}
       </div>
@@ -445,303 +807,496 @@ function buildReelHtml({ post, shotBase64, toolHostPath, palette }) {
     overflow: hidden;
     background: ${palette.bg};
     color: ${palette.ink};
-    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-  .canvas { width: 1080px; height: 1920px; position: relative; overflow: hidden; background: ${palette.bg}; }
-  .orb-1 { position: absolute; width: 820px; height: 820px; border-radius: 999px; background: ${palette.muted}; opacity: 0.78; top: -200px; right: -240px; filter: blur(22px); }
-  .orb-2 { position: absolute; width: 700px; height: 700px; border-radius: 999px; background: ${palette.muted}; opacity: 0.62; bottom: -160px; left: -200px; filter: blur(22px); }
-  .progress-track { position: absolute; top: 120px; left: 72px; right: 72px; height: 12px; border-radius: 999px; background: ${palette.muted}; overflow: hidden; z-index: 20; }
-  .progress-fill { height: 100%; width: 0%; border-radius: 999px; background: ${palette.accent}; }
+  .canvas {
+    width: 1080px;
+    height: 1920px;
+    position: relative;
+    overflow: hidden;
+    background: ${palette.bg};
+    background-image: radial-gradient(${palette.gridInk} 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
+  }
+  .orb-1 { position: absolute; width: 780px; height: 780px; border-radius: 999px; background: ${palette.hlBg}; top: -180px; right: -200px; filter: blur(36px); }
+  .orb-2 { position: absolute; width: 680px; height: 680px; border-radius: 999px; background: ${palette.hlBg}; bottom: -140px; left: -180px; filter: blur(36px); }
 
-  /* Balanced safe zone: clear of IG top header (240px), bottom overlay (370px), and right icon rail (100px) */
+  /* STRICT REELS SAFE ZONE: x: 72..910 (width: 838px), y: 260..1520 (height: 1260px) */
+  .safe-shell {
+    position: absolute;
+    left: 72px;
+    top: 260px;
+    width: 838px;
+    height: 1260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 10;
+  }
+  .safe-header {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .header-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .ed-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    background: ${palette.card};
+    border: 1.5px solid ${palette.border};
+    color: ${palette.ink};
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    font-variant-numeric: tabular-nums;
+  }
+  .live-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: #10B981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.22);
+  }
+  .time-pill {
+    padding: 9px 18px;
+    border-radius: 999px;
+    background: ${palette.card};
+    border: 1.5px solid ${palette.border};
+    color: ${palette.sub};
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+  .progress-track {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: ${palette.muted};
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: ${palette.accent};
+  }
+
+  .stage-viewport {
+    position: relative;
+    flex: 1;
+    margin: 18px 0;
+  }
   .scene {
     position: absolute;
-    top: 240px;
-    left: 80px;
-    right: 100px;
-    bottom: 370px;
+    inset: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     opacity: 0;
     pointer-events: none;
-    z-index: 5;
   }
 
-  /* SCENE 1: GIANT HOOK */
-  .s1-badge {
+  /* SCENE 1: FRAME-0 OCR + MICRO-ZOOM + PATTERN INTERRUPT */
+  .s1-card {
+    background: ${palette.card};
+    border: 1.5px solid ${palette.border};
+    border-radius: 30px;
+    padding: 46px 42px;
+    box-shadow: 0 24px 56px rgba(0,0,0,0.14);
+    transform-origin: center center;
+  }
+  .s1-kicker {
     display: inline-flex;
     align-items: center;
-    gap: 14px;
-    align-self: flex-start;
-    padding: 14px 28px;
-    border-radius: 999px;
-    background: ${palette.accent};
-    color: ${palette.accentText};
-    font-size: 24px;
-    font-weight: 900;
-    letter-spacing: 0.14em;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-bottom: 42px;
-    box-shadow: 0 14px 32px rgba(0,0,0,0.16);
+    color: ${palette.accentLight};
+    margin-bottom: 22px;
   }
   .s1-title {
     font-size: ${hookSize};
-    line-height: 1.04;
+    line-height: 1.13;
     font-weight: 900;
     letter-spacing: -0.035em;
     color: ${palette.ink};
-    margin-bottom: 38px;
+    margin-bottom: 30px;
+  }
+  .s1-title .hl, .g-head .hl, .s3-headline .hl {
+    color: ${palette.accentLight};
+    background: ${palette.hlBg};
+    padding: 1px 10px;
+    border-radius: 10px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
   }
   .s1-bar {
-    height: 14px;
+    height: 10px;
     width: 100%;
-    max-width: 420px;
+    max-width: 340px;
     border-radius: 999px;
     background: ${palette.accent};
-    margin-bottom: 48px;
+    margin-bottom: 32px;
     transform-origin: left center;
   }
   .s1-subcard {
-    background: ${palette.card};
-    border-left: 12px solid ${palette.accent};
-    border-radius: 26px;
-    padding: 34px 38px;
-    font-size: 34px;
-    line-height: 1.35;
+    background: ${palette.bg};
+    border: 1.5px solid ${palette.border};
+    border-left: 8px solid ${palette.accent};
+    border-radius: 20px;
+    padding: 24px 28px;
+    font-size: 28px;
+    line-height: 1.32;
     font-weight: 700;
     color: ${palette.sub};
-    box-shadow: 0 22px 48px rgba(0,0,0,0.1);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
+  }
+  .s1-arrow {
+    color: ${palette.accentLight};
+    font-weight: 900;
+    font-size: 30px;
+  }
+  .wipe-flash {
+    position: absolute;
+    inset: 0;
+    border-radius: 30px;
+    border: 3px solid ${palette.accent};
+    opacity: 0;
+    pointer-events: none;
   }
 
-  /* SCENE 2: VISUAL CONTRAST / DIAGRAM */
-  .s2-stack, .s2-beats { display: flex; flex-direction: column; gap: 34px; width: 100%; }
+  /* SCENE 2: VISUAL CONTRAST / SAFE ZONE / NO-CROP / BEATS */
+  .s2-stack, .s2-beats { display: flex; flex-direction: column; gap: 26px; width: 100%; }
   .big-cmp {
     position: relative;
     background: ${palette.card};
-    border-radius: 30px;
-    padding: 40px 42px;
-    box-shadow: 0 22px 46px rgba(0,0,0,0.11);
+    border: 1.5px solid ${palette.border};
+    border-radius: 26px;
+    padding: 34px 36px;
+    box-shadow: 0 20px 44px rgba(0,0,0,0.12);
     overflow: hidden;
   }
-  .big-cmp.bad { border-left: 14px solid #EF4444; }
-  .big-cmp.good { border-left: 14px solid #10B981; }
+  .big-cmp.bad { border-left: 12px solid #EF4444; }
+  .big-cmp.good { border-left: 12px solid #10B981; }
   .cmp-pill {
     display: inline-block;
-    font-size: 21px;
+    font-size: 18px;
     font-weight: 900;
     letter-spacing: 0.1em;
-    padding: 10px 22px;
+    padding: 8px 18px;
     border-radius: 999px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     text-transform: uppercase;
   }
   .bad-pill { background: #FEE2E2; color: #B91C1C; }
   .good-pill { background: #D1FAE5; color: #047857; }
-  .big-cmp-txt { font-size: 39px; line-height: 1.28; font-weight: 800; color: ${palette.ink}; }
+  .big-cmp-txt { font-size: 34px; line-height: 1.28; font-weight: 800; color: ${palette.ink}; }
   .strike-bar {
-    position: absolute;
-    left: 28px;
-    right: 28px;
-    top: 56%;
-    height: 10px;
-    border-radius: 999px;
-    background: #EF4444;
-    transform: scaleX(0);
-    transform-origin: left center;
+    position: absolute; left: 24px; right: 24px; top: 58%; height: 8px; border-radius: 999px;
+    background: #EF4444; transform: scaleX(0); transform-origin: left center;
   }
   .giant-beat {
     background: ${palette.card};
-    border-radius: 28px;
-    padding: 36px 40px;
-    border-left: 14px solid ${palette.accent};
-    box-shadow: 0 20px 44px rgba(0,0,0,0.1);
+    border: 1.5px solid ${palette.border};
+    border-radius: 24px;
+    padding: 30px 34px;
+    border-left: 12px solid ${palette.accent};
+    box-shadow: 0 18px 40px rgba(0,0,0,0.10);
   }
   .g-badge {
     display: inline-block;
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 900;
     letter-spacing: 0.12em;
-    padding: 8px 20px;
+    padding: 7px 18px;
     border-radius: 999px;
     background: ${palette.accent};
     color: ${palette.accentText};
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     text-transform: uppercase;
   }
-  .g-head { font-size: 44px; line-height: 1.15; font-weight: 900; color: ${palette.ink}; margin-bottom: 10px; }
-  .g-sub { font-size: 29px; line-height: 1.32; font-weight: 600; color: ${palette.sub}; }
+  .g-head { font-size: 38px; line-height: 1.15; font-weight: 900; color: ${palette.ink}; margin-bottom: 8px; }
+  .g-sub { font-size: 26px; line-height: 1.32; font-weight: 600; color: ${palette.sub}; }
 
   /* SAFE ZONE DEMO */
   .phone-demo { display: flex; justify-content: center; width: 100%; }
   .phone-screen {
-    width: 620px; height: 1020px; border-radius: 44px; border: 10px solid ${palette.ink};
-    background: #111827; position: relative; overflow: hidden; color: #fff;
+    width: 560px; height: 860px; border-radius: 40px; border: 8px solid ${palette.ink};
+    background: #0F172A; position: relative; overflow: hidden; color: #fff;
     display: flex; flex-direction: column; justify-content: space-between;
   }
-  .danger-top { background: rgba(239,68,68,0.34); padding: 28px; text-align: center; font-size: 20px; font-weight: 800; border-bottom: 3px dashed #EF4444; }
-  .danger-bot { background: rgba(239,68,68,0.38); padding: 48px 26px; text-align: center; font-size: 22px; font-weight: 900; border-top: 3px dashed #EF4444; }
-  .safe-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 20px; }
-  .safe-tag { font-size: 20px; font-weight: 900; color: #34D399; letter-spacing: 0.12em; margin-bottom: 24px; }
+  .danger-top { background: rgba(239,68,68,0.34); padding: 24px; text-align: center; font-size: 18px; font-weight: 800; border-bottom: 3px dashed #EF4444; }
+  .danger-bot { background: rgba(239,68,68,0.38); padding: 40px 24px; text-align: center; font-size: 20px; font-weight: 900; border-top: 3px dashed #EF4444; }
+  .safe-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 18px; }
+  .safe-tag { font-size: 18px; font-weight: 900; color: #34D399; letter-spacing: 0.12em; margin-bottom: 20px; }
   .moving-sub {
-    padding: 22px 32px; border-radius: 20px; font-size: 32px; font-weight: 900; text-align: center;
+    padding: 20px 28px; border-radius: 18px; font-size: 28px; font-weight: 900; text-align: center;
     background: #10B981; color: #052E16; box-shadow: 0 14px 32px rgba(0,0,0,0.4);
   }
   .right-icons {
-    position: absolute; right: 20px; bottom: 210px; display: flex; flex-direction: column; gap: 20px;
-    font-size: 30px; background: rgba(239,68,68,0.3); padding: 14px 12px; border-radius: 20px;
+    position: absolute; right: 18px; bottom: 180px; display: flex; flex-direction: column; gap: 16px;
+    font-size: 26px; background: rgba(239,68,68,0.3); padding: 12px 10px; border-radius: 18px;
   }
 
   /* NO-CROP DEMO */
-  .crop-demo { display: flex; flex-direction: column; gap: 34px; width: 100%; }
-  .crop-box { background: ${palette.card}; border-radius: 28px; padding: 28px; box-shadow: 0 18px 40px rgba(0,0,0,0.1); }
-  .crop-lbl { display: inline-block; font-size: 20px; font-weight: 900; padding: 8px 20px; border-radius: 999px; margin-bottom: 18px; }
-  .wide-photo { height: 220px; border-radius: 18px; background: linear-gradient(135deg, #2563EB, #7C3AED); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; position: relative; overflow: hidden; }
-  .slice-mask { position: absolute; top: 0; bottom: 0; width: 140px; background: rgba(239,68,68,0.72); }
+  .crop-demo { display: flex; flex-direction: column; gap: 26px; width: 100%; }
+  .crop-box { background: ${palette.card}; border: 1.5px solid ${palette.border}; border-radius: 24px; padding: 24px; box-shadow: 0 18px 40px rgba(0,0,0,0.1); }
+  .crop-lbl { display: inline-block; font-size: 18px; font-weight: 900; padding: 7px 18px; border-radius: 999px; margin-bottom: 14px; }
+  .wide-photo { height: 190px; border-radius: 16px; background: linear-gradient(135deg, #2563EB, #7C3AED); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; position: relative; overflow: hidden; }
+  .slice-mask { position: absolute; top: 0; bottom: 0; width: 120px; background: rgba(239,68,68,0.72); }
   .slice-mask.left { left: 0; border-right: 4px dashed #fff; }
   .slice-mask.right { right: 0; border-left: 4px dashed #fff; }
-  .blur-pad-frame { height: 320px; border-radius: 20px; background: linear-gradient(180deg, rgba(109,40,217,0.35), rgba(37,99,235,0.35)); display: flex; align-items: center; justify-content: center; padding: 28px; }
-  .full-wide-inner { width: 100%; height: 190px; border-radius: 14px; background: linear-gradient(135deg, #2563EB, #7C3AED); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; box-shadow: 0 16px 36px rgba(0,0,0,0.22); }
+  .blur-pad-frame { height: 270px; border-radius: 18px; background: linear-gradient(180deg, rgba(79,70,229,0.28), rgba(37,99,235,0.28)); display: flex; align-items: center; justify-content: center; padding: 22px; }
+  .full-wide-inner { width: 100%; height: 170px; border-radius: 12px; background: linear-gradient(135deg, #2563EB, #7C3AED); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; box-shadow: 0 14px 30px rgba(0,0,0,0.22); }
 
   /* SCENE 3: LIVE TOOL OR CLIMAX STEPS */
-  .s3-tool-stage, .s3-beats-stage { display: flex; flex-direction: column; gap: 26px; width: 100%; }
-  .s3-eyebrow { font-size: 24px; font-weight: 900; letter-spacing: 0.14em; color: ${palette.accent}; text-transform: uppercase; }
-  .s3-headline { font-size: 56px; line-height: 1.08; font-weight: 900; color: ${palette.ink}; }
+  .s3-tool-stage, .s3-beats-stage { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+  .s3-eyebrow { font-size: 19px; font-weight: 900; letter-spacing: 0.14em; color: ${palette.accentLight}; text-transform: uppercase; }
+  .s3-headline { font-size: 46px; line-height: 1.15; font-weight: 900; color: ${palette.ink}; }
   .s3-device {
-    background: ${palette.card}; border-radius: 28px; padding: 18px; border: 3px solid ${palette.accent};
-    box-shadow: 0 26px 56px rgba(0,0,0,0.18); position: relative;
+    background: ${palette.card}; border-radius: 24px; padding: 14px; border: 2px solid ${palette.accent};
+    box-shadow: 0 24px 52px rgba(0,0,0,0.16); position: relative;
   }
-  .s3-chrome { display: flex; align-items: center; gap: 10px; padding: 4px 10px 14px; }
-  .s3-chrome span { width: 12px; height: 12px; border-radius: 999px; background: ${palette.muted}; }
-  .s3-url { margin-left: auto; font-size: 17px; font-weight: 800; color: ${palette.sub}; }
-  .s3-img-wrap { width: 100%; height: 540px; border-radius: 16px; overflow: hidden; background: #0f111c; position: relative; }
-  .s3-img-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: left top; transform-origin: center 30%; display: block; }
+  .s3-chrome { display: flex; align-items: center; gap: 8px; padding: 4px 10px 12px; }
+  .s3-chrome span { width: 11px; height: 11px; border-radius: 999px; background: ${palette.muted}; }
+  .s3-url { margin-left: auto; font-size: 15px; font-weight: 800; color: ${palette.sub}; }
+  .s3-img-wrap { width: 100%; height: 470px; border-radius: 14px; overflow: hidden; background: #0f111c; position: relative; }
+  .s3-img-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center top; transform-origin: center 30%; display: block; }
   .cursor-ring {
-    position: absolute; width: 56px; height: 56px; border-radius: 999px;
-    border: 6px solid ${palette.accent}; background: rgba(255,255,255,0.25);
-    box-shadow: 0 0 0 8px rgba(109,40,217,0.18);
+    position: absolute; width: 52px; height: 52px; border-radius: 999px;
+    border: 5px solid ${palette.accent}; background: rgba(255,255,255,0.25);
+    box-shadow: 0 0 0 8px rgba(79,70,229,0.20);
     top: 48%; left: 50%; transform: translate(-50%, -50%);
   }
-  .s3-sub { font-size: 29px; line-height: 1.32; font-weight: 700; color: ${palette.sub}; }
-  .s3-beats-list { display: flex; flex-direction: column; gap: 26px; }
-  .s3-card { padding: 32px 38px; }
+  .s3-sub { font-size: 26px; line-height: 1.32; font-weight: 700; color: ${palette.sub}; }
+  .s3-beats-list { display: flex; flex-direction: column; gap: 22px; }
+  .s3-card { padding: 28px 32px; }
 
-  /* SCENE 4: BOLD CLOSER + LOOP */
+  /* SCENE 4: BOLD CLOSER */
   .s4-card {
     background: ${palette.accent};
     color: ${palette.accentText};
-    border-radius: 36px;
-    padding: 64px 52px;
-    box-shadow: 0 28px 64px rgba(0,0,0,0.22);
+    border-radius: 32px;
+    padding: 54px 46px;
+    box-shadow: 0 26px 58px rgba(0,0,0,0.22);
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 26px;
   }
   .s4-pill {
     align-self: flex-start;
-    padding: 12px 26px;
+    padding: 10px 22px;
     border-radius: 999px;
     background: rgba(255,255,255,0.22);
-    font-size: 22px;
+    font-size: 19px;
     font-weight: 900;
     letter-spacing: 0.12em;
     text-transform: uppercase;
   }
-  .s4-title { font-size: 66px; line-height: 1.08; font-weight: 900; letter-spacing: -0.025em; }
-  .s4-footer { font-size: 28px; font-weight: 800; opacity: 0.92; border-top: 2px solid rgba(255,255,255,0.25); padding-top: 26px; }
+  .s4-title { font-size: 58px; line-height: 1.08; font-weight: 900; letter-spacing: -0.025em; }
+  .s4-footer { font-size: 25px; font-weight: 800; opacity: 0.92; border-top: 2px solid rgba(255,255,255,0.25); padding-top: 22px; }
+
+  /* BOTTOM SAFE-ZONE LIVE /tools/... DIAGNOSTIC DOCK */
+  .tool-dock {
+    background: ${palette.card};
+    border: 1.5px solid ${palette.border};
+    border-radius: 22px;
+    padding: 18px 24px;
+    box-shadow: 0 14px 36px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .dock-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .dock-path {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: ${palette.sub};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dock-score {
+    color: ${palette.ink};
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .dock-score span {
+    color: ${palette.accentLight};
+    font-weight: 900;
+    margin-left: 8px;
+  }
+  .dock-track {
+    width: 100%;
+    height: 9px;
+    border-radius: 999px;
+    background: ${palette.muted};
+    overflow: hidden;
+  }
+  .dock-fill {
+    height: 100%;
+    width: 22%;
+    border-radius: 999px;
+    background: ${palette.accent};
+  }
 </style>
 </head>
 <body>
   <div class="canvas">
     <div class="orb-1" id="orb1"></div>
     <div class="orb-2" id="orb2"></div>
-    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
 
-    <div class="scene" id="scene1">
-      <div class="s1-badge">● ${escapeHtml(rb.eyebrow || 'CREATOR PLAYBOOK')}</div>
-      <div class="s1-title">${escapeHtml(hookWords)}</div>
-      <div class="s1-bar" id="s1Bar"></div>
-      <div class="s1-subcard"><span>${escapeHtml(rb.subhook || (beats[0]?.sub) || (hasCompare ? 'Spot the difference →' : 'Quick fix inside →'))}</span><span>⚡</span></div>
-    </div>
+    <div class="safe-shell">
+      <div class="safe-header">
+        <div class="header-meta-row">
+          <div class="ed-badge"><span class="live-dot"></span>${escapeHtml(badgeText)}</div>
+          <div class="time-pill" id="timePill">HOOK · 0.0s</div>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
 
-    <div class="scene" id="scene2">${scene2CompareHtml}</div>
-    <div class="scene" id="scene3">${scene3Html}</div>
+      <div class="stage-viewport">
+        <div class="scene" id="scene1">
+          <div class="s1-card" id="s1Card">
+            <div class="s1-kicker">REELS DIAGNOSTIC</div>
+            <div class="s1-title">${highlightHeadlineHtml(hookWords)}</div>
+            <div class="s1-bar" id="s1Bar"></div>
+            <div class="s1-subcard" id="s1Sub"><span>${escapeHtml(rb.subhook || (beats[0]?.sub) || (hasCompare ? 'Spot the difference' : 'Quick fix inside'))}</span><span class="s1-arrow">&rarr;</span></div>
+            <div class="wipe-flash" id="wipeFlash"></div>
+          </div>
+        </div>
 
-    <div class="scene" id="scene4">
-      <div class="s4-card" id="s4Card">
-        <div class="s4-pill">🔖 SAVE FOR YOUR NEXT UPLOAD</div>
-        <div class="s4-title">${escapeHtml(rb.cta || 'Save this for your next Reel')}</div>
-        <div class="s4-footer">@socialora1 · getsocialora.com/tools</div>
+        <div class="scene" id="scene2">${scene2CompareHtml}</div>
+        <div class="scene" id="scene3">${scene3Html}</div>
+
+        <div class="scene" id="scene4">
+          <div class="s4-card" id="s4Card">
+            <div class="s4-pill">SAVE FOR YOUR NEXT UPLOAD</div>
+            <div class="s4-title">${escapeHtml(rb.cta || 'Save this for your next Reel')}</div>
+            <div class="s4-footer">@socialora1 · getsocialora.com/tools</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-dock">
+        <div class="dock-row">
+          <div class="dock-path"><span class="live-dot"></span>${escapeHtml(dock.toolPath)}</div>
+          <div class="dock-score">${escapeHtml(dock.label)} <span id="dockScoreNum">${escapeHtml(dock.score)}</span></div>
+        </div>
+        <div class="dock-track"><div class="dock-fill" id="dockFill"></div></div>
       </div>
     </div>
   </div>
 <script>
   const DURATION = ${duration};
+  const TARGET_PCT = ${dock.pct};
   const easeOut = (x) => 1 - Math.pow(1 - Math.max(0, Math.min(1, x)), 3);
   const clamp01 = (x) => Math.max(0, Math.min(1, x));
 
   window.__setTime = function(t) {
     const p = clamp01(t / DURATION);
     document.getElementById('progressFill').style.width = (p * 100).toFixed(2) + '%';
-    document.getElementById('orb1').style.transform = 'translate(' + (-Math.sin(p * Math.PI * 2) * 45).toFixed(1) + 'px,' + (Math.cos(p * Math.PI * 2) * 35).toFixed(1) + 'px)';
-    document.getElementById('orb2').style.transform = 'translate(' + (Math.cos(p * Math.PI * 2) * 40).toFixed(1) + 'px,' + (-Math.sin(p * Math.PI * 2) * 30).toFixed(1) + 'px)';
+    document.getElementById('orb1').style.transform = 'translate(' + (-Math.sin(p * Math.PI * 2) * 38).toFixed(1) + 'px,' + (Math.cos(p * Math.PI * 2) * 28).toFixed(1) + 'px)';
+    document.getElementById('orb2').style.transform = 'translate(' + (Math.cos(p * Math.PI * 2) * 34).toFixed(1) + 'px,' + (-Math.sin(p * Math.PI * 2) * 24).toFixed(1) + 'px)';
 
-    const t1 = 1.9, t2 = 4.5, t3 = 7.0;
+    const dockPct = 24 + (TARGET_PCT - 24) * easeOut(clamp01(t / (DURATION * 0.72)));
+    document.getElementById('dockFill').style.width = dockPct.toFixed(1) + '%';
+
+    const t1 = 1.5, t2 = 4.2, t3 = 6.6;
+    const phaseName = t < t1 ? 'HOOK' : (t < t2 ? 'BREAKDOWN' : (t < t3 ? 'TOOL FIX' : 'ACTION'));
+    document.getElementById('timePill').textContent = phaseName + ' · ' + t.toFixed(1) + 's';
+
     const s1 = document.getElementById('scene1');
     const s2 = document.getElementById('scene2');
     const s3 = document.getElementById('scene3');
     const s4 = document.getElementById('scene4');
 
-    // Scene 1: 0.0 -> 1.9
+    // Scene 1 (0.0 -> 1.5s): Frame-0 crisp OCR + smooth micro-zoom + Pattern Interrupt at 1.15s..1.50s
     if (t < t1) {
-      const e = easeOut(t / 0.35);
-      s1.style.opacity = (0.3 + 0.7 * e).toFixed(3);
-      s1.style.transform = 'scale(' + (0.94 + 0.06 * e).toFixed(4) + ')';
-      document.getElementById('s1Bar').style.transform = 'scaleX(' + easeOut((t - 0.15) / 0.55).toFixed(3) + ')';
+      s1.style.opacity = '1';
+      const s1Card = document.getElementById('s1Card');
+      const wipe = document.getElementById('wipeFlash');
+      const s1Sub = document.getElementById('s1Sub');
+      const zoomIn = 1.045 - 0.045 * easeOut(clamp01(t / 0.95));
+      let interruptScale = zoomIn;
+      let shiftX = 0;
+      if (t >= 1.12) {
+        const pt = clamp01((t - 1.12) / 0.38);
+        interruptScale = 1.0 + 0.026 * Math.sin(pt * Math.PI);
+        shiftX = -18 * easeOut(Math.max(0, (t - 1.32) / 0.18));
+        wipe.style.opacity = (0.75 * Math.sin(pt * Math.PI)).toFixed(3);
+        s1Sub.style.transform = 'translateY(' + (-6 * Math.sin(pt * Math.PI)).toFixed(1) + 'px)';
+      } else {
+        wipe.style.opacity = '0';
+        s1Sub.style.transform = 'translateY(0px)';
+      }
+      s1Card.style.transform = 'translateX(' + shiftX.toFixed(1) + 'px) scale(' + interruptScale.toFixed(4) + ')';
+      document.getElementById('s1Bar').style.transform = 'scaleX(' + (0.25 + 0.75 * easeOut(t / 0.65)).toFixed(3) + ')';
     } else { s1.style.opacity = '0'; }
 
-    // Scene 2: 1.9 -> 4.5
+    // Scene 2: 1.5 -> 4.2
     if (t >= t1 && t < t2) {
       const lt = t - t1;
-      const e = easeOut(lt / 0.3);
+      const e = easeOut(lt / 0.28);
       s2.style.opacity = e.toFixed(3);
-      s2.style.transform = 'translateY(' + ((1 - e) * 40).toFixed(1) + 'px)';
+      s2.style.transform = 'translateY(' + ((1 - e) * 32).toFixed(1) + 'px)';
       const strike = document.getElementById('s2Strike');
       const s2Good = document.getElementById('s2Good');
       if (strike && s2Good) {
-        strike.style.transform = 'scaleX(' + easeOut((lt - 0.7) / 0.35).toFixed(3) + ')';
-        const ge = easeOut((lt - 0.85) / 0.4);
-        s2Good.style.opacity = (0.15 + 0.85 * ge).toFixed(3);
-        s2Good.style.transform = 'scale(' + (0.94 + 0.06 * ge).toFixed(4) + ')';
+        strike.style.transform = 'scaleX(' + easeOut((lt - 0.65) / 0.35).toFixed(3) + ')';
+        const ge = easeOut((lt - 0.80) / 0.4);
+        s2Good.style.opacity = (0.18 + 0.82 * ge).toFixed(3);
+        s2Good.style.transform = 'scale(' + (0.95 + 0.05 * ge).toFixed(4) + ')';
       }
       const sz = document.getElementById('szText');
       if (sz) {
-        const up = easeOut((lt - 0.9) / 0.55);
-        sz.style.transform = 'translateY(' + (230 * (1 - up)).toFixed(1) + 'px)';
+        const up = easeOut((lt - 0.85) / 0.55);
+        sz.style.transform = 'translateY(' + (200 * (1 - up)).toFixed(1) + 'px)';
         sz.style.background = up > 0.5 ? '#10B981' : '#EF4444';
         sz.style.color = up > 0.5 ? '#052E16' : '#FFFFFF';
-        sz.textContent = up > 0.5 ? '✅ SAFE CENTER TEXT' : '❌ HIDDEN BY BUTTONS';
+        sz.textContent = up > 0.5 ? 'SAFE CENTER TEXT' : 'HIDDEN BY BUTTONS';
       }
       for (let i = 0; i < 2; i++) {
         const b = document.getElementById('s2Beat_' + i);
         if (b) {
-          const be = easeOut((lt - i * 0.8) / 0.38);
-          b.style.opacity = (0.18 + 0.82 * be).toFixed(3);
-          b.style.transform = 'translateX(' + ((1 - be) * 45).toFixed(1) + 'px)';
+          const be = easeOut((lt - i * 0.75) / 0.35);
+          b.style.opacity = (0.20 + 0.80 * be).toFixed(3);
+          b.style.transform = 'translateX(' + ((1 - be) * 38).toFixed(1) + 'px)';
         }
       }
     } else { s2.style.opacity = '0'; }
 
-    // Scene 3: 4.5 -> 7.0
+    // Scene 3: 4.2 -> 6.6
     if (t >= t2 && t < t3) {
       const lt = t - t2;
-      const e = easeOut(lt / 0.3);
+      const e = easeOut(lt / 0.28);
       s3.style.opacity = e.toFixed(3);
-      s3.style.transform = 'scale(' + (0.95 + 0.05 * e).toFixed(4) + ')';
+      s3.style.transform = 'scale(' + (0.96 + 0.04 * e).toFixed(4) + ')';
       const img = document.getElementById('toolShotImg');
       if (img) {
         const z = 1.0 + 0.08 * clamp01(lt / 2.2);
@@ -750,54 +1305,96 @@ function buildReelHtml({ post, shotBase64, toolHostPath, palette }) {
       }
       const ring = document.getElementById('cursorRing');
       if (ring) {
-        const mx = Math.sin(lt * 2.4) * 90;
-        const my = Math.cos(lt * 2.0) * 45;
+        const mx = Math.sin(lt * 2.4) * 80;
+        const my = Math.cos(lt * 2.0) * 40;
         ring.style.transform = 'translate(calc(-50% + ' + mx.toFixed(1) + 'px), calc(-50% + ' + my.toFixed(1) + 'px)) scale(' + (1 + 0.14 * Math.sin(lt * 7)).toFixed(3) + ')';
       }
       for (let i = 0; i < 4; i++) {
         const b = document.getElementById('s3Beat_' + i);
         if (b) {
-          const be = easeOut((lt - i * 0.65) / 0.35);
-          b.style.opacity = (0.18 + 0.82 * be).toFixed(3);
-          b.style.transform = 'translateY(' + ((1 - be) * 30).toFixed(1) + 'px)';
+          const be = easeOut((lt - i * 0.6) / 0.32);
+          b.style.opacity = (0.20 + 0.80 * be).toFixed(3);
+          b.style.transform = 'translateY(' + ((1 - be) * 26).toFixed(1) + 'px)';
         }
       }
     } else { s3.style.opacity = '0'; }
 
-    // Scene 4: 7.0 -> DURATION
+    // Scene 4: 6.6 -> DURATION
     if (t >= t3) {
       const lt = t - t3;
-      const e = easeOut(lt / 0.3);
+      const e = easeOut(lt / 0.28);
       s4.style.opacity = e.toFixed(3);
-      const pulse = 1 + 0.022 * Math.sin(lt * 6);
-      s4.style.transform = 'scale(' + (0.92 + 0.08 * e * pulse).toFixed(4) + ')';
+      const pulse = 1 + 0.018 * Math.sin(lt * 6);
+      s4.style.transform = 'scale(' + (0.94 + 0.06 * e * pulse).toFixed(4) + ')';
     } else { s4.style.opacity = '0'; }
   };
-  window.__setTime(1.2);
+  window.__setTime(0.0);
 </script>
 </body>
 </html>`;
 }
 
-function encodeFramesToMp4(ffmpegBin, outMp4, framesGenerator, fps = 24) {
+function buildAudioExpressions(postId = '', index = 0) {
+  const h = hashString(postId || `reel_${index}`);
+  const profile = AUDIO_PROFILES[((index >= 0 ? index : 0) + h) % AUDIO_PROFILES.length];
+  const detune = 0.994 + ((h >>> 4) % 13) * 0.001; // 0.994..1.006 per-post micro-tuning
+  const beat = 60 / profile.bpm;
+  const chordDur = 2 * beat; // 2 beats per chord -> 4 chords loop ~5.1s..6.3s
+  const loopDur = 4 * chordDur;
+  const phaseShift = ((h >>> 8) % 5) * 0.04;
+  const shakerOff = ((h >>> 12) % 7) * 140;
+  const lpFreq = 2420 + ((h >>> 16) % 7) * 85;
+  const echoA = 38 + ((h >>> 20) % 4) * 7;
+  const echoB = echoA + 28;
+
+  const fmt = (n) => Number(n.toFixed(4));
+  const buildChordExpr = (isRight) => profile.chords.map((tones, idx) => {
+    const start = fmt(idx * chordDur);
+    const end = fmt((idx + 1) * chordDur);
+    const gate = idx === 0
+      ? `lt(mod(t,${fmt(loopDur)}),${end})`
+      : (idx === 3 ? `gte(mod(t,${fmt(loopDur)}),${start})` : `gte(mod(t,${fmt(loopDur)}),${start})*lt(mod(t,${fmt(loopDur)}),${end})`);
+    const drift = isRight ? (1.0018 + ((h % 5) * 0.0004)) : 1.0;
+    const f0 = fmt(tones[0] * detune * drift);
+    const f1 = fmt(tones[1] * detune * drift);
+    const f2 = fmt(tones[2] * detune * drift);
+    const f3 = fmt(tones[3] * detune * drift);
+    const f4 = fmt(tones[4] * detune * drift);
+    const env = `(1-exp(-28*mod(t,${fmt(chordDur)})))*exp(-${isRight ? '1.35' : '1.45'}*mod(t,${fmt(chordDur)}))`;
+    return `${gate}*(sin(2*PI*${f0}*t)+0.62*sin(2*PI*${f1}*t)+0.52*sin(2*PI*${f2}*t)+0.42*sin(2*PI*${f3}*t)+0.30*sin(2*PI*${f4}*t)+0.16*sin(4*PI*${f0}*t)*exp(-4*mod(t,${fmt(chordDur)})))*${env}`;
+  }).join('+');
+
+  const bassExpr = profile.bass.map((root, idx) => {
+    const start = fmt(idx * chordDur);
+    const end = fmt((idx + 1) * chordDur);
+    const gate = idx === 0
+      ? `lt(mod(t,${fmt(loopDur)}),${end})`
+      : (idx === 3 ? `gte(mod(t,${fmt(loopDur)}),${start})` : `gte(mod(t,${fmt(loopDur)}),${start})*lt(mod(t,${fmt(loopDur)}),${end})`);
+    const bHz = fmt(root * detune);
+    return `${gate}*sin(2*PI*${bHz}*t)*(1-exp(-18*mod(t,${fmt(chordDur)})))*exp(-0.55*mod(t,${fmt(chordDur)}))`;
+  }).join('+');
+
+  const kick = `0.21*sin(2*PI*(50+68*exp(-26*mod(t,${fmt(beat)})))*mod(t,${fmt(beat)}))*exp(-14*mod(t,${fmt(beat)}))`;
+  const shaker = `0.014*(sin(2*PI*${4300 + shakerOff}*t)+0.55*sin(2*PI*${6200 + shakerOff}*t))*exp(-40*mod(t+${fmt(beat / 2)},${fmt(beat)}))`;
+  const crackleL = `0.010*exp(-85*mod(t+${fmt(0.11 + phaseShift)},0.47))*sin(2*PI*1950*t)+0.008*exp(-110*mod(t+0.29,0.71))*sin(2*PI*3100*t)`;
+  const crackleR = `0.010*exp(-85*mod(t+${fmt(0.27 + phaseShift)},0.53))*sin(2*PI*2150*t)+0.008*exp(-110*mod(t+0.07,0.67))*sin(2*PI*2850*t)`;
+
+  const audioL = `0.068*(${buildChordExpr(false)})+0.13*(${bassExpr})+${kick}+${shaker}+${crackleL}`;
+  const audioR = `0.068*(${buildChordExpr(true)})+0.13*(${bassExpr})+${kick}-${shaker}+${crackleR}`;
+
+  return {
+    profileName: profile.name,
+    bpm: profile.bpm,
+    audioL,
+    audioR,
+    af: `lowpass=f=${lpFreq},aecho=0.8:0.72:${echoA}|${echoB}:0.20|0.14,volume=8.5dB,afade=t=in:st=0:d=0.16`,
+  };
+}
+
+function encodeFramesToMp4(ffmpegBin, outMp4, framesGenerator, fps = 24, postId = '', index = 0) {
   return new Promise((resolve, reject) => {
     const tmpMp4 = outMp4.replace(/\.mp4$/, '.partial.mp4');
-    const chordL = [
-      'lt(mod(t,5.0),1.25)*(sin(2*PI*293.66*t)+0.65*sin(2*PI*349.23*t)+0.55*sin(2*PI*440*t)+0.45*sin(2*PI*523.25*t))*exp(-1.6*mod(t,1.25))',
-      'gte(mod(t,5.0),1.25)*lt(mod(t,5.0),2.5)*(sin(2*PI*246.94*t)+0.65*sin(2*PI*329.63*t)+0.55*sin(2*PI*392*t)+0.45*sin(2*PI*493.88*t))*exp(-1.6*mod(t,1.25))',
-      'gte(mod(t,5.0),2.5)*lt(mod(t,5.0),3.75)*(sin(2*PI*261.63*t)+0.65*sin(2*PI*329.63*t)+0.55*sin(2*PI*392*t)+0.45*sin(2*PI*493.88*t))*exp(-1.6*mod(t,1.25))',
-      'gte(mod(t,5.0),3.75)*(sin(2*PI*220*t)+0.65*sin(2*PI*277.18*t)+0.55*sin(2*PI*329.63*t)+0.45*sin(2*PI*440*t))*exp(-1.6*mod(t,1.25))',
-    ].join('+');
-    const chordR = [
-      'lt(mod(t,5.0),1.25)*(sin(2*PI*294.2*t)+0.65*sin(2*PI*349.9*t)+0.55*sin(2*PI*440.6*t)+0.45*sin(2*PI*659.25*t))*exp(-1.5*mod(t,1.25))',
-      'gte(mod(t,5.0),1.25)*lt(mod(t,5.0),2.5)*(sin(2*PI*247.4*t)+0.65*sin(2*PI*330.1*t)+0.55*sin(2*PI*392.6*t)+0.45*sin(2*PI*587.33*t))*exp(-1.5*mod(t,1.25))',
-      'gte(mod(t,5.0),2.5)*lt(mod(t,5.0),3.75)*(sin(2*PI*262.1*t)+0.65*sin(2*PI*330.1*t)+0.55*sin(2*PI*392.6*t)+0.45*sin(2*PI*587.33*t))*exp(-1.5*mod(t,1.25))',
-      'gte(mod(t,5.0),3.75)*(sin(2*PI*220.4*t)+0.65*sin(2*PI*277.6*t)+0.55*sin(2*PI*330.2*t)+0.45*sin(2*PI*523.25*t))*exp(-1.5*mod(t,1.25))',
-    ].join('+');
-    const kick = '0.24*sin(2*PI*(55+75*exp(-28*mod(t,0.625)))*mod(t,0.625))*exp(-14*mod(t,0.625))';
-    const shaker = '0.018*(sin(2*PI*4800*t)+0.6*sin(2*PI*6700*t))*exp(-42*mod(t+0.3125,0.625))';
-    const audioL = `0.075*(${chordL})+${kick}+${shaker}`;
-    const audioR = `0.075*(${chordR})+${kick}-${shaker}`;
+    const audio = buildAudioExpressions(postId, index);
     const args = [
       '-y',
       '-f', 'image2pipe',
@@ -805,14 +1402,14 @@ function encodeFramesToMp4(ffmpegBin, outMp4, framesGenerator, fps = 24) {
       '-framerate', String(fps),
       '-i', 'pipe:0',
       '-f', 'lavfi',
-      '-i', `aevalsrc='${audioL}|${audioR}':s=44100`,
+      '-i', `aevalsrc='${audio.audioL}|${audio.audioR}':s=44100`,
       '-c:v', 'libx264',
       '-pix_fmt', 'yuv420p',
       '-profile:v', 'high',
       '-level', '4.1',
       '-crf', '24',
       '-preset', 'veryfast',
-      '-af', 'lowpass=f=2800,aecho=0.8:0.75:45|75:0.22|0.15,volume=9dB,afade=t=in:st=0:d=0.18',
+      '-af', audio.af,
       '-c:a', 'aac',
       '-b:a', '128k',
       '-shortest',
@@ -829,7 +1426,7 @@ function encodeFramesToMp4(ffmpegBin, outMp4, framesGenerator, fps = 24) {
         return reject(new Error(`ffmpeg exited ${code}: ${stderr.slice(-400)}`));
       }
       fs.renameSync(tmpMp4, outMp4);
-      resolve();
+      resolve({ audioProfile: audio.profileName, bpm: audio.bpm });
     });
 
     (async () => {
@@ -859,6 +1456,7 @@ async function generateSingle(tab, post, index) {
     await call('Emulation.setDeviceMetricsOverride', { width: 1080, height: 1350, deviceScaleFactor: 1, mobile: false });
     const html = buildSingleCardHtml({
       post,
+      index,
       tip,
       toolHostPath: toolUrl.replace(/^https?:\/\/www\./, ''),
       shotBase64: shotData,
@@ -909,6 +1507,7 @@ async function generateCarousel(tab, post, index) {
     for (let sIdx = 0; sIdx < slides.length; sIdx++) {
       const html = buildCarouselSlideHtml({
         post,
+        index,
         slide: slides[sIdx],
         slideIdx: sIdx,
         totalSlides: slides.length,
@@ -942,7 +1541,7 @@ async function generateCarousel(tab, post, index) {
 
 async function generateReel(tab, post, index, ffmpegBin) {
   const toolUrl = extractToolUrl(post);
-  const palette = PALETTES[(index + 3) % PALETTES.length];
+  const palette = PALETTES[(index + 1) % PALETTES.length];
   const duration = Number(post.duration_sec || 8);
   const fps = 24;
   const totalFrames = duration * fps;
@@ -950,6 +1549,7 @@ async function generateReel(tab, post, index, ffmpegBin) {
   fs.mkdirSync(REELS_DIR, { recursive: true });
   const outMp4 = path.join(REELS_DIR, `${post.id}.mp4`);
   const outCover = path.join(REELS_DIR, `${post.id}_cover.jpg`);
+  let audioMeta = {};
 
   await withCdp(tab.webSocketDebuggerUrl, async (call) => {
     let shotData = null;
@@ -960,6 +1560,7 @@ async function generateReel(tab, post, index, ffmpegBin) {
     const frameTree = await call('Page.getFrameTree');
     const html = buildReelHtml({
       post,
+      index,
       shotBase64: shotData,
       toolHostPath: toolUrl ? toolUrl.replace(/^https?:\/\/www\./, '') : '',
       palette,
@@ -973,8 +1574,8 @@ async function generateReel(tab, post, index, ffmpegBin) {
 
     let coverSaved = false;
     const debugScenes = process.argv.includes('--debug-scenes');
-    const debugFrames = new Set([Math.floor(fps * 1.2), Math.floor(fps * 3.4), Math.floor(fps * 5.8), Math.floor(fps * 7.6)]);
-    await encodeFramesToMp4(ffmpegBin, outMp4, async (writeFrame) => {
+    const debugFrames = new Set([0, Math.floor(fps * 0.95), Math.floor(fps * 1.35), Math.floor(fps * 3.0), Math.floor(fps * 5.4), Math.floor(fps * 7.2)]);
+    audioMeta = await encodeFramesToMp4(ffmpegBin, outMp4, async (writeFrame) => {
       for (let f = 0; f < totalFrames; f++) {
         const t = f / fps;
         await call('Runtime.evaluate', { expression: `window.__setTime(${t.toFixed(4)})` });
@@ -984,23 +1585,23 @@ async function generateReel(tab, post, index, ffmpegBin) {
           clip: { x: 0, y: 0, width: 1080, height: 1920, scale: 1 },
         });
         const buf = Buffer.from(shot.data, 'base64');
-        if (!coverSaved && f === Math.floor(fps * 1.2)) {
+        if (!coverSaved && f === Math.floor(fps * 0.95)) {
           fs.writeFileSync(outCover, buf);
           coverSaved = true;
         }
         if (debugScenes && debugFrames.has(f)) {
-          const dbgDir = 'C:/Users/idoca/.gemini/antigravity/brain/d5e5132d-5bf5-4109-867c-542913efa4aa/scratch';
+          const dbgDir = path.join(os.tmpdir(), 'socialora-debug-scenes');
           fs.mkdirSync(dbgDir, { recursive: true });
           fs.writeFileSync(path.join(dbgDir, `${post.id}_f${f}.jpg`), buf);
         }
         await writeFrame(buf);
       }
-    }, fps);
+    }, fps, post.id, index);
   });
 
   const stat = fs.statSync(outMp4);
   if (stat.size < 40000) throw new Error(`Reel MP4 too small for ${post.id}`);
-  return { id: post.id, type: 'REELS', bytes: stat.size, target: outMp4 };
+  return { id: post.id, type: 'REELS', bytes: stat.size, ...audioMeta, target: outMp4 };
 }
 
 function isMissingAsset(post) {
