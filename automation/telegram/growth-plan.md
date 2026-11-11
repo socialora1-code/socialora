@@ -137,3 +137,11 @@ Dış topluluklara otomatik paylaşım, üye ekleme veya toplu DM yapılmaz. Bu 
 - GitHub'da Python testinin geçmesi veya botun canlı olması, Termux'un Toolkit içeren yeni `socialora.py` dosyasını kullandığını **kanıtlamaz**.
 - Mevcut GitHub Actions `inspect` işlemi bot kimliği/yetkileri ölçer; Toolkit komutunu bir **gerçek grup üyesi** adına gönderip yanıtını doğrulamaz. Bot kendi mesajını göndermekle kullanıcı komutunu taklit etmiş olmaz.
 - İlk gerçek `/tools` yanıtı görülene kadar durumu **canlı test edilmedi** olarak koru. Mevcut takvimi, Gemini cevaplarını ve sıraya alınmış gönderileri değiştirme.
+
+---
+
+## 11 Kasım 2026 — Dev İçerik Havuzu, Sahip DM Bağlantısı & Çoklu Kanal Sinerjisi
+
+- **Sahip Raporlama Bağlantısı:** `TelegramPolling.node.js` yalnızca `@idrisoyt` yerine hem `@SocialoraSupport` hem `@idrisoyt` hesaplarından gelen `/start`, `/growth`, `/report` ve `/status` komutlarını tanıyacak şekilde güncellendi. `tgGrowthEngine01`, dış kanal takas eşiği (`avgLast5Views >= 25`) dolana kadar ortaklık mesajı üretmese bile, bağlı sahibe günde bir kez net büyüme + kuyruk özeti DM'i gönderir.
+- **Anti-Robotik Editoryal Standart:** Kanal yayınlarında şu yapay kalıplar kesinlikle yasaktır: *"In today's digital landscape"*, *"Unlock your potential"*, *"Game-changer"*, *"Let's dive in"*, *"Skyrocket"*, *"Unleash"*, *"In conclusion"*, *"Remember that"*. Her gönderi bir sosyal medya stratejistinin gerçek notu gibi somut problem, net örnek veya kontrol listesi içerir.
+- **Sıfır-Link Değer Paylaşımları & Çoklu Platform Beslemesi:** İçerik havuzunun yaklaşık yarısı site bağlantısı içermeyen, doğrudan kanala üye kazandıran ("bunu kaydet" / "içerik üreticisi arkadaşına ilet") uygulanabilir kancalar ve analizlerden oluşur; kalan kısım ise ilgili ücretsiz araçlara ve şeffaf hizmet rehberlerine yönlendirir. Telegram'da yüksek görüntülenme ve tartışma üreten konular Instagram Reels/Carousel ve Threads içerik havuzlarına da taşınır.
