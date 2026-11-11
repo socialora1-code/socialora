@@ -330,6 +330,8 @@ def is_directed_to_us(msg):
         return True
     if '?' in text:
         return True
+    if re.search(r'(?:^|\s)(?:mı|mi|mu|mü|varmı|nasıl|nasil|nedir|nerede|kaç)(?:$|\s|[!?.])', lower):
+        return True
     keywords = (
         'views', 'stuck', 'shadowban', 'reels', 'tiktok', 'instagram', 'telegram', 'youtube',
         'twitter', 'followers', 'likes', 'subscribers', 'watchtime', 'watch time', 'reach',
@@ -337,7 +339,14 @@ def is_directed_to_us(msg):
         'usdt', 'btc', 'payment', 'free', 'tool', 'drop', 'calculator', 'resize', 'crop',
         'photo', 'bio', 'thumbnail', 'caption', 'safe zone', 'help', 'support', 'panel', 'service',
         'how', 'why', 'what', 'where', 'when', 'who', 'can ', 'anyone', 'admin', 'work',
-        'grow', 'account', 'video', 'page', 'channel', 'trial', 'legit', 'nasıl', 'fiyat', 'yardım',
+        'grow', 'account', 'video', 'page', 'channel', 'trial', 'legit',
+        'nasıl', 'nasil', 'fiyat', 'ücret', 'ucret', 'yardım', 'yardim', 'bedava', 'ücretsiz',
+        'ucretsiz', 'takipçi', 'takipci', 'beğeni', 'begeni', 'izlenme', 'görüntüleme',
+        'goruntuleme', 'abone', 'keşfet', 'kesfet', 'sipariş', 'siparis', 'ödeme', 'odeme',
+        'kripto', 'paket', 'satın', 'satin', 'deneme', 'hesap', 'sayfa', 'kanal', 'grup',
+        'destek', 'iletişim', 'iletisim', 'düşüş', 'dusus', 'telafi', 'güvenilir', 'guvenilir',
+        'gerçek', 'gercek', 'organik', 'araç', 'arac', 'varmı', 'var mı', 'var mi', 'yokmu',
+        'yok mu', 'ne kadar', 'nereden',
     )
     return len(text) >= 6 and any(k in lower for k in keywords)
 

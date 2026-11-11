@@ -421,6 +421,8 @@ class PublisherTests(unittest.TestCase):
         self.assertTrue(app.is_directed_to_us({'text': 'What time is my order delivered?'}))
         self.assertTrue(app.is_directed_to_us({'text': 'Why are my tiktok views stuck at 200?'}))
         self.assertTrue(app.is_directed_to_us({'text': 'I need instagram followers for my page'}))
+        self.assertTrue(app.is_directed_to_us({'text': 'Bedava takipçi varmı'}))
+        self.assertTrue(app.is_directed_to_us({'text': 'İzlenme fiyatları ne kadar'}))
 
     def test_gemini_daily_budget_and_429_cooldown_prevent_infinite_retries(self):
         for i in range(app.DAILY_GEMINI_BUDGET):
