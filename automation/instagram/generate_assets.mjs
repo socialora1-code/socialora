@@ -84,7 +84,8 @@ function extractTip(caption) {
     .split('\n')
     .map((l) => l.trim())
     .filter((l) => l && !l.startsWith('#') && !/link in bio|getsocialora\.com/i.test(l));
-  return (lines[1] || lines[0] || '').slice(0, 190);
+  const preferred = (lines[1] && !lines[1].endsWith(':') && lines[1].length >= 28) ? lines[1] : lines[0];
+  return (preferred || '').slice(0, 190);
 }
 
 function buildCardHtml({ post, tip, toolHostPath, shotBase64, palette }) {
