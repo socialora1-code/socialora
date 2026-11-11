@@ -341,11 +341,18 @@ async function main() {
   const idIdx = args.indexOf('--id');
   const wantedId = idIdx >= 0 ? args[idIdx + 1] : null;
   const doAll = args.includes('--all');
+  const onlyMissing = args.includes('--missing');
   const queue = JSON.parse(fs.readFileSync(QUEUE_PATH, 'utf8'));
-  const selected = wantedId
+  let selected = wantedId
     ? queue.posts.filter((p) => p.id === wantedId)
-    : (doAll ? queue.posts : queue.posts.slice(0, 1));
-  if (selected.length === 0) throw new Error('No matching Instagram posts selected');
+    : ((doAll || onlyMissing) ? queue.posts : queue.posts.slice(0, 1));
+  if (onlyMissing) {
+    selected = selected.filter((p) => !fs.existsSync(path.join(OUT_DIR, `${p.id}.jpg`)));
+  }
+  if (selected.length === 0) {
+    console.log('ALL_ASSETS_PRESENT');
+    return;
+  }
 
   const tabs = await getJson(`${CDP_URL}/json/list`);
   const hostTab = tabs.find((t) => t.type === 'page');
