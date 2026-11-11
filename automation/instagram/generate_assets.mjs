@@ -281,7 +281,7 @@ function highlightHeadlineHtml(text) {
   if (words.length === 3) {
     return `${escapeHtml(words[0])} <span class="hl">${escapeHtml(words.slice(1).join(' '))}</span>`;
   }
-  const keyRe = /\b(\d+(?:\.\d+)?\s*(?:Seconds?|Saves?|Likes?|Views?|Minutes?|Hours?|Days?|Checks?|Things?|Tags?|Hooks?|Lines?|Posts?|Deals?|Numbers?|%)|\d+:\d+|Slide\s+\d+|Safe\s+Zone|Bio\s+Formula|Mute\s+Test|Watch\s+Time|Grid\s+Crop|Profile\s+Visits|Brand\s+Reels|Swipe\s+Off|Subtitles|Shadowban|Hashtags?|Engagement\s+Rate|Follower\s+Count|Inactive\s+Followers|Search\s+SEO|Hook|Hooks|Bio|Caption|Pricing|Growth|Retention|Saves|Checklist|Contrast|Framing|Loop|Carousels?|Reels?)\b/i;
+  const keyRe = /\b(\d+(?:\.\d+)?\s*(?:Seconds?|Saves?|Likes?|Views?|Minutes?|Hours?|Days?|Checks?|Things?|Tags?|Hooks?|Lines?|Posts?|Deals?|Numbers?|%)|\d+:\d+|3-Pin\s+Profile\s+Funnel|Pinned\s+Posts?|60-Minute\s+Reel\s+Velocity|Sends\s+Per\s+Reach|DM\s+Share\s+Triggers?|Re-Serve\s+Hack|Slide\s+\d+|Safe\s+Zone|Bio\s+Formula|Mute\s+Test|Watch\s+Time|Grid\s+Crop|Profile\s+Visits|Brand\s+Reels|Swipe\s+Off|Subtitles|Shadowban|Hashtags?|Engagement\s+Rate|Follower\s+Count|Inactive\s+Followers|Search\s+SEO|Hook|Hooks|Bio|Caption|Pricing|Growth|Retention|Saves|Checklist|Contrast|Framing|Loop|Carousels?|Reels?)\b/i;
   const m = clean.match(keyRe);
   if (m && m.index !== undefined) {
     // Find word range containing the match and expand to 2-3 words
@@ -361,6 +361,10 @@ function extractTip(caption) {
     .split('\n')
     .map((l) => l.trim())
     .filter((l) => l && !l.startsWith('#') && !/link in bio|getsocialora\.com/i.test(l));
+  const steps = lines.filter((l) => /^[1-3]\.\s+/.test(l)).slice(0, 3);
+  if (steps.length >= 2) {
+    return steps.join('\n').slice(0, 260);
+  }
   const preferred = (lines[1] && !lines[1].endsWith(':') && lines[1].length >= 28) ? lines[1] : lines[0];
   return (preferred || '').slice(0, 190);
 }
@@ -420,6 +424,79 @@ async function captureToolScreenshot(call, toolUrl, width = 1040, height = 640) 
 function buildSingleCardHtml({ post, index, tip, toolHostPath, shotBase64, palette }) {
   const badgeText = getEditorialBadgeLabel(post, index);
   const dock = getToolDockMeta(post);
+  const isPinnedFunnel = post.single_style === 'pinned_funnel';
+  const titleStr = String(post.title || '').trim();
+  const h1Size = titleStr.length > 72 ? '41px' : (titleStr.length > 52 ? '48px' : '54px');
+  const tipLines = String(tip || '').split('\n').map((l) => l.trim()).filter(Boolean);
+  const isMultiStepTip = tipLines.length >= 2;
+  const pinSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 3l5 5-2 2-1.5-.5L14 13l1 4-2 2-4-4-5 5-1-1 5-5-4-4 2-2 4 1 3.5-3.5L13 5l3-2z"/></svg>`;
+  const funnelStageHtml = `
+    <div class="funnel-card">
+      <div class="funnel-head-row">
+        <div class="funnel-title-pill"><span class="live-dot"></span>PROFILE CONVERSION ARCHITECTURE</div>
+        <div class="funnel-step-tag">VISITOR -> FOLLOWER</div>
+      </div>
+      <div class="bio-bar">
+        <div class="bio-avatar">@</div>
+        <div class="bio-meta">
+          <div class="bio-name">Your Brand | Exact Search Niche Keywords</div>
+          <div class="bio-sub">Line 1: Who you help &middot; Line 2: Weekly payoff &middot; Line 3: Clear bio link</div>
+        </div>
+        <div class="bio-chip">2s BIO FILTER</div>
+      </div>
+      <div class="flow-arrow">&darr;&nbsp; VISITOR SCANS YOUR TOP 3 PINNED POSTS &nbsp;&darr;</div>
+      <div class="pins-grid">
+        <div class="pin-col">
+          <div class="pin-top">
+            <span class="pin-num">${pinSvg} PIN 01</span>
+            <span class="pin-pos">TOP LEFT</span>
+          </div>
+          <div class="pin-role role-1">START HERE</div>
+          <div class="pin-name">Identity &amp; Core Method</div>
+          <div class="pin-desc">Explain who you help and the core framework behind your page in 5 seconds.</div>
+          <div class="pin-signal">SIGNAL: CONTEXT</div>
+        </div>
+        <div class="pin-col">
+          <div class="pin-top">
+            <span class="pin-num">${pinSvg} PIN 02</span>
+            <span class="pin-pos">CENTER</span>
+          </div>
+          <div class="pin-role role-2">BEST PROOF</div>
+          <div class="pin-name">Highest-Save Teardown</div>
+          <div class="pin-desc">Showcase your clearest before/after breakdown or real workflow case study.</div>
+          <div class="pin-signal">SIGNAL: TRUST</div>
+        </div>
+        <div class="pin-col">
+          <div class="pin-top">
+            <span class="pin-num">${pinSvg} PIN 03</span>
+            <span class="pin-pos">TOP RIGHT</span>
+          </div>
+          <div class="pin-role role-3">NEXT STEP</div>
+          <div class="pin-name">Free Resource Funnel</div>
+          <div class="pin-desc">Share an actionable checklist giving visitors one direct reason to tap bio.</div>
+          <div class="pin-signal">SIGNAL: ACTION</div>
+        </div>
+      </div>
+      <div class="funnel-outcome">
+        <span>CLARITY (PIN 1)</span>
+        <span class="plus">+</span>
+        <span>TRUST (PIN 2)</span>
+        <span class="plus">+</span>
+        <span>NEXT STEP (PIN 3)</span>
+        <span class="arrow">&rarr;</span>
+        <strong>NEW FOLLOWER &amp; BIO CLICK</strong>
+      </div>
+    </div>`;
+
+  const shotCardHtml = `
+    <div class="shot-card">
+      <div class="shot-chrome">
+        <div class="traffic"><span></span><span></span><span></span></div>
+        <div>TOOL UI: ${escapeHtml(toolHostPath)}</div>
+      </div>
+      <div class="shot-wrap"><img src="data:image/png;base64,${shotBase64}" /></div>
+    </div>`;
+
   return `<!doctype html>
 <html>
 <head>
@@ -438,7 +515,7 @@ function buildSingleCardHtml({ post, index, tip, toolHostPath, shotBase64, palet
   .frame {
     width: 1080px;
     height: 1350px;
-    padding: 54px 62px 46px;
+    padding: 50px 60px 44px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -449,7 +526,7 @@ function buildSingleCardHtml({ post, index, tip, toolHostPath, shotBase64, palet
     background-size: 28px 28px, 100% 100%;
   }
   .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 10px; background: ${palette.accent}; }
-  .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
   .ed-badge {
     display: inline-flex; align-items: center; gap: 11px;
     padding: 10px 20px; border-radius: 999px;
@@ -469,31 +546,94 @@ function buildSingleCardHtml({ post, index, tip, toolHostPath, shotBase64, palet
     color: ${palette.accentLight}; background: ${palette.hlBg};
     padding: 9px 18px; border-radius: 999px;
   }
-  h1 { font-size: 54px; line-height: 1.14; font-weight: 900; letter-spacing: -0.03em; color: ${palette.ink}; max-width: 950px; }
+  h1 { font-size: ${h1Size}; line-height: 1.14; font-weight: 900; letter-spacing: -0.03em; color: ${palette.ink}; max-width: 960px; }
   h1 .hl { color: ${palette.accentLight}; background: ${palette.hlBg}; padding: 1px 10px; border-radius: 10px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
   .shot-card {
     background: ${palette.card}; border: 1.5px solid ${palette.border};
     border-radius: 24px; padding: 14px;
     box-shadow: 0 22px 48px rgba(0, 0, 0, 0.14);
-    margin: 22px 0 18px;
+    margin: 18px 0 14px;
   }
   .shot-chrome { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px 12px; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; color: ${palette.sub}; text-transform: uppercase; }
   .traffic { display: flex; gap: 7px; }
   .traffic span { width: 10px; height: 10px; border-radius: 999px; background: ${palette.muted}; }
-  .shot-wrap { width: 100%; height: 530px; border-radius: 14px; overflow: hidden; border: 1px solid ${palette.border}; background: #FFFFFF; }
+  .shot-wrap { width: 100%; height: ${isMultiStepTip ? '435px' : '520px'}; border-radius: 14px; overflow: hidden; border: 1px solid ${palette.border}; background: #FFFFFF; }
   .shot-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+
+  /* 3-PIN PROFILE FUNNEL DIAGRAM */
+  .funnel-card {
+    background: ${palette.card}; border: 1.5px solid ${palette.border};
+    border-radius: 24px; padding: 22px 24px;
+    box-shadow: 0 20px 46px rgba(0, 0, 0, 0.11);
+    margin: 16px 0 14px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .funnel-head-row { display: flex; align-items: center; justify-content: space-between; }
+  .funnel-title-pill { display: inline-flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 800; letter-spacing: 0.1em; color: ${palette.sub}; }
+  .funnel-step-tag { font-size: 14px; font-weight: 800; letter-spacing: 0.08em; color: ${palette.accentLight}; background: ${palette.hlBg}; padding: 6px 14px; border-radius: 999px; }
+  .bio-bar {
+    display: flex; align-items: center; gap: 16px;
+    background: ${palette.bg}; border: 1.5px solid ${palette.border};
+    border-radius: 16px; padding: 14px 18px;
+  }
+  .bio-avatar {
+    width: 48px; height: 48px; border-radius: 999px; flex-shrink: 0;
+    background: ${palette.accent}; color: ${palette.accentText};
+    display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900;
+  }
+  .bio-meta { flex: 1; min-width: 0; }
+  .bio-name { font-size: 19px; font-weight: 800; color: ${palette.ink}; margin-bottom: 3px; }
+  .bio-sub { font-size: 16px; font-weight: 600; color: ${palette.sub}; }
+  .bio-chip {
+    font-size: 13px; font-weight: 900; letter-spacing: 0.08em;
+    padding: 7px 13px; border-radius: 999px; background: ${palette.card}; border: 1.5px solid ${palette.border}; color: ${palette.accentLight};
+    white-space: nowrap;
+  }
+  .flow-arrow { text-align: center; font-size: 14px; font-weight: 900; letter-spacing: 0.1em; color: ${palette.accentLight}; }
+  .pins-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+  .pin-col {
+    background: ${palette.bg}; border: 1.5px solid ${palette.border};
+    border-top: 6px solid ${palette.accent};
+    border-radius: 18px; padding: 18px 16px;
+    display: flex; flex-direction: column; justify-content: space-between; min-height: 280px;
+  }
+  .pin-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .pin-num { display: inline-flex; align-items: center; gap: 5px; font-size: 14px; font-weight: 900; color: ${palette.ink}; }
+  .pin-pos { font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: ${palette.sub}; }
+  .pin-role {
+    display: inline-block; align-self: flex-start;
+    padding: 5px 12px; border-radius: 999px; font-size: 13px; font-weight: 900; letter-spacing: 0.08em;
+    background: ${palette.accent}; color: ${palette.accentText}; margin-bottom: 12px;
+  }
+  .pin-name { font-size: 22px; line-height: 1.18; font-weight: 900; color: ${palette.ink}; margin-bottom: 10px; }
+  .pin-desc { font-size: 17px; line-height: 1.36; font-weight: 600; color: ${palette.sub}; flex: 1; }
+  .pin-signal {
+    margin-top: 14px; padding-top: 10px; border-top: 1px solid ${palette.border};
+    font-size: 13px; font-weight: 900; letter-spacing: 0.1em; color: ${palette.accentLight};
+  }
+  .funnel-outcome {
+    background: ${palette.accent}; color: ${palette.accentText};
+    border-radius: 14px; padding: 13px 18px;
+    display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+    font-size: 15px; font-weight: 800; letter-spacing: 0.05em;
+  }
+  .funnel-outcome .plus, .funnel-outcome .arrow { opacity: 0.85; font-weight: 900; }
+  .funnel-outcome strong { font-weight: 900; text-decoration: underline; text-underline-offset: 4px; }
+
   .tip-box {
     background: ${palette.card}; border: 1.5px solid ${palette.border};
     border-left: 8px solid ${palette.accent};
-    border-radius: 18px; padding: 20px 26px;
+    border-radius: 18px; padding: ${isMultiStepTip ? '16px 24px' : '18px 24px'};
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   }
-  .tip-label { font-size: 15px; font-weight: 800; letter-spacing: 0.12em; color: ${palette.accentLight}; text-transform: uppercase; margin-bottom: 6px; }
-  .tip-text { font-size: 25px; line-height: 1.35; font-weight: 600; color: ${palette.ink}; }
+  .tip-label { font-size: 14px; font-weight: 800; letter-spacing: 0.12em; color: ${palette.accentLight}; text-transform: uppercase; margin-bottom: 7px; }
+  .tip-text { font-size: 24px; line-height: 1.34; font-weight: 600; color: ${palette.ink}; }
+  .tip-steps { display: flex; flex-direction: column; gap: 6px; }
+  .tip-step { font-size: 19px; line-height: 1.30; font-weight: 600; color: ${palette.ink}; }
   .dock {
     background: ${palette.card}; border: 1.5px solid ${palette.border};
-    border-radius: 18px; padding: 16px 22px; margin-top: 16px;
-    display: flex; flex-direction: column; gap: 10px;
+    border-radius: 18px; padding: 15px 22px; margin-top: 14px;
+    display: flex; flex-direction: column; gap: 9px;
   }
   .dock-top { display: flex; align-items: center; justify-content: space-between; font-size: 17px; font-weight: 700; }
   .dock-path { display: inline-flex; align-items: center; gap: 9px; color: ${palette.sub}; }
@@ -501,7 +641,7 @@ function buildSingleCardHtml({ post, index, tip, toolHostPath, shotBase64, palet
   .dock-metric span { color: ${palette.accentLight}; font-weight: 900; margin-left: 8px; }
   .dock-track { width: 100%; height: 8px; border-radius: 999px; background: ${palette.muted}; overflow: hidden; }
   .dock-fill { height: 100%; width: ${dock.pct}%; border-radius: 999px; background: ${palette.accent}; }
-  .footer { display: flex; align-items: center; justify-content: space-between; padding-top: 16px; }
+  .footer { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; }
   .footer-url { font-size: 20px; font-weight: 700; color: ${palette.sub}; }
   .cta-pill { background: ${palette.accent}; color: ${palette.accentText}; padding: 13px 26px; border-radius: 999px; font-size: 19px; font-weight: 800; letter-spacing: 0.04em; }
 </style>
@@ -516,16 +656,12 @@ function buildSingleCardHtml({ post, index, tip, toolHostPath, shotBase64, palet
       </div>
       <h1>${highlightHeadlineHtml(post.title)}</h1>
     </div>
-    <div class="shot-card">
-      <div class="shot-chrome">
-        <div class="traffic"><span></span><span></span><span></span></div>
-        <div>TOOL UI: ${escapeHtml(toolHostPath)}</div>
-      </div>
-      <div class="shot-wrap"><img src="data:image/png;base64,${shotBase64}" /></div>
-    </div>
+    ${isPinnedFunnel ? funnelStageHtml : shotCardHtml}
     <div class="tip-box">
-      <div class="tip-label">Key Takeaway</div>
-      <div class="tip-text">${escapeHtml(tip)}</div>
+      <div class="tip-label">${isPinnedFunnel ? 'Funnel Playbook' : '3-Step Action Plan'}</div>
+      ${isMultiStepTip
+        ? `<div class="tip-steps">${tipLines.map((line) => `<div class="tip-step">${escapeHtml(line)}</div>`).join('')}</div>`
+        : `<div class="tip-text">${escapeHtml(tip)}</div>`}
     </div>
     <div class="dock">
       <div class="dock-top">
@@ -536,7 +672,7 @@ function buildSingleCardHtml({ post, index, tip, toolHostPath, shotBase64, palet
     </div>
     <div class="footer">
       <div class="footer-url">@socialora1 · getsocialora.com/tools</div>
-      <div class="cta-pill">LINK IN BIO &rarr;</div>
+      <div class="cta-pill">${isPinnedFunnel ? 'SAVE + PIN NOW &rarr;' : 'LINK IN BIO &rarr;'}</div>
     </div>
   </div>
 </body>
@@ -1186,7 +1322,7 @@ function buildReelHtml({ post, index, shotBase64, toolHostPath, palette }) {
             <div class="s1-kicker">REELS DIAGNOSTIC</div>
             <div class="s1-title">${highlightHeadlineHtml(hookWords)}</div>
             <div class="s1-bar" id="s1Bar"></div>
-            <div class="s1-subcard" id="s1Sub"><span>${escapeHtml(rb.subhook || (beats[0]?.sub) || (hasCompare ? 'Spot the difference' : 'Quick fix inside'))}</span><span class="s1-arrow">&rarr;</span></div>
+            <div class="s1-subcard" id="s1Sub"><span>${escapeHtml(String(rb.subhook || (beats[0]?.sub) || (hasCompare ? 'Spot the difference' : 'Quick fix inside')).replace(/\s*(?:->|\u2192)\s*$/g, '').trim())}</span><span class="s1-arrow">&rarr;</span></div>
             <div class="wipe-flash" id="wipeFlash"></div>
           </div>
         </div>
@@ -1446,19 +1582,20 @@ function encodeFramesToMp4(ffmpegBin, outMp4, framesGenerator, fps = 24, postId 
 }
 
 async function generateSingle(tab, post, index) {
+  const isPinnedFunnel = post.single_style === 'pinned_funnel';
   const toolUrl = extractToolUrl(post);
-  if (!toolUrl) throw new Error(`Missing tool URL for single image ${post.id}`);
-  const tip = extractTip(post.caption);
+  if (!toolUrl && !isPinnedFunnel) throw new Error(`Missing tool URL for single image ${post.id}`);
+  const tip = post.card_takeaway || extractTip(post.caption);
   const palette = PALETTES[index % PALETTES.length];
   await getText(`${CDP_URL}/json/activate/${tab.id}`);
   const jpgBuf = await withCdp(tab.webSocketDebuggerUrl, async (call) => {
-    const shotData = await captureToolScreenshot(call, toolUrl, 1040, 640);
+    const shotData = isPinnedFunnel ? null : await captureToolScreenshot(call, toolUrl, 1040, 640);
     await call('Emulation.setDeviceMetricsOverride', { width: 1080, height: 1350, deviceScaleFactor: 1, mobile: false });
     const html = buildSingleCardHtml({
       post,
       index,
       tip,
-      toolHostPath: toolUrl.replace(/^https?:\/\/www\./, ''),
+      toolHostPath: toolUrl ? toolUrl.replace(/^https?:\/\/www\./, '') : 'getsocialora.com/tools',
       shotBase64: shotData,
       palette,
     });
