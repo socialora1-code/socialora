@@ -329,7 +329,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const picked = $('İçerik Seç & Tekrar Kontrolü').first().json;\nreturn (picked.slides || []).map((slideUrl) => ({\n  json: {\n    igUserId: picked.igUserId,\n    slideUrl,\n    caption: picked.caption\n  }\n}));"
+        "jsCode": "const picked = $('İçerik Seç & Tekrar Kontrolü').first().json;\nreturn (picked.slides || []).map((slideUrl) => ({\n  json: {\n    igUserId: picked.igUserId,\n    slideUrl,\n    caption: picked.caption,\n    altText: picked.altText\n  }\n}));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -348,7 +348,7 @@
         "genericAuthType": "httpQueryAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ image_url: $json.slideUrl, is_carousel_item: true, alt_text: $('??erik Se? & Tekrar Kontrol?').first().json.altText }) }}",
+        "jsonBody": "={{ JSON.stringify({ image_url: $json.slideUrl, is_carousel_item: true, alt_text: $json.altText }) }}",
         "options": {
           "timeout": 20000
         }
