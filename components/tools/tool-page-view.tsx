@@ -259,6 +259,28 @@ export function ToolPageView({ tool }: { tool: ToolDef }) {
         </div>
       </div>
 
+      <p className="mt-3 text-xs text-muted-foreground">
+        Prefer daily visual tips &amp; Reel teardowns? Follow{' '}
+        <a
+          href="https://www.instagram.com/socialora1/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-foreground underline underline-offset-4 hover:no-underline"
+        >
+          @socialora1 on Instagram
+        </a>{' '}
+        or join creator discussions on{' '}
+        <a
+          href="https://www.threads.com/@socialora1"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-foreground underline underline-offset-4 hover:no-underline"
+        >
+          Threads
+        </a>
+        .
+      </p>
+
       {tool.about && tool.about.length > 0 && (
         <section className="mt-12" aria-labelledby="about-title">
           <h2 id="about-title" className="text-2xl font-semibold tracking-tight">

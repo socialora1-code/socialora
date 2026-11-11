@@ -3,7 +3,7 @@
   "channel": "threads",
   "account": "@socialora1",
   "playbook": "automation/threads/growth-playbook.md",
-  "schedule_intent": "2 posts per Europe/Istanbul day (min 4h gap) between 14:00 and 23:30 TRT across varied minutes; ~80% zero-link native posts and ~20% tool drops with link in first reply.",
+  "schedule_intent": "3 to 4 posts per Europe/Istanbul day (min 2.5h gap) between 11:00 and 23:59 TRT; ~80% zero-link native posts and ~20% tool drops with link in first reply.",
   "posts": [
     {
       "id": "th_01_intro_killers",
@@ -265,6 +265,305 @@
       "pillar": "question",
       "topic_tag": "Content Strategy",
       "text": "Sunday creator check: what is the ONE content rule you are changing next week based on what actually got saves or replies this week?"
+    },
+    {
+      "id": "th_43_three_word_rule",
+      "pillar": "hook_truth",
+      "topic_tag": "Video Editing",
+      "text": "Put more than 8 words on screen at once and people read instead of watching.\n\nKeep on-screen Reel hooks to 4–7 sharp words, let the visual show the contrast, and put the nuance in the caption."
+    },
+    {
+      "id": "th_44_reply_velocity",
+      "pillar": "framework",
+      "topic_tag": "Threads Tips",
+      "text": "How small accounts actually get noticed on Threads:\n\nLeave 5 thoughtful, specific replies on real creator posts in your niche before posting your own thread.\n\nSkip 'Great post!'—add one concrete angle or example."
+    },
+    {
+      "id": "th_45_bad_cta",
+      "pillar": "contrast",
+      "topic_tag": "Copywriting",
+      "text": "Weak ending: 'Follow for more tips!'\nStrong ending: 'Save this before exporting your next Reel.'\n\nPeople follow when they expect future value—they save when a post solves an immediate problem."
+    },
+    {
+      "id": "th_46_audio_vs_visual",
+      "pillar": "question",
+      "topic_tag": "Instagram Growth",
+      "text": "Creators who tested both:\n\nDid trending audio actually carry a weak hook for you, or did strong visual hooks outperform with plain voice/no music?"
+    },
+    {
+      "id": "th_47_bio_mistakes",
+      "pillar": "framework",
+      "topic_tag": "Creator Tips",
+      "text": "3 lines killing follower conversion on Instagram:\n\n1. Listing hobbies instead of who you help\n2. Putting an empty first name in the bold searchable Name line\n3. Dropping a bare URL with zero reason to click\n\nFix those three before spending another hour editing."
+    },
+    {
+      "id": "th_48_font_restraint",
+      "pillar": "tool_natural",
+      "topic_tag": "Creator Tips",
+      "text": "Quick readability rule for custom fonts in bios and Threads headers:\n\nUse stylized text on ONE short 2–3 word label max—never an entire paragraph.\n\nScreen readers and search skip heavy Unicode blocks.",
+      "reply_text": "If you want clean, readable Unicode styles to test on a single headline or bio tag, try our free Threads Font tool: https://www.getsocialora.com/tools/threads-font-generator?utm_source=threads&utm_medium=reply&utm_campaign=th_48_font_restraint"
+    },
+    {
+      "id": "th_49_dm_share_test",
+      "pillar": "hook_truth",
+      "topic_tag": "Instagram Growth",
+      "text": "Before posting anything this week, ask one blunt question:\n\n'Who would someone send this to in DMs right now?'\n\nIf you cannot picture the exact friend they'd send it to, tighten the angle."
+    },
+    {
+      "id": "th_50_yt_shorts_vs_reels",
+      "pillar": "question",
+      "topic_tag": "YouTube Tips",
+      "text": "Same vertical clip posted to Reels, TikTok, and YouTube Shorts:\n\nWhich platform is sending you the cleanest long-term subscribers or site traffic right now?"
+    },
+    {
+      "id": "th_51_dead_air_cut",
+      "pillar": "hook_truth",
+      "topic_tag": "Video Editing",
+      "text": "Open your timeline and zoom in on the first 1.2 seconds.\n\nIf there is a breath, a pause before speaking, or a slow fade-in, chop it out.\n\nThe very first frame needs movement or bold readable contrast."
+    },
+    {
+      "id": "th_52_tiktok_bio_line",
+      "pillar": "tool_natural",
+      "topic_tag": "TikTok Tips",
+      "text": "TikTok gives you 80 characters in your bio.\n\nEvery wasted emoji or vague buzzword costs clarity.\n\nFormula that fits in 80 chars:\n'[Who/Topic] | [Weekly proof] | [1 CTA]'",
+      "reply_text": "Need tight 80-character drafts for TikTok? Try our free TikTok Bio Generator: https://www.getsocialora.com/tools/tiktok-bio-generator?utm_source=threads&utm_medium=reply&utm_campaign=th_52_tiktok_bio_line"
+    },
+    {
+      "id": "th_53_carousel_cover",
+      "pillar": "contrast",
+      "topic_tag": "Instagram Growth",
+      "text": "Carousel cover mistakes:\n❌ Tiny 18px text with 3 paragraphs\n❌ Abstract title nobody searches\n\nCarousel covers that get swiped:\n✅ 5–7 bold words naming a real pain\n✅ Clear visual hint of what's on Slide 2"
+    },
+    {
+      "id": "th_54_morning_batch",
+      "pillar": "question",
+      "topic_tag": "Content Strategy",
+      "text": "Do you batch-create 5–7 days of posts in one sitting, or write and post fresh thoughts daily as ideas come up?"
+    },
+    {
+      "id": "th_55_ugc_portfolio",
+      "pillar": "framework",
+      "topic_tag": "UGC Creators",
+      "text": "How to make your first 3 UGC sample videos without waiting for a brand to pay you:\n\n1. Pick 3 everyday products already on your desk\n2. Film 3 different hook angles (problem, demo, comparison)\n3. Show crisp 9:16 safe-zone text and clear lighting\n\nBrands hire clarity, not excuses."
+    },
+    {
+      "id": "th_56_fake_follower_trap",
+      "pillar": "hook_truth",
+      "topic_tag": "Instagram Growth",
+      "text": "Why buying low-grade bot followers ruins organic testing:\n\nInstagram tests your new Reel on a small sample of followers first. If half your followers are inactive shells, early engagement signals tank."
+    },
+    {
+      "id": "th_57_fake_check_tool",
+      "pillar": "tool_natural",
+      "topic_tag": "UGC Creators",
+      "text": "Before collaborating with another creator or auditing an old page you took over, check engagement-to-follower ratios carefully.\n\nSudden follower spikes paired with flat comments are an obvious red flag.",
+      "reply_text": "Free Fake Follower & Engagement Sanity Checker (no login): https://www.getsocialora.com/tools/instagram-fake-follower-checker?utm_source=threads&utm_medium=reply&utm_campaign=th_57_fake_check_tool"
+    },
+    {
+      "id": "th_58_save_ratio_goal",
+      "pillar": "hook_truth",
+      "topic_tag": "Content Strategy",
+      "text": "One benchmark worth watching in your own Insights:\n\nCompare Saves ÷ Reach across your last 10 posts.\n\nEven on a small page, posts hitting 2–4% save rate almost always keep getting trickles of Explore views for days."
+    },
+    {
+      "id": "th_59_worst_advice",
+      "pillar": "question",
+      "topic_tag": "Creator Tips",
+      "text": "What is the worst piece of 'social media growth advice' you followed when starting out that wasted weeks of your time?"
+    },
+    {
+      "id": "th_60_grid_cohesion",
+      "pillar": "framework",
+      "topic_tag": "Social Media Design",
+      "text": "You do not need an overly rigid checkerboard aesthetic.\n\nJust keep two simple things consistent on your Instagram grid:\n1. One clear cover font family\n2. Clean 4:5 centered title placement so words never clip in grid previews."
+    },
+    {
+      "id": "th_61_grid_tool",
+      "pillar": "tool_natural",
+      "topic_tag": "Social Media Design",
+      "text": "Splitting a hero photo or campaign visual into a 3×3 Instagram grid?\n\nAlways preview tile posting order first—posting tile 1 before tile 9 scrambles the whole layout.",
+      "reply_text": "Free browser Instagram Grid Maker (exports tiles in exact posting order): https://www.getsocialora.com/tools/instagram-grid-maker?utm_source=threads&utm_medium=reply&utm_campaign=th_61_grid_tool"
+    },
+    {
+      "id": "th_62_repost_winners",
+      "pillar": "hook_truth",
+      "topic_tag": "Content Strategy",
+      "text": "Most creators throw away their best ideas after posting them once.\n\nIf a tip performed well 60 days ago, 90% of your newer followers never saw it. Reframe the opening hook and publish a tighter version."
+    },
+    {
+      "id": "th_63_hook_vs_topic",
+      "pillar": "contrast",
+      "topic_tag": "Instagram Growth",
+      "text": "Good topic + weak hook = 220 views.\nOkay topic + undeniable hook = 12,000 views.\n\nSpend 30% of your creation time sharpening the first two seconds and cover title."
+    },
+    {
+      "id": "th_64_thread_length",
+      "pillar": "question",
+      "topic_tag": "Threads Tips",
+      "text": "Reader preference check on Threads:\n\nDo you read 5-part mini threads all the way through, or prefer one tight 3-line insight you can digest in 4 seconds?"
+    },
+    {
+      "id": "th_65_youtube_30sec",
+      "pillar": "framework",
+      "topic_tag": "YouTube Tips",
+      "text": "The first 30 seconds of a YouTube video decide your retention curve:\n\n1. Confirm the click promise immediately (don't stall)\n2. Show visual proof of the outcome within 15s\n3. Preview what happens next without rambling"
+    },
+    {
+      "id": "th_66_youtube_tags_tool",
+      "pillar": "tool_natural",
+      "topic_tag": "YouTube Tips",
+      "text": "YouTube tags are not a secret ranking cheat code—they mainly help with common misspellings and topic disambiguation.\n\nUse 6–10 exact descriptive terms and put real energy into your thumbnail + title contrast instead.",
+      "reply_text": "Free YouTube Tag & Keyword Helper (no login): https://www.getsocialora.com/tools/youtube-tag-generator?utm_source=threads&utm_medium=reply&utm_campaign=th_66_youtube_tags_tool"
+    },
+    {
+      "id": "th_67_no_clickbait",
+      "pillar": "hook_truth",
+      "topic_tag": "Copywriting",
+      "text": "Clickbait gets a 1-second click and a 2-second swipe-away.\n\nCuriosity with honest payoff gets retention, saves, and repeat followers.\n\nAlways deliver on the promise of frame one by second four."
+    },
+    {
+      "id": "th_68_creator_burnout",
+      "pillar": "contrast",
+      "topic_tag": "Creator Tips",
+      "text": "Burnout comes from filming every idea from scratch.\n\nBuild 3 repeatable templates:\n• Split comparison (Wrong vs Right)\n• 3-step checklist\n• Live screen teardown\n\nSwap only the topic each week."
+    },
+    {
+      "id": "th_69_niche_clarify_q",
+      "pillar": "question",
+      "topic_tag": "Content Strategy",
+      "text": "Can you describe who your account helps in 7 words or less?\n\nReply with your 7-word positioning—happy to help sharpen it."
+    },
+    {
+      "id": "th_70_hashtag_clean",
+      "pillar": "tool_natural",
+      "topic_tag": "Instagram Growth",
+      "text": "Using 28 hashtags copied from a template in Notes hurts clarity.\n\nStick to 3–5 accurate niche tags that match your exact Reel topic and put real search terms into your caption sentences.",
+      "reply_text": "Free topic-focused Instagram Hashtag Generator: https://www.getsocialora.com/tools/instagram-hashtag-generator?utm_source=threads&utm_medium=reply&utm_campaign=th_70_hashtag_clean"
+    },
+    {
+      "id": "th_71_dm_funnel",
+      "pillar": "framework",
+      "topic_tag": "Creator Business",
+      "text": "Simple non-spammy way creators drive site clicks without annoying followers:\n\nDeliver 100% of the core takeaway right in the post, then mention your free tool/resource once as a shortcut—not a cliffhanger gate."
+    },
+    {
+      "id": "th_72_contrast_design",
+      "pillar": "hook_truth",
+      "topic_tag": "Social Media Design",
+      "text": "Tiny light-gray text on a busy gradient background fails on 6-inch phone screens in sunlight.\n\nHigh contrast + generous padding beats 'fancy aesthetics' every single day."
+    },
+    {
+      "id": "th_73_story_polls",
+      "pillar": "framework",
+      "topic_tag": "Instagram Growth",
+      "text": "Instagram Stories aren't for non-followers—they are for warming up people who already followed you.\n\nUse simple 2-option poll stickers twice a week to find out what Reel topic your actual followers want next."
+    },
+    {
+      "id": "th_74_analytics_question",
+      "pillar": "question",
+      "topic_tag": "Instagram Growth",
+      "text": "Which metric surprised you most once you actually started tracking it weekly instead of just looking at total likes?"
+    },
+    {
+      "id": "th_75_follower_goal_tool",
+      "pillar": "tool_natural",
+      "topic_tag": "Creator Tips",
+      "text": "A 10K follower goal feels overwhelming until you break it down into weekly posting cadence and realistic conversion rates.\n\nPlan milestones around output you control—not arbitrary viral luck.",
+      "reply_text": "Free Follower Goal Planning Calculator: https://www.getsocialora.com/tools/follower-goal-calculator?utm_source=threads&utm_medium=reply&utm_campaign=th_75_follower_goal_tool"
+    },
+    {
+      "id": "th_76_watch_loops",
+      "pillar": "hook_truth",
+      "topic_tag": "Video Editing",
+      "text": "The easiest way to push an 8-second educational Reel past 100% average watch time:\n\nKeep beat cards crisp so viewers watch once for the hook and replay 2 seconds to read the middle fix."
+    },
+    {
+      "id": "th_77_x_bio_tip",
+      "pillar": "contrast",
+      "topic_tag": "Creator Tips",
+      "text": "Weak profile line: 'Helping creators grow online.'\nStrong profile line: 'Reel retention teardowns + 50+ free browser creator tools.'\n\nConcrete nouns beat vague verbs."
+    },
+    {
+      "id": "th_78_collab_question",
+      "pillar": "question",
+      "topic_tag": "Creator Business",
+      "text": "Micro-creators: have small creator-to-creator shoutouts or joint Lives brought you better followers than solo posting?"
+    },
+    {
+      "id": "th_79_whatsapp_link_tool",
+      "pillar": "tool_natural",
+      "topic_tag": "Creator Business",
+      "text": "Freelancers & small service shops: forcing prospects to save your phone number before messaging costs leads.\n\nUse a direct Click-to-Chat link with a prefilled inquiry line so leads message in one tap.",
+      "reply_text": "Free WhatsApp Click-to-Chat Link Generator: https://www.getsocialora.com/tools/whatsapp-link-generator?utm_source=threads&utm_medium=reply&utm_campaign=th_79_whatsapp_link_tool"
+    },
+    {
+      "id": "th_80_pacing_rule",
+      "pillar": "hook_truth",
+      "topic_tag": "Video Editing",
+      "text": "Rule of thumb for faceless educational Reels:\n\nSwitch visual state every 1.8 to 2.5 seconds.\n\nSame frame for 5 seconds straight = automatic thumb swipe."
+    },
+    {
+      "id": "th_81_giveaway_integrity",
+      "pillar": "tool_natural",
+      "topic_tag": "Instagram Growth",
+      "text": "Running a creator or product giveaway on Instagram?\n\nAlways announce rules clearly and pick winners transparently so your community actually trusts the result.",
+      "reply_text": "Free browser Instagram Giveaway Comment Picker: https://www.getsocialora.com/tools/instagram-giveaway-picker?utm_source=threads&utm_medium=reply&utm_campaign=th_81_giveaway_integrity"
+    },
+    {
+      "id": "th_82_first_1000",
+      "pillar": "framework",
+      "topic_tag": "Creator Tips",
+      "text": "What actually moves a brand-new account from 0 to its first 1,000 real followers:\n\n• 1 clear problem niche\n• 30 consistent reps testing hooks\n• Active replies in your own topic feed\n• Zero spam shortcuts"
+    },
+    {
+      "id": "th_83_swipe_curiosity",
+      "pillar": "hook_truth",
+      "topic_tag": "Instagram Growth",
+      "text": "Slide 1 of a Carousel shouldn't give away the whole answer.\n\nSlide 1 creates the open loop ('5 visual hooks you can film in 10 minutes'). Slides 2–5 deliver real substance."
+    },
+    {
+      "id": "th_84_tool_ideas_q",
+      "pillar": "question",
+      "topic_tag": "Creator Tools",
+      "text": "Honest question for video editors and creators:\n\nIf you could have one instant browser micro-tool you don't have right now (zero sign-up), what would it do?"
+    },
+    {
+      "id": "th_85_tg_growth_tip",
+      "pillar": "framework",
+      "topic_tag": "Content Strategy",
+      "text": "Building a Telegram channel or newsletter alongside Instagram/Threads?\n\nGive members something they CANNOT get in public feeds—like swipe files, raw hook templates, and live Q&A teardowns."
+    },
+    {
+      "id": "th_86_tt_engagement_tool",
+      "pillar": "tool_natural",
+      "topic_tag": "TikTok Tips",
+      "text": "Don't compare a 10K-view TikTok against a 2K-view TikTok on likes alone.\n\nMeasure completion + shares + comments consistently across your last 10 uploads to spot what actually resonated.",
+      "reply_text": "Free TikTok Engagement Rate Calculator: https://www.getsocialora.com/tools/tiktok-engagement-rate-calculator?utm_source=threads&utm_medium=reply&utm_campaign=th_86_tt_engagement_tool"
+    },
+    {
+      "id": "th_87_comment_prompts",
+      "pillar": "contrast",
+      "topic_tag": "Threads Tips",
+      "text": "Prompts that get zero replies: 'Thoughts?'\nPrompts that start real conversations: 'Which one failed faster for you: A or B?'\n\nSpecific choices lower the friction to reply."
+    },
+    {
+      "id": "th_88_caption_ideas_tool",
+      "pillar": "tool_natural",
+      "topic_tag": "Copywriting",
+      "text": "Stuck staring at the caption box after finishing an edit?\n\nWrite one clear first line that states who the post helps + one simple next step. Skip robotic fluff.",
+      "reply_text": "Free Instagram Content Ideas & Caption Generators: https://www.getsocialora.com/tools/instagram-content-ideas-generator?utm_source=threads&utm_medium=reply&utm_campaign=th_88_caption_ideas_tool"
+    },
+    {
+      "id": "th_89_week_experiment",
+      "pillar": "framework",
+      "topic_tag": "Content Strategy",
+      "text": "Change ONE variable per week when testing growth:\n\nWeek 1: Hook wording\nWeek 2: Cover typography & contrast\nWeek 3: Posting time blocks\n\nChange everything at once and you learn nothing."
+    },
+    {
+      "id": "th_90_open_clinic_q",
+      "pillar": "question",
+      "topic_tag": "Creator Tips",
+      "text": "What content bottleneck is slowing your page down most this week—coming up with hooks, editing fast, or converting profile visits?"
     }
   ]
 }

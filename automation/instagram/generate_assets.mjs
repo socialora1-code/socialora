@@ -361,9 +361,77 @@ function buildReelHtml({ post, shotBase64, toolHostPath, palette }) {
   const duration = Number(post.duration_sec || 8);
   const beats = Array.isArray(rb.beats) ? rb.beats : [];
   const hasCompare = Boolean(rb.compare_bad_text && rb.compare_good_text);
-  const dense = hasCompare && Boolean(shotBase64);
-  const veryDense = beats.length >= 4 || dense;
-  const style = post.reel_style || 'framework_steps';
+  const isSafeZone = post.tool_slug === 'reels-tiktok-safe-zone-guide';
+  const isNoCrop = post.tool_slug === 'instagram-no-crop-blur-background';
+  const hookWords = String(rb.hook || post.title || '').trim();
+  const hookSize = hookWords.length > 44 ? '76px' : (hookWords.length > 32 ? '84px' : '92px');
+
+  const scene2CompareHtml = hasCompare ? `
+    <div class="s2-stack">
+      <div class="big-cmp bad" id="s2Bad">
+        <div class="cmp-pill bad-pill">❌ ${escapeHtml(rb.compare_bad_label || 'AVOID THIS')}</div>
+        <div class="big-cmp-txt">${escapeHtml(rb.compare_bad_text)}</div>
+        <div class="strike-bar" id="s2Strike"></div>
+      </div>
+      <div class="big-cmp good" id="s2Good">
+        <div class="cmp-pill good-pill">✅ ${escapeHtml(rb.compare_good_label || 'USE THIS')}</div>
+        <div class="big-cmp-txt">${escapeHtml(rb.compare_good_text)}</div>
+      </div>
+    </div>` : isSafeZone ? `
+    <div class="phone-demo">
+      <div class="phone-screen">
+        <div class="danger-top">TOP UI / REELS HEADER</div>
+        <div class="safe-center">
+          <div class="safe-tag">✅ CENTER SAFE ZONE</div>
+          <div class="moving-sub" id="szText">YOUR HOOK SUBTITLES</div>
+        </div>
+        <div class="right-icons"><span>♥</span><span>💬</span><span>✈</span></div>
+        <div class="danger-bot">❌ CAPTION &amp; AUDIO BAR COVER THIS</div>
+      </div>
+    </div>` : isNoCrop ? `
+    <div class="crop-demo">
+      <div class="crop-box bad-crop">
+        <div class="crop-lbl bad-pill">❌ FORCED 1:1 / TIGHT CROP</div>
+        <div class="wide-photo sliced"><div class="slice-mask left"></div><div class="slice-mask right"></div><span>WIDE PHOTO EDGES CUT OFF</span></div>
+      </div>
+      <div class="crop-box good-crop">
+        <div class="crop-lbl good-pill">✅ 4:5 SOFT BLUR PAD</div>
+        <div class="blur-pad-frame"><div class="full-wide-inner">100% OF PHOTO KEPT INTACT</div></div>
+      </div>
+    </div>` : `
+    <div class="s2-beats">
+      ${beats.slice(0, 2).map((b, i) => `
+      <div class="giant-beat" id="s2Beat_${i}">
+        <div class="g-badge">${escapeHtml(b.badge)}</div>
+        <div class="g-head">${escapeHtml(b.headline)}</div>
+        <div class="g-sub">${escapeHtml(b.sub)}</div>
+      </div>`).join('')}
+    </div>`;
+
+  const scene3Html = shotBase64 ? `
+    <div class="s3-tool-stage">
+      <div class="s3-eyebrow">⚡ TRY IT FREE IN BROWSER</div>
+      <div class="s3-headline">${escapeHtml((beats[beats.length - 1]?.headline) || 'Preview & export in seconds')}</div>
+      <div class="s3-device" id="s3Device">
+        <div class="s3-chrome"><span></span><span></span><span></span><div class="s3-url">${escapeHtml(toolHostPath)}</div></div>
+        <div class="s3-img-wrap">
+          <img src="data:image/png;base64,${shotBase64}" id="toolShotImg" />
+          <div class="cursor-ring" id="cursorRing"></div>
+        </div>
+      </div>
+      <div class="s3-sub">${escapeHtml((beats[beats.length - 1]?.sub) || 'Zero sign-up required — runs directly on your device.')}</div>
+    </div>` : `
+    <div class="s3-beats-stage">
+      <div class="s3-eyebrow">⚡ THE EXACT FIX</div>
+      <div class="s3-beats-list">
+        ${(beats.length > 2 ? beats.slice(1) : beats).map((b, i) => `
+        <div class="giant-beat s3-card" id="s3Beat_${i}">
+          <div class="g-badge">${escapeHtml(b.badge)}</div>
+          <div class="g-head">${escapeHtml(b.headline)}</div>
+          <div class="g-sub">${escapeHtml(b.sub)}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
 
   return `<!doctype html>
 <html>
@@ -380,177 +448,211 @@ function buildReelHtml({ post, shotBase64, toolHostPath, palette }) {
     font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-  .canvas {
-    width: 1080px;
-    height: 1920px;
-    position: relative;
-    overflow: hidden;
-    background: ${palette.bg};
-  }
-  .orb-1 {
+  .canvas { width: 1080px; height: 1920px; position: relative; overflow: hidden; background: ${palette.bg}; }
+  .orb-1 { position: absolute; width: 820px; height: 820px; border-radius: 999px; background: ${palette.muted}; opacity: 0.78; top: -200px; right: -240px; filter: blur(22px); }
+  .orb-2 { position: absolute; width: 700px; height: 700px; border-radius: 999px; background: ${palette.muted}; opacity: 0.62; bottom: -160px; left: -200px; filter: blur(22px); }
+  .progress-track { position: absolute; top: 120px; left: 72px; right: 72px; height: 12px; border-radius: 999px; background: ${palette.muted}; overflow: hidden; z-index: 20; }
+  .progress-fill { height: 100%; width: 0%; border-radius: 999px; background: ${palette.accent}; }
+
+  /* Balanced safe zone: clear of IG top header (240px), bottom overlay (370px), and right icon rail (100px) */
+  .scene {
     position: absolute;
-    width: 760px;
-    height: 760px;
-    border-radius: 999px;
-    background: ${palette.muted};
-    opacity: 0.72;
-    top: -180px;
-    right: -220px;
-    filter: blur(18px);
-  }
-  .orb-2 {
-    position: absolute;
-    width: 640px;
-    height: 640px;
-    border-radius: 999px;
-    background: ${palette.muted};
-    opacity: 0.55;
-    bottom: -140px;
-    left: -180px;
-    filter: blur(18px);
-  }
-  .progress-track {
-    position: absolute;
-    top: 120px;
-    left: 72px;
-    right: 72px;
-    height: 12px;
-    border-radius: 999px;
-    background: ${palette.muted};
-    overflow: hidden;
-    z-index: 10;
-  }
-  .progress-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: 999px;
-    background: ${palette.accent};
-  }
-  /* Safe zone container: clear of IG top header (240px), right icons (165px), bottom caption overlay (360px) */
-  .safe-stage {
-    position: absolute;
-    top: 250px;
-    left: 72px;
-    right: 168px;
+    top: 240px;
+    left: 80px;
+    right: 100px;
     bottom: 370px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
     z-index: 5;
   }
-  .eyebrow-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: ${veryDense ? '14px' : '20px'};
-  }
-  .eyebrow {
+
+  /* SCENE 1: GIANT HOOK */
+  .s1-badge {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    font-size: 22px;
-    font-weight: 800;
+    gap: 14px;
+    align-self: flex-start;
+    padding: 14px 28px;
+    border-radius: 999px;
+    background: ${palette.accent};
+    color: ${palette.accentText};
+    font-size: 24px;
+    font-weight: 900;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: ${palette.accent};
+    margin-bottom: 42px;
+    box-shadow: 0 14px 32px rgba(0,0,0,0.16);
   }
-  .dot { width: 12px; height: 12px; border-radius: 999px; background: ${palette.accent}; }
-  .timer-pill {
-    font-size: 20px;
-    font-weight: 800;
-    padding: 8px 18px;
-    border-radius: 999px;
-    background: ${palette.card};
-    color: ${palette.ink};
-    border: 2px solid ${palette.muted};
-  }
-  .hook-title {
-    font-size: ${veryDense ? '54px' : '68px'};
-    line-height: 1.07;
+  .s1-title {
+    font-size: ${hookSize};
+    line-height: 1.04;
     font-weight: 900;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.035em;
     color: ${palette.ink};
-    margin-bottom: ${veryDense ? '18px' : '30px'};
-    will-change: transform, opacity;
+    margin-bottom: 38px;
   }
-  .compare-grid {
-    display: flex;
-    flex-direction: column;
-    gap: ${dense ? '12px' : '18px'};
-    margin-bottom: ${dense ? '14px' : '24px'};
-  }
-  .cmp-card {
-    border-radius: 22px;
-    padding: ${dense ? '16px 22px' : '24px 28px'};
-    background: ${palette.card};
-    border: 2px solid ${palette.muted};
-    box-shadow: 0 14px 32px rgba(0,0,0,0.08);
-  }
-  .cmp-bad { border-left: 10px solid #EF4444; }
-  .cmp-good { border-left: 10px solid #10B981; }
-  .cmp-label { font-size: 16px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
-  .cmp-bad .cmp-label { color: #EF4444; }
-  .cmp-good .cmp-label { color: #10B981; }
-  .cmp-text { font-size: ${dense ? '22px' : '26px'}; line-height: 1.28; font-weight: 700; color: ${palette.ink}; }
-  .beats-list {
-    display: flex;
-    flex-direction: column;
-    gap: ${veryDense ? '12px' : '18px'};
-  }
-  .beat-card {
-    border-radius: 22px;
-    padding: ${veryDense ? '16px 22px' : '24px 28px'};
-    background: ${palette.card};
-    border-left: 10px solid ${palette.muted};
-    box-shadow: 0 14px 30px rgba(0,0,0,0.07);
-    transition: none;
-  }
-  .beat-card.active {
-    border-left-color: ${palette.accent};
-    box-shadow: 0 20px 44px rgba(0,0,0,0.16);
-  }
-  .beat-badge {
-    display: inline-block;
-    font-size: ${veryDense ? '14px' : '16px'};
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 5px 14px;
+  .s1-bar {
+    height: 14px;
+    width: 100%;
+    max-width: 420px;
     border-radius: 999px;
-    background: ${palette.muted};
-    color: ${palette.isDark ? palette.ink : palette.accent};
-    margin-bottom: ${veryDense ? '6px' : '10px'};
-  }
-  .beat-card.active .beat-badge {
     background: ${palette.accent};
-    color: ${palette.accentText};
+    margin-bottom: 48px;
+    transform-origin: left center;
   }
-  .beat-head { font-size: ${veryDense ? '26px' : '31px'}; line-height: 1.2; font-weight: 800; color: ${palette.ink}; margin-bottom: 4px; }
-  .beat-sub { font-size: ${veryDense ? '20px' : '23px'}; line-height: 1.28; font-weight: 500; color: ${palette.sub}; }
-  .tool-shot-box {
-    border-radius: 22px;
-    padding: 12px;
+  .s1-subcard {
     background: ${palette.card};
-    border: 2px solid ${palette.accent};
-    box-shadow: 0 20px 44px rgba(0,0,0,0.14);
-    margin-top: ${dense ? '12px' : '18px'};
-  }
-  .tool-shot-bar { font-size: 14px; font-weight: 800; letter-spacing: 0.08em; color: ${palette.accent}; text-transform: uppercase; margin-bottom: 8px; }
-  .tool-shot-frame { width: 100%; height: ${dense ? '195px' : '290px'}; border-radius: 12px; overflow: hidden; background: #fff; }
-  .tool-shot-frame img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
-  .cta-bar {
+    border-left: 12px solid ${palette.accent};
     border-radius: 26px;
-    padding: ${veryDense ? '20px 26px' : '24px 30px'};
-    background: ${palette.accent};
-    color: ${palette.accentText};
+    padding: 34px 38px;
+    font-size: 34px;
+    line-height: 1.35;
+    font-weight: 700;
+    color: ${palette.sub};
+    box-shadow: 0 22px 48px rgba(0,0,0,0.1);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 18px 40px rgba(0,0,0,0.18);
   }
-  .cta-text { font-size: 27px; font-weight: 800; line-height: 1.2; max-width: 600px; }
-  .cta-sub { font-size: 18px; font-weight: 700; opacity: 0.9; margin-top: 4px; }
-  .cta-arrow { font-size: 34px; font-weight: 900; }
+
+  /* SCENE 2: VISUAL CONTRAST / DIAGRAM */
+  .s2-stack, .s2-beats { display: flex; flex-direction: column; gap: 34px; width: 100%; }
+  .big-cmp {
+    position: relative;
+    background: ${palette.card};
+    border-radius: 30px;
+    padding: 40px 42px;
+    box-shadow: 0 22px 46px rgba(0,0,0,0.11);
+    overflow: hidden;
+  }
+  .big-cmp.bad { border-left: 14px solid #EF4444; }
+  .big-cmp.good { border-left: 14px solid #10B981; }
+  .cmp-pill {
+    display: inline-block;
+    font-size: 21px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    padding: 10px 22px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .bad-pill { background: #FEE2E2; color: #B91C1C; }
+  .good-pill { background: #D1FAE5; color: #047857; }
+  .big-cmp-txt { font-size: 39px; line-height: 1.28; font-weight: 800; color: ${palette.ink}; }
+  .strike-bar {
+    position: absolute;
+    left: 28px;
+    right: 28px;
+    top: 56%;
+    height: 10px;
+    border-radius: 999px;
+    background: #EF4444;
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  .giant-beat {
+    background: ${palette.card};
+    border-radius: 28px;
+    padding: 36px 40px;
+    border-left: 14px solid ${palette.accent};
+    box-shadow: 0 20px 44px rgba(0,0,0,0.1);
+  }
+  .g-badge {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    padding: 8px 20px;
+    border-radius: 999px;
+    background: ${palette.accent};
+    color: ${palette.accentText};
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .g-head { font-size: 44px; line-height: 1.15; font-weight: 900; color: ${palette.ink}; margin-bottom: 10px; }
+  .g-sub { font-size: 29px; line-height: 1.32; font-weight: 600; color: ${palette.sub}; }
+
+  /* SAFE ZONE DEMO */
+  .phone-demo { display: flex; justify-content: center; width: 100%; }
+  .phone-screen {
+    width: 620px; height: 1020px; border-radius: 44px; border: 10px solid ${palette.ink};
+    background: #111827; position: relative; overflow: hidden; color: #fff;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .danger-top { background: rgba(239,68,68,0.34); padding: 28px; text-align: center; font-size: 20px; font-weight: 800; border-bottom: 3px dashed #EF4444; }
+  .danger-bot { background: rgba(239,68,68,0.38); padding: 48px 26px; text-align: center; font-size: 22px; font-weight: 900; border-top: 3px dashed #EF4444; }
+  .safe-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 20px; }
+  .safe-tag { font-size: 20px; font-weight: 900; color: #34D399; letter-spacing: 0.12em; margin-bottom: 24px; }
+  .moving-sub {
+    padding: 22px 32px; border-radius: 20px; font-size: 32px; font-weight: 900; text-align: center;
+    background: #10B981; color: #052E16; box-shadow: 0 14px 32px rgba(0,0,0,0.4);
+  }
+  .right-icons {
+    position: absolute; right: 20px; bottom: 210px; display: flex; flex-direction: column; gap: 20px;
+    font-size: 30px; background: rgba(239,68,68,0.3); padding: 14px 12px; border-radius: 20px;
+  }
+
+  /* NO-CROP DEMO */
+  .crop-demo { display: flex; flex-direction: column; gap: 34px; width: 100%; }
+  .crop-box { background: ${palette.card}; border-radius: 28px; padding: 28px; box-shadow: 0 18px 40px rgba(0,0,0,0.1); }
+  .crop-lbl { display: inline-block; font-size: 20px; font-weight: 900; padding: 8px 20px; border-radius: 999px; margin-bottom: 18px; }
+  .wide-photo { height: 220px; border-radius: 18px; background: linear-gradient(135deg, #2563EB, #7C3AED); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; position: relative; overflow: hidden; }
+  .slice-mask { position: absolute; top: 0; bottom: 0; width: 140px; background: rgba(239,68,68,0.72); }
+  .slice-mask.left { left: 0; border-right: 4px dashed #fff; }
+  .slice-mask.right { right: 0; border-left: 4px dashed #fff; }
+  .blur-pad-frame { height: 320px; border-radius: 20px; background: linear-gradient(180deg, rgba(109,40,217,0.35), rgba(37,99,235,0.35)); display: flex; align-items: center; justify-content: center; padding: 28px; }
+  .full-wide-inner { width: 100%; height: 190px; border-radius: 14px; background: linear-gradient(135deg, #2563EB, #7C3AED); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; box-shadow: 0 16px 36px rgba(0,0,0,0.22); }
+
+  /* SCENE 3: LIVE TOOL OR CLIMAX STEPS */
+  .s3-tool-stage, .s3-beats-stage { display: flex; flex-direction: column; gap: 26px; width: 100%; }
+  .s3-eyebrow { font-size: 24px; font-weight: 900; letter-spacing: 0.14em; color: ${palette.accent}; text-transform: uppercase; }
+  .s3-headline { font-size: 56px; line-height: 1.08; font-weight: 900; color: ${palette.ink}; }
+  .s3-device {
+    background: ${palette.card}; border-radius: 28px; padding: 18px; border: 3px solid ${palette.accent};
+    box-shadow: 0 26px 56px rgba(0,0,0,0.18); position: relative;
+  }
+  .s3-chrome { display: flex; align-items: center; gap: 10px; padding: 4px 10px 14px; }
+  .s3-chrome span { width: 12px; height: 12px; border-radius: 999px; background: ${palette.muted}; }
+  .s3-url { margin-left: auto; font-size: 17px; font-weight: 800; color: ${palette.sub}; }
+  .s3-img-wrap { width: 100%; height: 540px; border-radius: 16px; overflow: hidden; background: #0f111c; position: relative; }
+  .s3-img-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: left top; transform-origin: center 30%; display: block; }
+  .cursor-ring {
+    position: absolute; width: 56px; height: 56px; border-radius: 999px;
+    border: 6px solid ${palette.accent}; background: rgba(255,255,255,0.25);
+    box-shadow: 0 0 0 8px rgba(109,40,217,0.18);
+    top: 48%; left: 50%; transform: translate(-50%, -50%);
+  }
+  .s3-sub { font-size: 29px; line-height: 1.32; font-weight: 700; color: ${palette.sub}; }
+  .s3-beats-list { display: flex; flex-direction: column; gap: 26px; }
+  .s3-card { padding: 32px 38px; }
+
+  /* SCENE 4: BOLD CLOSER + LOOP */
+  .s4-card {
+    background: ${palette.accent};
+    color: ${palette.accentText};
+    border-radius: 36px;
+    padding: 64px 52px;
+    box-shadow: 0 28px 64px rgba(0,0,0,0.22);
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .s4-pill {
+    align-self: flex-start;
+    padding: 12px 26px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.22);
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .s4-title { font-size: 66px; line-height: 1.08; font-weight: 900; letter-spacing: -0.025em; }
+  .s4-footer { font-size: 28px; font-weight: 800; opacity: 0.92; border-top: 2px solid rgba(255,255,255,0.25); padding-top: 26px; }
 </style>
 </head>
 <body>
@@ -558,115 +660,120 @@ function buildReelHtml({ post, shotBase64, toolHostPath, palette }) {
     <div class="orb-1" id="orb1"></div>
     <div class="orb-2" id="orb2"></div>
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="safe-stage">
-      <div>
-        <div class="eyebrow-row">
-          <div class="eyebrow"><span class="dot"></span>${escapeHtml(rb.eyebrow || 'SOCIALORA PLAYBOOK')}</div>
-          <div class="timer-pill" id="phasePill">01 / HOOK</div>
-        </div>
-        <div class="hook-title" id="hookTitle">${escapeHtml(rb.hook || post.title)}</div>
-        ${hasCompare ? `
-        <div class="compare-grid" id="compareGrid">
-          <div class="cmp-card cmp-bad" id="cmpBad">
-            <div class="cmp-label">${escapeHtml(rb.compare_bad_label || 'AVOID')}</div>
-            <div class="cmp-text">${escapeHtml(rb.compare_bad_text)}</div>
-          </div>
-          <div class="cmp-card cmp-good" id="cmpGood">
-            <div class="cmp-label">${escapeHtml(rb.compare_good_label || 'USE THIS')}</div>
-            <div class="cmp-text">${escapeHtml(rb.compare_good_text)}</div>
-          </div>
-        </div>` : ''}
-        <div class="beats-list" id="beatsList">
-          ${beats.map((b, i) => `
-          <div class="beat-card" id="beat_${i}">
-            <div class="beat-badge">${escapeHtml(b.badge)}</div>
-            <div class="beat-head">${escapeHtml(b.headline)}</div>
-            <div class="beat-sub">${escapeHtml(b.sub)}</div>
-          </div>`).join('')}
-        </div>
-        ${shotBase64 ? `
-        <div class="tool-shot-box" id="toolShot">
-          <div class="tool-shot-bar">LIVE BROWSER TOOL — ${escapeHtml(toolHostPath)}</div>
-          <div class="tool-shot-frame"><img src="data:image/png;base64,${shotBase64}" id="toolShotImg" /></div>
-        </div>` : ''}
-      </div>
-      <div class="cta-bar" id="ctaBar">
-        <div>
-          <div class="cta-text">${escapeHtml(rb.cta || 'Save this for your next upload')}</div>
-          <div class="cta-sub">@socialora1 · getsocialora.com/tools</div>
-        </div>
-        <div class="cta-arrow">&rarr;</div>
+
+    <div class="scene" id="scene1">
+      <div class="s1-badge">● ${escapeHtml(rb.eyebrow || 'CREATOR PLAYBOOK')}</div>
+      <div class="s1-title">${escapeHtml(hookWords)}</div>
+      <div class="s1-bar" id="s1Bar"></div>
+      <div class="s1-subcard"><span>${escapeHtml(hasCompare ? 'Swipe-away starts here →' : 'See the 10-second fix')}</span><span>⚡</span></div>
+    </div>
+
+    <div class="scene" id="scene2">${scene2CompareHtml}</div>
+    <div class="scene" id="scene3">${scene3Html}</div>
+
+    <div class="scene" id="scene4">
+      <div class="s4-card" id="s4Card">
+        <div class="s4-pill">🔖 SAVE FOR YOUR NEXT UPLOAD</div>
+        <div class="s4-title">${escapeHtml(rb.cta || 'Save this for your next Reel')}</div>
+        <div class="s4-footer">@socialora1 · getsocialora.com/tools</div>
       </div>
     </div>
   </div>
 <script>
   const DURATION = ${duration};
-  const STYLE = ${JSON.stringify(style)};
-  const BEAT_COUNT = ${beats.length};
   const easeOut = (x) => 1 - Math.pow(1 - Math.max(0, Math.min(1, x)), 3);
+  const clamp01 = (x) => Math.max(0, Math.min(1, x));
 
   window.__setTime = function(t) {
-    const p = Math.max(0, Math.min(1, t / DURATION));
+    const p = clamp01(t / DURATION);
     document.getElementById('progressFill').style.width = (p * 100).toFixed(2) + '%';
-    const orb1 = document.getElementById('orb1');
-    const orb2 = document.getElementById('orb2');
-    orb1.style.transform = 'translate(' + (-Math.sin(p * Math.PI * 2) * 35).toFixed(1) + 'px,' + (Math.cos(p * Math.PI * 2) * 25).toFixed(1) + 'px)';
-    orb2.style.transform = 'translate(' + (Math.cos(p * Math.PI * 2) * 30).toFixed(1) + 'px,' + (-Math.sin(p * Math.PI * 2) * 20).toFixed(1) + 'px)';
+    document.getElementById('orb1').style.transform = 'translate(' + (-Math.sin(p * Math.PI * 2) * 45).toFixed(1) + 'px,' + (Math.cos(p * Math.PI * 2) * 35).toFixed(1) + 'px)';
+    document.getElementById('orb2').style.transform = 'translate(' + (Math.cos(p * Math.PI * 2) * 40).toFixed(1) + 'px,' + (-Math.sin(p * Math.PI * 2) * 30).toFixed(1) + 'px)';
 
-    const hookEl = document.getElementById('hookTitle');
-    const hEase = easeOut(t / 0.55);
-    hookEl.style.opacity = (0.15 + 0.85 * hEase).toFixed(3);
-    hookEl.style.transform = 'translateY(' + ((1 - hEase) * 28).toFixed(1) + 'px)';
+    const t1 = 1.9, t2 = 4.5, t3 = 7.0;
+    const s1 = document.getElementById('scene1');
+    const s2 = document.getElementById('scene2');
+    const s3 = document.getElementById('scene3');
+    const s4 = document.getElementById('scene4');
 
-    const phasePill = document.getElementById('phasePill');
-    if (t < 1.8) phasePill.textContent = '01 / HOOK';
-    else if (t < DURATION - 1.6) phasePill.textContent = '02 / BREAKDOWN';
-    else phasePill.textContent = '03 / SAVE & USE';
+    // Scene 1: 0.0 -> 1.9
+    if (t < t1) {
+      const e = easeOut(t / 0.35);
+      s1.style.opacity = (0.3 + 0.7 * e).toFixed(3);
+      s1.style.transform = 'scale(' + (0.94 + 0.06 * e).toFixed(4) + ')';
+      document.getElementById('s1Bar').style.transform = 'scaleX(' + easeOut((t - 0.15) / 0.55).toFixed(3) + ')';
+    } else { s1.style.opacity = '0'; }
 
-    const cmpBad = document.getElementById('cmpBad');
-    const cmpGood = document.getElementById('cmpGood');
-    if (cmpBad && cmpGood) {
-      const b1 = easeOut((t - 0.6) / 0.5);
-      const b2 = easeOut((t - 1.5) / 0.5);
-      cmpBad.style.opacity = (0.2 + 0.8 * b1).toFixed(3);
-      cmpBad.style.transform = 'translateX(' + ((1 - b1) * -32).toFixed(1) + 'px)';
-      cmpGood.style.opacity = (0.2 + 0.8 * b2).toFixed(3);
-      cmpGood.style.transform = 'translateX(' + ((1 - b2) * 32).toFixed(1) + 'px)';
-    }
+    // Scene 2: 1.9 -> 4.5
+    if (t >= t1 && t < t2) {
+      const lt = t - t1;
+      const e = easeOut(lt / 0.3);
+      s2.style.opacity = e.toFixed(3);
+      s2.style.transform = 'translateY(' + ((1 - e) * 40).toFixed(1) + 'px)';
+      const strike = document.getElementById('s2Strike');
+      const s2Good = document.getElementById('s2Good');
+      if (strike && s2Good) {
+        strike.style.transform = 'scaleX(' + easeOut((lt - 0.7) / 0.35).toFixed(3) + ')';
+        const ge = easeOut((lt - 0.85) / 0.4);
+        s2Good.style.opacity = (0.15 + 0.85 * ge).toFixed(3);
+        s2Good.style.transform = 'scale(' + (0.94 + 0.06 * ge).toFixed(4) + ')';
+      }
+      const sz = document.getElementById('szText');
+      if (sz) {
+        const up = easeOut((lt - 0.9) / 0.55);
+        sz.style.transform = 'translateY(' + (230 * (1 - up)).toFixed(1) + 'px)';
+        sz.style.background = up > 0.5 ? '#10B981' : '#EF4444';
+        sz.style.color = up > 0.5 ? '#052E16' : '#FFFFFF';
+        sz.textContent = up > 0.5 ? '✅ SAFE CENTER TEXT' : '❌ HIDDEN BY BUTTONS';
+      }
+      for (let i = 0; i < 2; i++) {
+        const b = document.getElementById('s2Beat_' + i);
+        if (b) {
+          const be = easeOut((lt - i * 0.8) / 0.38);
+          b.style.opacity = (0.18 + 0.82 * be).toFixed(3);
+          b.style.transform = 'translateX(' + ((1 - be) * 45).toFixed(1) + 'px)';
+        }
+      }
+    } else { s2.style.opacity = '0'; }
 
-    const beatStart = cmpBad ? 2.3 : 1.0;
-    const beatSpan = (DURATION - 1.6 - beatStart) / Math.max(1, BEAT_COUNT);
-    for (let i = 0; i < BEAT_COUNT; i++) {
-      const el = document.getElementById('beat_' + i);
-      if (!el) continue;
-      const startT = beatStart + i * beatSpan;
-      const enter = easeOut((t - startT) / 0.45);
-      const isCurrent = t >= startT && (i === BEAT_COUNT - 1 ? t < DURATION - 1.0 : t < startT + beatSpan);
-      el.classList.toggle('active', isCurrent);
-      const scale = isCurrent ? 1.022 : 1.0;
-      el.style.opacity = (0.22 + 0.78 * enter).toFixed(3);
-      el.style.transform = 'translateY(' + ((1 - enter) * 26).toFixed(1) + 'px) scale(' + scale + ')';
-    }
-
-    const toolShot = document.getElementById('toolShot');
-    if (toolShot) {
-      const tsEase = easeOut((t - (DURATION * 0.48)) / 0.6);
-      toolShot.style.opacity = (0.25 + 0.75 * tsEase).toFixed(3);
-      toolShot.style.transform = 'translateY(' + ((1 - tsEase) * 24).toFixed(1) + 'px)';
+    // Scene 3: 4.5 -> 7.0
+    if (t >= t2 && t < t3) {
+      const lt = t - t2;
+      const e = easeOut(lt / 0.3);
+      s3.style.opacity = e.toFixed(3);
+      s3.style.transform = 'scale(' + (0.95 + 0.05 * e).toFixed(4) + ')';
       const img = document.getElementById('toolShotImg');
       if (img) {
-        const pan = Math.max(0, Math.min(1, (t - DURATION * 0.5) / (DURATION * 0.4)));
-        img.style.objectPosition = '50% ' + (pan * 35).toFixed(1) + '%';
+        const z = 1.0 + 0.08 * clamp01(lt / 2.2);
+        img.style.transform = 'scale(' + z.toFixed(4) + ')';
+        img.style.objectPosition = '50% ' + (clamp01(lt / 2.2) * 32).toFixed(1) + '%';
       }
-    }
+      const ring = document.getElementById('cursorRing');
+      if (ring) {
+        const mx = Math.sin(lt * 2.4) * 90;
+        const my = Math.cos(lt * 2.0) * 45;
+        ring.style.transform = 'translate(calc(-50% + ' + mx.toFixed(1) + 'px), calc(-50% + ' + my.toFixed(1) + 'px)) scale(' + (1 + 0.14 * Math.sin(lt * 7)).toFixed(3) + ')';
+      }
+      for (let i = 0; i < 4; i++) {
+        const b = document.getElementById('s3Beat_' + i);
+        if (b) {
+          const be = easeOut((lt - i * 0.65) / 0.35);
+          b.style.opacity = (0.18 + 0.82 * be).toFixed(3);
+          b.style.transform = 'translateY(' + ((1 - be) * 30).toFixed(1) + 'px)';
+        }
+      }
+    } else { s3.style.opacity = '0'; }
 
-    const ctaBar = document.getElementById('ctaBar');
-    const ctaPulse = t >= DURATION - 1.8 ? (1 + 0.028 * Math.sin((t - (DURATION - 1.8)) * 7)) : 1;
-    const ctaEnter = easeOut((t - 0.3) / 0.5);
-    ctaBar.style.opacity = (0.4 + 0.6 * ctaEnter).toFixed(3);
-    ctaBar.style.transform = 'scale(' + ctaPulse.toFixed(4) + ')';
+    // Scene 4: 7.0 -> DURATION
+    if (t >= t3) {
+      const lt = t - t3;
+      const e = easeOut(lt / 0.3);
+      s4.style.opacity = e.toFixed(3);
+      const pulse = 1 + 0.022 * Math.sin(lt * 6);
+      s4.style.transform = 'scale(' + (0.92 + 0.08 * e * pulse).toFixed(4) + ')';
+    } else { s4.style.opacity = '0'; }
   };
-  window.__setTime(0);
+  window.__setTime(1.2);
 </script>
 </body>
 </html>`;
@@ -675,6 +782,7 @@ function buildReelHtml({ post, shotBase64, toolHostPath, palette }) {
 function encodeFramesToMp4(ffmpegBin, outMp4, framesGenerator, fps = 24) {
   return new Promise((resolve, reject) => {
     const tmpMp4 = outMp4.replace(/\.mp4$/, '.partial.mp4');
+    const audioExpr = "0.06*(sin(2*PI*330*t)+0.5*sin(2*PI*660*t))*(exp(-45*t)*lt(t,0.12)+exp(-38*(t-1.9))*gte(t,1.9)*lt(t,2.05)+exp(-38*(t-4.5))*gte(t,4.5)*lt(t,4.65)+exp(-38*(t-7.0))*gte(t,7.0)*lt(t,7.15))";
     const args = [
       '-y',
       '-f', 'image2pipe',
@@ -682,7 +790,7 @@ function encodeFramesToMp4(ffmpegBin, outMp4, framesGenerator, fps = 24) {
       '-framerate', String(fps),
       '-i', 'pipe:0',
       '-f', 'lavfi',
-      '-i', 'anullsrc=channel_layout=stereo:sample_rate=44100',
+      '-i', `aevalsrc='${audioExpr}':s=44100:c=stereo`,
       '-c:v', 'libx264',
       '-pix_fmt', 'yuv420p',
       '-profile:v', 'high',
@@ -848,6 +956,8 @@ async function generateReel(tab, post, index, ffmpegBin) {
     await new Promise((r) => setTimeout(r, 180));
 
     let coverSaved = false;
+    const debugScenes = process.argv.includes('--debug-scenes');
+    const debugFrames = new Set([Math.floor(fps * 1.2), Math.floor(fps * 3.4), Math.floor(fps * 5.8), Math.floor(fps * 7.6)]);
     await encodeFramesToMp4(ffmpegBin, outMp4, async (writeFrame) => {
       for (let f = 0; f < totalFrames; f++) {
         const t = f / fps;
@@ -858,9 +968,14 @@ async function generateReel(tab, post, index, ffmpegBin) {
           clip: { x: 0, y: 0, width: 1080, height: 1920, scale: 1 },
         });
         const buf = Buffer.from(shot.data, 'base64');
-        if (!coverSaved && f === totalFrames - Math.floor(fps * 0.5)) {
+        if (!coverSaved && f === Math.floor(fps * 1.2)) {
           fs.writeFileSync(outCover, buf);
           coverSaved = true;
+        }
+        if (debugScenes && debugFrames.has(f)) {
+          const dbgDir = 'C:/Users/idoca/.gemini/antigravity/brain/d5e5132d-5bf5-4109-867c-542913efa4aa/scratch';
+          fs.mkdirSync(dbgDir, { recursive: true });
+          fs.writeFileSync(path.join(dbgDir, `${post.id}_f${f}.jpg`), buf);
         }
         await writeFrame(buf);
       }

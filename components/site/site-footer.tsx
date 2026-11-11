@@ -82,6 +82,9 @@ const COLUMNS = [
       { href: '/contact', label: 'Contact' },
       { href: 'https://t.me/SocialoraOfficial', label: 'Telegram Channel' },
       { href: 'https://t.me/SocialoraChat', label: 'Creator Group' },
+      { href: 'https://www.instagram.com/socialora1/', label: 'Instagram (@socialora1)' },
+      { href: 'https://www.threads.com/@socialora1', label: 'Threads (@socialora1)' },
+      { href: 'https://www.pinterest.com/socialoratools/', label: 'Pinterest' },
     ],
   },
   {

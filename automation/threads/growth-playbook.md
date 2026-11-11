@@ -32,10 +32,13 @@ Threads behaves much closer to an interest-graph conversation engine than Instag
 
 ## 3. Cadence, Timing & Safety Gates (`Europe/Istanbul`)
 
-- **Daily Cap:** Start with **2 posts per Europe/Istanbul day** (safe warm-up for a new account; never burst-post).
-- **Minimum Spacing:** At least **4 hours** between any two published Threads posts.
-- **Time Windows (Global English Audience):**
-  - **Slot 1 (EU Afternoon / US East Morning):** `14:00–17:45 TSİ` (varied daily hour/minute offset, never identical clockwork).
-  - **Slot 2 (US Midday / Global Evening):** `19:30–23:30 TSİ`.
-- **Live Duplicate Guard:** `threads-publish-workflow.json` reads recent `@socialora1` posts from `graph.threads.net/v1.0/me/threads` before publishing to enforce both the daily cap, 4-hour spacing, and duplicate text protection.
+- **Daily Cap:** Publish **3 to 4 native posts per Europe/Istanbul day** across peak Europe + US blocks (safe, high-discovery cadence for a conversational text network).
+- **Minimum Spacing:** At least **2.5 hours** between any two published Threads posts (never burst-posting).
+- **Global EU + US Peak Windows (with Daily Randomized Minutes):** `threads-publish-workflow.json` uses a 10-minute local jitter gate (`Zaman Penceresi & Dakika Sapması`) so posts publish at **different non-robotic minutes every day** (`:04–:52`):
+  - **Slot 1 (`14:xx–15:xx TSİ`):** UK/EU midday + US East early morning (`06:00–08:30 EST`).
+  - **Slot 2 (`17:xx–18:xx TSİ`):** EU late afternoon + US East morning/lunch (`09:00–11:30 EST`).
+  - **Slot 3 (`20:xx–21:xx TSİ`):** EU prime evening + US East midday + US West morning (`09:00–11:30 PST`).
+  - **Slot 4 (`23:xx TSİ`):** US East evening + US West afternoon (`15:00 EST / 12:00 PST`).
+- **Topic Discovery Multiplier:** Pass `topic_tag` on Threads API posts so each native insight enters Threads' live topic discovery feeds without hashtag clutter; funnel tool visitors from `getsocialora.com/tools/*` and footer links to `@socialora1`.
+- **Live Duplicate Guard:** `threads-publish-workflow.json` reads recent `@socialora1` posts from `graph.threads.net/v1.0/me/threads` before publishing to enforce the 4/day cap, 2.5-hour spacing, and duplicate text protection.
 - **Profile Alignment:** Keep Threads bio crisp and value-first, linking to `https://www.getsocialora.com/tools?utm_source=threads&utm_medium=bio&utm_campaign=profile_link`.

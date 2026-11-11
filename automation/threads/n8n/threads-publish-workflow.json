@@ -5,14 +5,17 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## Socialora Threads Organik Yayıncısı (@socialora1)\n- Resmi **Threads API v1.0** (`graph.threads.net/v1.0`, kullanıcı `29067357699551135`) kullanır.\n- Günde en fazla **2 paylaşım** (`14:00–23:30` TSİ, minimum **4 saat** ara).\n- Ana gönderilerin ~%80'i bağlantısız yerel sohbet/ipucu; araç bağlantısı varsa ilk yanıta (`reply_to_id`) temizce eklenir.",
+        "content": "## Socialora Threads Organik Yay?nc?s? (@socialora1)\n- Resmi **Threads API v1.0** + konu ke?fi i?in `topic_tag` kullan?r.\n- **Avrupa & ABD Yo?un Saatleri (TS?):** `14:xx`, `17:xx`, `20:xx`, `23:xx` (her g?n de?i?en dakikalar, g?nde **3?4 g?nderi**, min **2.5 saat** ara).\n- ~%80 ba?lant?s?z yerel sohbet/kanca; ara? ba?lant?s? ilk yan?ta (`reply_to_id`) b?rak?l?r.",
         "height": 190,
         "width": 480,
         "color": 5
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [100, 60],
+      "position": [
+        100,
+        60
+      ],
       "id": "th-pub-note-01",
       "name": "Kurulum Notu"
     },
@@ -20,7 +23,10 @@
       "parameters": {},
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [120, 460],
+      "position": [
+        120,
+        460
+      ],
       "id": "th-pub-man-01",
       "name": "Manuel Tetikle"
     },
@@ -29,28 +35,36 @@
         "rule": {
           "interval": [
             {
-              "field": "hours",
-              "hoursInterval": 1
+              "field": "minutes",
+              "minutesInterval": 10
             }
           ]
         }
       },
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.3,
-      "position": [120, 280],
+      "position": [
+        120,
+        280
+      ],
       "id": "th-pub-sched-01",
-      "name": "Zamanlayıcı (1 Saat)"
+      "name": "Zamanlayıcı (10 Dk)"
     },
     {
       "parameters": {
         "url": "https://graph.threads.net/v1.0/me?fields=id,username,name",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpQueryAuth",
-        "options": { "timeout": 15000 }
+        "options": {
+          "timeout": 15000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
-      "position": [380, 360],
+      "position": [
+        380,
+        360
+      ],
       "id": "th-pub-me-01",
       "name": "Threads Profilini Doğrula",
       "credentials": {
@@ -65,11 +79,16 @@
         "url": "https://graph.threads.net/v1.0/me/threads?fields=id,text,timestamp,permalink&limit=20",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpQueryAuth",
-        "options": { "timeout": 15000 }
+        "options": {
+          "timeout": 15000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
-      "position": [620, 360],
+      "position": [
+        620,
+        360
+      ],
       "id": "th-pub-recent-01",
       "name": "Son Gönderileri Çek",
       "onError": "continueRegularOutput",
@@ -85,24 +104,34 @@
         "url": "https://raw.githubusercontent.com/socialora1-code/socialora/main/automation/threads/content-queue.json",
         "authentication": "none",
         "options": {
-          "response": { "response": { "responseFormat": "json" } },
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
           "timeout": 15000
         }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
-      "position": [860, 360],
+      "position": [
+        860,
+        360
+      ],
       "id": "th-pub-gh-01",
       "name": "GitHub - Threads Kuyruğu Çek",
       "onError": "continueRegularOutput"
     },
     {
       "parameters": {
-        "jsCode": "const me = $('Threads Profilini Doğrula').first()?.json || {};\nconst threadsUserId = String(me.id || '').trim();\nif (!threadsUserId) {\n  throw new Error('Threads profili doğrulanamadı. Tokenı kontrol edin.');\n}\n\nconst recentRaw = $('Son Gönderileri Çek').first()?.json || {};\nconst recentPosts = Array.isArray(recentRaw.data) ? recentRaw.data : [];\n\nconst ghRaw = $input.first()?.json || {};\nlet posts = [];\ntry {\n  const parsed = typeof ghRaw === 'string' ? JSON.parse(ghRaw) : (typeof ghRaw.data === 'string' ? JSON.parse(ghRaw.data) : ghRaw);\n  if (Array.isArray(parsed.posts)) posts = parsed.posts;\n} catch {}\n\nif (posts.length === 0) return [];\n\nconst sd = $getWorkflowStaticData('global');\nif (!Array.isArray(sd.sentIds)) sd.sentIds = [];\nif (!Array.isArray(sd.sentHistory)) sd.sentHistory = [];\nsd.lastPublishedAt = Number(sd.lastPublishedAt || 0);\n\nconst nowSec = Math.floor(Date.now() / 1000);\nconst trtNow = new Date((nowSec + 3 * 3600) * 1000);\nconst todayTrt = trtNow.toISOString().slice(0, 10);\nconst hourTrt = trtNow.getUTCHours();\n\nlet isManual = false;\ntry { if (typeof $execution !== 'undefined' && $execution.mode === 'manual') isManual = true; } catch {}\ntry { if ($('Manuel Tetikle').isExecuted) isManual = true; } catch {}\n\nlet latestLiveTs = 0;\nlet liveTodayCount = 0;\nconst liveTexts = [];\nfor (const m of recentPosts) {\n  if (m.text) liveTexts.push(String(m.text).toLowerCase().trim());\n  if (m.timestamp) {\n    const ts = Math.floor(Date.parse(m.timestamp) / 1000);\n    if (Number.isFinite(ts) && ts > 0) {\n      if (ts > latestLiveTs) latestLiveTs = ts;\n      const dStr = new Date((ts + 3 * 3600) * 1000).toISOString().slice(0, 10);\n      if (dStr === todayTrt) liveTodayCount += 1;\n    }\n  }\n}\n\nif (!isManual) {\n  if (hourTrt < 14 || hourTrt > 23) return [];\n  const effectiveLast = Math.max(sd.lastPublishedAt, latestLiveTs);\n  if (liveTodayCount >= 2) return [];\n  if (effectiveLast && (nowSec - effectiveLast < 4 * 3600)) return [];\n  const dayNum = Number(todayTrt.replace(/-/g, ''));\n  const slot1Hour = 14 + (dayNum % 4);\n  const slot2Hour = 20 + (dayNum % 3);\n  if (liveTodayCount === 0 && hourTrt < slot1Hour) return [];\n  if (liveTodayCount === 1 && hourTrt < slot2Hour) return [];\n}\n\nconst sentSet = new Set(sd.sentIds);\nconst candidate = posts.find((p) => {\n  if (!p || !p.id || !p.text) return false;\n  if (sentSet.has(p.id)) return false;\n  const firstLine = String(p.text).split('\\n')[0].toLowerCase().trim();\n  if (firstLine.length >= 18 && liveTexts.some((t) => t.includes(firstLine))) return false;\n  return true;\n});\n\nif (!candidate) return [];\n\nconst body = {\n  media_type: candidate.image_url ? 'IMAGE' : 'TEXT',\n  text: String(candidate.text).slice(0, 500)\n};\nif (candidate.image_url) body.image_url = candidate.image_url;\n\nreturn [{\n  json: {\n    threadsUserId,\n    username: String(me.username || 'socialora1'),\n    postId: candidate.id,\n    payload: body,\n    replyText: candidate.reply_text ? String(candidate.reply_text).slice(0, 500) : '',\n    nowSec\n  }\n}];"
+        "jsCode": "const me = $('Threads Profilini Doğrula').first()?.json || {};\nconst threadsUserId = String(me.id || '').trim();\nif (!threadsUserId) {\n  throw new Error('Threads profili doğrulanamadı. Tokenı kontrol edin.');\n}\n\nconst recentRaw = $('Son Gönderileri Çek').first()?.json || {};\nconst recentPosts = Array.isArray(recentRaw.data) ? recentRaw.data : [];\n\nconst ghRaw = $input.first()?.json || {};\nlet posts = [];\ntry {\n  const parsed = typeof ghRaw === 'string' ? JSON.parse(ghRaw) : (typeof ghRaw.data === 'string' ? JSON.parse(ghRaw.data) : ghRaw);\n  if (Array.isArray(parsed.posts)) posts = parsed.posts;\n} catch {}\n\nif (posts.length === 0) return [];\n\nconst sd = $getWorkflowStaticData('global');\nif (!Array.isArray(sd.sentIds)) sd.sentIds = [];\nif (!Array.isArray(sd.sentHistory)) sd.sentHistory = [];\nsd.lastPublishedAt = Number(sd.lastPublishedAt || 0);\n\nconst nowSec = Math.floor(Date.now() / 1000);\nconst trtNow = new Date((nowSec + 3 * 3600) * 1000);\nconst todayTrt = trtNow.toISOString().slice(0, 10);\nconst hourTrt = trtNow.getUTCHours();\n\nlet isManual = false;\ntry { if (typeof $execution !== 'undefined' && $execution.mode === 'manual') isManual = true; } catch {}\ntry { if ($('Manuel Tetikle').isExecuted) isManual = true; } catch {}\n\nlet latestLiveTs = 0;\nlet liveTodayCount = 0;\nconst liveTexts = [];\nfor (const m of recentPosts) {\n  if (m.text) liveTexts.push(String(m.text).toLowerCase().trim());\n  if (m.timestamp) {\n    const ts = Math.floor(Date.parse(m.timestamp) / 1000);\n    if (Number.isFinite(ts) && ts > 0) {\n      if (ts > latestLiveTs) latestLiveTs = ts;\n      const dStr = new Date((ts + 3 * 3600) * 1000).toISOString().slice(0, 10);\n      if (dStr === todayTrt) liveTodayCount += 1;\n    }\n  }\n}\n\nif (!isManual) {\n  if (hourTrt < 14 || hourTrt > 23) return [];\n  const effectiveLast = Math.max(sd.lastPublishedAt, latestLiveTs);\n  if (liveTodayCount >= 4) return [];\n  if (effectiveLast && (nowSec - effectiveLast < 2.5 * 3600)) return [];\n  \n}\n\nconst sentSet = new Set(sd.sentIds);\nconst candidate = posts.find((p) => {\n  if (!p || !p.id || !p.text) return false;\n  if (sentSet.has(p.id)) return false;\n  const firstLine = String(p.text).split('\\n')[0].toLowerCase().trim();\n  if (firstLine.length >= 18 && liveTexts.some((t) => t.includes(firstLine))) return false;\n  return true;\n});\n\nif (!candidate) return [];\n\nconst body = {\n  media_type: candidate.image_url ? 'IMAGE' : 'TEXT',\n  text: String(candidate.text).slice(0, 500)\n};\nif (candidate.image_url) body.image_url = candidate.image_url;\nif (candidate.topic_tag) {\n  const tag = String(candidate.topic_tag).replace(/[.&]/g, ' ').replace(/\\s+/g, ' ').trim().slice(0, 50);\n  if (tag) body.topic_tag = tag;\n}\n\nreturn [{\n  json: {\n    threadsUserId,\n    username: String(me.username || 'socialora1'),\n    postId: candidate.id,\n    payload: body,\n    replyText: candidate.reply_text ? String(candidate.reply_text).slice(0, 500) : '',\n    nowSec\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1100, 360],
+      "position": [
+        1100,
+        360
+      ],
       "id": "th-pub-pick-01",
       "name": "İçerik Seç & Tekrar Kontrolü"
     },
@@ -115,11 +144,16 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify($json.payload) }}",
-        "options": { "timeout": 20000 }
+        "options": {
+          "timeout": 20000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
-      "position": [1340, 360],
+      "position": [
+        1340,
+        360
+      ],
       "id": "th-pub-cont-01",
       "name": "Threads Konteyneri Oluştur",
       "credentials": {
@@ -137,7 +171,10 @@
       },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
-      "position": [1560, 360],
+      "position": [
+        1560,
+        360
+      ],
       "id": "th-pub-wait-01",
       "name": "Konteyner İşlenmesini Bekle"
     },
@@ -150,11 +187,16 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ creation_id: $('Threads Konteyneri Oluştur').first().json.id }) }}",
-        "options": { "timeout": 20000 }
+        "options": {
+          "timeout": 20000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
-      "position": [1780, 360],
+      "position": [
+        1780,
+        360
+      ],
       "id": "th-pub-send-01",
       "name": "Threads Gönderisini Yayınla",
       "credentials": {
@@ -167,12 +209,19 @@
     {
       "parameters": {
         "conditions": {
-          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "strict" },
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
           "conditions": [
             {
               "leftValue": "={{ Boolean($('İçerik Seç & Tekrar Kontrolü').first().json.replyText) }}",
               "rightValue": true,
-              "operator": { "type": "boolean", "operation": "equals" }
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
             }
           ],
           "combinator": "and"
@@ -181,7 +230,10 @@
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [2000, 360],
+      "position": [
+        2000,
+        360
+      ],
       "id": "th-pub-ifreply-01",
       "name": "İlk Yanıt Var mı?"
     },
@@ -194,11 +246,16 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ media_type: 'TEXT', text: $('İçerik Seç & Tekrar Kontrolü').first().json.replyText, reply_to_id: $json.id }) }}",
-        "options": { "timeout": 20000 }
+        "options": {
+          "timeout": 20000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
-      "position": [2240, 240],
+      "position": [
+        2240,
+        240
+      ],
       "id": "th-pub-repcont-01",
       "name": "İlk Yanıt Konteyneri",
       "credentials": {
@@ -216,7 +273,10 @@
       },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
-      "position": [2460, 240],
+      "position": [
+        2460,
+        240
+      ],
       "id": "th-pub-repwait-01",
       "name": "Yanıt Bekle"
     },
@@ -229,11 +289,16 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ creation_id: $json.id }) }}",
-        "options": { "timeout": 20000 }
+        "options": {
+          "timeout": 20000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
-      "position": [2680, 240],
+      "position": [
+        2680,
+        240
+      ],
       "id": "th-pub-repsend-01",
       "name": "İlk Yanıtı Yayınla",
       "credentials": {
@@ -249,53 +314,188 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [2920, 380],
+      "position": [
+        2920,
+        380
+      ],
       "id": "th-pub-save-01",
       "name": "Yayın Kaydını Güncelle"
+    },
+    {
+      "parameters": {
+        "jsCode": "const nowSec = Math.floor(Date.now() / 1000);\nconst trt = new Date((nowSec + 3 * 3600) * 1000);\nconst today = trt.toISOString().slice(0, 10);\nconst h = trt.getUTCHours();\nconst m = trt.getUTCMinutes();\nconst hash = (s) => { let v = 2166136261; for (let i = 0; i < s.length; i++) v = Math.imul(v ^ s.charCodeAt(i), 16777619) >>> 0; return v; };\nconst sd = $getWorkflowStaticData('global');\nconst lastPub = Number(sd.lastPublishedAt || 0);\nif (lastPub && (nowSec - lastPub < 2.5 * 3600)) return [];\nconst slots = [\n  [14, 2], // 14-15 TS? (EU noon + US East morning)\n  [17, 2], // 17-18 TS? (EU afternoon + US East active)\n  [20, 2], // 20-21 TS? (EU prime + US midday + US West morning)\n  [23, 1], // 23 TS? (US East evening + US West afternoon)\n];\nlet readySlot = null;\nfor (let i = 0; i < slots.length; i++) {\n  const hv = hash(today + ':th_' + i);\n  const targetH = slots[i][0] + (hv % slots[i][1]);\n  const targetM = 4 + ((hv >>> 4) % 49);\n  const maxH = slots[i][0] + slots[i][1];\n  if ((h > targetH || (h === targetH && m >= targetM)) && h <= maxH) {\n    readySlot = i + 1;\n  }\n}\nif (!readySlot) return [];\nreturn [{ json: { ok: true, slot: readySlot, nowSec } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        250
+      ],
+      "id": "th-pub-gate-01",
+      "name": "Zaman Penceresi & Dakika Sapması"
     }
   ],
   "connections": {
     "Manuel Tetikle": {
-      "main": [[{ "node": "Threads Profilini Doğrula", "type": "main", "index": 0 }]]
-    },
-    "Zamanlayıcı (1 Saat)": {
-      "main": [[{ "node": "Threads Profilini Doğrula", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Threads Profilini Doğrula",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Threads Profilini Doğrula": {
-      "main": [[{ "node": "Son Gönderileri Çek", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Son Gönderileri Çek",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Son Gönderileri Çek": {
-      "main": [[{ "node": "GitHub - Threads Kuyruğu Çek", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "GitHub - Threads Kuyruğu Çek",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "GitHub - Threads Kuyruğu Çek": {
-      "main": [[{ "node": "İçerik Seç & Tekrar Kontrolü", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "İçerik Seç & Tekrar Kontrolü",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "İçerik Seç & Tekrar Kontrolü": {
-      "main": [[{ "node": "Threads Konteyneri Oluştur", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Threads Konteyneri Oluştur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Threads Konteyneri Oluştur": {
-      "main": [[{ "node": "Konteyner İşlenmesini Bekle", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Konteyner İşlenmesini Bekle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Konteyner İşlenmesini Bekle": {
-      "main": [[{ "node": "Threads Gönderisini Yayınla", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Threads Gönderisini Yayınla",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Threads Gönderisini Yayınla": {
-      "main": [[{ "node": "İlk Yanıt Var mı?", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "İlk Yanıt Var mı?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "İlk Yanıt Var mı?": {
       "main": [
-        [{ "node": "İlk Yanıt Konteyneri", "type": "main", "index": 0 }],
-        [{ "node": "Yayın Kaydını Güncelle", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "İlk Yanıt Konteyneri",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Yayın Kaydını Güncelle",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "İlk Yanıt Konteyneri": {
-      "main": [[{ "node": "Yanıt Bekle", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Yanıt Bekle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Yanıt Bekle": {
-      "main": [[{ "node": "İlk Yanıtı Yayınla", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "İlk Yanıtı Yayınla",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "İlk Yanıtı Yayınla": {
-      "main": [[{ "node": "Yayın Kaydını Güncelle", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Yayın Kaydını Güncelle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zamanlayıcı (10 Dk)": {
+      "main": [
+        [
+          {
+            "node": "Zaman Penceresi & Dakika Sapması",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zaman Penceresi & Dakika Sapması": {
+      "main": [
+        [
+          {
+            "node": "Threads Profilini Doğrula",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
