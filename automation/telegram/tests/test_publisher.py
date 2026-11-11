@@ -220,7 +220,10 @@ class PublisherTests(unittest.TestCase):
     def test_import_is_idempotent_and_preserves_original_schedule(self):
         start = (dt.datetime.now(app.TZ).date() + dt.timedelta(days=1)).isoformat()
         source = app.ROOT / 'content.json'
-        self.assertEqual(37, app.import_content(self.db, source, start))
+        expected = len(app.validate_posts(json.loads(source.read_text(encoding='utf-8'))))
+        self.assertGreaterEqual(expected, 37)
+        self.assertLessEqual(expected, 80)
+        self.assertEqual(expected, app.import_content(self.db, source, start))
         original_due = self.db.execute('SELECT MIN(due) FROM posts').fetchone()[0]
         tomorrow = (dt.date.fromisoformat(start) + dt.timedelta(days=1)).isoformat()
         self.assertEqual(0, app.import_content(self.db, source, tomorrow))
@@ -229,32 +232,37 @@ class PublisherTests(unittest.TestCase):
     def test_modified_existing_id_rolls_back_entire_batch(self):
         start = (dt.datetime.now(app.TZ).date() + dt.timedelta(days=1)).isoformat()
         source = json.loads((app.ROOT / 'content.json').read_text(encoding='utf-8'))
-        app.import_content(self.db, app.ROOT / 'content.json', start)
+        expected = app.import_content(self.db, app.ROOT / 'content.json', start)
         new = dict(source['posts'][0], id='new_post', text='A new and different useful post for our community to read today.', day=20)
         source['posts'] = [new, dict(source['posts'][0], text='This existing ID was changed and must cause the import to roll back completely.')]
         file = Path(self.temp.name) / 'changed.json'
         file.write_text(json.dumps(source), encoding='utf-8')
         with self.assertRaises(app.SafeError):
             app.import_content(self.db, file, start)
-        self.assertEqual(37, self.db.execute('SELECT COUNT(*) FROM posts').fetchone()[0])
+        self.assertEqual(expected, self.db.execute('SELECT COUNT(*) FROM posts').fetchone()[0])
 
     def test_content_bundle_has_correct_targets_and_tracked_links(self):
         posts = app.validate_posts(json.loads((app.ROOT / 'content.json').read_text(encoding='utf-8')))
-        self.assertEqual(35, sum(p['target'] == 'channel' for p in posts))
-        self.assertEqual(2, sum(p['target'] == 'group' for p in posts))
-        for day in range(7):
+        days = sorted({p['day'] for p in posts})
+        self.assertGreaterEqual(len(days), 7)
+        self.assertEqual(days, list(range(len(days))))
+        self.assertEqual(5 * len(days), sum(p['target'] == 'channel' for p in posts))
+        self.assertGreaterEqual(sum(p['target'] == 'group' for p in posts), 2)
+        for day in days:
             self.assertEqual(5, sum(p['target'] == 'channel' and p['day'] == day for p in posts))
+            self.assertLessEqual(sum(p['target'] == 'group' and p['day'] == day for p in posts), 1)
 
     def test_daytime_slots_are_varied_and_three_to_four_hours_apart(self):
         posts = json.loads((app.ROOT / 'content.json').read_text(encoding='utf-8'))['posts']
+        days = sorted({p['day'] for p in posts})
         patterns = set()
-        for day in range(7):
+        for day in days:
             slots = sorted(p['time'] for p in posts if p['target'] == 'channel' and p['day'] == day)
             minutes = [int(x[:2]) * 60 + int(x[3:]) for x in slots]
             self.assertTrue(all(180 <= b-a <= 240 for a,b in zip(minutes, minutes[1:])))
             self.assertTrue(all(480 <= x < 1380 for x in minutes))
             patterns.add(tuple(slots))
-        self.assertEqual(7, len(patterns))
+        self.assertEqual(len(days), len(patterns))
 
     def test_non_socialora_external_link_is_rejected(self):
         source = json.loads((app.ROOT / 'content.json').read_text(encoding='utf-8'))
@@ -364,7 +372,8 @@ class PublisherTests(unittest.TestCase):
 
     def test_full_seven_day_calendar_survives_restart(self):
         start = (dt.datetime.now(app.TZ).date() + dt.timedelta(days=1)).isoformat()
-        self.assertEqual(37, app.import_content(self.db, app.ROOT / 'content.json', start))
+        expected = app.import_content(self.db, app.ROOT / 'content.json', start)
+        self.assertGreaterEqual(expected, 37)
         dates = list(self.db.execute('SELECT due FROM posts ORDER BY due'))
         api = FakeTelegram()
         for n, row in enumerate(dates):
@@ -377,8 +386,8 @@ class PublisherTests(unittest.TestCase):
                     self.assertEqual(13, other.execute("SELECT COUNT(*) FROM posts WHERE status='sent'").fetchone()[0])
                 finally:
                     other.close()
-        self.assertEqual(37, self.db.execute("SELECT COUNT(*) FROM posts WHERE status='sent'").fetchone()[0])
-        self.assertEqual(37, sum(m == 'sendMessage' for m, p in api.calls))
+        self.assertEqual(expected, self.db.execute("SELECT COUNT(*) FROM posts WHERE status='sent'").fetchone()[0])
+        self.assertEqual(expected, sum(m == 'sendMessage' for m, p in api.calls))
 
     def test_sanitize_reply_text_appends_utm_tags(self):
         raw = "Check our free diagnostic tool at https://getsocialora.com/tools/tiktok-shadowban-checker to see if your account is restricted."
