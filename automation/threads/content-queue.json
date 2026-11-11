@@ -15,7 +15,7 @@
       "id": "th_02_format_question",
       "pillar": "question",
       "topic_tag": "Instagram Growth",
-      "text": "Honest check from your last 30 days on Instagram:\n\nWhich brought more actual new followers — short Reels or swipe Carousels?\n\nNot raw views. Real people tapping Follow after visiting your page."
+      "text": "Honest check from your last 30 days on Instagram:\n\nWhich brought more actual new followers, short Reels or swipe Carousels?\n\nNot raw views. Real people tapping Follow after visiting your page."
     },
     {
       "id": "th_03_bio_3line",
@@ -59,7 +59,7 @@
       "id": "th_09_shadowban_reality",
       "pillar": "hook_truth",
       "topic_tag": "Instagram Growth",
-      "text": "Your account probably isn't shadowbanned.\n\nPull up the last 3 clips that dipped and check honestly:\n• Did frame 1 have a slow greeting or dead air?\n• Did you paste the exact same 25 hashtags again?\n• Was the topic only interesting to existing friends?\n\nFix one of those before starting a new page."
+      "text": "Your account probably isn't shadowbanned.\n\nPull up the last 3 clips that dipped and check honestly:\n1. Did frame 1 start with slow dead air or a long greeting?\n2. Did you paste the exact same 25 hashtags again?\n3. Was the topic only interesting to people who already know you?\n\nFix one of those before starting a whole new page."
     },
     {
       "id": "th_10_hook_swap_question",
@@ -84,7 +84,7 @@
       "id": "th_13_posting_frequency_myth",
       "pillar": "contrast",
       "topic_tag": "Creator Tips",
-      "text": "Posting 3 rushed clips a day usually means 21 forgettable posts a week.\n\nFour clear posts a week—one teardown people bookmark, one practical fix, one honest opinion, one open question—trains people to actually stop when your name pops up."
+      "text": "Posting 3 rushed clips a day usually just means 21 forgettable posts a week.\n\nFour clear posts a week (one teardown people save, one practical fix, one real opinion, one open question) trains people to stop when your name pops up."
     },
     {
       "id": "th_14_hashtags_debate",
@@ -97,7 +97,7 @@
       "pillar": "framework",
       "topic_tag": "YouTube Tips",
       "text": "Pausing your phone video and taking a screenshot makes muddy Reel covers and soft YouTube thumbnails.\n\nPull the exact frame straight out of your finished video file at full resolution, check there is clean space for 4 bold words, and view it at tiny grid width.",
-      "reply_text": "I built a fast browser frame extractor for covers and thumbnails—runs locally with zero upload wait: https://www.getsocialora.com/tools/video-frame-to-thumbnail?utm_source=threads&utm_medium=reply&utm_campaign=th_15_thumbnail_frame"
+      "reply_text": "I built a fast browser frame extractor for covers and thumbnails that runs locally with zero upload wait: https://www.getsocialora.com/tools/video-frame-to-thumbnail?utm_source=threads&utm_medium=reply&utm_campaign=th_15_thumbnail_frame"
     },
     {
       "id": "th_16_silent_watchers",
@@ -109,13 +109,13 @@
       "id": "th_17_profile_grid_test",
       "pillar": "framework",
       "topic_tag": "Creator Tips",
-      "text": "Open your own profile from a friend's phone or incognito window.\n\nGive yourself 3 seconds:\n• Is it obvious who this page helps?\n• Would a stranger know what your next 3 posts are about?\n• Which pinned post proves you're worth following?\n\nIf anything feels fuzzy, fix your bio and pin 3 clear posts."
+      "text": "Open your own profile from a friend's phone or incognito window.\n\nGive yourself 3 seconds:\n1. Is it obvious who this page helps?\n2. Would a stranger know what your next 3 posts cover?\n3. Which pinned post proves you're worth following?\n\nIf anything feels fuzzy, tighten your bio and pin 3 clear posts."
     },
     {
       "id": "th_18_tool_stack_question",
       "pillar": "question",
       "topic_tag": "Creator Tips",
-      "text": "What annoying 10-minute editing or formatting task slows your posting down every week?\n\nCropping photos cleanly, finding cover frames, writing captions—curious what eats your time most."
+      "text": "What annoying 10-minute editing or formatting task slows your posting down every week?\n\nCropping photos cleanly, grabbing sharp cover frames, writing captions... curious what eats your time most."
     },
     {
       "id": "th_19_aspect_compression",
@@ -134,7 +134,7 @@
       "id": "th_21_vanity_metrics",
       "pillar": "contrast",
       "topic_tag": "Creator Business",
-      "text": "A 120K account getting 4 comments a post isn't healthy—it's noisy.\n\nA 1,200-follower page where 15 real people save, reply, and forward posts to friends closes sponsors and clients much faster.\n\nBuild for the people actually reading."
+      "text": "A 120K account getting 4 comments a post isn't healthy, it's just noisy.\n\nA 1,200-follower page where 15 real people save, reply, and forward posts to friends closes sponsors and clients much faster.\n\nBuild for the people actually reading."
     },
     {
       "id": "th_22_time_vs_hook",
@@ -152,7 +152,7 @@
       "id": "th_24_loop_trick",
       "pillar": "hook_truth",
       "topic_tag": "Video Editing",
-      "text": "Don't end an 8-second tip video with \"Thanks for watching, follow for more!\"\n\nThe second viewers hear a goodbye, they swipe away—even before the clip finishes.\n\nCut cleanly on your final line so the video loops straight back into frame 1."
+      "text": "Don't end an 8-second tip video with \"Thanks for watching, follow for more!\"\n\nThe second viewers hear a goodbye, they swipe away before the clip even finishes.\n\nCut right on your final line so the video loops smoothly back into frame 1."
     },
     {
       "id": "th_25_free_tools_hub",
@@ -183,7 +183,7 @@
       "id": "th_29_profile_scorecard",
       "pillar": "tool_natural",
       "topic_tag": "Instagram Growth",
-      "text": "\"My Reel got 6,000 views and I gained 2 followers.\"\n\nThat isn't an algorithm problem. The video did its job—your bio, bold Name line, or top 3 pinned covers just didn't give visitors a reason to stay.",
+      "text": "\"My Reel got 6,000 views and I gained 2 followers.\"\n\nThat isn't an algorithm problem. The video did its job, your bio or top 3 pinned covers just didn't give visitors a clear reason to follow.",
       "reply_text": "You can plug your public numbers into this quick Profile Scorecard to see where visitors drop off: https://www.getsocialora.com/tools/instagram-account-scorecard?utm_source=threads&utm_medium=reply&utm_campaign=th_29_profile_scorecard"
     },
     {
@@ -214,7 +214,7 @@
       "id": "th_34_engagement_rate_context",
       "pillar": "tool_natural",
       "topic_tag": "Creator Business",
-      "text": "40 likes on a 20,000-follower page and 40 likes on a 600-follower page are not in the same league.\n\nLook at saves, forwards, replies, and likes together relative to actual views—not just raw hearts.",
+      "text": "40 likes on a 20,000-follower page and 40 likes on a 600-follower page are not in the same league.\n\nLook at saves, forwards, replies, and likes relative to actual views, not raw heart counts.",
       "reply_text": "Here's a quick Engagement Rate calculator to benchmark across IG, TikTok, YouTube, and X: https://www.getsocialora.com/tools/instagram-engagement-rate-calculator?utm_source=threads&utm_medium=reply&utm_campaign=th_34_engagement_rate_context"
     },
     {
@@ -227,7 +227,7 @@
       "id": "th_36_one_cta_rule",
       "pillar": "framework",
       "topic_tag": "Content Strategy",
-      "text": "When a post ends with \"Like, comment, share, save, AND click the link in bio!\", people do none of them.\n\nGive each post one clear job:\n• Checklist post → Save it\n• Opinion post → Ask one question\n• Tool demo → Mention the link once"
+      "text": "When a post ends with \"Like, comment, share, save, AND click the link in bio!\", people do none of them.\n\nGive each post one clear job:\nChecklist post = ask them to save it.\nOpinion post = ask one real question.\nTool walkthrough = drop the link once."
     },
     {
       "id": "th_37_repurpose_smart",
@@ -258,7 +258,7 @@
       "id": "th_41_small_wins_compound",
       "pillar": "hook_truth",
       "topic_tag": "Instagram Growth",
-      "text": "The jump from 0 to 500 followers feels invisible for weeks—until one useful tutorial lands in front of the right 50 people who actually share it.\n\nMake every third post genuinely worth forwarding."
+      "text": "Going from 0 to 500 followers feels invisible for weeks, until one genuinely useful guide reaches 50 people who actually share it.\n\nMake every third post worth forwarding to a friend."
     },
     {
       "id": "th_42_sunday_audit_q",
@@ -270,13 +270,13 @@
       "id": "th_43_three_word_rule",
       "pillar": "hook_truth",
       "topic_tag": "Video Editing",
-      "text": "Put 18 words on screen at second one and people get tired just looking at the frame.\n\nStick to 4–7 sharp words on screen, let the visual show the mistake, and put the longer notes down in the caption."
+      "text": "Put 18 words on screen at second one and people get tired just looking at the frame.\n\nStick to 4 to 7 sharp words on screen, show the mistake visually, and save longer notes for the caption."
     },
     {
       "id": "th_44_reply_velocity",
       "pillar": "framework",
       "topic_tag": "Threads Tips",
-      "text": "Fastest clean way to stop talking to an empty room on a new Threads account:\n\nLeave 5 thoughtful, specific replies on actual creators in your space before publishing your own post.\n\nSkip \"Great point!\"—add one real example from your own work."
+      "text": "Fastest clean way to stop talking to an empty room on a new Threads account:\n\nLeave 5 thoughtful, specific replies on real creators in your space before publishing your own post.\n\nSkip \"Great point!\" and share one short example from your own experience."
     },
     {
       "id": "th_45_bad_cta",
@@ -307,7 +307,7 @@
       "id": "th_49_dm_share_test",
       "pillar": "hook_truth",
       "topic_tag": "Instagram Growth",
-      "text": "Before publishing your next post, imagine someone reading it at lunch.\n\nWho would they tap Send to—and what would they type with it?\n\nIf you can't answer that in 5 seconds, the angle is still too vague."
+      "text": "Before publishing your next post, picture someone reading it at lunch.\n\nWho would they tap Send to, and what would they type with it?\n\nIf you can't answer that in 5 seconds, the angle is still too vague."
     },
     {
       "id": "th_50_yt_shorts_vs_reels",
@@ -332,7 +332,7 @@
       "id": "th_53_carousel_cover",
       "pillar": "contrast",
       "topic_tag": "Instagram Growth",
-      "text": "Why Carousels die on Slide 1:\n• 14px body paragraphs squeezed onto the cover\n• Cute abstract titles nobody looks for\n\nWhat gets swiped:\n• 5–7 bold words naming a real problem\n• Clear visual hint that Slide 2 has the fix"
+      "text": "Why Carousels die on Slide 1:\n1. Tiny 14px paragraphs squeezed onto the cover\n2. Cute abstract titles nobody searches for\n\nWhat gets swiped:\n5 to 7 bold words naming a real friction point, with a clear visual hint that Slide 2 fixes it."
     },
     {
       "id": "th_54_morning_batch",
@@ -381,7 +381,7 @@
       "id": "th_61_grid_tool",
       "pillar": "tool_natural",
       "topic_tag": "Social Media Design",
-      "text": "Splitting one big announcement image across a 3×3 Instagram grid?\n\nExport the tiles in exact upload order before posting—upload tile #1 first by mistake and your whole profile grid turns into a puzzle.",
+      "text": "Splitting one big announcement image across a 3x3 Instagram grid?\n\nExport the tiles in exact upload order before posting. Upload tile #1 first by mistake and your whole profile grid turns into a scrambled puzzle.",
       "reply_text": "Free Instagram 3x3 Grid Splitter (numbers & exports tiles in exact posting order): https://www.getsocialora.com/tools/instagram-grid-maker?utm_source=threads&utm_medium=reply&utm_campaign=th_61_grid_tool"
     },
     {
@@ -412,7 +412,7 @@
       "id": "th_66_youtube_tags_tool",
       "pillar": "tool_natural",
       "topic_tag": "YouTube Tips",
-      "text": "YouTube tags won't magically rank a weak video—YouTube itself says tags mostly help with common misspellings.\n\nUse 6–10 accurate topic tags, then put 95% of your effort into title clarity and thumbnail contrast.",
+      "text": "YouTube tags won't magically rank a weak video. Even YouTube notes that tags mainly help with common misspellings.\n\nAdd 6 to 10 accurate topic tags, then put 95% of your effort into title clarity and thumbnail contrast.",
       "reply_text": "If you want quick topic-clean tags without guessing misspellings, here's a free YouTube Tag Helper: https://www.getsocialora.com/tools/youtube-tag-generator?utm_source=threads&utm_medium=reply&utm_campaign=th_66_youtube_tags_tool"
     },
     {
@@ -425,26 +425,26 @@
       "id": "th_68_creator_burnout",
       "pillar": "contrast",
       "topic_tag": "Creator Tips",
-      "text": "Burnout comes from reinventing your video style from scratch every morning.\n\nBuild 3 simple repeatable layouts:\n• Bad vs Better comparison\n• 3-step export checklist\n• Real screen teardown\n\nRotate the layout, swap only this week's problem."
+      "text": "Burnout happens when you reinvent your video style from scratch every morning.\n\nPick 3 simple repeatable layouts: Bad vs Better comparison, a 3-step export checklist, and a real screen teardown.\n\nKeep the layout steady and swap only this week's problem."
     },
     {
       "id": "th_69_niche_clarify_q",
       "pillar": "question",
       "topic_tag": "Content Strategy",
-      "text": "Can you sum up who your page helps and what they get in 7 words or less?\n\nDrop yours below—happy to tighten it with you."
+      "text": "Can you sum up who your page helps and what they get in 7 words or less?\n\nDrop yours below and I'll help tighten it."
     },
     {
       "id": "th_70_hashtag_clean",
       "pillar": "tool_natural",
       "topic_tag": "Instagram Growth",
-      "text": "Pasting the same block of 28 hashtags from your Notes app onto every Reel looks automated and muddies the topic.\n\nUse 3–5 specific tags that match what's actually in the video, and put real search words inside sentence one.",
-      "reply_text": "Free niche-focused Hashtag Helper (builds clean 3–5 tag sets without spam): https://www.getsocialora.com/tools/instagram-hashtag-generator?utm_source=threads&utm_medium=reply&utm_campaign=th_70_hashtag_clean"
+      "text": "Pasting the same block of 28 hashtags from your Notes app onto every Reel looks automated and muddies the topic.\n\nUse 3 to 5 specific tags that match what is actually in the video, and put real search words inside sentence one.",
+      "reply_text": "Free niche Hashtag Helper that builds clean 3 to 5 tag sets without spam: https://www.getsocialora.com/tools/instagram-hashtag-generator?utm_source=threads&utm_medium=reply&utm_campaign=th_70_hashtag_clean"
     },
     {
       "id": "th_71_dm_funnel",
       "pillar": "framework",
       "topic_tag": "Creator Business",
-      "text": "Want people to click your link without feeling tricked?\n\nGive away 100% of the method right in the post so the reader already wins, then mention your free tool once as a faster shortcut—not a cliffhanger."
+      "text": "Want people to click your link without feeling tricked?\n\nGive away 100% of the method right in the post so the reader already wins, then mention your free tool once as a faster shortcut instead of hiding the answer."
     },
     {
       "id": "th_72_contrast_design",
@@ -456,7 +456,7 @@
       "id": "th_73_story_polls",
       "pillar": "framework",
       "topic_tag": "Instagram Growth",
-      "text": "Stories aren't how you reach strangers—they're how you talk to people who already chose to follow you.\n\nThrow up a simple 2-button poll twice a week asking which problem they want broken down next. Zero guesswork on Friday."
+      "text": "Stories aren't how you reach strangers. They're how you talk to people who already chose to follow you.\n\nThrow up a simple 2-button poll twice a week asking which problem they want broken down next. Zero guesswork on Friday."
     },
     {
       "id": "th_74_analytics_question",
@@ -468,7 +468,7 @@
       "id": "th_75_follower_goal_tool",
       "pillar": "tool_natural",
       "topic_tag": "Creator Tips",
-      "text": "Saying \"I want 10,000 followers\" feels vague until you break it down into weekly uploads and realistic profile conversion.\n\nMeasure goals around posts shipped—not viral luck you can't schedule.",
+      "text": "Saying \"I want 10,000 followers\" feels vague until you break it into weekly uploads and realistic profile conversion.\n\nPlan your goals around posts shipped, not viral luck you can't schedule.",
       "reply_text": "I built a free Follower Milestone Calculator if you want to map weekly posting cadence cleanly: https://www.getsocialora.com/tools/follower-goal-calculator?utm_source=threads&utm_medium=reply&utm_campaign=th_75_follower_goal_tool"
     },
     {
@@ -500,7 +500,7 @@
       "id": "th_80_pacing_rule",
       "pillar": "hook_truth",
       "topic_tag": "Video Editing",
-      "text": "Simple rule if you make faceless tutorials:\n\nChange something on screen every 2 seconds—even if it's just highlighting the next line or switching comparison cards.\n\nOne still frame for 5 seconds guarantees a swipe."
+      "text": "Simple rule if you make faceless tutorials:\n\nChange something on screen every 2 seconds, even if it's just highlighting the next line or switching comparison cards.\n\nOne still frame for 5 seconds guarantees a swipe."
     },
     {
       "id": "th_81_giveaway_integrity",
@@ -513,7 +513,7 @@
       "id": "th_82_first_1000",
       "pillar": "framework",
       "topic_tag": "Creator Tips",
-      "text": "What actually gets a fresh account from 0 to 1,000 real followers:\n\n• 1 clear problem everyone in your niche hits\n• 30 consistent posts testing stronger hooks\n• Real conversations in your niche replies\n• Zero shortcuts that wreck account trust"
+      "text": "What actually gets a fresh account from 0 to 1,000 real followers:\n\nPick 1 clear problem everyone in your niche hits, ship 30 consistent posts testing stronger hooks, reply like a real person in comments, and skip shortcuts that wreck account trust."
     },
     {
       "id": "th_83_swipe_curiosity",
@@ -537,7 +537,7 @@
       "id": "th_86_tt_engagement_tool",
       "pillar": "tool_natural",
       "topic_tag": "TikTok Tips",
-      "text": "Don't judge a 12K TikTok against a 2K TikTok off hearts alone.\n\nLook at saves, shares, comments, and full watches together—those numbers tell you which topic deserves a part two.",
+      "text": "Don't judge a 12K TikTok against a 2K TikTok off hearts alone.\n\nLook at saves, shares, comments, and full watches together. Those numbers tell you which topic deserves a part two.",
       "reply_text": "Free TikTok Engagement Rate Calculator to compare posts cleanly: https://www.getsocialora.com/tools/tiktok-engagement-rate-calculator?utm_source=threads&utm_medium=reply&utm_campaign=th_86_tt_engagement_tool"
     },
     {
@@ -563,7 +563,7 @@
       "id": "th_90_open_clinic_q",
       "pillar": "question",
       "topic_tag": "Creator Tips",
-      "text": "Honest question for creators this week:\n\nWhat's slowing you down more right now—figuring out strong hooks, getting edits out faster, or turning profile views into actual followers?"
+      "text": "Honest question for creators this week:\n\nWhat's slowing you down more right now: figuring out strong hooks, getting edits out faster, or turning profile views into actual followers?"
     }
   ]
 }

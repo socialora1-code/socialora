@@ -1,13 +1,14 @@
 import type { Metadata } from 'next'
 import { type ExplorerItem, ToolsExplorer } from '@/components/tools/tools-explorer'
+import { buildToolsMetadata } from '@/components/tools/tool-seo'
 import { TOOLS } from '@/lib/tool-list'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildToolsMetadata({
   title: 'Free Social Media Tools',
   description:
     'Free tools for Instagram, TikTok, YouTube, X and more: font generators, calculators and generators. No sign-up needed.',
-  alternates: { canonical: '/tools' },
-}
+  canonicalPath: '/tools',
+})
 
 const ITEMS: ExplorerItem[] = [
   ...TOOLS.map((tool) => ({

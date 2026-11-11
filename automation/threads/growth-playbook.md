@@ -27,7 +27,8 @@ Threads behaves much closer to an interest-graph conversation engine than Instag
   - *Avoid marketing jargon:* Never lean on stiff phrases like *"3-second hold rate"*, *"vanity metric"*, *"real leverage metric"*, *"unconnected reach cohort"*, *"dwell time"*, or *"high-contrast typography"*. Say what actually happens in plain speech (*"people scroll past in two seconds"*, *"friends send it in DMs"*, *"readers squint on a phone in sunlight"*).
   - *Give concrete examples:* Show the exact bad sentence vs exact rewrite (like real names/lines: `"Hey guys, today..."` vs `"Stop cropping 4:5 photos without checking this line."`), or name exact numbers viewers recognize (`214 views`, `115 characters`, `45 seconds`).
 - Keep most posts between **80 and 340 characters** (max 500 chars API cap). Crisp line breaks, readable rhythm.
-- Zero emoji clutter (0–1 subtle symbol max, never emoji chains).
+- Zero emoji clutter (0 or 1 subtle symbol max, never emoji chains).
+- **Zero AI formatting cues:** NEVER use em-dashes (`—`), en-dashes (`–`), or bullet symbols (`•`, `→`). Use commas, periods, colons, or plain numbered points (`1.`, `2.`) instead.
 - **Banned AI Clichés:** *"In today's fast-paced world"*, *"Game-changer"*, *"Unlock"*, *"Unleash"*, *"Skyrocket"*, *"Let's dive in"*, *"In conclusion"*, *"Here's the secret nobody tells you"*.
 - **Truth Rule:** Never invent fake case studies, fake client metrics, or guaranteed follower claims.
 - **Cold-Start Graph Rule:** Always complete Threads' onboarding checklist (`Follow 10+ relevant English creator/software accounts`) and reply naturally in-niche so the account enters the English Creator/Tools interest graph instead of sitting isolated at 0 following.

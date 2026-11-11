@@ -1,13 +1,14 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { EngagementRateCalculator } from '@/components/tools/engagement-rate-calculator'
+import { buildToolsMetadata } from '@/components/tools/tool-seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildToolsMetadata({
   title: 'Instagram Engagement Rate Calculator (Free)',
   description:
     'Free Instagram engagement rate calculator. Enter your followers, average likes and comments to see your engagement rate and what it means.',
-  alternates: { canonical: '/tools/instagram-engagement-rate-calculator' },
-}
+  canonicalPath: '/tools/instagram-engagement-rate-calculator',
+})
 
 const FAQS = [
   {

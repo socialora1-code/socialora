@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ToolPageView } from '@/components/tools/tool-page-view'
+import { buildToolsMetadata } from '@/components/tools/tool-seo'
 import { getTool, TOOLS } from '@/lib/tool-list'
 
 export const dynamicParams = false
@@ -18,18 +19,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     rawTitle.includes('2026') || rawTitle.includes('No Login')
       ? rawTitle
       : rawTitle.includes('(Free)')
-        ? rawTitle.replace('(Free)', '(Free & No Login — 2026)')
+        ? rawTitle.replace('(Free)', '(Free & No Login - 2026)')
         : `${rawTitle} (Free & No Login)`
   const rawDesc = tool.description
   const ctrDesc =
     rawDesc.toLowerCase().includes('no login') || rawDesc.toLowerCase().includes('no password')
       ? rawDesc
       : `${rawDesc} 100% free, instant results, no login or sign-up required.`
-  return {
+  return buildToolsMetadata({
     title: ctrTitle,
     description: ctrDesc,
-    alternates: { canonical: `/tools/${tool.slug}` },
-  }
+    canonicalPath: `/tools/${tool.slug}`,
+  })
 }
 
 export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {

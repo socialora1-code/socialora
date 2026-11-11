@@ -16,7 +16,10 @@
       },
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.3,
-      "position": [120, 260],
+      "position": [
+        120,
+        260
+      ],
       "id": "th-rep-sched-01",
       "name": "Zamanlayıcı (5 Dk)"
     },
@@ -24,7 +27,10 @@
       "parameters": {},
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [120, 440],
+      "position": [
+        120,
+        440
+      ],
       "id": "th-rep-man-01",
       "name": "Manuel Tetikle"
     },
@@ -33,15 +39,23 @@
         "url": "https://graph.threads.net/v1.0/me?fields=id,username",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpQueryAuth",
-        "options": { "timeout": 15000 }
+        "options": {
+          "timeout": 15000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
-      "position": [360, 340],
+      "position": [
+        360,
+        340
+      ],
       "id": "th-rep-me-01",
       "name": "Threads Kimlik Doğrula",
       "credentials": {
-        "httpQueryAuth": { "id": "hFc78ADPjjUELAPw", "name": "Threads API (@socialora1)" }
+        "httpQueryAuth": {
+          "id": "hFc78ADPjjUELAPw",
+          "name": "Threads API (@socialora1)"
+        }
       }
     },
     {
@@ -49,15 +63,23 @@
         "url": "https://graph.threads.net/v1.0/me/threads?fields=id,text,timestamp,permalink&limit=8",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpQueryAuth",
-        "options": { "timeout": 15000 }
+        "options": {
+          "timeout": 15000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
-      "position": [580, 340],
+      "position": [
+        580,
+        340
+      ],
       "id": "th-rep-list-01",
       "name": "Son Gönderileri Çek",
       "credentials": {
-        "httpQueryAuth": { "id": "hFc78ADPjjUELAPw", "name": "Threads API (@socialora1)" }
+        "httpQueryAuth": {
+          "id": "hFc78ADPjjUELAPw",
+          "name": "Threads API (@socialora1)"
+        }
       }
     },
     {
@@ -66,7 +88,10 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [800, 340],
+      "position": [
+        800,
+        340
+      ],
       "id": "th-rep-prep-01",
       "name": "Son 5 Gönderiyi Hazırla"
     },
@@ -75,15 +100,23 @@
         "url": "=https://graph.threads.net/v1.0/{{ $json.rootId }}/replies?fields=id,text,username,timestamp,permalink,has_replies&limit=25",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpQueryAuth",
-        "options": { "timeout": 15000 }
+        "options": {
+          "timeout": 15000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
-      "position": [1020, 340],
+      "position": [
+        1020,
+        340
+      ],
       "id": "th-rep-fetch-01",
       "name": "Yorumları Çek",
       "credentials": {
-        "httpQueryAuth": { "id": "hFc78ADPjjUELAPw", "name": "Threads API (@socialora1)" }
+        "httpQueryAuth": {
+          "id": "hFc78ADPjjUELAPw",
+          "name": "Threads API (@socialora1)"
+        }
       },
       "onError": "continueRegularOutput"
     },
@@ -93,7 +126,10 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1240, 340],
+      "position": [
+        1240,
+        340
+      ],
       "id": "th-rep-pick-01",
       "name": "Bekleyen Yorum Seç"
     },
@@ -102,15 +138,23 @@
         "url": "https://generativelanguage.googleapis.com/v1beta/models?pageSize=200",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "googlePalmApi",
-        "options": { "timeout": 12000 }
+        "options": {
+          "timeout": 12000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1460, 340],
+      "position": [
+        1460,
+        340
+      ],
       "id": "th-rep-gem-disc",
       "name": "Gemini Modelleri Keşfet",
       "credentials": {
-        "googlePalmApi": { "id": "GKMR8LAL70kOA0mV", "name": "Google Gemini(PaLM) Api account" }
+        "googlePalmApi": {
+          "id": "GKMR8LAL70kOA0mV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
       },
       "onError": "continueRegularOutput"
     },
@@ -120,7 +164,10 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1680, 340],
+      "position": [
+        1680,
+        340
+      ],
       "id": "th-rep-gem-prep",
       "name": "Yanıt Promptu Hazırla"
     },
@@ -133,27 +180,43 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify($json.requestBody) }}",
-        "options": { "timeout": 15000 }
+        "options": {
+          "timeout": 15000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1900, 340],
+      "position": [
+        1900,
+        340
+      ],
       "id": "th-rep-gem-pri",
       "name": "Gemini Yanıt Üret (Ana)",
       "credentials": {
-        "googlePalmApi": { "id": "GKMR8LAL70kOA0mV", "name": "Google Gemini(PaLM) Api account" }
+        "googlePalmApi": {
+          "id": "GKMR8LAL70kOA0mV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
       },
       "onError": "continueRegularOutput"
     },
     {
       "parameters": {
         "conditions": {
-          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
           "conditions": [
             {
               "leftValue": "={{ Boolean($json.candidates && $json.candidates[0] && $json.candidates[0].content && $json.candidates[0].content.parts && $json.candidates[0].content.parts[0] && $json.candidates[0].content.parts[0].text) }}",
               "rightValue": true,
-              "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
             }
           ],
           "combinator": "and"
@@ -161,7 +224,10 @@
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [2120, 340],
+      "position": [
+        2120,
+        340
+      ],
       "id": "th-rep-gem-ok",
       "name": "Yanıt Geldi mi?"
     },
@@ -174,25 +240,36 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify($('Yanıt Promptu Hazırla').first().json.fallbackBody) }}",
-        "options": { "timeout": 15000 }
+        "options": {
+          "timeout": 15000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [2120, 520],
+      "position": [
+        2120,
+        520
+      ],
       "id": "th-rep-gem-bak",
       "name": "Gemini Yanıt Üret (Yedek)",
       "credentials": {
-        "googlePalmApi": { "id": "GKMR8LAL70kOA0mV", "name": "Google Gemini(PaLM) Api account" }
+        "googlePalmApi": {
+          "id": "GKMR8LAL70kOA0mV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
       },
       "onError": "continueRegularOutput"
     },
     {
       "parameters": {
-        "jsCode": "const src = $('Yanıt Promptu Hazırla').first()?.json;\nconst raw = $json.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || '';\nconst clean = raw.replace(/[*_`#]/g, '').replace(/[\\u{1F300}-\\u{1FAFF}]/gu, '').replace(/\\s+/g, ' ').trim().slice(0, 320);\nif (!src || clean.length < 4) return [];\nreturn [{ json: { ...src, replyText: clean } }];"
+        "jsCode": "const src = $('Yanıt Promptu Hazırla').first()?.json;\nconst raw = $json.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || '';\nconst clean = raw.replace(/\\s*[\\u2014\\u2013]\\s*/g, ', ').replace(/[*_`#\\u2022]/g, '').replace(/[\\u{1F300}-\\u{1FAFF}]/gu, '').replace(/\\s+/g, ' ').trim().slice(0, 320);\nif (!src || clean.length < 4) return [];\nreturn [{ json: { ...src, replyText: clean } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [2360, 340],
+      "position": [
+        2360,
+        340
+      ],
       "id": "th-rep-clean-01",
       "name": "Yanıtı Temizle"
     },
@@ -205,15 +282,23 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ media_type: 'TEXT', text: $json.replyText, reply_to_id: $json.commentId }) }}",
-        "options": { "timeout": 20000 }
+        "options": {
+          "timeout": 20000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
-      "position": [2580, 340],
+      "position": [
+        2580,
+        340
+      ],
       "id": "th-rep-cont-01",
       "name": "Yanıt Konteyneri Oluştur",
       "credentials": {
-        "httpQueryAuth": { "id": "hFc78ADPjjUELAPw", "name": "Threads API (@socialora1)" }
+        "httpQueryAuth": {
+          "id": "hFc78ADPjjUELAPw",
+          "name": "Threads API (@socialora1)"
+        }
       }
     },
     {
@@ -224,7 +309,10 @@
       },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
-      "position": [2780, 340],
+      "position": [
+        2780,
+        340
+      ],
       "id": "th-rep-wait-01",
       "name": "4 Sn Bekle"
     },
@@ -237,15 +325,23 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ creation_id: $json.id }) }}",
-        "options": { "timeout": 20000 }
+        "options": {
+          "timeout": 20000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
-      "position": [2980, 340],
+      "position": [
+        2980,
+        340
+      ],
       "id": "th-rep-pub-01",
       "name": "Yanıtı Yayınla",
       "credentials": {
-        "httpQueryAuth": { "id": "hFc78ADPjjUELAPw", "name": "Threads API (@socialora1)" }
+        "httpQueryAuth": {
+          "id": "hFc78ADPjjUELAPw",
+          "name": "Threads API (@socialora1)"
+        }
       }
     },
     {
@@ -254,7 +350,10 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [3200, 340],
+      "position": [
+        3200,
+        340
+      ],
       "id": "th-rep-save-01",
       "name": "Yanıt Kaydını İşle"
     },
@@ -265,69 +364,215 @@
       },
       "type": "CUSTOM.telegramGrowth",
       "typeVersion": 1,
-      "position": [3420, 340],
+      "position": [
+        3420,
+        340
+      ],
       "id": "th-rep-dm-01",
       "name": "Telegram Bildirim Gönder",
       "credentials": {
-        "telegramApi": { "id": "telegramSocialora01", "name": "Telegram Bot (@socialora_publisher_2026_bot)" }
+        "telegramApi": {
+          "id": "telegramSocialora01",
+          "name": "Telegram Bot (@socialora_publisher_2026_bot)"
+        }
       },
       "onError": "continueRegularOutput"
     }
   ],
   "connections": {
     "Zamanlayıcı (5 Dk)": {
-      "main": [[{ "node": "Threads Kimlik Doğrula", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Threads Kimlik Doğrula",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Manuel Tetikle": {
-      "main": [[{ "node": "Threads Kimlik Doğrula", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Threads Kimlik Doğrula",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Threads Kimlik Doğrula": {
-      "main": [[{ "node": "Son Gönderileri Çek", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Son Gönderileri Çek",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Son Gönderileri Çek": {
-      "main": [[{ "node": "Son 5 Gönderiyi Hazırla", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Son 5 Gönderiyi Hazırla",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Son 5 Gönderiyi Hazırla": {
-      "main": [[{ "node": "Yorumları Çek", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Yorumları Çek",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Yorumları Çek": {
-      "main": [[{ "node": "Bekleyen Yorum Seç", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Bekleyen Yorum Seç",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Bekleyen Yorum Seç": {
-      "main": [[{ "node": "Gemini Modelleri Keşfet", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Gemini Modelleri Keşfet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Gemini Modelleri Keşfet": {
-      "main": [[{ "node": "Yanıt Promptu Hazırla", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Yanıt Promptu Hazırla",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Yanıt Promptu Hazırla": {
-      "main": [[{ "node": "Gemini Yanıt Üret (Ana)", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Gemini Yanıt Üret (Ana)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Gemini Yanıt Üret (Ana)": {
-      "main": [[{ "node": "Yanıt Geldi mi?", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Yanıt Geldi mi?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Yanıt Geldi mi?": {
       "main": [
-        [{ "node": "Yanıtı Temizle", "type": "main", "index": 0 }],
-        [{ "node": "Gemini Yanıt Üret (Yedek)", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Yanıtı Temizle",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gemini Yanıt Üret (Yedek)",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Gemini Yanıt Üret (Yedek)": {
-      "main": [[{ "node": "Yanıtı Temizle", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Yanıtı Temizle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Yanıtı Temizle": {
-      "main": [[{ "node": "Yanıt Konteyneri Oluştur", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Yanıt Konteyneri Oluştur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Yanıt Konteyneri Oluştur": {
-      "main": [[{ "node": "4 Sn Bekle", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "4 Sn Bekle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "4 Sn Bekle": {
-      "main": [[{ "node": "Yanıtı Yayınla", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Yanıtı Yayınla",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Yanıtı Yayınla": {
-      "main": [[{ "node": "Yanıt Kaydını İşle", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Yanıt Kaydını İşle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Yanıt Kaydını İşle": {
-      "main": [[{ "node": "Telegram Bildirim Gönder", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Telegram Bildirim Gönder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
