@@ -665,7 +665,7 @@ function buildReelHtml({ post, shotBase64, toolHostPath, palette }) {
       <div class="s1-badge">● ${escapeHtml(rb.eyebrow || 'CREATOR PLAYBOOK')}</div>
       <div class="s1-title">${escapeHtml(hookWords)}</div>
       <div class="s1-bar" id="s1Bar"></div>
-      <div class="s1-subcard"><span>${escapeHtml(hasCompare ? 'Swipe-away starts here →' : 'See the 10-second fix')}</span><span>⚡</span></div>
+      <div class="s1-subcard"><span>${escapeHtml(rb.subhook || (beats[0]?.sub) || (hasCompare ? 'Spot the difference →' : 'Quick fix inside →'))}</span><span>⚡</span></div>
     </div>
 
     <div class="scene" id="scene2">${scene2CompareHtml}</div>

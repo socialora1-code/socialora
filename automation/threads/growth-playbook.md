@@ -22,11 +22,15 @@ Threads behaves much closer to an interest-graph conversation engine than Instag
 - **20% Mini Frameworks & Checklists (`framework`):** 3–4 line scannable checklists creators bookmark or repost.
 - **15–20% Natural Free Tool & Workflow Drops (`tool_natural`):** Real problem + quick fix + optional `getsocialora.com/tools/...` link in the self-reply (`reply_text`), zero hard sell.
 
-### Copywriting Rules
-- Keep most posts between **60 and 320 characters** (max 500 chars API cap). Short beats bloated.
-- Write like an experienced creator talking to peers over coffee — zero corporate stiffness, zero emojis overload (0–1 subtle symbol max, never emoji chains).
+### Copywriting Rules (Benchmark: Real Practitioner Notes, Zero Textbook Jargon)
+- Write like a sharp builder/editor talking directly to peers — **concrete everyday dialogue, specific word-for-word scripts, and real workflow scenes beat abstract theory every time**.
+  - *Avoid marketing jargon:* Never lean on stiff phrases like *"3-second hold rate"*, *"vanity metric"*, *"real leverage metric"*, *"unconnected reach cohort"*, *"dwell time"*, or *"high-contrast typography"*. Say what actually happens in plain speech (*"people scroll past in two seconds"*, *"friends send it in DMs"*, *"readers squint on a phone in sunlight"*).
+  - *Give concrete examples:* Show the exact bad sentence vs exact rewrite (like real names/lines: `"Hey guys, today..."` vs `"Stop cropping 4:5 photos without checking this line."`), or name exact numbers viewers recognize (`214 views`, `115 characters`, `45 seconds`).
+- Keep most posts between **80 and 340 characters** (max 500 chars API cap). Crisp line breaks, readable rhythm.
+- Zero emoji clutter (0–1 subtle symbol max, never emoji chains).
 - **Banned AI Clichés:** *"In today's fast-paced world"*, *"Game-changer"*, *"Unlock"*, *"Unleash"*, *"Skyrocket"*, *"Let's dive in"*, *"In conclusion"*, *"Here's the secret nobody tells you"*.
 - **Truth Rule:** Never invent fake case studies, fake client metrics, or guaranteed follower claims.
+- **Cold-Start Graph Rule:** Always complete Threads' onboarding checklist (`Follow 10+ relevant English creator/software accounts`) and reply naturally in-niche so the account enters the English Creator/Tools interest graph instead of sitting isolated at 0 following.
 
 ---
 

@@ -29,13 +29,26 @@
         "compare_good_label": "HIGH-HOLD OPENING",
         "compare_good_text": "\"Stop posting 4:5 photos without checking this crop line first.\"",
         "beats": [
-          { "badge": "0.0 - 1.5s", "headline": "Cut the warmup greeting", "sub": "Start mid-problem on frame one." },
-          { "badge": "1.5 - 4.5s", "headline": "Show the visual mistake", "sub": "Contrast beats talking head alone." },
-          { "badge": "4.5 - 8.0s", "headline": "Give 1 immediate fix", "sub": "Make the save feel effortless." }
+          {
+            "badge": "0.0 - 1.5s",
+            "headline": "Cut the warmup greeting",
+            "sub": "Start mid-problem on frame one."
+          },
+          {
+            "badge": "1.5 - 4.5s",
+            "headline": "Show the visual mistake",
+            "sub": "Contrast beats talking head alone."
+          },
+          {
+            "badge": "4.5 - 8.0s",
+            "headline": "Give 1 immediate fix",
+            "sub": "Make the save feel effortless."
+          }
         ],
-        "cta": "Save this for your next Reel edit"
+        "cta": "Save this for your next Reel edit",
+        "subhook": "Most Reels waste frame 1 saying hello →"
       },
-      "caption": "Most Reels do not fail in the middle. They lose 70% of viewers before second two.\n\nSkip the \"Hey guys, today I want to talk about...\" intro. Put the specific mistake on screen in frame one, then give the fix right away.\n\nSave this retention check before you cut your next opener.\n\n#reelstips #hookideas #instagramgrowth #contentcreator #videoediting"
+      "caption": "Delete your first sentence on your next Reel.\n\nMost viewers scroll past in the first 1.4 seconds. Skip \"Hey guys, today I wanted to share...\" and put the actual mistake or result right on frame 1.\n\nSave this before your next edit.\n\n#reelstips #hookideas #instagramgrowth #contentcreator #videoediting"
     },
     {
       "id": "ig_car_01_reel_hooks_swipefile",
@@ -50,11 +63,42 @@
         "https://www.getsocialora.com/instagram/carousels/ig_car_01_reel_hooks_swipefile_s5.jpg"
       ],
       "carousel_slides": [
-        { "eyebrow": "SWIPE FILE", "headline": "5 Visual Hooks You Can Film in 10 Minutes", "body": "Zero fancy gear. Built to stop the scroll in the first 1.5 seconds.", "tag": "SWIPE →" },
-        { "eyebrow": "HOOK 01 + 02", "headline": "Contrast & Framing Interrupts", "bullets": ["1. Split-screen Wrong vs Right: show the common mistake on the left, clean fix on the right.", "2. Over-the-shoulder screen zoom: start zoomed 140% on the exact line you are fixing."] },
-        { "eyebrow": "HOOK 03 + 04", "headline": "Curiosity & Checklist Openers", "bullets": ["3. Red-pen teardown: highlight one line on a screenshot and ask why it fails.", "4. 3-item checklist pop-in: reveal item #1 immediately so viewers stay for #3."] },
-        { "eyebrow": "HOOK 05", "headline": "The Silent Motion Loop", "bullets": ["5. Start your motion 0.3s before the title appears and end mid-sentence into frame one.", "Viewers replay once just to catch the full wording."] },
-        { "eyebrow": "NEXT STEP", "headline": "Test 1 Hook Style Per Week", "body": "Keep the topic identical and swap only the first 2 seconds to see what holds attention.", "tag": "SAVE FOR NEXT SHOOT" }
+        {
+          "eyebrow": "SWIPE FILE",
+          "headline": "5 Visual Hooks You Can Film in 10 Minutes",
+          "body": "Zero fancy gear. Built to stop the scroll in the first 1.5 seconds.",
+          "tag": "SWIPE →"
+        },
+        {
+          "eyebrow": "HOOK 01 + 02",
+          "headline": "Contrast & Framing Interrupts",
+          "bullets": [
+            "1. Split-screen Wrong vs Right: show the common mistake on the left, clean fix on the right.",
+            "2. Over-the-shoulder screen zoom: start zoomed 140% on the exact line you are fixing."
+          ]
+        },
+        {
+          "eyebrow": "HOOK 03 + 04",
+          "headline": "Curiosity & Checklist Openers",
+          "bullets": [
+            "3. Red-pen teardown: highlight one line on a screenshot and ask why it fails.",
+            "4. 3-item checklist pop-in: reveal item #1 immediately so viewers stay for #3."
+          ]
+        },
+        {
+          "eyebrow": "HOOK 05",
+          "headline": "The Silent Motion Loop",
+          "bullets": [
+            "5. Start your motion 0.3s before the title appears and end mid-sentence into frame one.",
+            "Viewers replay once just to catch the full wording."
+          ]
+        },
+        {
+          "eyebrow": "NEXT STEP",
+          "headline": "Test 1 Hook Style Per Week",
+          "body": "Keep the topic identical and swap only the first 2 seconds to see what holds attention.",
+          "tag": "SAVE FOR NEXT SHOOT"
+        }
       ],
       "caption": "You do not need a studio setup to hold attention on Reels.\n\nSwipe through these 5 simple visual openers you can shoot at a desk in under 10 minutes. Pick one format and test it against your usual intro this week.\n\nWhich hook fits your niche best? Drop 1–5 below.\n\n#instagramreels #contentstrategy #reelshooks #creatortips #socialmediagrowth"
     },
@@ -71,11 +115,24 @@
         "eyebrow": "PRE-EXPORT CHECK",
         "hook": "Are IG Buttons Covering Your Subtitles?",
         "beats": [
-          { "badge": "THE TRAP", "headline": "Bottom 28% gets buried", "sub": "Caption box, username & audio bar block text." },
-          { "badge": "RIGHT EDGE", "headline": "Keep 160px margin clear", "sub": "Like, comment & send icons sit right over edges." },
-          { "badge": "FREE CHECK", "headline": "Preview before exporting", "sub": "Use getsocialora.com/tools/reels-tiktok-safe-zone-guide" }
+          {
+            "badge": "THE TRAP",
+            "headline": "Bottom 28% gets buried",
+            "sub": "Caption box, username & audio bar block text."
+          },
+          {
+            "badge": "RIGHT EDGE",
+            "headline": "Keep 160px margin clear",
+            "sub": "Like, comment & send icons sit right over edges."
+          },
+          {
+            "badge": "FREE CHECK",
+            "headline": "Preview before exporting",
+            "sub": "Use getsocialora.com/tools/reels-tiktok-safe-zone-guide"
+          }
         ],
-        "cta": "Free Safe Zone Guide — link in bio"
+        "cta": "Free Safe Zone Guide — link in bio",
+        "subhook": "Buttons hide your bottom 28% text →"
       },
       "caption": "Nothing kills watch time faster than making people squint behind the Like button and caption overlay.\n\nKeep hook headlines in the middle vertical zone and leave room along the right edge before rendering.\n\nPreview your frame in seconds with our free browser Safe Zone Guide (link in bio: getsocialora.com/tools/reels-tiktok-safe-zone-guide).\n\n#reelstips #videoediting #safezone #creatortools #instagramreels"
     },
@@ -95,13 +152,26 @@
         "compare_good_label": "EXPANSION SIGNALS",
         "compare_good_text": "DM Shares + Saves + Replays tell Instagram to push to non-followers.",
         "beats": [
-          { "badge": "SIGNAL #1", "headline": "DM Sends per reach", "sub": "Make posts friends send to each other." },
-          { "badge": "SIGNAL #2", "headline": "Saves / Bookmarks", "sub": "Checklists & formulas get revisited." },
-          { "badge": "SIGNAL #3", "headline": "Watch-time & replays", "sub": "Tight edits beat bloated intros." }
+          {
+            "badge": "SIGNAL #1",
+            "headline": "DM Sends per reach",
+            "sub": "Make posts friends send to each other."
+          },
+          {
+            "badge": "SIGNAL #2",
+            "headline": "Saves / Bookmarks",
+            "sub": "Checklists & formulas get revisited."
+          },
+          {
+            "badge": "SIGNAL #3",
+            "headline": "Watch-time & replays",
+            "sub": "Tight edits beat bloated intros."
+          }
         ],
-        "cta": "Build for saves & sends, not vanity likes"
+        "cta": "Build for saves & sends, not vanity likes",
+        "subhook": "DM forwards beat passive hearts →"
       },
-      "caption": "Chasing likes keeps small accounts stuck.\n\nInstagram weighs DM sends, saves, and replay watch time far more heavily when testing a Reel with non-followers. One useful checklist people send to a friend outperforms ten pretty quotes.\n\nSave this reminder before planning next week's posts.\n\n#instagramalgorithm #organicgrowth #contentstrategy #instagramtips #smallcreators"
+      "caption": "A double-tap takes 0.2 seconds. Sending a Reel to a friend takes real intent.\n\nThat is why DM shares, saves, and clean replays carry far more weight than passive likes when Instagram decides who sees your clip next.\n\nSave this reminder for next week's scripts.\n\n#instagramalgorithm #organicgrowth #contentstrategy #instagramtips #smallcreators"
     },
     {
       "id": "ig_car_02_profile_audit_checklist",
@@ -117,11 +187,43 @@
         "https://www.getsocialora.com/instagram/carousels/ig_car_02_profile_audit_checklist_s5.jpg"
       ],
       "carousel_slides": [
-        { "eyebrow": "PROFILE CONVERSION", "headline": "High Profile Visits, Zero New Followers?", "body": "Your Reel hook worked. Your profile landing page leaked the visitor.", "tag": "SWIPE TO FIX →" },
-        { "eyebrow": "CHECK 01", "headline": "Fix Your Searchable Name Field", "bullets": ["Do not put just your first name in the bold Name line.", "Add 2–3 keywords people actually search, like 'Video Editor' or 'Creator Tools'."] },
-        { "eyebrow": "CHECK 02", "headline": "Clarify Line 1 & 2 of Your Bio", "bullets": ["Line 1: Who you help and what outcome you cover.", "Line 2: Why following pays off every week.", "Line 3: One clear reason to tap your link."] },
-        { "eyebrow": "CHECK 03", "headline": "Your Top 3 Pinned Posts Are Your Storefront", "bullets": ["Pin 1 beginner guide, 1 best teardown, and 1 proof/workflow post.", "Put readable cover titles so visitors understand the theme in 2 seconds."] },
-        { "eyebrow": "FREE AUDIT", "headline": "Score Your Profile Setup", "body": "Test your public profile ratios & next-step ideas in our free Account Scorecard (link in bio).", "tag": "SAVE + AUDIT" }
+        {
+          "eyebrow": "PROFILE CONVERSION",
+          "headline": "High Profile Visits, Zero New Followers?",
+          "body": "Your Reel hook worked. Your profile landing page leaked the visitor.",
+          "tag": "SWIPE TO FIX →"
+        },
+        {
+          "eyebrow": "CHECK 01",
+          "headline": "Fix Your Searchable Name Field",
+          "bullets": [
+            "Do not put just your first name in the bold Name line.",
+            "Add 2–3 keywords people actually search, like 'Video Editor' or 'Creator Tools'."
+          ]
+        },
+        {
+          "eyebrow": "CHECK 02",
+          "headline": "Clarify Line 1 & 2 of Your Bio",
+          "bullets": [
+            "Line 1: Who you help and what outcome you cover.",
+            "Line 2: Why following pays off every week.",
+            "Line 3: One clear reason to tap your link."
+          ]
+        },
+        {
+          "eyebrow": "CHECK 03",
+          "headline": "Your Top 3 Pinned Posts Are Your Storefront",
+          "bullets": [
+            "Pin 1 beginner guide, 1 best teardown, and 1 proof/workflow post.",
+            "Put readable cover titles so visitors understand the theme in 2 seconds."
+          ]
+        },
+        {
+          "eyebrow": "FREE AUDIT",
+          "headline": "Score Your Profile Setup",
+          "body": "Test your public profile ratios & next-step ideas in our free Account Scorecard (link in bio).",
+          "tag": "SAVE + AUDIT"
+        }
       ],
       "caption": "Getting views without followers usually means your Reel worked—and your profile bio or pinned grid confused visitors.\n\nFix those three landing-page details before blaming the algorithm. You can also run a quick profile check with our free Instagram Account Scorecard in bio (getsocialora.com/tools/instagram-account-scorecard).\n\n#profileoptimization #instagramgrowth #instagrambio #creatortips #socialmediatips"
     },
@@ -138,11 +240,24 @@
         "eyebrow": "PHOTO FRAMING FIX",
         "hook": "Stop Cropping Out the Best Part of Wide Photos",
         "beats": [
-          { "badge": "PROBLEM", "headline": "Tight crops ruin context", "sub": "Instagram feed trims landscape & tall edges." },
-          { "badge": "SOLUTION", "headline": "Pad with soft matching blur", "sub": "Keep 100% of your original shot intact in 4:5." },
-          { "badge": "BROWSER TOOL", "headline": "Zero uploads, instant export", "sub": "getsocialora.com/tools/instagram-no-crop-blur-background" }
+          {
+            "badge": "PROBLEM",
+            "headline": "Tight crops ruin context",
+            "sub": "Instagram feed trims landscape & tall edges."
+          },
+          {
+            "badge": "SOLUTION",
+            "headline": "Pad with soft matching blur",
+            "sub": "Keep 100% of your original shot intact in 4:5."
+          },
+          {
+            "badge": "BROWSER TOOL",
+            "headline": "Zero uploads, instant export",
+            "sub": "getsocialora.com/tools/instagram-no-crop-blur-background"
+          }
         ],
-        "cta": "Free No-Crop Blur tool — link in bio"
+        "cta": "Free No-Crop Blur tool — link in bio",
+        "subhook": "Keep 100% of your wide photo in 4:5 →"
       },
       "caption": "Cropping a wide travel shot or studio photo into 4:5 often ruins the framing you shot it for.\n\nInstead of cutting off edges, fit the full photo inside a subtle color-matched blur background right in your browser.\n\nLink in bio: getsocialora.com/tools/instagram-no-crop-blur-background\n\n#instagramtips #photographyhacks #nocrop #creatortools #contentcreation"
     },
@@ -158,11 +273,24 @@
         "eyebrow": "DIAGNOSTIC CHECKLIST",
         "hook": "Stuck Under 300 Views? Check These 3 Numbers First",
         "beats": [
-          { "badge": "CHECK 01", "headline": "Look at 3-second hold rate", "sub": "Under 55%? Re-cut the opening frame & hook text." },
-          { "badge": "CHECK 02", "headline": "Check average watch vs length", "sub": "Trim 4 seconds of dead air and re-test later." },
-          { "badge": "CHECK 03", "headline": "Archive or iterate—never rage-delete", "sub": "Keep data, learn the drop-off second, remix the angle." }
+          {
+            "badge": "CHECK 01",
+            "headline": "Look at 3-second hold rate",
+            "sub": "Under 55%? Re-cut the opening frame & hook text."
+          },
+          {
+            "badge": "CHECK 02",
+            "headline": "Check average watch vs length",
+            "sub": "Trim 4 seconds of dead air and re-test later."
+          },
+          {
+            "badge": "CHECK 03",
+            "headline": "Archive or iterate—never rage-delete",
+            "sub": "Keep data, learn the drop-off second, remix the angle."
+          }
         ],
-        "cta": "Save before deleting your next Reel"
+        "cta": "Save before deleting your next Reel",
+        "subhook": "Check 3 numbers before deleting anything →"
       },
       "caption": "Low views on one Reel are feedback, not a permanent account penalty.\n\nBefore deleting anything, open Insights and look at the exact second viewers dropped off. Most 200–300 view Reels simply had a slow intro or unclear premise.\n\nWhat's your average watch time on your last 3 Reels? Let's troubleshoot in the comments.\n\n#instagraminsights #reelstips #smallcreator #instagramgrowth #contenttips"
     },
@@ -191,11 +319,24 @@
         "compare_good_label": "CLEAR 3-LINE BIO",
         "compare_good_text": "\"Short-form editing tips for solo founders • 3-min workflows weekly • Free presets 👇\"",
         "beats": [
-          { "badge": "LINE 1", "headline": "Who + exact topic", "sub": "Remove fluff adjectives." },
-          { "badge": "LINE 2", "headline": "Reason to follow", "sub": "What they get every week." },
-          { "badge": "LINE 3", "headline": "Clear link prompt", "sub": "Tell them what's behind the click." }
+          {
+            "badge": "LINE 1",
+            "headline": "Who + exact topic",
+            "sub": "Remove fluff adjectives."
+          },
+          {
+            "badge": "LINE 2",
+            "headline": "Reason to follow",
+            "sub": "What they get every week."
+          },
+          {
+            "badge": "LINE 3",
+            "headline": "Clear link prompt",
+            "sub": "Tell them what's behind the click."
+          }
         ],
-        "cta": "Draft yours free — Bio Generator in bio"
+        "cta": "Draft yours free — Bio Generator in bio",
+        "subhook": "Visitors decide in 2 seconds →"
       },
       "caption": "If a stranger cannot tell what you post within two seconds of reading your bio, they bounce.\n\nSwap vague hobbies for one specific audience, one weekly promise, and one clear next step for your link.\n\nNeed quick drafts for your niche? Try our free Instagram Bio Generator in bio (getsocialora.com/tools/instagram-bio-generator).\n\n#instagrambio #profiletips #creatorgrowth #socialmediamarketing #creatortools"
     },
@@ -212,10 +353,34 @@
         "https://www.getsocialora.com/instagram/carousels/ig_car_03_aspect_ratio_cheat_s4.jpg"
       ],
       "carousel_slides": [
-        { "eyebrow": "EXPORT CHEAT SHEET", "headline": "2026 Instagram Size Cheat Sheet", "body": "Stop letting Instagram re-compress blurry images. Export exact dimensions first.", "tag": "SAVE THIS →" },
-        { "eyebrow": "FEED & CAROUSELS", "headline": "4:5 Portrait Wins Feed Real Estate", "bullets": ["Feed Post / Carousel: 1080 × 1350 px (4:5 ratio) — takes maximum vertical height.", "Profile Grid Preview: remember IG crops thumbnails in grid view; keep titles centered."] },
-        { "eyebrow": "REELS & STORIES", "headline": "9:16 Vertical + Safe Margins", "bullets": ["Reels & Stories: 1080 × 1920 px (9:16).", "Reel Cover Image: 1080 × 1920 px, but keep cover text inside the center 4:5 box so your profile grid never clips words."] },
-        { "eyebrow": "FREE TOOL", "headline": "Resize Without Quality Loss", "body": "Batch-crop photos for Feed, Stories, YouTube & X directly in browser (link in bio: getsocialora.com/tools/social-media-photo-resizer).", "tag": "BOOKMARK THIS" }
+        {
+          "eyebrow": "EXPORT CHEAT SHEET",
+          "headline": "2026 Instagram Size Cheat Sheet",
+          "body": "Stop letting Instagram re-compress blurry images. Export exact dimensions first.",
+          "tag": "SAVE THIS →"
+        },
+        {
+          "eyebrow": "FEED & CAROUSELS",
+          "headline": "4:5 Portrait Wins Feed Real Estate",
+          "bullets": [
+            "Feed Post / Carousel: 1080 × 1350 px (4:5 ratio) — takes maximum vertical height.",
+            "Profile Grid Preview: remember IG crops thumbnails in grid view; keep titles centered."
+          ]
+        },
+        {
+          "eyebrow": "REELS & STORIES",
+          "headline": "9:16 Vertical + Safe Margins",
+          "bullets": [
+            "Reels & Stories: 1080 × 1920 px (9:16).",
+            "Reel Cover Image: 1080 × 1920 px, but keep cover text inside the center 4:5 box so your profile grid never clips words."
+          ]
+        },
+        {
+          "eyebrow": "FREE TOOL",
+          "headline": "Resize Without Quality Loss",
+          "body": "Batch-crop photos for Feed, Stories, YouTube & X directly in browser (link in bio: getsocialora.com/tools/social-media-photo-resizer).",
+          "tag": "BOOKMARK THIS"
+        }
       ],
       "caption": "Uploading the wrong aspect ratio triggers heavy platform compression and fuzzy typography.\n\nBookmark these exact dimensions for your next carousel, Reel cover, and Story export. Need a quick crop right in your browser? Use our free Photo Resizer in bio (getsocialora.com/tools/social-media-photo-resizer).\n\n#instagramdimensions #designforcreators #socialmediadesign #carouseltips #creatortools"
     },
@@ -231,11 +396,24 @@
         "eyebrow": "COPY-PASTE HOOKS",
         "hook": "3 Opening Lines That Stop the Scroll",
         "beats": [
-          { "badge": "FORMULA 1", "headline": "\"Stop [common habit] if you want [result].\"", "sub": "Triggers immediate self-check." },
-          { "badge": "FORMULA 2", "headline": "\"Here is why your [asset] stalls at [number].\"", "sub": "Pairs specificity with curiosity." },
-          { "badge": "FORMULA 3", "headline": "\"Steal my 3-step [workflow] before [deadline].\"", "sub": "Signals high save value immediately." }
+          {
+            "badge": "FORMULA 1",
+            "headline": "\"Stop [common habit] if you want [result].\"",
+            "sub": "Triggers immediate self-check."
+          },
+          {
+            "badge": "FORMULA 2",
+            "headline": "\"Here is why your [asset] stalls at [number].\"",
+            "sub": "Pairs specificity with curiosity."
+          },
+          {
+            "badge": "FORMULA 3",
+            "headline": "\"Steal my 3-step [workflow] before [deadline].\"",
+            "sub": "Signals high save value immediately."
+          }
         ],
-        "cta": "Save & adapt one for your next Reel"
+        "cta": "Save & adapt one for your next Reel",
+        "subhook": "3 plug-and-play opening lines →"
       },
       "caption": "Strong hooks are rarely clever wordplay. They name a specific bottleneck the viewer already feels.\n\nAdapt any of these three templates to your niche today, put the text clean in the center safe zone, and get straight to the point.\n\nSave this for your next scripting session.\n\n#reelshooks #copywritingtips #contentcreator #instagramgrowth #shortformvideo"
     },
@@ -252,11 +430,24 @@
         "eyebrow": "CREATOR BUSINESS",
         "hook": "Stop Pricing Brand Deals by Follower Count",
         "beats": [
-          { "badge": "FACTOR 1", "headline": "30-day average Reel views", "sub": "Brands buy real eyeballs, not old follower totals." },
-          { "badge": "FACTOR 2", "headline": "Saves, shares & niche intent", "sub": "High-intent micro pages often beat big generic pages." },
-          { "badge": "FACTOR 3", "headline": "Usage rights & ad whitelisting", "sub": "Never include paid ad rights for free." }
+          {
+            "badge": "FACTOR 1",
+            "headline": "30-day average Reel views",
+            "sub": "Brands buy real eyeballs, not old follower totals."
+          },
+          {
+            "badge": "FACTOR 2",
+            "headline": "Saves, shares & niche intent",
+            "sub": "High-intent micro pages often beat big generic pages."
+          },
+          {
+            "badge": "FACTOR 3",
+            "headline": "Usage rights & ad whitelisting",
+            "sub": "Never include paid ad rights for free."
+          }
         ],
-        "cta": "Free Rate Calculator — link in bio"
+        "cta": "Free Rate Calculator — link in bio",
+        "subhook": "Brands pay for views + usage rights →"
       },
       "caption": "Two accounts with 15K followers can command completely different brand rates depending on average views, saves, and whether the brand wants paid usage rights.\n\nNever quote a flat number off follower count alone. Factor deliverables and licensing cleanly first.\n\nTest a realistic baseline with our free Sponsorship Rate Calculator in bio (getsocialora.com/tools/instagram-sponsorship-rate-calculator).\n\n#ugccreator #branddeals #creatorbusiness #influencertips #socialmediamarketing"
     },
@@ -284,11 +475,24 @@
         "compare_good_label": "CAROUSELS (30%)",
         "compare_good_text": "Built for step-by-step depth, bookmarks & second-chance feed impressions.",
         "beats": [
-          { "badge": "WHY BOTH", "headline": "Reels bring strangers in", "sub": "Short visual demos expand top-of-funnel reach." },
-          { "badge": "RETENTION", "headline": "Carousels build trust", "sub": "IG often re-serves Slide 2 to people who scrolled past Slide 1." },
-          { "badge": "WEEKLY RHYTHM", "headline": "Pair 3 Reels + 2 Carousels", "sub": "Turn your best Reel question into a swipeable deep dive." }
+          {
+            "badge": "WHY BOTH",
+            "headline": "Reels bring strangers in",
+            "sub": "Short visual demos expand top-of-funnel reach."
+          },
+          {
+            "badge": "RETENTION",
+            "headline": "Carousels build trust",
+            "sub": "IG often re-serves Slide 2 to people who scrolled past Slide 1."
+          },
+          {
+            "badge": "WEEKLY RHYTHM",
+            "headline": "Pair 3 Reels + 2 Carousels",
+            "sub": "Turn your best Reel question into a swipeable deep dive."
+          }
         ],
-        "cta": "Save this weekly posting blueprint"
+        "cta": "Save this weekly posting blueprint",
+        "subhook": "Pair discovery with deep saves →"
       },
       "caption": "Going all-in on only one format leaves half your growth on the table.\n\nUse short Reels to pull in new eyes from Explore, then follow up with swipeable Carousels that give depth worth bookmarking. That combo turns random viewers into repeat followers.\n\nWhich format brings you more profile visits right now: Reels or Carousels?\n\n#instagramstrategy #carouselvsreels #contentplanning #creatortips #instagramgrowth"
     },
@@ -306,11 +510,42 @@
         "https://www.getsocialora.com/instagram/carousels/ig_car_04_ugc_pricing_guide_s5.jpg"
       ],
       "carousel_slides": [
-        { "eyebrow": "BRAND DEAL PLAYBOOK", "headline": "How Small Creators Price Brand Deals", "body": "Stop guessing numbers in your inbox. Price based on deliverables + rights.", "tag": "SWIPE →" },
-        { "eyebrow": "STEP 01", "headline": "Separate Production From Posting", "bullets": ["Shooting & editing a 30s vertical video takes real hours even at 2K followers.", "Charge a base production fee regardless of page size."] },
-        { "eyebrow": "STEP 02", "headline": "Add Usage Rights Separately", "bullets": ["Organic post only ≠ paid ad whitelisting.", "Add 30-day or 90-day paid usage as an optional line item so brands can choose."] },
-        { "eyebrow": "STEP 03", "headline": "Anchor Value With Real Engagement", "bullets": ["Include your 30-day average views, save rate, and audience location in a 3-bullet pitch.", "Never inflate numbers—consistency beats hype."] },
-        { "eyebrow": "FREE ESTIMATOR", "headline": "Sanity-Check Your Quote", "body": "Plug in your views & engagement in our free Sponsorship Rate Calculator before replying (link in bio).", "tag": "SAVE FOR NEXT PITCH" }
+        {
+          "eyebrow": "BRAND DEAL PLAYBOOK",
+          "headline": "How Small Creators Price Brand Deals",
+          "body": "Stop guessing numbers in your inbox. Price based on deliverables + rights.",
+          "tag": "SWIPE →"
+        },
+        {
+          "eyebrow": "STEP 01",
+          "headline": "Separate Production From Posting",
+          "bullets": [
+            "Shooting & editing a 30s vertical video takes real hours even at 2K followers.",
+            "Charge a base production fee regardless of page size."
+          ]
+        },
+        {
+          "eyebrow": "STEP 02",
+          "headline": "Add Usage Rights Separately",
+          "bullets": [
+            "Organic post only ≠ paid ad whitelisting.",
+            "Add 30-day or 90-day paid usage as an optional line item so brands can choose."
+          ]
+        },
+        {
+          "eyebrow": "STEP 03",
+          "headline": "Anchor Value With Real Engagement",
+          "bullets": [
+            "Include your 30-day average views, save rate, and audience location in a 3-bullet pitch.",
+            "Never inflate numbers—consistency beats hype."
+          ]
+        },
+        {
+          "eyebrow": "FREE ESTIMATOR",
+          "headline": "Sanity-Check Your Quote",
+          "body": "Plug in your views & engagement in our free Sponsorship Rate Calculator before replying (link in bio).",
+          "tag": "SAVE FOR NEXT PITCH"
+        }
       ],
       "caption": "Brands do not expect micro-creators to work for free—they expect you to explain what is included in your rate.\n\nSwipe through the three line items to include on every quote: base production, posting/distribution, and paid ad usage rights.\n\nRun a quick baseline estimate with our free calculator in bio (getsocialora.com/tools/instagram-sponsorship-rate-calculator).\n\n#ugcpricing #brandpartnerships #creatorbusiness #microinfluencer #contentcreator"
     },
@@ -327,13 +562,26 @@
         "eyebrow": "CAPTION HOOKS",
         "hook": "Make Viewers Tap '...more' on Your Caption",
         "beats": [
-          { "badge": "THE FOLD", "headline": "Only ~115 chars show first", "sub": "Never waste line 1 on fluff or hashtags." },
-          { "badge": "THE FIX", "headline": "Promise the missing detail", "sub": "Example: 'The 3-second fix is step #2 below.'" },
-          { "badge": "FREE STUDIO", "headline": "Draft cleaner hooks fast", "sub": "getsocialora.com/tools/instagram-caption-generator" }
+          {
+            "badge": "THE FOLD",
+            "headline": "Only ~115 chars show first",
+            "sub": "Never waste line 1 on fluff or hashtags."
+          },
+          {
+            "badge": "THE FIX",
+            "headline": "Promise the missing detail",
+            "sub": "Example: 'The 3-second fix is step #2 below.'"
+          },
+          {
+            "badge": "FREE STUDIO",
+            "headline": "Draft cleaner hooks fast",
+            "sub": "getsocialora.com/tools/instagram-caption-generator"
+          }
         ],
-        "cta": "Free Caption Generator — link in bio"
+        "cta": "Free Caption Generator — link in bio",
+        "subhook": "Only ~115 chars show before ...more →"
       },
-      "caption": "Every time someone taps '...more' to read your caption while your Reel loops behind it, your total dwell time climbs.\n\nUse your first 100 characters to tease the exact step or checklist sitting below the fold.\n\nNeed fast starting hooks? Test our free browser Caption Generator in bio (getsocialora.com/tools/instagram-caption-generator).\n\n#captiontips #instagramcopywriting #reelstips #creatortools #instagramgrowth"
+      "caption": "When people pause to read your caption while your Reel loops behind it, watch time jumps automatically.\n\nUse your first 100 characters to tease the exact step or checklist waiting below \"...more\".\n\nNeed fast starting hooks? Test our free browser Caption Generator in bio (getsocialora.com/tools/instagram-caption-generator).\n\n#captiontips #instagramcopywriting #reelstips #creatortools #instagramgrowth"
     },
     {
       "id": "ig_reel_11_shadowban_myth",
@@ -352,11 +600,24 @@
         "compare_good_label": "REAL AUDIT",
         "compare_good_text": "Check Account Status, 3-second hold drop, and copy-pasted tag blocks.",
         "beats": [
-          { "badge": "STEP 1", "headline": "Settings → Account Status", "sub": "Verify green ticks for non-follower reach." },
-          { "badge": "STEP 2", "headline": "Compare hook hold vs past posts", "sub": "A single weak opener shrinks Explore testing." },
-          { "badge": "STEP 3", "headline": "Rotate 3–5 topic-specific tags", "sub": "Check your diagnostics at getsocialora.com/tools" }
+          {
+            "badge": "STEP 1",
+            "headline": "Settings → Account Status",
+            "sub": "Verify green ticks for non-follower reach."
+          },
+          {
+            "badge": "STEP 2",
+            "headline": "Compare hook hold vs past posts",
+            "sub": "A single weak opener shrinks Explore testing."
+          },
+          {
+            "badge": "STEP 3",
+            "headline": "Rotate 3–5 topic-specific tags",
+            "sub": "Check your diagnostics at getsocialora.com/tools"
+          }
         ],
-        "cta": "Free Shadowban Diagnostic — link in bio"
+        "cta": "Free Shadowban Diagnostic — link in bio",
+        "subhook": "Slow frame 1 hurts more than penalties →"
       },
       "caption": "One underperforming Reel rarely means a hidden penalty. Most reach dips trace back to a slow opening frame or repeating identical hashtag blocks.\n\nRun through these three checks first, or test our free Instagram Shadowban Diagnostic tool in bio (getsocialora.com/tools/instagram-shadowban-checker).\n\n#instagramshadowban #reachdrop #instagramalgorithm #creatortools #instagramtips"
     },
@@ -381,11 +642,42 @@
         "https://www.getsocialora.com/instagram/carousels/ig_car_05_content_pillars_s5.jpg"
       ],
       "carousel_slides": [
-        { "eyebrow": "CONTENT SYSTEM", "headline": "The 4-Post Mix That Grows Small Pages", "body": "Posting random ideas burns energy. Rotate four clear jobs every week.", "tag": "SWIPE →" },
-        { "eyebrow": "POST 1: DISCOVERY", "headline": "1 Short Contrarian or Mythbuster Reel", "bullets": ["Challenge one common misconception in your niche in under 9 seconds.", "Job: earn shares and pull fresh non-followers."] },
-        { "eyebrow": "POST 2: AUTHORITY", "headline": "1 Saveable Step-by-Step Carousel", "bullets": ["Turn one repeated audience question into 4–5 swipeable checklist slides.", "Job: rack up saves & profile visits."] },
-        { "eyebrow": "POST 3 + 4", "headline": "1 Workflow Demo + 1 Honest Perspective", "bullets": ["Workflow demo: show your exact screen, setting, or tool setup.", "Honest take: share one lesson from testing what actually worked."] },
-        { "eyebrow": "YOUR TURN", "headline": "Repeat What Earns Saves & Sends", "body": "Check Insights every Sunday. Double down on the topic—not just the audio trend.", "tag": "SAVE THIS PLAN" }
+        {
+          "eyebrow": "CONTENT SYSTEM",
+          "headline": "The 4-Post Mix That Grows Small Pages",
+          "body": "Posting random ideas burns energy. Rotate four clear jobs every week.",
+          "tag": "SWIPE →"
+        },
+        {
+          "eyebrow": "POST 1: DISCOVERY",
+          "headline": "1 Short Contrarian or Mythbuster Reel",
+          "bullets": [
+            "Challenge one common misconception in your niche in under 9 seconds.",
+            "Job: earn shares and pull fresh non-followers."
+          ]
+        },
+        {
+          "eyebrow": "POST 2: AUTHORITY",
+          "headline": "1 Saveable Step-by-Step Carousel",
+          "bullets": [
+            "Turn one repeated audience question into 4–5 swipeable checklist slides.",
+            "Job: rack up saves & profile visits."
+          ]
+        },
+        {
+          "eyebrow": "POST 3 + 4",
+          "headline": "1 Workflow Demo + 1 Honest Perspective",
+          "bullets": [
+            "Workflow demo: show your exact screen, setting, or tool setup.",
+            "Honest take: share one lesson from testing what actually worked."
+          ]
+        },
+        {
+          "eyebrow": "YOUR TURN",
+          "headline": "Repeat What Earns Saves & Sends",
+          "body": "Check Insights every Sunday. Double down on the topic—not just the audio trend.",
+          "tag": "SAVE THIS PLAN"
+        }
       ],
       "caption": "You do not need to post 3 times a day to grow a niche page.\n\nFour intentional posts per week—each doing a specific job between discovery, saves, proof, and conversation—outperform daily filler every time.\n\nSave this weekly framework for Sunday planning.\n\n#contentpillars #instagramgrowth #socialmediastrategy #smallbusinessmarketing #creatortips"
     },
@@ -401,12 +693,29 @@
         "eyebrow": "BEFORE YOU HIT POST",
         "hook": "4 Checks Before Publishing Any Reel",
         "beats": [
-          { "badge": "01 / HOOK", "headline": "Does frame 1 state a clear topic?", "sub": "Viewer knows why to watch in 1.5s." },
-          { "badge": "02 / SAFE ZONE", "headline": "Are captions clear of UI buttons?", "sub": "Nothing hidden under caption or icons." },
-          { "badge": "03 / COVER", "headline": "Readable cover inside 4:5 grid?", "sub": "Centered headline keeps profile tidy." },
-          { "badge": "04 / NEXT STEP", "headline": "1 clear save, reply, or bio prompt", "sub": "Never stack 4 different CTAs." }
+          {
+            "badge": "01 / HOOK",
+            "headline": "Does frame 1 state a clear topic?",
+            "sub": "Viewer knows why to watch in 1.5s."
+          },
+          {
+            "badge": "02 / SAFE ZONE",
+            "headline": "Are captions clear of UI buttons?",
+            "sub": "Nothing hidden under caption or icons."
+          },
+          {
+            "badge": "03 / COVER",
+            "headline": "Readable cover inside 4:5 grid?",
+            "sub": "Centered headline keeps profile tidy."
+          },
+          {
+            "badge": "04 / NEXT STEP",
+            "headline": "1 clear save, reply, or bio prompt",
+            "sub": "Never stack 4 different CTAs."
+          }
         ],
-        "cta": "Save this pre-upload checklist"
+        "cta": "Save this pre-upload checklist",
+        "subhook": "4 checks in the last 60 seconds →"
       },
       "caption": "Most avoidable Reel mistakes happen in the last 60 seconds before publishing.\n\nRun this 4-point scan before tapping Share: clear frame-one hook, safe-zone text, centered grid cover, and one focused CTA.\n\nBookmark this so you can check it right before your next upload.\n\n#reelschecklist #instagramreels #videoeditingtips #contentcreator #instagramtips"
     },
@@ -431,10 +740,34 @@
         "https://www.getsocialora.com/instagram/carousels/ig_car_06_thumbnail_cover_guide_s4.jpg"
       ],
       "carousel_slides": [
-        { "eyebrow": "GRID CLARITY", "headline": "Make Your Profile Grid Worth Following", "body": "Visitors scan your top 6 covers in 2 seconds before tapping Follow.", "tag": "SWIPE →" },
-        { "eyebrow": "RULE 01", "headline": "3–5 Word Cover Titles Only", "bullets": ["Nobody reads paragraph covers at thumbnail size.", "Keep cover headlines crisp, high-contrast, and scannable on a phone screen."] },
-        { "eyebrow": "RULE 02", "headline": "Pull Crisp Frames—Not Blurry Screenshots", "bullets": ["Paused phone screenshots look soft after compression.", "Export a clean frame directly from your video file before adding text."] },
-        { "eyebrow": "FREE BROWSER TOOL", "headline": "Extract Clean Frames in Seconds", "body": "Scrub your video and export sharp thumbnail stills locally with our Video Frame to Thumbnail tool (link in bio).", "tag": "SAVE + TRY IT" }
+        {
+          "eyebrow": "GRID CLARITY",
+          "headline": "Make Your Profile Grid Worth Following",
+          "body": "Visitors scan your top 6 covers in 2 seconds before tapping Follow.",
+          "tag": "SWIPE →"
+        },
+        {
+          "eyebrow": "RULE 01",
+          "headline": "3–5 Word Cover Titles Only",
+          "bullets": [
+            "Nobody reads paragraph covers at thumbnail size.",
+            "Keep cover headlines crisp, high-contrast, and scannable on a phone screen."
+          ]
+        },
+        {
+          "eyebrow": "RULE 02",
+          "headline": "Pull Crisp Frames—Not Blurry Screenshots",
+          "bullets": [
+            "Paused phone screenshots look soft after compression.",
+            "Export a clean frame directly from your video file before adding text."
+          ]
+        },
+        {
+          "eyebrow": "FREE BROWSER TOOL",
+          "headline": "Extract Clean Frames in Seconds",
+          "body": "Scrub your video and export sharp thumbnail stills locally with our Video Frame to Thumbnail tool (link in bio).",
+          "tag": "SAVE + TRY IT"
+        }
       ],
       "caption": "Your Reel covers are the storefront of your profile grid.\n\nKeep cover text under 5 words, centered inside the 4:5 grid crop, and start with a sharp exported frame instead of a paused screenshot.\n\nTry our free browser Video Frame to Thumbnail tool in bio (getsocialora.com/tools/video-frame-to-thumbnail).\n\n#profilegrid #reelcover #thumbnailtips #creatortools #instagramtips"
     },
@@ -462,12 +795,21 @@
         "compare_good_label": "SILENT-READY HOOK",
         "compare_good_text": "5-word contrast headline inside the center safe zone from frame one.",
         "beats": [
-          { "badge": "STEP 1", "headline": "Mute your preview player", "sub": "Play the first 2 seconds with zero volume." },
-          { "badge": "STEP 2", "headline": "Check instant clarity", "sub": "Can a stranger tell the topic & payoff immediately?" }
+          {
+            "badge": "STEP 1",
+            "headline": "Mute your preview player",
+            "sub": "Play the first 2 seconds with zero volume."
+          },
+          {
+            "badge": "STEP 2",
+            "headline": "Check instant clarity",
+            "sub": "Can a stranger tell the topic & payoff immediately?"
+          }
         ],
-        "cta": "Test every Reel on mute before posting"
+        "cta": "Test every Reel on mute before posting",
+        "subhook": "Test frame 1 with volume off →"
       },
-      "caption": "Half of mobile users watch the opening two seconds on mute.\n\nAlways preview your Reel with sound completely off before uploading. If the opening frame still hooks attention cleanly through visuals and center text, your 3-second hold rate wins.\n\nSave this quick check before your next export.\n\n#reelstips #videoediting #instagramgrowth #contentcreator #hookstrategy"
+      "caption": "Play your next Reel with your phone muted before posting.\n\nHalf of mobile users watch the opening two seconds with sound off. If frame 1 clearly shows the topic and contrast on screen, silent scrollers stick around.\n\nSave this quick check before your next export.\n\n#reelstips #videoediting #instagramgrowth #contentcreator #hookstrategy"
     },
     {
       "id": "ig_car_07_dm_shares_playbook",
@@ -481,10 +823,34 @@
         "https://www.getsocialora.com/instagram/carousels/ig_car_07_dm_shares_playbook_s4.jpg"
       ],
       "carousel_slides": [
-        { "eyebrow": "EXPLORE GROWTH", "headline": "Make Posts People Actually Send in DMs", "body": "DM shares introduce your page to warm non-followers faster than any hashtag.", "tag": "SWIPE →" },
-        { "eyebrow": "TRIGGER 01 + 02", "headline": "Relatable Mistakes & Fast Fixes", "bullets": ["1. 'Send this to someone who still does X': name a specific creator habit cleanly.", "2. Short workflow shortcuts: checklists teammates share inside group chats."] },
-        { "eyebrow": "TRIGGER 03", "headline": "Honest Contrarian Comparisons", "bullets": ["3. Side-by-side 'What fails vs What works' visuals invite people to reply and debate.", "Avoid fake outrage—stick to useful real differences."] },
-        { "eyebrow": "NEXT UPLOAD", "headline": "Design for 1 Specific Friend", "body": "Picture the exact creator someone sends your post to before hitting Publish.", "tag": "SAVE THIS PLAYBOOK" }
+        {
+          "eyebrow": "EXPLORE GROWTH",
+          "headline": "Make Posts People Actually Send in DMs",
+          "body": "DM shares introduce your page to warm non-followers faster than any hashtag.",
+          "tag": "SWIPE →"
+        },
+        {
+          "eyebrow": "TRIGGER 01 + 02",
+          "headline": "Relatable Mistakes & Fast Fixes",
+          "bullets": [
+            "1. 'Send this to someone who still does X': name a specific creator habit cleanly.",
+            "2. Short workflow shortcuts: checklists teammates share inside group chats."
+          ]
+        },
+        {
+          "eyebrow": "TRIGGER 03",
+          "headline": "Honest Contrarian Comparisons",
+          "bullets": [
+            "3. Side-by-side 'What fails vs What works' visuals invite people to reply and debate.",
+            "Avoid fake outrage—stick to useful real differences."
+          ]
+        },
+        {
+          "eyebrow": "NEXT UPLOAD",
+          "headline": "Design for 1 Specific Friend",
+          "body": "Picture the exact creator someone sends your post to before hitting Publish.",
+          "tag": "SAVE THIS PLAYBOOK"
+        }
       ],
       "caption": "DM shares ('Sends per reach') are one of Instagram's strongest signals for non-follower reach.\n\nSwipe through three repeatable angles that make creators forward posts directly to teammates and friends.\n\nSave this before scripting next week's batch.\n\n#instagramexplore #organicgrowth #contentstrategy #creatortips #instagramreels"
     },
@@ -501,10 +867,19 @@
         "eyebrow": "METRICS AUDIT",
         "hook": "Stop Judging Your Reels on Likes Alone",
         "beats": [
-          { "badge": "THE TRAP", "headline": "Likes miss saves & reach context", "sub": "A 40-like post with 35 saves often converts better." },
-          { "badge": "FREE CHECK", "headline": "Track real engagement ratio", "sub": "Compare posts consistently via getsocialora.com/tools" }
+          {
+            "badge": "THE TRAP",
+            "headline": "Likes miss saves & reach context",
+            "sub": "A 40-like post with 35 saves often converts better."
+          },
+          {
+            "badge": "FREE CHECK",
+            "headline": "Track real engagement ratio",
+            "sub": "Compare posts consistently via getsocialora.com/tools"
+          }
         ],
-        "cta": "Free Engagement Calculator — link in bio"
+        "cta": "Free Engagement Calculator — link in bio",
+        "subhook": "Benchmark saves + sends over raw likes →"
       },
       "caption": "Raw like counts lie because they ignore reach, saves, and shares.\n\nCompare meaningful interactions consistently across your last 10 uploads to spot which topics actually build followers and clicks.\n\nTry our free browser Engagement Rate Calculator in bio (getsocialora.com/tools/instagram-engagement-rate-calculator).\n\n#instagramanalytics #creatortools #socialmediametrics #instagramgrowth #contenttips"
     },
@@ -524,9 +899,14 @@
         "compare_good_label": "KEYWORD NAME LINE",
         "compare_good_text": "Name field: 'Socialora | Creator Growth & Tools' (ranks in niche search).",
         "beats": [
-          { "badge": "WHY IT WORKS", "headline": "IG indexes the bold Name line", "sub": "Pick 2–3 exact keywords your target audience searches." }
+          {
+            "badge": "WHY IT WORKS",
+            "headline": "IG indexes the bold Name line",
+            "sub": "Pick 2–3 exact keywords your target audience searches."
+          }
         ],
-        "cta": "Update your bold Name field today"
+        "cta": "Update your bold Name field today",
+        "subhook": "Put 2 niche words in your Name field →"
       },
       "caption": "Most accounts put only their first name or brand name in the bold Name line—leaving free Instagram search discovery on the table.\n\nAdd 2–3 specific niche keywords right next to your name so new creators find you when searching for help.\n\nSave this 30-second profile tweak.\n\n#instagramseo #profileoptimization #instagramtips #smallbusinessgrowth #creatortips"
     },
@@ -543,12 +923,36 @@
         "https://www.getsocialora.com/instagram/carousels/ig_car_08_fake_follower_audit_s4.jpg"
       ],
       "carousel_slides": [
-        { "eyebrow": "ACCOUNT HEALTH", "headline": "Why Dead Followers Slow Organic Reach", "body": "Quality beats inflated numbers when Instagram tests your new Reel cohort.", "tag": "SWIPE →" },
-        { "eyebrow": "HOW TESTING WORKS", "headline": "Early Follower Signals Matter", "bullets": ["New uploads are sampled with a slice of existing followers first.", "Inactive shells don't watch, save, or swipe—dragging early retention down."] },
-        { "eyebrow": "SANITY CHECK", "headline": "Spot Red Flags Before Collabs", "bullets": ["Check sudden unnatural spikes paired with flat comments before partnering with any page.", "Test public engagement ratios cleanly with our free browser checker."] },
-        { "eyebrow": "FREE AUDIT", "headline": "Check Public Ratios in Seconds", "body": "Run an illustrative sanity check via link in bio (getsocialora.com/tools/instagram-fake-follower-checker).", "tag": "SAVE + CHECK" }
+        {
+          "eyebrow": "ACCOUNT HEALTH",
+          "headline": "Why Dead Followers Slow Organic Reach",
+          "body": "Quality beats inflated numbers when Instagram tests your new Reel cohort.",
+          "tag": "SWIPE →"
+        },
+        {
+          "eyebrow": "HOW TESTING WORKS",
+          "headline": "Early Follower Signals Matter",
+          "bullets": [
+            "New uploads are sampled with a slice of existing followers first.",
+            "Inactive shells don't watch, save, or swipe—dragging early retention down."
+          ]
+        },
+        {
+          "eyebrow": "SANITY CHECK",
+          "headline": "Spot Red Flags Before Collabs",
+          "bullets": [
+            "Check sudden unnatural spikes paired with flat comments before partnering with any page.",
+            "Test public engagement ratios cleanly with our free browser checker."
+          ]
+        },
+        {
+          "eyebrow": "FREE AUDIT",
+          "headline": "Check Public Ratios in Seconds",
+          "body": "Run an illustrative sanity check via link in bio (getsocialora.com/tools/instagram-fake-follower-checker).",
+          "tag": "SAVE + CHECK"
+        }
       ],
-      "caption": "Real engaged followers always beat empty vanity counts.\n\nSwipe through why audience quality shapes how far your Reels travel—and how to sanity-check collaboration pages before working together.\n\nFree browser checker in bio: getsocialora.com/tools/instagram-fake-follower-checker.\n\n#audiencequality #instagramalgorithm #ugccreator #creatortools #instagramtips"
+      "caption": "500 real followers outperform 15,000 dead accounts every single time.\n\nInstagram tests new Reels on a small slice of your audience first—inactive shells tank those early signals.\n\nFree browser engagement sanity checker in bio: getsocialora.com/tools/instagram-fake-follower-checker.\n\n#audiencequality #instagramalgorithm #ugccreator #creatortools #instagramtips"
     },
     {
       "id": "ig_reel_16_comment_mining",
@@ -562,11 +966,24 @@
         "eyebrow": "CONTENT SYSTEM",
         "hook": "Never Stare at a Blank Script Again",
         "beats": [
-          { "badge": "STEP 1", "headline": "Mine real 'How do I...' comments", "sub": "Look at your posts or bigger niche creators' threads." },
-          { "badge": "STEP 2", "headline": "Put that exact question on frame 1", "sub": "Real audience wording always beats abstract titles." },
-          { "badge": "STEP 3", "headline": "Answer it directly in 10 seconds", "sub": "Tight utility turns lurkers into loyal followers." }
+          {
+            "badge": "STEP 1",
+            "headline": "Mine real 'How do I...' comments",
+            "sub": "Look at your posts or bigger niche creators' threads."
+          },
+          {
+            "badge": "STEP 2",
+            "headline": "Put that exact question on frame 1",
+            "sub": "Real audience wording always beats abstract titles."
+          },
+          {
+            "badge": "STEP 3",
+            "headline": "Answer it directly in 10 seconds",
+            "sub": "Tight utility turns lurkers into loyal followers."
+          }
         ],
-        "cta": "Save this infinite Reel idea loop"
+        "cta": "Save this infinite Reel idea loop",
+        "subhook": "Turn real audience questions into Reels →"
       },
       "caption": "Your audience already tells you what to film next—inside comments and DMs.\n\nScreenshot one real question, open frame one with that exact wording, and give a crisp 10-second answer.\n\nDrop a question you're wrestling with below and we might turn it into a breakdown.\n\n#reelideas #contentcreation #instagramstrategy #creatortips #shortformvideo"
     },
@@ -582,10 +999,19 @@
         "eyebrow": "CAROUSEL HACK",
         "hook": "Why Slide 2 Matters Just as Much as Slide 1",
         "beats": [
-          { "badge": "IG BEHAVIOR", "headline": "IG re-serves Slide 2 automatically", "sub": "When a follower skips Slide 1, Instagram shows Slide 2 later." },
-          { "badge": "THE FIX", "headline": "Make Slide 2 a standalone hook", "sub": "Never waste Slide 2 on a sleepy intro paragraph." }
+          {
+            "badge": "IG BEHAVIOR",
+            "headline": "IG re-serves Slide 2 automatically",
+            "sub": "When a follower skips Slide 1, Instagram shows Slide 2 later."
+          },
+          {
+            "badge": "THE FIX",
+            "headline": "Make Slide 2 a standalone hook",
+            "sub": "Never waste Slide 2 on a sleepy intro paragraph."
+          }
         ],
-        "cta": "Upgrade Slide 2 on your next Carousel"
+        "cta": "Upgrade Slide 2 on your next Carousel",
+        "subhook": "IG re-serves Slide 2 in feeds →"
       },
       "caption": "One of Instagram's best quiet features for Carousels: if someone scrolls past Slide 1, they often get served Slide 2 on their next feed refresh.\n\nGive Slide 2 a bold, standalone headline that hooks curiosity on its own.\n\nSave this for your next Carousel design.\n\n#instagramcarousel #carouseltips #socialmediadesign #instagramgrowth #creatortips"
     },
@@ -602,12 +1028,36 @@
         "https://www.getsocialora.com/instagram/carousels/ig_car_09_hashtag_seo_2026_s4.jpg"
       ],
       "carousel_slides": [
-        { "eyebrow": "SEARCH & REACH", "headline": "Stop Pasting 30 Generic Hashtags", "body": "Search categorization responds to clarity—not spammy hashtag walls.", "tag": "SWIPE →" },
-        { "eyebrow": "WHAT HURTS", "headline": "Copy-Pasted Generic Blocks", "bullets": ["#viral #fyp #explorepage tell Instagram zero information about who needs your post.", "Repeating identical 30-tag lists across every upload looks automated."] },
-        { "eyebrow": "WHAT WORKS", "headline": "3–5 Exact Topic Tags + Caption SEO", "bullets": ["Pick 3–5 specific tags naming your topic, audience, and format.", "Put your real search phrase inside line 1 of your caption & frame 1 text."] },
-        { "eyebrow": "FREE GENERATOR", "headline": "Build Relevant Topic Clusters", "body": "Generate clean niche hashtag sets without spam via bio link (getsocialora.com/tools/instagram-hashtag-generator).", "tag": "SAVE THIS GUIDE" }
+        {
+          "eyebrow": "SEARCH & REACH",
+          "headline": "Stop Pasting 30 Generic Hashtags",
+          "body": "Search categorization responds to clarity—not spammy hashtag walls.",
+          "tag": "SWIPE →"
+        },
+        {
+          "eyebrow": "WHAT HURTS",
+          "headline": "Copy-Pasted Generic Blocks",
+          "bullets": [
+            "#viral #fyp #explorepage tell Instagram zero information about who needs your post.",
+            "Repeating identical 30-tag lists across every upload looks automated."
+          ]
+        },
+        {
+          "eyebrow": "WHAT WORKS",
+          "headline": "3–5 Exact Topic Tags + Caption SEO",
+          "bullets": [
+            "Pick 3–5 specific tags naming your topic, audience, and format.",
+            "Put your real search phrase inside line 1 of your caption & frame 1 text."
+          ]
+        },
+        {
+          "eyebrow": "FREE GENERATOR",
+          "headline": "Build Relevant Topic Clusters",
+          "body": "Generate clean niche hashtag sets without spam via bio link (getsocialora.com/tools/instagram-hashtag-generator).",
+          "tag": "SAVE THIS GUIDE"
+        }
       ],
-      "caption": "Hashtags are topic labels, not a magic reach button.\n\nUse 3–5 accurate niche tags and let your opening screen text + caption keywords do the real SEO heavy lifting.\n\nTry our free Hashtag Generator in bio: getsocialora.com/tools/instagram-hashtag-generator.\n\n#instagramhashtags #instagramseo #contentstrategy #creatortools #instagramtips"
+      "caption": "Hashtags work best as simple topic labels, not a magic reach button.\n\nStick to 3–5 accurate niche tags and write real search phrases inside frame 1 and line 1 of your caption.\n\nTry our free Hashtag Helper in bio: getsocialora.com/tools/instagram-hashtag-generator.\n\n#instagramhashtags #instagramseo #contentstrategy #creatortools #instagramtips"
     },
     {
       "id": "ig_reel_18_grid_cover_crop",
@@ -622,10 +1072,19 @@
         "eyebrow": "PROFILE GRID FIX",
         "hook": "Stop Letting Profile Grid Crop Cut Cover Titles",
         "beats": [
-          { "badge": "THE ISSUE", "headline": "Reels are 9:16, Grid crops tighter", "sub": "Titles near top or bottom get chopped on your profile." },
-          { "badge": "THE FIX", "headline": "Extract sharp frames & center text", "sub": "Grab clean stills via getsocialora.com/tools/video-frame-to-thumbnail" }
+          {
+            "badge": "THE ISSUE",
+            "headline": "Reels are 9:16, Grid crops tighter",
+            "sub": "Titles near top or bottom get chopped on your profile."
+          },
+          {
+            "badge": "THE FIX",
+            "headline": "Extract sharp frames & center text",
+            "sub": "Grab clean stills via getsocialora.com/tools/video-frame-to-thumbnail"
+          }
         ],
-        "cta": "Free Frame-to-Thumbnail tool in bio"
+        "cta": "Free Frame-to-Thumbnail tool in bio",
+        "subhook": "Keep grid cover headlines centered →"
       },
       "caption": "Your Reel plays in 9:16—but visitors scanning your profile grid see a tighter vertical crop.\n\nKeep cover headlines centered and extract a sharp frame directly from your exported video instead of using blurry paused screenshots.\n\nLink in bio: getsocialora.com/tools/video-frame-to-thumbnail.\n\n#reelcover #profilegrid #videoediting #creatortools #instagramtips"
     },
@@ -645,9 +1104,14 @@
         "compare_good_label": "FOCUSED CTA",
         "compare_good_text": "\"Save this checklist before editing your next Reel.\"",
         "beats": [
-          { "badge": "RULE", "headline": "Give every post ONE clear job", "sub": "Focused prompts double actual action rate." }
+          {
+            "badge": "RULE",
+            "headline": "Give every post ONE clear job",
+            "sub": "Focused prompts double actual action rate."
+          }
         ],
-        "cta": "Pick 1 CTA per post starting today"
+        "cta": "Pick 1 CTA per post starting today",
+        "subhook": "One clear ask converts better than five →"
       },
       "caption": "Stacking five different requests at the end of a post creates friction—so viewers scroll without doing any of them.\n\nMatch one clear ask to the post goal: Save for checklists, Comment for discussions, Link in bio for workflows.\n\nSave this reminder.\n\n#copywritingtips #instagramgrowth #contentstrategy #creatoradvice #socialmediamarketing"
     },
@@ -664,10 +1128,34 @@
         "https://www.getsocialora.com/instagram/carousels/ig_car_10_sunday_review_loop_s4.jpg"
       ],
       "carousel_slides": [
-        { "eyebrow": "WEEKLY SYSTEM", "headline": "The 10-Minute Sunday Growth Audit", "body": "Stop guessing next week's posts. Repeat what earned real saves and follows.", "tag": "SWIPE →" },
-        { "eyebrow": "STEP 01 + 02", "headline": "Sort Last 10 Posts by Saves & Sends", "bullets": ["1. Ignore vanity likes—sort by Saves and DM Shares first.", "2. Spot the top 2 topics and opening hook styles that held attention."] },
-        { "eyebrow": "STEP 03", "headline": "Plan Realistic Weekly Output", "bullets": ["3. Film 2 fresh follow-up angles on your winning topic next week.", "Use realistic milestone pacing instead of chasing random viral luck."] },
-        { "eyebrow": "FREE PLANNER", "headline": "Map Your Next Milestone", "body": "Break big follower targets into weekly cadence steps in bio (getsocialora.com/tools/follower-goal-calculator).", "tag": "SAVE THIS RITUAL" }
+        {
+          "eyebrow": "WEEKLY SYSTEM",
+          "headline": "The 10-Minute Sunday Growth Audit",
+          "body": "Stop guessing next week's posts. Repeat what earned real saves and follows.",
+          "tag": "SWIPE →"
+        },
+        {
+          "eyebrow": "STEP 01 + 02",
+          "headline": "Sort Last 10 Posts by Saves & Sends",
+          "bullets": [
+            "1. Ignore vanity likes—sort by Saves and DM Shares first.",
+            "2. Spot the top 2 topics and opening hook styles that held attention."
+          ]
+        },
+        {
+          "eyebrow": "STEP 03",
+          "headline": "Plan Realistic Weekly Output",
+          "bullets": [
+            "3. Film 2 fresh follow-up angles on your winning topic next week.",
+            "Use realistic milestone pacing instead of chasing random viral luck."
+          ]
+        },
+        {
+          "eyebrow": "FREE PLANNER",
+          "headline": "Map Your Next Milestone",
+          "body": "Break big follower targets into weekly cadence steps in bio (getsocialora.com/tools/follower-goal-calculator).",
+          "tag": "SAVE THIS RITUAL"
+        }
       ],
       "caption": "Consistent organic growth comes from tight weekly feedback loops—not luck.\n\nSpend 10 minutes every Sunday sorting your recent posts by Saves and DM Sends, then build next week's Reels around what actually worked.\n\nTry our free Follower Goal Calculator in bio: getsocialora.com/tools/follower-goal-calculator.\n\n#contentplanning #instagramgrowth #creatorworkflow #creatortools #socialmediastrategy"
     },
@@ -683,12 +1171,21 @@
         "eyebrow": "EDITING SECRET",
         "hook": "Stop Saying 'Thanks For Watching' at the End",
         "beats": [
-          { "badge": "THE DROP", "headline": "Goodbye phrases trigger instant swipes", "sub": "Viewers bail 1.5s early the moment they hear an outro." },
-          { "badge": "THE LOOP", "headline": "Cut cleanly on your final takeaway", "sub": "Tight endings push average watch time over 100%." }
+          {
+            "badge": "THE DROP",
+            "headline": "Goodbye phrases trigger instant swipes",
+            "sub": "Viewers bail 1.5s early the moment they hear an outro."
+          },
+          {
+            "badge": "THE LOOP",
+            "headline": "Cut cleanly on your final takeaway",
+            "sub": "Tight endings push average watch time over 100%."
+          }
         ],
-        "cta": "Cut your outro fluff on your next Reel"
+        "cta": "Cut your outro fluff on your next Reel",
+        "subhook": "Cut goodbye fluff so replays loop →"
       },
-      "caption": "The fastest way to ruin completion rate on a great 10-second tutorial is adding a 2-second 'Thanks for watching, follow for more!' outro.\n\nEnd right on your crisp final takeaway so the Reel loops seamlessly back to the opening hook.\n\nSave this editing rule.\n\n#videoeditingtips #reelretention #instagramreels #contentcreator #shortformvideo"
+      "caption": "Stop ending an 8-second tutorial with \"Thanks for watching, follow for more!\"\n\nThe moment viewers hear a goodbye, they swipe away—even before the video finishes. Cut right on your final point so the clip loops straight back to frame 1.\n\nSave this editing rule.\n\n#videoeditingtips #reelretention #instagramreels #contentcreator #shortformvideo"
     }
   ]
 }
