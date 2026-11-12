@@ -7,7 +7,7 @@ export const ACCOUNT_TOOLS: readonly ToolDef[] = [
     group: 'Account Tools',
     platform: 'Instagram',
     name: 'Instagram Fake Follower Check',
-    title: 'Instagram Fake Follower Checker — Free Bot & Audit Test (No Login)',
+    title: 'Instagram Fake Follower Checker: Free Bot & Audit Test (No Login)',
     h1: 'Instagram Fake Follower Check',
     description:
       'Free Instagram fake follower checker (no login required). Enter public numbers to test if an account has bots or real followers, with a clear risk score.',
@@ -52,16 +52,16 @@ export const ACCOUNT_TOOLS: readonly ToolDef[] = [
     title: 'Who Viewed My Instagram Profile? Free Viewer Check & Insights (2026)',
     h1: 'Who Viewed My Instagram Profile Check',
     description:
-      'Find out who viewed your Instagram profile and how many secret visitors checked your page. Free Instagram profile viewer calculator, Story stalker tricks & Insights guide — no password needed.',
+      'Find out who viewed your Instagram profile and how many secret visitors checked your page. Free Instagram profile viewer calculator, Story stalker tricks & Insights guide: no password needed.',
     intro:
-      'Want to see who viewed your Instagram profile? Check your real 7-day profile visits, estimate silent profile stalkers, and use the 4 real Instagram features that reveal exact viewer usernames — 100% free and without risking your password.',
+      'Want to see who viewed your Instagram profile? Check your real 7-day profile visits, estimate silent profile stalkers, and use the 4 real Instagram features that reveal exact viewer usernames, 100% free and without risking your password.',
     about: [
       'Every day, thousands of users search "who viewed my Instagram profile" or "can you see who stalks your Instagram." The honest fact: Instagram does not show usernames for regular profile grid visits, and any third-party app or site asking for your login to show a "secret stalker list" is either guessing from public likes or trying to steal your account.',
       'However, Instagram gives you four legitimate, built-in ways to track profile viewers and reveal usernames: 24-hour Story viewer lists (kept for 48 hours in your Story Archive), fresh Pinned Highlights with poll/slider stickers, Close Friends Story filters, and the 7-day / 30-day Profile Visits counter inside Instagram Professional Insights.',
       'Use our free Instagram Profile Viewer Check above to compare your weekly profile visits against your Story viewers and non-follower reach. When you see high silent profile traffic, pinning your best Reels and boosting social proof helps turn anonymous visitors into real followers.',
     ],
     tips: [
-      'Never enter your Instagram password on third-party "who viewed my profile" apps — Meta disabled private visitor list APIs years ago.',
+      'Never enter your Instagram password on third-party "who viewed my profile" apps: Meta disabled private visitor list APIs years ago.',
       'Add a new Story with an interactive poll or emoji slider to your first Highlight; for 48 hours, you can see every exact username that opens it from your profile.',
       'Check how your Story viewer list is ordered after 50+ views: accounts that frequently visit your profile and message you appear near the top even if they never like your posts.',
       'Pin your 3 highest-view Reels at the top of your grid so silent profile visitors immediately see strong social proof and tap Follow.',
@@ -77,7 +77,7 @@ export const ACCOUNT_TOOLS: readonly ToolDef[] = [
       },
       {
         q: 'How does Instagram sort your Story viewer list?',
-        a: 'Under 50 views, Story viewers appear in reverse chronological order. Above 50 views, Instagram ranks accounts based on profile visits, Story views, DMs and feed interactions — so accounts at the very top who never like your posts are your most active silent viewers.',
+        a: 'Under 50 views, Story viewers appear in reverse chronological order. Above 50 views, Instagram ranks accounts based on profile visits, Story views, DMs and feed interactions, so accounts at the very top who never like your posts are your most active silent viewers.',
       },
       {
         q: 'How do I check how many people visited my Instagram profile?',
@@ -97,19 +97,19 @@ export const ACCOUNT_TOOLS: readonly ToolDef[] = [
     group: 'Account Tools',
     platform: 'TikTok',
     name: 'TikTok Shadowban Checker',
-    title: 'TikTok Shadowban Checker — Free FYP & Reach Restriction Test (2026)',
+    title: 'TikTok Shadowban Checker: Free FYP & Reach Restriction Test (2026)',
     h1: 'TikTok Shadowban Checker',
     description:
-      'Are you shadowbanned on TikTok or stuck at 0–200 views? Free TikTok shadowban test to check For You Page (FYP) restrictions and fix your reach in 48 hours.',
+      'Are you shadowbanned on TikTok or stuck at 0 to 200 views? Free TikTok shadowban test to check For You Page (FYP) restrictions and fix your reach in 48 hours.',
     intro:
-      'Stuck at 0 or 200 views on TikTok? Test whether your account is shadowbanned from the For You Page (FYP) or experiencing an algorithm cooldown — no login required.',
+      'Stuck at 0 or 200 views on TikTok? Test whether your account is shadowbanned from the For You Page (FYP) or experiencing an algorithm cooldown: no login required.',
     about: [
-      'A TikTok shadowban happens when the algorithm restricts your videos from appearing on the For You Page (FYP) or in search results without sending an explicit ban notice. Most creators notice it when their views suddenly drop from thousands to 0–200 views.',
+      'A TikTok shadowban happens when the algorithm restricts your videos from appearing on the For You Page (FYP) or in search results without sending an explicit ban notice. Most creators notice it when their views suddenly drop from thousands to 0 to 200 views.',
       'This diagnostic tool compares your normal view baseline against your last 3 to 5 uploads, your FYP traffic percentage in TikTok Studio, and your Account Status flags to tell the difference between a real FYP restriction and a content retention dip.',
       'If your account is throttled, mass-deleting videos or re-uploading the same clip can make it worse. Follow the recovery checklist to clear flagged posts and rebuild early engagement velocity.',
     ],
     tips: [
-      'Never delete and re-upload the exact same video file — TikTok flags duplicate video hashes as spam.',
+      'Never delete and re-upload the exact same video file: TikTok flags duplicate video hashes as spam.',
       'Wait at least 2 to 3 hours between uploads if your views suddenly drop to 0.',
       'Check TikTok Studio → Analytics → Traffic Sources on your last 3 videos; if "For You" is under 5%, your video was held from recommendations.',
     ],
@@ -119,8 +119,8 @@ export const ACCOUNT_TOOLS: readonly ToolDef[] = [
         a: 'Most TikTok FYP restrictions last between 3 and 14 days once you remove or appeal any flagged content and avoid spammy posting behavior.',
       },
       {
-        q: 'Why are my TikTok videos stuck at 200–300 views?',
-        a: '200–300 views is NOT a shadowban — it is TikTok’s initial test batch on the For You Page. To break past 300 views, you need stronger watch-through completion and early likes/shares.',
+        q: 'Why are my TikTok videos stuck at 200 to 300 views?',
+        a: '200 to 300 views is NOT a shadowban, it is TikTok’s initial test batch on the For You Page. To break past 300 views, you need stronger watch-through completion and early likes/shares.',
       },
       {
         q: 'Why is my new TikTok video stuck at 0 views?',
@@ -140,7 +140,7 @@ export const ACCOUNT_TOOLS: readonly ToolDef[] = [
     group: 'Account Tools',
     platform: 'Instagram',
     name: 'Instagram Shadowban Tester',
-    title: 'Instagram Shadowban Tester — Check Explore & Reels Reach (Free 2026)',
+    title: 'Instagram Shadowban Tester: Check Explore & Reels Reach (Free 2026)',
     h1: 'Instagram Shadowban Tester',
     description:
       'Test if your Instagram account is shadowbanned from Explore, Reels and hashtags. Free 30-second Instagram shadowban checker and recovery guide (no login).',

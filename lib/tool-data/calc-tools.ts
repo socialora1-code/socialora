@@ -28,6 +28,10 @@ export const CALC_TOOLS: readonly ToolDef[] = [
         q: 'What do I need to earn money on YouTube?',
         a: 'You need to join the YouTube Partner Program. The rules and thresholds can change, so check the current requirements on YouTube’s help pages.',
       },
+      {
+        q: 'How many views do I need to get paid by YouTube?',
+        a: 'You need at least 1,000 subscribers and 4,000 valid public watch hours in the past 12 months, or 10 million Shorts views in 90 days, to join the YouTube Partner Program. Once accepted, YouTube pays monthly whenever your earnings reach the 100 dollar threshold.',
+      }
     ],
     cta: {
       text: 'Working toward monetization? See our YouTube views, watch time and subscriber options.',
@@ -62,6 +66,10 @@ export const CALC_TOOLS: readonly ToolDef[] = [
         q: 'Why is the range so wide?',
         a: 'Because earnings per 1,000 views depend on content, audience and ad demand. A wide range is more realistic than one exact number.',
       },
+      {
+        q: 'How often does Facebook pay video creators?',
+        a: 'Meta pays creators monthly around the 21st of each month for the previous month earnings, provided you meet the 100 dollar payout minimum. Payouts are sent directly to your linked bank account or PayPal.',
+      }
     ],
   },
   {
@@ -96,6 +104,10 @@ export const CALC_TOOLS: readonly ToolDef[] = [
         q: 'Is the result what I will receive?',
         a: 'Not necessarily. Labels, distributors and other rights holders take their share first, so your payout can be lower than the total shown.',
       },
+      {
+        q: 'Does Spotify pay per listener or per stream?',
+        a: 'Spotify pays per stream, not per listener. A stream is counted when a track plays for at least 30 seconds. In addition, tracks must receive at least 1,000 streams in a 12-month period to generate royalties under Spotify royalty model.',
+      }
     ],
   },
   {
@@ -125,6 +137,10 @@ export const CALC_TOOLS: readonly ToolDef[] = [
         q: 'Why is my real payout different?',
         a: 'Your revenue split, taxes, regional pricing and gifted subscriptions can all change the final amount. Use this as an estimate.',
       },
+      {
+        q: 'What is the Twitch subscription revenue split?',
+        a: 'Affiliates and standard Partners earn a 50/50 split of Tier 1 subscriptions. Creators enrolled in the Partner Plus Program can earn a 60/40 or 70/30 split on net subscription revenue up to program caps.',
+      }
     ],
   },
   {
@@ -154,6 +170,10 @@ export const CALC_TOOLS: readonly ToolDef[] = [
         q: 'What is a good TikTok engagement rate?',
         a: 'It depends on your niche and size. The labels on this page are rough rules of thumb, and smaller accounts usually see higher rates than large ones.',
       },
+      {
+        q: 'Why do comments and shares count more than likes on TikTok?',
+        a: 'The TikTok algorithm weights shares, saves and comments significantly higher than simple likes because they signal strong viewer retention and community discussion, which triggers wider For You Page distribution.',
+      }
     ],
     cta: {
       text: 'Want a stronger start for your next video? See our TikTok services.',
@@ -188,6 +208,10 @@ export const CALC_TOOLS: readonly ToolDef[] = [
         q: 'What counts as engagement?',
         a: 'Likes, replies and reposts are included here. Clicks, profile visits and bookmarks are not public, so they are not part of this number.',
       },
+      {
+        q: 'How does reposting affect engagement rate on X?',
+        a: 'Reposts and quote posts expand your tweet reach to secondary feeds. When calculating engagement rate by impressions, a post with high reposts often yields higher total interactions even as impression volume surges.',
+      }
     ],
     cta: {
       text: 'Want your X profile to look more established? See our X services.',
@@ -222,6 +246,10 @@ export const CALC_TOOLS: readonly ToolDef[] = [
         q: 'What is a good rate?',
         a: 'It depends on your niche and size. The labels here are rough rules of thumb, and bigger channels usually have lower rates than small ones.',
       },
+      {
+        q: 'Does high engagement help YouTube videos rank in search?',
+        a: 'Yes. YouTube search and discovery algorithms prioritize videos with high click-through rates, average view duration, and active comment discussions because these metrics show viewer satisfaction.',
+      }
     ],
     cta: {
       text: 'Need a stronger start for your channel? See our YouTube services.',
@@ -235,7 +263,7 @@ export const CALC_TOOLS: readonly ToolDef[] = [
     group: 'Calculators',
     platform: 'TikTok',
     name: 'TikTok Coins & Gift Money Calculator',
-    title: 'TikTok Coins to USD Calculator — Live Gift & Diamond Value (2026)',
+    title: 'TikTok Coins to USD Calculator: Live Gift & Diamond Value (2026)',
     h1: 'TikTok Coins & Gift Money Calculator',
     description:
       'Convert TikTok Coins and Diamonds to USD instantly. See how much TikTok Live gifts cost on Web vs App and how much creators actually get paid.',
@@ -244,11 +272,11 @@ export const CALC_TOOLS: readonly ToolDef[] = [
     widget: 'tiktok-coins',
     about: [
       'TikTok Live uses three currencies: viewers buy Coins, send virtual Gifts during a stream, and creators receive Diamonds that can be cashed out to PayPal or a bank account.',
-      'Roughly two TikTok Coins equal one Creator Diamond, and each Diamond is worth about $0.005 USD — meaning TikTok keeps roughly 50% of the gift value. On top of that, buying coins directly at tiktok.com/coin on desktop or mobile web is 25% to 30% cheaper than recharging inside the iOS or Android app because it avoids app store fees.',
+      'Roughly two TikTok Coins equal one Creator Diamond, and each Diamond is worth about $0.005 USD, meaning TikTok keeps roughly 50% of the gift value. On top of that, buying coins directly at tiktok.com/coin on desktop or mobile web is 25% to 30% cheaper than recharging inside the iOS or Android app because it avoids app store fees.',
       'Use this calculator to check the dollar value of any TikTok gift (such as a Galaxy at 1,000 coins, a Lion at 29,999 coins, or a TikTok Universe at 44,999 coins) and estimate creator earnings.',
     ],
     tips: [
-      'Buy TikTok Coins on a web browser (tiktok.com/coin) instead of the mobile app to save up to 25–30% on every recharge.',
+      'Buy TikTok Coins on a web browser (tiktok.com/coin) instead of the mobile app to save up to 25% to 30% on every recharge.',
       'You need at least 1,000 TikTok followers to unlock TikTok Live and receive gifts from viewers.',
       '1,000 TikTok Coins equals roughly 500 Diamonds, which pays the creator about $2.50 to $5.00 USD depending on regional rates.',
     ],
@@ -286,12 +314,12 @@ export const CALC_TOOLS: readonly ToolDef[] = [
       'Wondering how much your Instagram account is worth to brands? Enter your followers, average likes and comments to calculate what to charge for a sponsored Reel, feed post, or 3-frame Story set.',
     widget: 'instagram-sponsorship',
     about: [
-      'Brands no longer price influencer sponsorships by follower count alone — they look at average views, likes, comments and niche authority. A 15,000-follower creator with strong engagement often earns more per Reel than a 100,000-follower page with inactive followers.',
+      'Brands no longer price influencer sponsorships by follower count alone: they look at average views, likes, comments and niche authority. A 15,000-follower creator with strong engagement often earns more per Reel than a 100,000-follower page with inactive followers.',
       'This calculator combines a baseline audience CPM with an active engagement multiplier to estimate fair market rates for a single Feed Post, a Sponsored Reel, a 3-Frame Story sequence with a link sticker, and a bundled campaign.',
     ],
     tips: [
-      'Always pitch brands a Reel + 3-Story bundle instead of a single post; bundles convert better for sponsors and increase your total invoice by 35–50%.',
-      'Charge an extra 20–30% per month if a brand asks for "paid usage rights" or whitelisting to run your video as an ad.',
+      'Always pitch brands a Reel + 3-Story bundle instead of a single post; bundles convert better for sponsors and increase your total invoice by 35% to 50%.',
+      'Charge an extra 20% to 30% per month if a brand asks for "paid usage rights" or whitelisting to run your video as an ad.',
       'Before sending your media kit, make sure your top 3 pinned Reels have strong view counts and engagement.',
     ],
     faqs: [
@@ -303,6 +331,10 @@ export const CALC_TOOLS: readonly ToolDef[] = [
         q: 'Do brands check my Reels views before offering a deal?',
         a: 'Yes. Brand managers check your pinned posts and last 6 Reels first. High view counts and consistent likes immediately raise your perceived value.',
       },
+      {
+        q: 'Should I charge extra for Story links and bio links in a sponsorship?',
+        a: 'Yes. Most creators add a 20% to 30% add-on fee for a dedicated link in bio for 24 to 48 hours or an interactive Instagram Story sticker link, as these direct response assets convert followers directly into website visits.',
+      }
     ],
     cta: {
       text: 'Preparing your profile for brand deals? Boost your Reels views and follower authority with our Instagram services.',
@@ -316,7 +348,7 @@ export const CALC_TOOLS: readonly ToolDef[] = [
     group: 'Calculators',
     platform: 'Telegram',
     name: 'Telegram Channel Earnings & Ad Price Calculator',
-    title: 'Telegram Channel Money Calculator — Sponsored Post & Ad Price (2026)',
+    title: 'Telegram Channel Money Calculator: Sponsored Post & Ad Price (2026)',
     h1: 'Telegram Channel Money & Ad Rate Calculator',
     description:
       'Calculate how much your Telegram channel can earn from sponsored posts and ads. Free Telegram ad price calculator based on subscribers, 24h views and niche CPM.',
@@ -341,6 +373,10 @@ export const CALC_TOOLS: readonly ToolDef[] = [
         q: 'How do Telegram channels rank higher in Telegram search?',
         a: 'Telegram search ranks channels primarily by total subscriber count, Telegram Premium subscribers, and keyword match in the channel title.',
       },
+      {
+        q: 'What is the difference between CPM and fixed-post pricing on Telegram?',
+        a: 'CPM (cost per thousand views) charges advertisers based on how many views a post accumulates over 24 or 48 hours. Fixed pricing sets a flat fee for keeping the sponsor message pinned or in the top position for a designated period.',
+      }
     ],
     cta: {
       text: 'Want your Telegram channel to rank higher in search and attract advertisers? See our Telegram members & Premium subscriber services.',

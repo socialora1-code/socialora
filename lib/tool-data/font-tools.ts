@@ -27,6 +27,10 @@ export const FONT_TOOLS: readonly ToolDef[] = [
         q: 'Why do some styles show boxes on my phone?',
         a: 'Not every device has every symbol. If a style shows boxes, pick another one. Bold and italic styles are usually the safest choice.',
       },
+      {
+        q: 'Can screen readers read unicode fancy text?',
+        a: 'Screen readers often interpret unicode decorative characters letter-by-letter or as mathematical symbols. For accessibility, keep your primary username and essential bio info in standard text and use decorative fonts for short accents or headers.',
+      }
     ],
     cta: {
       text: 'Want your profile to get noticed by more people? See our Instagram growth services.',
@@ -60,6 +64,10 @@ export const FONT_TOOLS: readonly ToolDef[] = [
         q: 'Does fancy text get me more views?',
         a: 'There is no proof that decorative text changes how TikTok shows your videos. Treat it as a style choice, not a growth trick.',
       },
+      {
+        q: 'Will fancy fonts affect my TikTok search discoverability?',
+        a: 'TikTok search indexes standard text best. If you want your profile to appear when users search for your niche keywords, keep your main username and primary bio keywords in regular text, and style your display name or secondary callouts.',
+      }
     ],
     cta: {
       text: 'Want a stronger start for your next video? See our TikTok services.',
@@ -93,6 +101,10 @@ export const FONT_TOOLS: readonly ToolDef[] = [
         q: 'Does Discord have its own text formatting?',
         a: 'Yes. You can use simple symbols around your text for bold, italic, underline and strikethrough. Fancy fonts are a different option that changes the letters themselves.',
       },
+      {
+        q: 'Can I use custom fonts in Discord channel names?',
+        a: 'Discord channel names support small caps, sans-serif unicode, and symbols, but spaces are automatically converted to hyphens. Server admins often use styled unicode characters to organize channel category headers.',
+      }
     ],
   },
   {
@@ -121,6 +133,10 @@ export const FONT_TOOLS: readonly ToolDef[] = [
         q: 'Will my contacts see the same style?',
         a: 'Usually yes, because these are text characters, not images. Very old phones may show boxes for rare symbols.',
       },
+      {
+        q: 'Can I format bold and italic text directly in WhatsApp messages?',
+        a: 'Yes. WhatsApp natively supports asterisks for bold, underscores for italic, and tildes for strikethrough. This font generator creates stylized unicode characters that you can paste anywhere without special markdown markers.',
+      }
     ],
   },
   {
@@ -149,6 +165,10 @@ export const FONT_TOOLS: readonly ToolDef[] = [
         q: 'Can I change my @handle with this tool?',
         a: 'No. Handles only accept plain characters. Use fancy text in your display name, bio and posts.',
       },
+      {
+        q: 'Can I search for posts written with custom unicode fonts on X?',
+        a: 'Search engines and the X search bar may not always match stylized unicode characters with normal keyboard text. It is best to use fancy text on prominent hook words while keeping important hashtags and search keywords in standard letters.',
+      }
     ],
     cta: {
       text: 'Want your X profile to look more established? See our X services.',
@@ -182,6 +202,10 @@ export const FONT_TOOLS: readonly ToolDef[] = [
         q: 'Can I use it for my profile name?',
         a: 'Facebook has rules for profile names, and decorative characters may not be accepted. It is safer to keep your profile name plain.',
       },
+      {
+        q: 'Will fancy text look normal on both desktop and mobile Facebook?',
+        a: 'Yes. The characters generated are universal Unicode symbols supported by all modern operating systems including iOS, Android, macOS, and Windows. They render consistently across Facebook feeds and groups.',
+      }
     ],
   },
   {
@@ -210,6 +234,10 @@ export const FONT_TOOLS: readonly ToolDef[] = [
         q: 'Will my friends see the same characters?',
         a: 'In most cases yes. If a friend sees boxes, their device may not support that symbol, and a different style will fix it.',
       },
+      {
+        q: 'Can I paste stylized fonts into Snapchat Stories and Snaps?',
+        a: 'Yes. You can copy the generated text and paste it directly into the Snapchat caption tool or text sticker editor on any photo or video Snap.',
+      }
     ],
   },
   {
@@ -238,6 +266,10 @@ export const FONT_TOOLS: readonly ToolDef[] = [
         q: 'Will it affect how people find my profile?',
         a: 'It can. Search looks for normal letters, so decorative text in your headline may not match. Keep key skills and titles plain.',
       },
+      {
+        q: 'Where is the best place to use stylized text on LinkedIn?',
+        a: 'Many creators use bold unicode text for headline hooks, section dividers, or key bullet points in text posts. Avoid styling your legal name or job title so recruiters can search for you without issues.',
+      }
     ],
   },
   {
@@ -266,6 +298,10 @@ export const FONT_TOOLS: readonly ToolDef[] = [
         q: 'Can I use them in my Threads username?',
         a: 'No. Usernames use plain characters. Use fancy text in your bio and posts instead.',
       },
+      {
+        q: 'Does Threads penalize posts that use custom unicode fonts?',
+        a: 'No. Threads displays standard unicode characters without issue. However, using too many stylized words can reduce readability, so using styled text on the opening hook word or title works best.',
+      }
     ],
   },
   {
@@ -294,6 +330,10 @@ export const FONT_TOOLS: readonly ToolDef[] = [
         q: 'Can chat moderators block fancy text?',
         a: 'Yes, some channels filter messages with many special symbols. If your message does not appear, try a simpler style.',
       },
+      {
+        q: 'Can I use custom fonts in Twitch stream titles?',
+        a: 'Yes. Streamers frequently paste stylized fonts into their stream titles, about panel headers, and offline banners to make key announcement words stand out in Twitch directory listings.',
+      }
     ],
   },
 ]

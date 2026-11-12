@@ -47,19 +47,19 @@ function analyzeProfileViewers(
   signals.push({
     label: 'Profile visit-to-follower ratio (7 days)',
     status: visitRate >= 8 ? 'ok' : visitRate >= 3 ? 'watch' : 'warn',
-    detail: `Your profile received ${profileVisits.toLocaleString('en-US')} visits (${visitRate.toFixed(1)}% of your follower count). Note: Instagram does not publish a list of individual profile visitors — only total visit counts in Professional Insights.`,
+    detail: `Your profile received ${profileVisits.toLocaleString('en-US')} visits (${visitRate.toFixed(1)}% of your follower count). Note: Instagram does not publish a list of individual profile visitors: only total visit counts in Professional Insights.`,
   })
 
   if (!Number.isNaN(storyViews) && storyViews > 0) {
     const storyRate = (storyViews / followers) * 100
     signals.push({
-      label: 'Visible Story viewer list (24h–48h)',
+      label: 'Visible Story viewer list (24h-48h)',
       status: storyRate >= 10 ? 'ok' : 'watch',
       detail: `Around ${storyViews.toLocaleString('en-US')} accounts open your Stories (${storyRate.toFixed(1)}% of followers). Stories and Highlights are the ONLY place where Instagram reveals exact usernames of people watching your content without liking.`,
     })
   } else {
     signals.push({
-      label: 'Visible Story viewer list (24h–48h)',
+      label: 'Visible Story viewer list (24h-48h)',
       status: 'na',
       detail: 'Add your average 24-hour Story views to compare visible Story viewers against anonymous profile visits.',
     })
@@ -83,7 +83,7 @@ function analyzeProfileViewers(
     signals.push({
       label: 'Private shares & saves (DM forwards)',
       status: savesShares >= 20 ? 'ok' : savesShares >= 5 ? 'watch' : 'warn',
-      detail: `${savesShares.toLocaleString('en-US')} saves/shares per post show people bookmarking or forwarding your profile in DMs — a major source of repeat profile visits that never show up in public likes.`,
+      detail: `${savesShares.toLocaleString('en-US')} saves/shares per post show people bookmarking or forwarding your profile in DMs: a major source of repeat profile visits that never show up in public likes.`,
     })
   }
 

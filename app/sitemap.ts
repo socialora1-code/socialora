@@ -13,7 +13,7 @@ import { SITE } from '@/lib/site'
 import { TOOLS } from '@/lib/tool-list'
 
 // İçerik gerçekten değiştiğinde bu tarihi güncelle
-const SITE_UPDATED = new Date('2026-11-08')
+const SITE_UPDATED = new Date('2026-11-12')
 
 const ROUTES = [
   '',
@@ -73,9 +73,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       route === ''
         ? 1
-        : PLATFORM_ROUTES.includes(route)
+        : PLATFORM_ROUTES.includes(route) || route === '/tools/instagram-engagement-rate-calculator'
           ? 0.9
-          : route === '/blog' || TOOL_ROUTES.includes(route)
+          : route === '/blog' || route === '/tools'
             ? 0.8
             : 0.5,
   }))
@@ -102,7 +102,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${SITE.url}/tools/${tool.slug}`,
     lastModified,
     changeFrequency: 'monthly' as const,
-    priority: 0.8,
+    priority: 0.9,
   }))
 
   const posts: MetadataRoute.Sitemap = POSTS.map((post) => ({

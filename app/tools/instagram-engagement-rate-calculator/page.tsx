@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { EngagementRateCalculator } from '@/components/tools/engagement-rate-calculator'
+import { RelatedCreatorTools } from '@/components/tools/related-creator-tools'
 import { buildToolsMetadata } from '@/components/tools/tool-seo'
+import { SITE } from '@/lib/site'
 
 export const metadata: Metadata = buildToolsMetadata({
   title: 'Instagram Engagement Rate Calculator (Free)',
@@ -26,8 +28,45 @@ const FAQS = [
 ]
 
 export default function EngagementCalculatorPage() {
+  const url = `${SITE.url}/tools/instagram-engagement-rate-calculator`
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: 'Instagram Engagement Rate Calculator',
+      description:
+        'Free Instagram engagement rate calculator. Enter your followers, average likes and comments to see your engagement rate and what it means.',
+      url,
+      applicationCategory: 'UtilitiesApplication',
+      operatingSystem: 'Any (Web Browser)',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: FAQS.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+        { '@type': 'ListItem', position: 2, name: 'Free Tools', item: `${SITE.url}/tools` },
+        { '@type': 'ListItem', position: 3, name: 'Instagram Engagement Rate Calculator', item: url },
+      ],
+    },
+  ]
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
       <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
         Instagram Engagement Rate Calculator
       </h1>
@@ -124,6 +163,8 @@ export default function EngagementCalculatorPage() {
           </Link>
         </div>
       </section>
+
+      <RelatedCreatorTools currentSlug="instagram-engagement-rate-calculator" />
     </div>
   )
 }

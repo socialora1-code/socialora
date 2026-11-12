@@ -14,12 +14,12 @@ import { GridMaker } from '@/components/tools/grid-maker'
 import { LinkGenerator } from '@/components/tools/link-generator'
 import { GiveawayPicker } from '@/components/tools/picker'
 import { PhotoResizer } from '@/components/tools/photo-resizer'
+import { RelatedCreatorTools } from '@/components/tools/related-creator-tools'
 import { SafeZone } from '@/components/tools/safe-zone'
 import { SymbolsPicker } from '@/components/tools/symbols'
 import { ThumbnailDownloader } from '@/components/tools/thumbnail-downloader'
 import { SITE } from '@/lib/site'
 import type { ToolDef } from '@/lib/tool-data/types'
-import { relatedTools } from '@/lib/tool-list'
 
 const DEFAULT_CTA = {
   text: 'Want more people to see your content? Try our free Instagram views on one of your reels.',
@@ -166,7 +166,6 @@ function Widget({ tool }: { tool: ToolDef }) {
 export function ToolPageView({ tool }: { tool: ToolDef }) {
   const cta = tool.cta ?? DEFAULT_CTA
   const steps = STEPS[tool.kind] ?? []
-  const related = relatedTools(tool)
 
   const url = `${SITE.url}/tools/${tool.slug}`
   const sharedToolUrl = new URL(url)
@@ -179,12 +178,12 @@ export function ToolPageView({ tool }: { tool: ToolDef }) {
   const jsonLd = [
     {
       '@context': 'https://schema.org',
-      '@type': 'WebApplication',
+      '@type': 'SoftwareApplication',
       name: tool.name,
       description: tool.description,
       url,
       applicationCategory: 'UtilitiesApplication',
-      operatingSystem: 'Any',
+      operatingSystem: 'Any (Web Browser)',
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     },
     {
@@ -355,28 +354,7 @@ export function ToolPageView({ tool }: { tool: ToolDef }) {
         </div>
       </section>
 
-      <section className="mt-12" aria-labelledby="more-title">
-        <h2 id="more-title" className="text-2xl font-semibold tracking-tight">
-          More free tools
-        </h2>
-        <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-          {related.map((t) => (
-            <li key={t.slug}>
-              <Link
-                href={`/tools/${t.slug}`}
-                className="block rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium hover:bg-muted"
-              >
-                {t.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-4 text-sm">
-          <Link href="/tools" className="font-medium underline underline-offset-4">
-            See all free tools
-          </Link>
-        </p>
-      </section>
+      <RelatedCreatorTools currentSlug={tool.slug} />
     </div>
   )
 }

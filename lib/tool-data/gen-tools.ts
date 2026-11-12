@@ -28,6 +28,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
         q: 'How long can an Instagram bio be?',
         a: 'The bio box has a short limit that can change over time. The ideas here are kept short, but check the limit shown in your app.',
       },
+      {
+        q: 'How do I add line breaks to my Instagram bio?',
+        a: 'Type your bio in a notes app or use this generator with clean spacing, then paste it directly into the Bio field in your Instagram app. Avoid adding extra spaces after the last word on each line.',
+      }
     ],
     cta: {
       text: 'Want your profile to get noticed by more people? See our Instagram growth services.',
@@ -67,6 +71,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
         q: 'Do I need to change my bio often?',
         a: 'Not often. Update it when your content changes, or when you want to point people to a new series or link.',
       },
+      {
+        q: 'When can I add a clickable website link to my TikTok bio?',
+        a: 'TikTok allows personal accounts to add a clickable link once they reach 1,000 followers. Business accounts can add a link immediately in many regions, but may have limited access to commercial music tracks.',
+      }
     ],
     cta: {
       text: 'Give your next video a stronger start. See our TikTok services.',
@@ -106,6 +114,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
         q: 'Should I add hashtags to my bio?',
         a: 'It is usually not needed. Plain words read better, and your posts are where hashtags matter.',
       },
+      {
+        q: 'How many characters are allowed in an X (Twitter) bio?',
+        a: 'X allows up to 160 characters in your profile bio. You also have separate fields for your display name, location, and a clickable website link.',
+      }
     ],
     cta: {
       text: 'Want your X profile to look more established? See our X services.',
@@ -145,6 +157,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
         q: 'Can I use these for a Facebook page?',
         a: 'You can adapt them. Pages usually need a clearer description of what the business or project does.',
       },
+      {
+        q: 'What is the character limit for a Facebook profile bio?',
+        a: 'Personal Facebook profiles allow a 101-character bio that appears directly beneath your profile photo. Facebook Pages provide an extended About section for longer descriptions and business contact details.',
+      }
     ],
   },
   {
@@ -174,6 +190,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
         q: 'Can I use Discord formatting in my bio?',
         a: 'Basic formatting like bold and italic works in many places. Test how it looks on your profile after saving.',
       },
+      {
+        q: 'How long can an About Me bio be on Discord?',
+        a: 'Discord allows up to 190 characters in your About Me profile section. Nitro subscribers can also set unique server-specific bios for different communities.',
+      }
     ],
   },
   {
@@ -203,6 +223,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
         q: 'How many hashtags should I use?',
         a: 'Instagram’s advice can change, so check its current guidance. A small set of relevant tags is a safe place to start.',
       },
+      {
+        q: 'Should I put hashtags in the Instagram caption or the first comment?',
+        a: 'Instagram has confirmed that hashtags placed directly in the post caption are indexed by search algorithms immediately. Placing them in the caption is the recommended best practice for search discovery.',
+      }
     ],
     cta: {
       text: 'Want your posts to start stronger? See our Instagram services.',
@@ -237,6 +261,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
         q: 'Are the hashtags checked for popularity?',
         a: 'No. They are built from your keyword. Search them on Facebook to see if they are active.',
       },
+      {
+        q: 'How many hashtags should I put on a Facebook post?',
+        a: 'One to three targeted hashtags are ideal on Facebook. Posts with too many hashtags often look like spam and do not provide additional reach.',
+      }
     ],
   },
   {
@@ -266,6 +294,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
         q: 'Can I change my Instagram username later?',
         a: 'Yes, but old links and tags may stop working, so think about it before you build an audience.',
       },
+      {
+        q: 'What makes a good Instagram handle for creators?',
+        a: 'Short, memorable names without complex numbers or repetitive underscores perform best. Keeping your handle consistent across Instagram, TikTok, and YouTube also makes it easier for fans to find you.',
+      }
     ],
     cta: {
       text: 'Ready to grow your new profile? See our Instagram services.',
@@ -300,6 +332,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
         q: 'Should I add hashtags to the caption?',
         a: 'A few relevant hashtags can help describe the video. Use our hashtag ideas, or pick tags from the app’s search.',
       },
+      {
+        q: 'What is the current character limit for TikTok captions?',
+        a: 'TikTok supports captions up to 4,000 characters. Long captions with relevant search terms help the TikTok SEO algorithm categorize your video for related queries on the search tab.',
+      }
     ],
     cta: {
       text: 'Give your next video a stronger start. See our TikTok services.',
@@ -334,6 +370,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
         q: 'Can I use these for my business page?',
         a: 'Yes. Adjust the tone to match your brand, and add a clear next step if you want people to act.',
       },
+      {
+        q: 'Do question captions get more engagement on Facebook?',
+        a: 'Yes. Captions that ask a clear, relatable question or ask opinions in the opening two lines receive significantly more comments, which signals the Facebook feed algorithm to distribute the post further.',
+      }
     ],
   },
   {
@@ -368,6 +408,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
         q: 'Do the captions work on other platforms?',
         a: 'Many of them do. Short lines like these also fit Instagram Stories and TikTok text overlays.',
       },
+      {
+        q: 'Can I add hashtags to my Snapchat Spotlight captions?',
+        a: 'Yes. Using three to five relevant topic hashtags in your Spotlight captions helps Snapchat categorize your video and show it to users interested in those specific trends.',
+      }
     ],
   },
   {
@@ -397,6 +441,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
         q: 'Are these tags based on search data?',
         a: 'No. They are keyword ideas built from your topic. Check YouTube’s search suggestions to see what people really type.',
       },
+      {
+        q: 'Where do tags rank in importance compared to video titles and descriptions?',
+        a: 'Video titles, descriptions, and thumbnail click-through rates play the biggest role in YouTube search rankings. Tags primarily help YouTube understand common misspellings or related search synonyms.',
+      }
     ],
     cta: {
       text: 'Working toward monetization? See our YouTube views, watch time and subscribers.',
@@ -431,6 +479,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
         q: 'Should my name include a keyword?',
         a: 'It can help people understand your topic, but a memorable name matters more than stuffing keywords.',
       },
+      {
+        q: 'Can two YouTube channels have the exact same name?',
+        a: 'Yes, multiple channels can share the same display name, but every channel has a unique @handle that acts as its permanent web address.',
+      }
     ],
     cta: {
       text: 'Starting a new channel? See our YouTube services.',
@@ -470,6 +522,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
         q: 'How often should I post?',
         a: 'Pick a pace you can keep up. Steady posting beats a burst of posts followed by silence.',
       },
+      {
+        q: 'How do I turn one content idea into a full week of posts?',
+        a: 'Repurpose one core concept across multiple formats: explain the concept in a short Reel, break it down into steps in a carousel, share a personal takeaway on Stories, and start a discussion on Threads.',
+      }
     ],
     cta: {
       text: 'Want your next post to start stronger? See our Instagram services.',

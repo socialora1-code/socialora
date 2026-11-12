@@ -69,6 +69,10 @@ export const UTIL_TOOLS: readonly ToolDef[] = [
         q: 'Can people message me without saving my number?',
         a: 'Yes. The link opens a chat with the number directly.',
       },
+      {
+        q: 'What format should phone numbers use for wa.me links?',
+        a: 'Use the full international format with country code and area code, but omit any plus signs, spaces, dashes, or leading zeros (for example, 15551234567 for a US number).',
+      }
     ],
   },
   {
@@ -97,6 +101,10 @@ export const UTIL_TOOLS: readonly ToolDef[] = [
         q: 'Which links work?',
         a: 'Normal watch links, short youtu.be links, Shorts links, or just the 11-character video ID.',
       },
+      {
+        q: 'What resolution is the maximum quality YouTube thumbnail?',
+        a: 'The maximum resolution thumbnail (maxresdefault.jpg) is 1920x1080 pixels (Full HD). If the creator did not upload a high-definition custom thumbnail, YouTube provides the 640x480 standard version instead.',
+      }
     ],
     cta: {
       text: 'Working on your channel? See our YouTube views, watch time and subscribers.',
