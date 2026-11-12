@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 const PRESETS = [
   { id: 'ig-post', label: 'Instagram post (1080 x 1350)', w: 1080, h: 1350 },
@@ -113,6 +114,8 @@ export function PhotoResizer() {
           Download photo
         </button>
       </div>
+
+      {img && <SmartMomentumOffer />}
     </div>
   )
 }

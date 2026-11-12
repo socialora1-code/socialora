@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 const LAYOUTS = [
   { id: '3x3', cols: 3, rows: 3, label: '3 x 3 (9 tiles)' },
@@ -162,6 +163,7 @@ export function GridMaker() {
           >
             Download all tiles
           </button>
+          <SmartMomentumOffer />
         </div>
       )}
     </div>

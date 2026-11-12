@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""Build authentic, screenshot-led Socialora Pinterest drafts. Never publishes Pins."""
+"""Build Socialora Pinterest 2026-11-11-v4-editorial Curiosity Gap drafts. Never publishes Pins."""
 import argparse
-import hashlib
 import io
 import json
 import re
@@ -9,29 +8,36 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
 
-from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageStat
+from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps, ImageStat
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[2]
 QUEUE = ROOT / "automation/pinterest/content-queue.json"
 OUT = ROOT / "public/pinterest"
 MANIFEST = OUT / "visual-manifest.json"
-RENDERER_VERSION = "2026-11-10-v3-layouts"
-PALETTES = [
-    ("#FFF8F0", "#29243A", "#FF705D", "#FFE1CF"),
-    ("#D8F4E5", "#093D41", "#EF7D35", "#FFFFFF"),
-    ("#264FE5", "#FFFFFF", "#FFD84A", "#DDE6FF"),
-    ("#F3E7FD", "#35215A", "#F554A1", "#FFFFFF"),
-    ("#FFE7DD", "#172A56", "#F7864B", "#FFFFFF"),
-    ("#FDF3B3", "#1F2733", "#5662DA", "#FFFFFF"),
-]
+RENDERER_VERSION = "2026-11-11-v4-editorial"
+
+PALETTES = {
+    "coral_cream": ("#FFF8F1", "#111827", "#EA580C", "#FFEDD5", "#111827"),
+    "sage_emerald": ("#F2FBF7", "#0B221B", "#059669", "#D1FAE5", "#064E3B"),
+    "sand_indigo": ("#F6F7FF", "#111827", "#4F46E5", "#E0E7FF", "#1E1B4B"),
+    "oat_terracotta": ("#FDF6F0", "#1C1917", "#C2410C", "#FED7AA", "#292524"),
+    "sky_cobalt": ("#F3F8FF", "#0F172A", "#2563EB", "#DBEAFE", "#0F172A"),
+}
+
 
 def font(size, bold=False):
-    file = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-    return ImageFont.truetype(file, size)
+    for candidate in (
+        "C:/Windows/Fonts/segoeuib.ttf" if bold else "C:/Windows/Fonts/segoeui.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    ):
+        if Path(candidate).exists():
+            return ImageFont.truetype(candidate, size)
+    return ImageFont.load_default()
+
 
 def wrap(draw, value, face, max_width, max_lines=None):
-    words = value.split()
+    words = str(value or "").split()
     lines, line = [], ""
     for word in words:
         candidate = (line + " " + word).strip()
@@ -43,225 +49,182 @@ def wrap(draw, value, face, max_width, max_lines=None):
     if line:
         lines.append(line)
     if max_lines is not None and len(lines) > max_lines:
-        return None
+        return lines[:max_lines]
     return lines
 
-def headline(draw, message, x, y, color, width, max_height):
-    for size in range(76, 45, -2):
-        face = font(size, True)
-        lines = wrap(draw, message, face, width, 3)
-        if lines and len(lines) * (size + 11) <= max_height:
-            for i, line in enumerate(lines):
-                draw.text((x, y + i * (size + 11)), line, font=face, fill=color)
-            return len(lines) * (size + 11)
-    raise ValueError("Headline does not fit")
-
-def takeaway(draw, message, x, y, width, color, max_height=130):
-    for size in (30, 28, 26, 24, 22, 20, 18):
-        face = font(size)
-        lines = wrap(draw, message, face, width, 20)
-        if lines and len(lines) * (size + 10) <= max_height:
-            for i, line in enumerate(lines):
-                draw.text((x, y + i * (size + 10)), line, font=face, fill=color)
-            return
-    raise ValueError("Takeaway text does not fit")
 
 def actual_screenshot(page, url):
     parsed = urlsplit(url)
     if parsed.scheme != "https" or parsed.netloc not in {"www.getsocialora.com", "getsocialora.com"} or not parsed.path.startswith("/tools/"):
         raise ValueError("Unapproved tool URL")
     clean = urlunsplit((parsed.scheme, parsed.netloc, parsed.path, "", ""))
-    page.set_viewport_size({"width": 1100, "height": 950})
+    page.set_viewport_size({"width": 1120, "height": 1000})
     response = page.goto(clean, wait_until="domcontentloaded", timeout=45000)
     if not response or response.status != 200:
         raise ValueError(f"Tool page unavailable: {response.status if response else 'no response'}")
     page.locator("h1").first.wait_for(timeout=15000)
     heading = page.locator("h1").first.inner_text().strip()
-    if len(heading) < 8 or "404" in heading.lower() or "not found" in heading.lower():
+    if len(heading) < 6 or "404" in heading.lower() or "not found" in heading.lower():
         raise ValueError("Could not verify real tool heading")
+    page.evaluate(
+        """() => {
+          const hdr = document.querySelector('header');
+          if (hdr) hdr.style.display = 'none';
+        }"""
+    )
     page.evaluate("document.fonts.ready")
-    page.wait_for_timeout(750)
-    desk = Image.open(io.BytesIO(page.screenshot(type="png", full_page=True, animations="disabled"))).convert("RGB")
+    page.wait_for_timeout(500)
+    shot = Image.open(io.BytesIO(page.screenshot(type="png", full_page=True, animations="disabled"))).convert("RGB")
     main_box = page.locator("main").first.bounding_box()
     top = max(0, int(main_box["y"])) if main_box else 0
-    top = min(top, max(0, desk.height - 500))
-    desk = desk.crop((0, top, min(1100, desk.width), min(desk.height, top + 950)))
-    page.set_viewport_size({"width": 430, "height": 930})
-    page.wait_for_timeout(650)
-    mobile = Image.open(io.BytesIO(page.screenshot(type="png", full_page=True, animations="disabled"))).convert("RGB")
-    mobile_box = page.locator("main").first.bounding_box()
-    mt = max(0, int(mobile_box["y"])) if mobile_box else 0
-    mt = min(mt, max(0, mobile.height - 650))
-    mobile = mobile.crop((0, mt, min(430, mobile.width), min(mobile.height, mt + 1150)))
-    if desk.width < 750 or desk.height < 500 or mobile.width < 400 or mobile.height < 650:
-        raise ValueError("Tool screen crop too small")
-    if max(ImageStat.Stat(desk).stddev) < 11 or max(ImageStat.Stat(mobile).stddev) < 11:
+    cropped = shot.crop((140, top, min(980, shot.width), min(shot.height, top + 780)))
+    if max(ImageStat.Stat(cropped).stddev) < 11:
         raise ValueError("Blank screenshot quality gate")
-    page.set_viewport_size({"width": 1100, "height": 950})
-    return {"desktop":desk, "mobile":mobile}, heading, clean
+    return cropped, heading, clean
 
-STYLES = ("editorial_split", "mobile_showcase", "tutorial_steps", "magazine_feature", "browser_insight", "gallery_feature")
 
-def draw_visual(pin, screenshots, style_index):
-    hook = pin.get("cover_hook", "").strip()
-    if not 4 <= len(hook.split()) <= 7:
-        raise ValueError("Cover hook must contain 4–7 words")
-    sentences = re.split(r"(?<=[.!?])\s+", pin.get("description", "").strip())
-    tips = [x for x in sentences if not x.endswith("?") and 28 <= len(x) <= 175]
-    actionable = [x for x in tips if re.search(r"\b(try|start|choose|check|keep|compare|use|make|divide|add|write|preview|pick|name|turn|lead)\b", x.lower())]
-    tip = min(actionable or tips, key=len) if tips else ""
-    if len(tip) < 28:
-        raise ValueError("No actionable takeaway")
-    # Color selection and LAYOUT selection are intentionally independent.
-    palette_index = (style_index * 5 + int(hashlib.sha256(pin["id"].encode()).hexdigest()[:2],16)) % len(PALETTES)
-    bg, ink, accent, muted = PALETTES[palette_index]
-    canvas = Image.new("RGB",(1000,1500),bg)
+def draw_curiosity_gap(pin, shot_img, clean_url):
+    bg, ink, accent, soft_tint, pill_bg = PALETTES.get(pin.get("visual_style"), PALETTES["sand_indigo"])
+    canvas = Image.new("RGB", (1000, 1500), bg)
     d = ImageDraw.Draw(canvas)
-    dark = "#202538"
-    white = "#FFFFFF"
-    def eyebrow(x,y,color=ink):
-        d.text((x,y), "SOCIALORA  /  PRACTICAL CREATOR TIPS",font=font(20,True),fill=color)
-    def round_box(rect, fill, radius=25):
-        d.rounded_rectangle(rect, radius=radius, fill=fill)
-    def real_preview(rect, variant="desktop"):
-        x0,y0,x1,y1=rect
-        round_box((x0+7,y0+12,x1+7,y1+12),ink,29)
-        round_box((x0,y0,x1,y1),white,26)
-        d.text((x0+24,y0+17), "REAL SOCIALORA TOOL SCREEN",font=font(15,True),fill=dark)
-        inner=(x0+18,y0+54,x1-18,y1-17)
-        shot=ImageOps.fit(screenshots[variant],(inner[2]-inner[0],inner[3]-inner[1]),method=Image.Resampling.LANCZOS,centering=(0.5,0.0))
-        canvas.paste(shot,(inner[0],inner[1]))
-    def insight(rect,tag="TRY THIS"):
-        x0,y0,x1,y1=rect
-        round_box(rect,white,26)
-        d.rectangle((x0+20,y0+23,x0+29,y1-25), fill=accent)
-        d.text((x0+49,y0+17),tag,font=font(20,True),fill=dark)
-        takeaway(d,tip,x0+49,y0+57,x1-x0-85,dark,max_height=y1-y0-63)
-    def footer(title="EXPLORE THE FREE TOOL"):
-        d.text((65,1425),title,font=font(23,True),fill=ink)
-        round_box((784,1403,940,1466),accent,27)
-        d.text((815,1421),"OPEN  >",font=font(19,True),fill=dark if palette_index==2 else white)
-    # Exactly six substantially different compositions.
-    if style_index == 0:
-        d.rectangle((0,0,1000,28),fill=accent)
-        eyebrow(65,83)
-        headline(d,hook,65,138,ink,860,255)
-        real_preview((55,475,565,1215),"mobile")
-        insight((598,560,943,1095),"THE PRACTICAL TIP")
-        d.text((603,1150),"SEE THE ACTUAL TOOL",font=font(19,True),fill=ink)
-        footer()
-    elif style_index == 1:
-        round_box((33,35,965,396),muted,45)
-        eyebrow(72,82)
-        headline(d,hook,68,151,ink,850,222)
-        real_preview((372,438,932,1286),"mobile")
-        round_box((56,483,340,552),accent,24)
-        d.text((80,502),"ONE SIMPLE FIX",font=font(23,True),fill=dark if palette_index==2 else white)
-        insight((53,585,342,1030),"HOW TO USE IT")
-        d.text((70,1105),"Real screen.",font=font(39,True),fill=ink)
-        d.text((70,1154),"Real tool.",font=font(39,True),fill=ink)
-        footer()
-    elif style_index == 2:
-        eyebrow(75,85)
-        headline(d,hook,75,165,ink,825,262)
-        d.rectangle((0,433,1000,475),fill=accent)
-        d.text((72,445),"01    UNDERSTAND THE TOOL",font=font(20,True),fill=dark if palette_index==2 else white)
-        real_preview((62,500,937,1062),"desktop")
-        insight((70,1092,929,1330),"02    A TIP YOU CAN USE")
-        footer()
-    elif style_index == 3:
-        d.rectangle((0,0,59,1500),fill=accent)
-        eyebrow(99,85)
-        headline(d,hook,93,152,ink,820,285)
-        real_preview((455,485,942,1190),"mobile")
-        insight((90,572,419,1095),"SAVE THIS IDEA")
-        d.text((107,1183),"LEARN  /  TRY  /  SAVE",font=font(24,True),fill=ink)
-        footer()
-    elif style_index == 4:
-        d.rectangle((0,0,1000,160),fill=accent)
-        eyebrow(66,82,dark if palette_index==2 else white)
-        headline(d,hook,67,206,ink,852,252)
-        real_preview((74,554,924,1058),"desktop")
-        round_box((83,480,511,551),muted,22)
-        d.text((113,495),"INSIDE THE ACTUAL TOOL",font=font(20,True),fill=dark)
-        insight((71,1092,929,1335),"MAKE IT MORE USEFUL")
-        footer()
-    elif style_index == 5:
-        round_box((52,40,947,1376),muted,42)
-        eyebrow(85,77)
-        headline(d,hook,83,155,ink,800,238)
-        real_preview((240,424,830,1105),"mobile")
-        round_box((62,555,215,690),accent,20)
-        d.text((89,585),"REAL",font=font(27,True),fill=dark if palette_index==2 else white)
-        d.text((89,625),"SCREEN",font=font(20,True),fill=dark if palette_index==2 else white)
-        insight((91,1133,910,1330),"YOUR TAKEAWAY")
-        footer()
-    else:
-        raise ValueError("Unrecognized design composition")
+    d.rectangle((0, 0, 1000, 12), fill=accent)
+
+    # Eyebrow row
+    d.rounded_rectangle((48, 42, 420, 88), radius=23, fill="#FFFFFF", outline="#CBD5E1", width=2)
+    d.text((70, 54), "SOCIALORA CREATOR TOOLKIT", font=font(16, True), fill=ink)
+
+    # First 38 chars large mobile SEO headline
+    title_str = str(pin.get("title", "")).strip()
+    lead38 = title_str[:38].strip()
+    if len(title_str) > 38 and title_str[38] != " " and " " in lead38:
+        lead38 = lead38.rsplit(" ", 1)[0].strip()
+    rest = title_str[len(lead38):].lstrip(" :,-")
+
+    y = 116
+    for line in wrap(d, lead38, font(54, True), 904, 2):
+        d.text((48, y), line, font=font(54, True), fill=ink)
+        y += 62
+    if rest:
+        for line in wrap(d, rest, font(24, True), 904, 2):
+            d.text((48, y + 6), line, font=font(24, True), fill="#475569")
+            y += 32
+
+    # DON'T DO THIS (Red) vs DO THIS (Green)
+    cmp = pin.get("comparison") or {}
+    dont_text = cmp.get("dont") or "Guess without checking safe zones or ratios"
+    do_text = cmp.get("do") or "Verify specs in browser before publishing"
+
+    cmp_top = max(310, y + 22)
+    cmp_bot = cmp_top + 260
+    d.rounded_rectangle((48, cmp_top, 488, cmp_bot), radius=24, fill="#FEF2F2", outline="#FCA5A5", width=3)
+    d.rounded_rectangle((70, cmp_top + 22, 260, cmp_top + 60), radius=19, fill="#DC2626")
+    d.text((88, cmp_top + 30), "DON'T DO THIS", font=font(16, True), fill="#FFFFFF")
+    ty = cmp_top + 80
+    for line in wrap(d, dont_text, font(23, True), 392, 4):
+        d.text((70, ty), line, font=font(23, True), fill="#7F1D1D")
+        ty += 31
+
+    d.rounded_rectangle((512, cmp_top, 952, cmp_bot), radius=24, fill="#ECFDF5", outline="#6EE7B7", width=3)
+    d.rounded_rectangle((534, cmp_top + 22, 680, cmp_top + 60), radius=19, fill="#059669")
+    d.text((554, cmp_top + 30), "DO THIS", font=font(16, True), fill="#FFFFFF")
+    ty = cmp_top + 80
+    for line in wrap(d, do_text, font(23, True), 392, 4):
+        d.text((534, ty), line, font=font(23, True), fill="#064E3B")
+        ty += 31
+
+    # Bottom Left: Steps 1 & 2 clear + Step 3 teaser
+    steps = pin.get("steps") or [
+        "Open the free browser tool and input your details",
+        "Check key creator ratios before hitting upload",
+        "Unlock Step 3 & live score inside the tool",
+    ]
+    row_top = cmp_bot + 32
+    sy = row_top
+    for idx, label in enumerate(("01  STEP ONE", "02  STEP TWO")):
+        d.rounded_rectangle((48, sy, 470, sy + 205), radius=22, fill="#FFFFFF", outline="#CBD5E1", width=2)
+        d.text((70, sy + 18), label, font=font(15, True), fill=accent)
+        by = sy + 52
+        for line in wrap(d, steps[idx], font(20, True), 376, 4):
+            d.text((70, by), line, font=font(20, True), fill=ink)
+            by += 28
+        sy += 222
+
+    # Step 3 curiosity lock card
+    d.rounded_rectangle((48, sy, 470, 1456), radius=22, fill=soft_tint, outline=accent, width=2)
+    d.text((70, sy + 18), "03  STEP THREE & LIVE SCORE", font=font(15, True), fill=accent)
+    d.rounded_rectangle((70, sy + 64, 380, sy + 104), radius=20, fill=pill_bg)
+    d.text((88, sy + 74), "UNLOCK STEP 3 IN BROWSER ->", font=font(14, True), fill="#FFFFFF")
+
+    # Bottom Right: real /tools/... crop with lower half blurred + Pill CTA
+    shot_box = (494, row_top, 952, 1300)
+    d.rounded_rectangle(shot_box, radius=24, fill="#FFFFFF", outline="#CBD5E1", width=2)
+    d.text((514, row_top + 14), clean_url.replace("https://www.", ""), font=font(13, True), fill="#475569")
+    inner_w = 434
+    inner_h = 1280 - (row_top + 48)
+    fitted = ImageOps.fit(shot_img, (inner_w, inner_h), method=Image.Resampling.LANCZOS, centering=(0.5, 0.0))
+    split_h = int(inner_h * 0.54)
+    lower = fitted.crop((0, split_h, inner_w, inner_h)).filter(ImageFilter.GaussianBlur(radius=8))
+    fitted.paste(lower, (0, split_h))
+    canvas.paste(fitted, (506, row_top + 44))
+    d.rounded_rectangle((566, row_top + 44 + split_h + 36, 880, row_top + 44 + split_h + 78), radius=21, fill=accent)
+    d.text((590, row_top + 44 + split_h + 48), "STEP 3 & SCORE PREVIEW", font=font(15, True), fill="#FFFFFF")
+
+    # Bottom Right Pill CTA
+    d.rounded_rectangle((494, 1320, 952, 1456), radius=22, fill="#FFFFFF", outline=accent, width=3)
+    d.rounded_rectangle((510, 1336, 936, 1396), radius=30, fill=pill_bg)
+    d.text((528, 1354), "Run Free Browser Check -> getsocialora.com/tools", font=font(15, True), fill="#FFFFFF")
+    d.text((626, 1414), "100% FREE | NO LOGIN", font=font(16, True), fill=accent)
     return canvas
+
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--limit", type=int, default=4)
+    parser.add_argument("--limit", type=int, default=40)
     parser.add_argument("--id", default=None)
     args = parser.parse_args()
     queue = json.loads(QUEUE.read_text(encoding="utf-8"))
     OUT.mkdir(parents=True, exist_ok=True)
-    manifest = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {}
+    manifest = json.loads(MANIFEST.read_text(encoding="utf-8")) if MANIFEST.exists() else {}
     drafts = [p for p in queue["pins"] if p.get("status") == "draft"]
     if args.id:
         drafts = [p for p in drafts if p["id"] == args.id]
+
     made = 0
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=True)
-        page = browser.new_page(viewport={"width": 1100, "height": 950}, device_scale_factor=1)
-        for pin in drafts:
-            if made >= max(0, min(args.limit, 32)):
-                break
+        page = browser.new_page(viewport={"width": 1120, "height": 1000}, device_scale_factor=1)
+        shot_cache = {}
+        for pin in drafts[: max(0, min(args.limit, 40))]:
             pin_id = pin["id"]
-            if not re.fullmatch(r"[a-zA-Z0-9_-]{5,100}", pin_id):
-                print(f"SKIP invalid ID {pin_id!r}")
-                continue
-            target = OUT / f"{pin_id}.png"
-            existing = manifest.get(pin_id, {})
             source = urlsplit(pin["url"])
-            expected_url = urlunsplit((source.scheme, source.netloc, source.path, "", ""))
-            if (target.exists() and existing.get("renderer_version") == RENDERER_VERSION
-                    and existing.get("cover_hook") == pin.get("cover_hook")
-                    and existing.get("source_url") == expected_url):
-                continue
-            try:
-                screens, heading, clean_url = actual_screenshot(page, pin["url"])
-                style_index = next(i for i, p in enumerate(queue["pins"]) if p["id"] == pin_id) % len(STYLES)
-                visual = draw_visual(pin, screens, style_index)
-                if visual.size != (1000, 1500):
-                    raise ValueError("Wrong dimensions")
-                temporary = target.with_suffix(".partial.png")
-                visual.save(temporary, "PNG", optimize=True)
-                temporary.replace(target)
-                manifest[pin_id] = {
-                    "image_path": f"/pinterest/{pin_id}.png",
-                    "source_url": clean_url,
-                    "verified_h1": heading,
-                    "captured_at": datetime.now(timezone.utc).isoformat(),
-                    "visual_type": "authentic_site_screenshot_editorial",
-                    "cover_hook": pin["cover_hook"],
-                    "dimensions": "1000x1500",
-                    "renderer_version": RENDERER_VERSION,
-                    "composition": STYLES[style_index],
-                    "alt_text": "Original Pinterest guide: " + pin["cover_hook"] + ". Authentic screenshot of Socialora " + heading + " with one practical tip.",
-                    "status": "asset_only_not_published",
-                }
-                made += 1
-                print(f"CREATED {pin_id} {target.stat().st_size} bytes [{heading}]")
-            except Exception as exc:
-                temporary = target.with_suffix(".partial.png")
-                if temporary.exists():
-                    temporary.unlink()
-                print(f"SKIP {pin_id}: {type(exc).__name__}: {exc}")
+            clean_url = urlunsplit((source.scheme, source.netloc, source.path, "", ""))
+            if clean_url not in shot_cache:
+                shot_cache[clean_url] = actual_screenshot(page, pin["url"])
+            shot_img, heading, _ = shot_cache[clean_url]
+            visual = draw_curiosity_gap(pin, shot_img, clean_url)
+            target = OUT / f"{pin_id}.png"
+            tmp = target.with_suffix(".partial.png")
+            visual.save(tmp, "PNG", optimize=True)
+            tmp.replace(target)
+            manifest[pin_id] = {
+                "image_path": f"/pinterest/{pin_id}.png",
+                "source_url": clean_url,
+                "verified_h1": heading,
+                "captured_at": datetime.now(timezone.utc).isoformat(),
+                "visual_type": "editorial_curiosity_gap_tool_crop",
+                "cover_hook": pin.get("cover_hook", ""),
+                "dimensions": "1000x1500",
+                "renderer_version": RENDERER_VERSION,
+                "curiosity_gap": True,
+                "composition": pin.get("visual_style", "sand_indigo"),
+                "alt_text": pin.get("alt_text", ""),
+                "status": "asset_only_not_published",
+            }
+            made += 1
         browser.close()
-    MANIFEST.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
-    print(f"Created {made} authentic screenshot assets; no pins published.")
+    MANIFEST.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"Created {made} Curiosity Gap v4 assets; no pins published.")
+
 
 if __name__ == "__main__":
     main()

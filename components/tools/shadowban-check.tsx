@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 type Status = 'ok' | 'watch' | 'warn'
 type Signal = { label: string; status: Status; detail: string }
@@ -90,7 +91,7 @@ export function ShadowbanCheck({ defaultPlatform = 'instagram' }: { defaultPlatf
         ? 'High Likelihood of Recommendation Restriction (Shadowban)'
         : score >= 2
           ? 'Mild Reach Throttling / Algorithm Cooldown'
-          : 'No Shadowban Detected — Healthy Distribution'
+          : 'No Shadowban Detected: Healthy Distribution'
 
     result = { verdict, signals }
   }
@@ -137,7 +138,7 @@ export function ShadowbanCheck({ defaultPlatform = 'instagram' }: { defaultPlatf
         </div>
         <div>
           <label htmlFor="sb-recent" className="text-sm font-medium">
-            Average views on your last 3–5 uploads
+            Average views on your last 3-5 uploads
           </label>
           <input
             id="sb-recent"
@@ -171,9 +172,9 @@ export function ShadowbanCheck({ defaultPlatform = 'instagram' }: { defaultPlatf
             onChange={(e) => setAccountStatusIssue(e.target.value as 'none' | 'warning' | 'removed')}
             className={inputClass}
           >
-            <option value="none">No — Account Status is all green</option>
+            <option value="none">No, Account Status is all green</option>
             <option value="warning">1 warning or flagged audio/caption</option>
-            <option value="removed">Yes — post removed or strike in last 14 days</option>
+            <option value="removed">Yes, post removed or strike in last 14 days</option>
           </select>
         </div>
       </div>
@@ -226,42 +227,52 @@ export function ShadowbanCheck({ defaultPlatform = 'instagram' }: { defaultPlatf
             </ul>
 
             <div className="mt-5 border-t border-border pt-4 text-sm text-muted-foreground">
-              <p className="font-medium text-foreground">How to recover your reach in 48–72 hours:</p>
-              <ul className="mt-2 grid list-disc gap-1.5 pl-5">
+              <p className="font-medium text-foreground">3-Step Reach Reset Protocol (48-72 Hours)</p>
+              <ol className="mt-2 grid list-decimal gap-1.5 pl-5">
                 <li>
-                  Check{' '}
+                  Open{' '}
                   <strong>
                     {platform === 'tiktok'
-                      ? 'Profile → Settings → Support → Safety Center → Account Status'
-                      : 'Settings → Account Status → What can’t be recommended'}
+                      ? 'Profile > Settings > Support > Safety Center > Account Status'
+                      : 'Settings > Account Status > What cannot be recommended'}
                   </strong>{' '}
-                  and appeal or delete any flagged post.
+                  and appeal or remove any flagged clip before uploading again.
                 </li>
-                <li>Avoid mass-deleting or re-uploading the same video file (algorithms flag duplicate hashes).</li>
                 <li>
-                  Give your next upload strong early engagement momentum — test our{' '}
-                  <Link href="/free-instagram-views" className="font-medium text-foreground underline underline-offset-4">
-                    free Instagram views
-                  </Link>{' '}
-                  or{' '}
-                  <Link
-                    href={platform === 'tiktok' ? '/tiktok' : '/instagram'}
-                    className="font-medium text-foreground underline underline-offset-4"
-                  >
-                    {platform === 'tiktok' ? 'TikTok growth services' : 'Instagram growth services'}
-                  </Link>
-                  .
+                  Avoid bulk-deleting or re-uploading identical video files (algorithms suppress duplicate media hashes
+                  and third-party watermarks).
                 </li>
-              </ul>
+                <li>
+                  Reset your non-follower test pool by shipping one clean native post with a fresh hook in the first 1.5
+                  seconds and giving it strong first-hour velocity.
+                </li>
+              </ol>
+
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href="/free-instagram-views"
+                  className="inline-flex h-10 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground"
+                >
+                  Boost Next Upload&apos;s First-Hour Velocity (Free Views Trial)
+                </Link>
+                <Link
+                  href={platform === 'tiktok' ? '/tiktok' : '/instagram'}
+                  className="inline-flex h-10 items-center justify-center rounded-full border border-border bg-background px-5 text-sm font-medium text-foreground hover:bg-muted/60"
+                >
+                  {platform === 'tiktok' ? 'TikTok Reach & Velocity Packages' : 'Instagram Reach & Auto-Likes'}
+                </Link>
+              </div>
             </div>
           </>
         ) : (
           <p className="text-sm text-muted-foreground">
-            Enter your normal view average and your recent 3–5 video average to check if your account is being throttled
+            Enter your normal view average and your recent 3-5 video average to check if your account is being throttled
             from Explore or the For You Page.
           </p>
         )}
       </div>
+
+      {result && <SmartMomentumOffer />}
     </div>
   )
 }

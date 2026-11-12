@@ -126,7 +126,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const snap = $('Telegram Growth - Anlık Durum Al').first().json;\nconst liveItem = $('Canlı Kanal Gönderilerini Oku').first()?.json || {};\nconst liveHtml = String(liveItem.data ?? liveItem.body ?? '');\nconst partnerResponses = $input.all();\nconst gs = snap.growthState || {};\nconst nowEpoch = Number(snap.nowEpoch || Math.floor(Date.now() / 1000));\n\nconst parseCompactNum = (s) => {\n  const raw = String(s || '').trim().toUpperCase();\n  if (!raw) return 0;\n  const n = parseFloat(raw.replace(/[^0-9.]/g, ''));\n  if (!Number.isFinite(n)) return 0;\n  if (raw.endsWith('K')) return Math.round(n * 1000);\n  if (raw.endsWith('M')) return Math.round(n * 1000000);\n  return Math.round(n);\n};\n\n// Parse visible posts on @SocialoraOfficial\nconst postBlocks = liveHtml.split('data-post=\"SocialoraOfficial/').slice(1);\nconst posts = [];\nconst todayTrt = new Date((nowEpoch + 3 * 3600) * 1000).toISOString().slice(0, 10);\nconst trtHour = new Date((nowEpoch + 3 * 3600) * 1000).getUTCHours();\nlet todayChannelPostsTrt = 0;\n\nfor (const blk of postBlocks) {\n  const idM = blk.match(/^(\\d+)\"/);\n  const viewsM = blk.match(/tgme_widget_message_views[^>]*>([^<]+)</);\n  const dtM = blk.match(/datetime=\"([^\"]+)\"/);\n  const txtM = blk.match(/tgme_widget_message_text[^>]*>([\\s\\S]*?)<\\/div>/);\n  const msgNum = idM ? Number(idM[1]) : 0;\n  const views = viewsM ? parseCompactNum(viewsM[1]) : 0;\n  const iso = dtM ? dtM[1] : '';\n  const ts = iso ? Math.floor(Date.parse(iso) / 1000) : 0;\n  if (ts > 0) {\n    const postDayTrt = new Date((ts + 3 * 3600) * 1000).toISOString().slice(0, 10);\n    if (postDayTrt === todayTrt) todayChannelPostsTrt += 1;\n  }\n  const rawText = (txtM ? txtM[1] : '').replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim();\n  const campM = blk.match(/utm_campaign=([a-z0-9_]+)/i);\n  const campaignId = campM ? campM[1] : '';\n  let category = 'other';\n  if (/poll/i.test(campaignId) || blk.includes('tgme_widget_message_poll')) category = 'poll';\n  else if (blk.includes('/tools/') || /tool/i.test(campaignId)) category = 'tool';\n  else if (!blk.includes('getsocialora.com') && rawText.length > 60) category = 'cheatsheet';\n  else if (/socialorachat/i.test(rawText) && /audit|reply|drop your/i.test(rawText)) category = 'clinic';\n  else if (blk.includes('getsocialora.com')) category = 'service';\n  posts.push({ msgNum, views, iso, ts, campaignId, category, snippet: rawText.slice(0, 100) });\n}\n\nconst recent5 = posts.slice(-5);\nconst avgLast5Views = recent5.length ? Math.round((recent5.reduce((s, p) => s + p.views, 0) / recent5.length) * 10) / 10 : 0;\nconst topPosts = [...posts].sort((a, b) => b.views - a.views).slice(0, 3);\n\n// Compute category win rates\nconst catStats = {};\nfor (const p of posts) {\n  if (!catStats[p.category]) catStats[p.category] = { sum: 0, cnt: 0 };\n  catStats[p.category].sum += p.views;\n  catStats[p.category].cnt += 1;\n}\nconst winningFormats = Object.entries(catStats)\n  .map(([cat, v]) => ({ category: cat, avgViews: Math.round((v.sum / v.cnt) * 10) / 10, count: v.cnt }))\n  .sort((a, b) => b.avgViews - a.avgViews);\n\n// Parse active partner channels\nconst partnersPrep = $('Partner Kanallarını Hazırla').all();\nconst activePartners = [];\nfor (let idx = 0; idx < partnerResponses.length; idx++) {\n  if (partnersPrep[idx]?.json?.skipPartners) continue;\n  const handle = partnersPrep[idx]?.json?.handle || '';\n  if (!handle) continue;\n  const html = String(partnerResponses[idx]?.json?.data ?? partnerResponses[idx]?.json?.body ?? '');\n  if (!html) continue;\n  const titleM = html.match(/tgme_channel_info_header_title[^>]*>([\\s\\S]*?)<\\/div>/);\n  const subsM = html.match(/tgme_channel_info_counter[^>]*>[\\s\\S]*?counter_value[^>]*>([^<]+)</);\n  const descM = html.match(/tgme_channel_info_description[^>]*>([\\s\\S]*?)<\\/div>/);\n  const pViews = [...html.matchAll(/tgme_widget_message_views[^>]*>([^<]+)</g)].slice(-3).map((m) => parseCompactNum(m[1]));\n  const pDates = [...html.matchAll(/datetime=\"([^\"]+)\"/g)].map((m) => m[1]);\n  const lastPostIso = pDates[pDates.length - 1] || '';\n  const lastPostTs = lastPostIso ? Math.floor(Date.parse(lastPostIso) / 1000) : 0;\n  const avgViews = pViews.length ? Math.round(pViews.reduce((a, b) => a + b, 0) / pViews.length) : 0;\n  const decodeEnt = (s) => String(s || '').replace(/&amp;/g, '&').replace(/&#036;/g, '$').replace(/&#33;/g, '!').replace(/&quot;/g, '\"').replace(/&#39;/g, \"'\");\n  const descClean = decodeEnt((descM ? descM[1] : '').replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim());\n  const titleClean = decodeEnt((titleM ? titleM[1] : '').replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim());\n  const isCyrillic = /[\\u0400-\\u04FF]/.test(titleClean + ' ' + descClean);\n  const admins = [...new Set(((descClean + ' ' + html.slice(-4000)).match(/@[A-Za-z0-9_]{4,32}/g) || []).filter((u) => !u.toLowerCase().includes(handle.toLowerCase()) && !/bot$/i.test(u)))].slice(0, 3);\n  const txtMatches = [...html.matchAll(/tgme_widget_message_text[^>]*>([\\s\\S]*?)<\\/div>/g)];\n  const latestTopic = decodeEnt(txtMatches.length ? txtMatches[txtMatches.length - 1][1].replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim().slice(0, 140) : '');\n\n  if (!isCyrillic && avgViews >= 50 && (!lastPostTs || nowEpoch - lastPostTs <= 90 * 86400)) {\n    activePartners.push({\n      handle: '@' + handle,\n      title: titleClean,\n      subs: subsM ? subsM[1] : '',\n      avgRecentViews: avgViews,\n      lastPostIso,\n      contacts: admins,\n      latestTopic,\n    });\n  }\n}\n\nconst outputs = [];\nconst nextSnapshots = [...(Array.isArray(gs.snapshots) ? gs.snapshots : []), {\n  ts: nowEpoch,\n  dateTrt: todayTrt,\n  channelMembers: snap.channelMembers,\n  groupMembers: snap.groupMembers,\n  avgLast5Views,\n  trackedPosts: posts.length,\n}].slice(-60);\n\nconst patch = {\n  snapshots: nextSnapshots,\n  winningFormats,\n};\n\n// Route 1: One-time Pinned Start-Here Hub if missing on @SocialoraOfficial\nlet sentHubNow = false;\nif (!snap.channelPinnedId && !gs.channelPinnedMessageId && todayChannelPostsTrt < 4) {\n  const hubHtml = [\n    '📌 <b>Start Here - Socialora Creator Growth Hub</b>',\n    '',\n    'We help creators grow across Instagram, TikTok, YouTube, X and Telegram with testable retention tactics and <b>50+ free browser tools</b>.',\n    '',\n    '<b>Free instant tools in our group (@SocialoraChat):</b>',\n    '- <code>/shadowban</code> - IG &amp; TikTok reach diagnostics',\n    '- <code>/caption</code> &amp; <code>/bio</code> - High-converting copy hooks',\n    '- <code>/photo</code>, <code>/blur</code> &amp; <code>/safezone</code> - Pre-export framing',\n    '- <code>/rate</code> &amp; <code>/score</code> - Deal pricing &amp; scorecard',\n    '',\n    '💬 Want direct feedback on your hook or stalled views? Drop your platform &amp; rough numbers in @SocialoraChat.'\n  ].join('\\n');\n\n  const buttons = [\n    [{ text: '🛠️ Open 50+ Free Creator Tools', url: 'https://www.getsocialora.com/tools?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub' }],\n    [{ text: '💬 Join Hook Clinic (@SocialoraChat)', url: 'https://t.me/SocialoraChat' }],\n  ];\n  outputs.push({\n    json: {\n      route: 'pin_hub',\n      chatId: '@SocialoraOfficial',\n      htmlText: hubHtml,\n      buttonsJson: JSON.stringify(buttons),\n      pinMessage: true,\n    }\n  });\n  sentHubNow = true;\n  todayChannelPostsTrt += 1;\n}\n\n// Route 2: Interactive Poll Engine (every 48h, evening/daytime, respecting 5/day limit)\nconst POLLS = [\n  { id: 'poll_bottleneck_01', q: 'Which growth bottleneck is slowing your page down most right now?', opts: ['Stuck around 200 views', 'Explore / FYP reach dropped', 'Profile visits, low follows', 'Pricing brand deals / UGC'] },\n  { id: 'poll_hook_02', q: 'Which opening hook style is holding retention best for you this month?', opts: ['Visual pattern interrupt (0-2s)', 'Bold counter-intuitive claim', 'On-screen checklist / steps', 'Still testing what works'] },\n  { id: 'poll_platform_03', q: 'Where are you investing 80% of your creator energy in November?', opts: ['Instagram Reels & Carousels', 'TikTok short-form', 'YouTube Long + Shorts', 'Telegram channel building'] },\n  { id: 'poll_safezone_04', q: 'Quick test: do you preview TikTok/Reels button safe zones before exporting?', opts: ['Every single video', 'Sometimes / on key posts', 'Never, just realized UI hides text'] },\n  { id: 'poll_monetize_05', q: 'Biggest hurdle when landing your next paid UGC or sponsor deal?', opts: ['Knowing fair pricing rates', 'Low recent view social proof', 'Weak outreach / media kit', 'Not monetizing yet'] },\n  { id: 'poll_cadence_06', q: 'What posting frequency feels sustainable without quality collapsing?', opts: ['3-4x per week high effort', 'Once daily focused', 'Multiple posts daily', 'Batching once a week'] },\n  { id: 'poll_telegram_07', q: 'How did you discover @SocialoraOfficial?', opts: ['Free creator tools on site', 'Telegram search / catalog', 'Shared post from a friend', 'Other / group chat'] },\n  { id: 'poll_next_guide_08', q: 'What step-by-step teardown should we post next?', opts: ['Fixing 200-view TikTok jail', 'Turning profile visits to follows', 'Telegram channel search SEO', 'Calculating UGC usage rights'] },\n];\nconst sentPolls = Array.isArray(gs.sentPollIds) ? gs.sentPollIds : [];\nconst lastPollAt = Number(gs.lastPollAt || 0);\nconst pollReady = !sentHubNow && (nowEpoch - lastPollAt >= 172800) && todayChannelPostsTrt < 4 && trtHour >= 10 && trtHour < 21;\n\nif (pollReady) {\n  let nextPoll = POLLS.find((p) => !sentPolls.includes(p.id));\n  if (!nextPoll) nextPoll = POLLS[sentPolls.length % POLLS.length];\n  patch.lastPollAt = nowEpoch;\n  patch.sentPollIds = [...sentPolls, nextPoll.id].slice(-50);\n  outputs.push({\n    json: {\n      route: 'send_poll',\n      chatId: '@SocialoraOfficial',\n      question: nextPoll.q,\n      optionsJson: JSON.stringify(nextPoll.opts),\n      pollId: nextPoll.id,\n    }\n  });\n}\n\n// Route 3: Wait until real channel activity grows (>= 25 avg views on last 5 posts) before preparing cross-promo messages\nconst crossPromoThresholdViews = 25;\nconst crossPromoReady = avgLast5Views >= crossPromoThresholdViews;\npatch.crossPromoThresholdViews = crossPromoThresholdViews;\npatch.crossPromoStatus = crossPromoReady ? 'active' : 'waiting_for_higher_activity';\n\nconst lastReportAt = Number(gs.lastReportAt || 0);\nconst lastBriefDmAt = Number(gs.lastBriefDmAt || 0);\nconst hasPreview = Boolean(String(gs.lastOutreachPreview || '').trim());\nlet isManual = false;\ntry { isManual = ($execution?.mode === 'manual'); } catch {}\nif (crossPromoReady && (isManual || !hasPreview || (nowEpoch - lastReportAt >= 43200))) {\n  patch.lastReportAt = nowEpoch;\n  outputs.push({\n    json: {\n      route: 'outreach_ai',\n      nowEpoch,\n      channelMembers: snap.channelMembers,\n      groupMembers: snap.groupMembers,\n      avgLast5Views,\n      topPosts,\n      winningFormats,\n      activePartners,\n      ownerLinked: Boolean(gs.ownerChatId),\n    }\n  });\n} else if (gs.ownerChatId && (nowEpoch - lastBriefDmAt >= 86400)) {\n  patch.lastBriefDmAt = nowEpoch;\n  const briefHtml = [\n    '📊 <b>Socialora Günlük Büyüme Özeti</b>',\n    '- Telegram Kanal: <b>' + (snap.channelMembers ?? '?') + '</b> abone | Grup: <b>' + (snap.groupMembers ?? '?') + '</b> üye',\n    '- Son 5 gönderi ortalaması: <b>' + avgLast5Views + ' görüntülenme</b> (dış ortaklık eşiği: 25)',\n    topPosts.length ? '- Öne çıkan: #' + topPosts[0].msgNum + ' (' + topPosts[0].views + 'v, ' + topPosts[0].category + ')' : '- Henüz öne çıkan gönderi yok',\n    '',\n    'İstediğin zaman bana <code>/status</code> yazarak anlık özet alabilirsin.'\n  ].join('\\n');\n  outputs.push({\n    json: {\n      route: 'daily_brief_dm',\n      htmlText: briefHtml\n    }\n  });\n}\n\n// Route 4: Always save latest telemetry snapshot cleanly\noutputs.push({\n  json: {\n    route: 'save_state',\n    statePatchJson: JSON.stringify(patch),\n  }\n});\n\nreturn outputs;"
+        "jsCode": "const snap = $('Telegram Growth - Anlık Durum Al').first().json;\nconst liveItem = $('Canlı Kanal Gönderilerini Oku').first()?.json || {};\nconst liveHtml = String(liveItem.data ?? liveItem.body ?? '');\nconst partnerResponses = $input.all();\nconst gs = snap.growthState || {};\nconst nowEpoch = Number(snap.nowEpoch || Math.floor(Date.now() / 1000));\n\nconst parseCompactNum = (s) => {\n  const raw = String(s || '').trim().toUpperCase();\n  if (!raw) return 0;\n  const n = parseFloat(raw.replace(/[^0-9.]/g, ''));\n  if (!Number.isFinite(n)) return 0;\n  if (raw.endsWith('K')) return Math.round(n * 1000);\n  if (raw.endsWith('M')) return Math.round(n * 1000000);\n  return Math.round(n);\n};\n\n// Parse visible posts on @SocialoraOfficial\nconst postBlocks = liveHtml.split('data-post=\"SocialoraOfficial/').slice(1);\nconst posts = [];\nconst todayTrt = new Date((nowEpoch + 3 * 3600) * 1000).toISOString().slice(0, 10);\nconst trtHour = new Date((nowEpoch + 3 * 3600) * 1000).getUTCHours();\nlet todayChannelPostsTrt = 0;\n\nfor (const blk of postBlocks) {\n  const idM = blk.match(/^(\\d+)\"/);\n  const viewsM = blk.match(/tgme_widget_message_views[^>]*>([^<]+)</);\n  const dtM = blk.match(/datetime=\"([^\"]+)\"/);\n  const txtM = blk.match(/tgme_widget_message_text[^>]*>([\\s\\S]*?)<\\/div>/);\n  const msgNum = idM ? Number(idM[1]) : 0;\n  const views = viewsM ? parseCompactNum(viewsM[1]) : 0;\n  const iso = dtM ? dtM[1] : '';\n  const ts = iso ? Math.floor(Date.parse(iso) / 1000) : 0;\n  if (ts > 0) {\n    const postDayTrt = new Date((ts + 3 * 3600) * 1000).toISOString().slice(0, 10);\n    if (postDayTrt === todayTrt) todayChannelPostsTrt += 1;\n  }\n  const rawText = (txtM ? txtM[1] : '').replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim();\n  const campM = blk.match(/utm_campaign=([a-z0-9_]+)/i);\n  const campaignId = campM ? campM[1] : '';\n  let category = 'other';\n  if (/poll/i.test(campaignId) || blk.includes('tgme_widget_message_poll')) category = 'poll';\n  else if (blk.includes('/tools/') || /tool/i.test(campaignId)) category = 'tool';\n  else if (!blk.includes('getsocialora.com') && rawText.length > 60) category = 'cheatsheet';\n  else if (/socialorachat/i.test(rawText) && /audit|reply|drop your/i.test(rawText)) category = 'clinic';\n  else if (blk.includes('getsocialora.com')) category = 'service';\n  posts.push({ msgNum, views, iso, ts, campaignId, category, snippet: rawText.slice(0, 100) });\n}\n\nconst recent5 = posts.slice(-5);\nconst avgLast5Views = recent5.length ? Math.round((recent5.reduce((s, p) => s + p.views, 0) / recent5.length) * 10) / 10 : 0;\nconst topPosts = [...posts].sort((a, b) => b.views - a.views).slice(0, 3);\n\n// Compute category win rates\nconst catStats = {};\nfor (const p of posts) {\n  if (!catStats[p.category]) catStats[p.category] = { sum: 0, cnt: 0 };\n  catStats[p.category].sum += p.views;\n  catStats[p.category].cnt += 1;\n}\nconst winningFormats = Object.entries(catStats)\n  .map(([cat, v]) => ({ category: cat, avgViews: Math.round((v.sum / v.cnt) * 10) / 10, count: v.cnt }))\n  .sort((a, b) => b.avgViews - a.avgViews);\n\n// Parse active partner channels\nconst partnersPrep = $('Partner Kanallarını Hazırla').all();\nconst activePartners = [];\nfor (let idx = 0; idx < partnerResponses.length; idx++) {\n  if (partnersPrep[idx]?.json?.skipPartners) continue;\n  const handle = partnersPrep[idx]?.json?.handle || '';\n  if (!handle) continue;\n  const html = String(partnerResponses[idx]?.json?.data ?? partnerResponses[idx]?.json?.body ?? '');\n  if (!html) continue;\n  const titleM = html.match(/tgme_channel_info_header_title[^>]*>([\\s\\S]*?)<\\/div>/);\n  const subsM = html.match(/tgme_channel_info_counter[^>]*>[\\s\\S]*?counter_value[^>]*>([^<]+)</);\n  const descM = html.match(/tgme_channel_info_description[^>]*>([\\s\\S]*?)<\\/div>/);\n  const pViews = [...html.matchAll(/tgme_widget_message_views[^>]*>([^<]+)</g)].slice(-3).map((m) => parseCompactNum(m[1]));\n  const pDates = [...html.matchAll(/datetime=\"([^\"]+)\"/g)].map((m) => m[1]);\n  const lastPostIso = pDates[pDates.length - 1] || '';\n  const lastPostTs = lastPostIso ? Math.floor(Date.parse(lastPostIso) / 1000) : 0;\n  const avgViews = pViews.length ? Math.round(pViews.reduce((a, b) => a + b, 0) / pViews.length) : 0;\n  const decodeEnt = (s) => String(s || '').replace(/&amp;/g, '&').replace(/&#036;/g, '$').replace(/&#33;/g, '!').replace(/&quot;/g, '\"').replace(/&#39;/g, \"'\");\n  const descClean = decodeEnt((descM ? descM[1] : '').replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim());\n  const titleClean = decodeEnt((titleM ? titleM[1] : '').replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim());\n  const isCyrillic = /[\\u0400-\\u04FF]/.test(titleClean + ' ' + descClean);\n  const admins = [...new Set(((descClean + ' ' + html.slice(-4000)).match(/@[A-Za-z0-9_]{4,32}/g) || []).filter((u) => !u.toLowerCase().includes(handle.toLowerCase()) && !/bot$/i.test(u)))].slice(0, 3);\n  const txtMatches = [...html.matchAll(/tgme_widget_message_text[^>]*>([\\s\\S]*?)<\\/div>/g)];\n  const latestTopic = decodeEnt(txtMatches.length ? txtMatches[txtMatches.length - 1][1].replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim().slice(0, 140) : '');\n\n  if (!isCyrillic && avgViews >= 50 && (!lastPostTs || nowEpoch - lastPostTs <= 90 * 86400)) {\n    activePartners.push({\n      handle: '@' + handle,\n      title: titleClean,\n      subs: subsM ? subsM[1] : '',\n      avgRecentViews: avgViews,\n      lastPostIso,\n      contacts: admins,\n      latestTopic,\n    });\n  }\n}\n\nconst outputs = [];\nconst nextSnapshots = [...(Array.isArray(gs.snapshots) ? gs.snapshots : []), {\n  ts: nowEpoch,\n  dateTrt: todayTrt,\n  channelMembers: snap.channelMembers,\n  groupMembers: snap.groupMembers,\n  avgLast5Views,\n  trackedPosts: posts.length,\n}].slice(-60);\n\nconst patch = {\n  snapshots: nextSnapshots,\n  winningFormats,\n};\n\n// Route 1: Versioned Pinned Start-Here Hub on @SocialoraOfficial\nconst HUB_VERSION = 'v2_20261112';\nlet sentHubNow = false;\nif (((!snap.channelPinnedId && !gs.channelPinnedMessageId) || gs.pinnedHubVersion !== HUB_VERSION) && todayChannelPostsTrt < 5) {\n  const hubHtml = \"<b>Start Here: Socialora Creator Growth Hub (@SocialoraOfficial)</b>\\n\\nDaily creator growth notes, search-friendly channel guides, and free browser tools for Instagram, TikTok, YouTube, X, and Telegram.\\n\\n<b>1) Top 5 Free Diagnostic Creator Tools</b>\\n- <a href=\\\"https://www.getsocialora.com/tools/instagram-shadowban-checker?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\">Instagram Shadowban Checker</a> - Test non-follower Explore reach signals\\n- <a href=\\\"https://www.getsocialora.com/tools/tiktok-shadowban-checker?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\">TikTok Shadowban Checker</a> - Diagnose 200-view limits before deleting clips\\n- <a href=\\\"https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\">Reels &amp; TikTok Safe Zone Guide</a> - Keep text clear of UI buttons\\n- <a href=\\\"https://www.getsocialora.com/tools/instagram-account-scorecard?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\">Instagram Account Scorecard</a> - Run a quick public profile audit\\n- <a href=\\\"https://www.getsocialora.com/tools/instagram-sponsorship-rate-calculator?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\">Sponsorship Rate Calculator</a> - Price UGC and brand deals cleanly\\n\\n<b>2) Free No-Password Trial</b>\\n- Test early Reel velocity with free Instagram views (no password ever needed): <a href=\\\"https://www.getsocialora.com/free-instagram-views?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\">getsocialora.com/free-instagram-views</a>\\n\\n<b>3) 365-Day Refill VIP &amp; Geo Packages</b>\\n- Compare USA, Spanish, Arabic, and Brazilian Instagram followers, Auto Likes, TikTok Views, YouTube Watch Time, and Telegram Members with instant crypto checkout: <a href=\\\"https://www.getsocialora.com/order?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\">getsocialora.com/order</a>\\n\\n<b>4) Live Support &amp; Hook Clinic (@SocialoraChat)</b>\\n- Drop your stalled post topic or run instant commands (/shadowban, /bio, /rate, /score, /safezone, /tools) inside @SocialoraChat for direct feedback.\";\n  const buttons = [[{\"text\":\"Top 5 Free Creator Tools\",\"url\":\"https://www.getsocialora.com/tools?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\"}],[{\"text\":\"Test Free IG Views (No Password)\",\"url\":\"https://www.getsocialora.com/free-instagram-views?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\"}],[{\"text\":\"365-Day Refill & Geo (/order)\",\"url\":\"https://www.getsocialora.com/order?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\"},{\"text\":\"Hook Clinic (@SocialoraChat)\",\"url\":\"https://t.me/SocialoraChat\"}]];\n  outputs.push({\n    json: {\n      route: 'pin_hub',\n      chatId: '@SocialoraOfficial',\n      htmlText: hubHtml,\n      buttonsJson: JSON.stringify(buttons),\n      pinMessage: true,\n      hubVersion: HUB_VERSION,\n    }\n  });\n  sentHubNow = true;\n  todayChannelPostsTrt += 1;\n}\n\n// Route 2: Interactive Poll Engine (every 48h, evening/daytime, respecting 5/day limit)\nconst POLLS = [\n  { id: 'poll_bottleneck_01', q: 'Which growth bottleneck is slowing your page down most right now?', opts: ['Stuck around 200 views', 'Explore / FYP reach dropped', 'Profile visits, low follows', 'Pricing brand deals / UGC'] },\n  { id: 'poll_hook_02', q: 'Which opening hook style is holding retention best for you this month?', opts: ['Visual pattern interrupt (0-2s)', 'Bold counter-intuitive claim', 'On-screen checklist / steps', 'Still testing what works'] },\n  { id: 'poll_platform_03', q: 'Where are you investing 80% of your creator energy in November?', opts: ['Instagram Reels & Carousels', 'TikTok short-form', 'YouTube Long + Shorts', 'Telegram channel building'] },\n  { id: 'poll_safezone_04', q: 'Quick test: do you preview TikTok/Reels button safe zones before exporting?', opts: ['Every single video', 'Sometimes / on key posts', 'Never, just realized UI hides text'] },\n  { id: 'poll_monetize_05', q: 'Biggest hurdle when landing your next paid UGC or sponsor deal?', opts: ['Knowing fair pricing rates', 'Low recent view social proof', 'Weak outreach / media kit', 'Not monetizing yet'] },\n  { id: 'poll_cadence_06', q: 'What posting frequency feels sustainable without quality collapsing?', opts: ['3-4x per week high effort', 'Once daily focused', 'Multiple posts daily', 'Batching once a week'] },\n  { id: 'poll_telegram_07', q: 'How did you discover @SocialoraOfficial?', opts: ['Free creator tools on site', 'Telegram search / catalog', 'Shared post from a friend', 'Other / group chat'] },\n  { id: 'poll_next_guide_08', q: 'What step-by-step teardown should we post next?', opts: ['Fixing 200-view TikTok jail', 'Turning profile visits to follows', 'Telegram channel search SEO', 'Calculating UGC usage rights'] },\n];\nconst sentPolls = Array.isArray(gs.sentPollIds) ? gs.sentPollIds : [];\nconst lastPollAt = Number(gs.lastPollAt || 0);\nconst pollReady = !sentHubNow && (nowEpoch - lastPollAt >= 172800) && todayChannelPostsTrt < 4 && trtHour >= 10 && trtHour < 21;\n\nif (pollReady) {\n  let nextPoll = POLLS.find((p) => !sentPolls.includes(p.id));\n  if (!nextPoll) nextPoll = POLLS[sentPolls.length % POLLS.length];\n  patch.lastPollAt = nowEpoch;\n  patch.sentPollIds = [...sentPolls, nextPoll.id].slice(-50);\n  outputs.push({\n    json: {\n      route: 'send_poll',\n      chatId: '@SocialoraOfficial',\n      question: nextPoll.q,\n      optionsJson: JSON.stringify(nextPoll.opts),\n      pollId: nextPoll.id,\n    }\n  });\n}\n\n// Route 3: Wait until real channel activity grows (>= 25 avg views on last 5 posts) before preparing cross-promo messages\nconst crossPromoThresholdViews = 25;\nconst crossPromoReady = avgLast5Views >= crossPromoThresholdViews;\npatch.crossPromoThresholdViews = crossPromoThresholdViews;\npatch.crossPromoStatus = crossPromoReady ? 'active' : 'waiting_for_higher_activity';\n\nconst lastReportAt = Number(gs.lastReportAt || 0);\nconst lastBriefDmAt = Number(gs.lastBriefDmAt || 0);\nconst hasPreview = Boolean(String(gs.lastOutreachPreview || '').trim());\nlet isManual = false;\ntry { isManual = ($execution?.mode === 'manual'); } catch {}\nif (crossPromoReady && (isManual || !hasPreview || (nowEpoch - lastReportAt >= 43200))) {\n  patch.lastReportAt = nowEpoch;\n  outputs.push({\n    json: {\n      route: 'outreach_ai',\n      nowEpoch,\n      channelMembers: snap.channelMembers,\n      groupMembers: snap.groupMembers,\n      avgLast5Views,\n      topPosts,\n      winningFormats,\n      activePartners,\n      ownerLinked: Boolean(gs.ownerChatId),\n    }\n  });\n} else if (gs.ownerChatId && (nowEpoch - lastBriefDmAt >= 86400)) {\n  patch.lastBriefDmAt = nowEpoch;\n  const briefHtml = [\n    '📊 <b>Socialora Günlük Büyüme Özeti</b>',\n    '- Telegram Kanal: <b>' + (snap.channelMembers ?? '?') + '</b> abone | Grup: <b>' + (snap.groupMembers ?? '?') + '</b> üye',\n    '- Son 5 gönderi ortalaması: <b>' + avgLast5Views + ' görüntülenme</b> (dış ortaklık eşiği: 25)',\n    topPosts.length ? '- Öne çıkan: #' + topPosts[0].msgNum + ' (' + topPosts[0].views + 'v, ' + topPosts[0].category + ')' : '- Henüz öne çıkan gönderi yok',\n    '',\n    'İstediğin zaman bana <code>/status</code> yazarak anlık özet alabilirsin.'\n  ].join('\\n');\n  outputs.push({\n    json: {\n      route: 'daily_brief_dm',\n      htmlText: briefHtml\n    }\n  });\n}\n\n// Route 4: Always save latest telemetry snapshot cleanly\noutputs.push({\n  json: {\n    route: 'save_state',\n    statePatchJson: JSON.stringify(patch),\n  }\n});\n\nreturn outputs;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -263,9 +263,10 @@
     {
       "parameters": {
         "operation": "sendRichPost",
-        "chatId": "={{ $json.chatId }}",
-        "htmlText": "={{ $json.htmlText }}",
-        "buttonsJson": "={{ $json.buttonsJson }}",
+        "chatId": "={{ $json.chatId || '@SocialoraOfficial' }}",
+        "htmlText": "={{ $json.htmlText || \"<b>Start Here: Socialora Creator Growth Hub (@SocialoraOfficial)</b>\\n\\nDaily creator growth notes, search-friendly channel guides, and free browser tools for Instagram, TikTok, YouTube, X, and Telegram.\\n\\n<b>1) Top 5 Free Diagnostic Creator Tools</b>\\n- <a href=\\\"https://www.getsocialora.com/tools/instagram-shadowban-checker?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\">Instagram Shadowban Checker</a> - Test non-follower Explore reach signals\\n- <a href=\\\"https://www.getsocialora.com/tools/tiktok-shadowban-checker?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\">TikTok Shadowban Checker</a> - Diagnose 200-view limits before deleting clips\\n- <a href=\\\"https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\">Reels &amp; TikTok Safe Zone Guide</a> - Keep text clear of UI buttons\\n- <a href=\\\"https://www.getsocialora.com/tools/instagram-account-scorecard?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\">Instagram Account Scorecard</a> - Run a quick public profile audit\\n- <a href=\\\"https://www.getsocialora.com/tools/instagram-sponsorship-rate-calculator?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\">Sponsorship Rate Calculator</a> - Price UGC and brand deals cleanly\\n\\n<b>2) Free No-Password Trial</b>\\n- Test early Reel velocity with free Instagram views (no password ever needed): <a href=\\\"https://www.getsocialora.com/free-instagram-views?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\">getsocialora.com/free-instagram-views</a>\\n\\n<b>3) 365-Day Refill VIP &amp; Geo Packages</b>\\n- Compare USA, Spanish, Arabic, and Brazilian Instagram followers, Auto Likes, TikTok Views, YouTube Watch Time, and Telegram Members with instant crypto checkout: <a href=\\\"https://www.getsocialora.com/order?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\">getsocialora.com/order</a>\\n\\n<b>4) Live Support &amp; Hook Clinic (@SocialoraChat)</b>\\n- Drop your stalled post topic or run instant commands (/shadowban, /bio, /rate, /score, /safezone, /tools) inside @SocialoraChat for direct feedback.\" }}",
+        "buttonsJson": "={{ $json.buttonsJson || \"[[{\\\"text\\\":\\\"Top 5 Free Creator Tools\\\",\\\"url\\\":\\\"https://www.getsocialora.com/tools?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\"}],[{\\\"text\\\":\\\"Test Free IG Views (No Password)\\\",\\\"url\\\":\\\"https://www.getsocialora.com/free-instagram-views?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\"}],[{\\\"text\\\":\\\"365-Day Refill & Geo (/order)\\\",\\\"url\\\":\\\"https://www.getsocialora.com/order?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub\\\"},{\\\"text\\\":\\\"Hook Clinic (@SocialoraChat)\\\",\\\"url\\\":\\\"https://t.me/SocialoraChat\\\"}]]\" }}",
+        "toolUrl": "https://www.getsocialora.com/tools?utm_source=telegram&utm_medium=channel&utm_campaign=tg_pinned_hub",
         "pinMessage": true
       },
       "type": "CUSTOM.telegramGrowth",
@@ -447,6 +448,392 @@
         }
       },
       "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "refreshMetaTokens",
+        "forceRefresh": false,
+        "refreshThresholdDays": 40
+      },
+      "type": "CUSTOM.telegramGrowth",
+      "typeVersion": 1,
+      "position": [
+        580,
+        620
+      ],
+      "id": "tg-grw-tok-chk-01",
+      "name": "Meta Token Yenileme Kontrolü",
+      "credentials": {
+        "telegramApi": {
+          "id": "telegramSocialora01",
+          "name": "Telegram Bot (@socialora_publisher_2026_bot)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ Boolean($json.due === true && $json.dmHtml) }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        820,
+        620
+      ],
+      "id": "tg-grw-tok-if-01",
+      "name": "Token Yenileme DM Gerekli mi?"
+    },
+    {
+      "parameters": {
+        "operation": "sendOwnerDm",
+        "htmlText": "={{ $json.dmHtml }}"
+      },
+      "type": "CUSTOM.telegramGrowth",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        600
+      ],
+      "id": "tg-grw-tok-dm-01",
+      "name": "Telegram Growth - Token Yenileme DM",
+      "credentials": {
+        "telegramApi": {
+          "id": "telegramSocialora01",
+          "name": "Telegram Bot (@socialora_publisher_2026_bot)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs = require('fs');\nconst snap = $('Telegram Growth - Anlık Durum Al').first()?.json || {};\nconst nowEpoch = Number(snap.nowEpoch || Math.floor(Date.now() / 1000));\nconst GROWTH_PATH = 'C:\\\\Users\\\\idoca\\\\.n8n\\\\socialora-growth.json';\nconst IG_QUEUE_PATH = 'C:\\\\Users\\\\idoca\\\\Socialora\\\\automation\\\\instagram\\\\content-queue.json';\nconst TH_QUEUE_PATH = 'C:\\\\Users\\\\idoca\\\\Socialora\\\\automation\\\\threads\\\\content-queue.json';\n\nlet gs = snap.growthState || {};\ntry {\n  if (fs.existsSync(GROWTH_PATH)) gs = JSON.parse(fs.readFileSync(GROWTH_PATH, 'utf8')) || gs;\n} catch {}\n\nlet igPosts = [];\nlet thPosts = [];\ntry {\n  if (fs.existsSync(IG_QUEUE_PATH)) igPosts = JSON.parse(fs.readFileSync(IG_QUEUE_PATH, 'utf8'))?.posts || [];\n} catch {}\ntry {\n  if (fs.existsSync(TH_QUEUE_PATH)) thPosts = JSON.parse(fs.readFileSync(TH_QUEUE_PATH, 'utf8'))?.posts || [];\n} catch {}\n\nconst igSent = new Set(Array.isArray(gs.instagram?.sentIds) ? gs.instagram.sentIds : []);\nconst thSent = new Set(Array.isArray(gs.threads?.sentIds) ? gs.threads.sentIds : []);\n\nconst isIgEligible = (p) => {\n  if (!p || !p.id || !p.caption || igSent.has(p.id)) return false;\n  const mt = String(p.media_type || 'IMAGE').toUpperCase();\n  if (mt === 'REELS') return /^https:\\/\\//i.test(p.video_url || '') && /\\.mp4(?:\\?|$)/i.test(p.video_url || '');\n  if (mt === 'CAROUSEL') return Array.isArray(p.slides) && p.slides.length >= 2 && p.slides.every((u) => /^https:\\/\\//i.test(u) && /\\.jpe?g(?:\\?|$)/i.test(u));\n  return /^https:\\/\\//i.test(p.image_url || '') && /\\.jpe?g(?:\\?|$)/i.test(p.image_url || '');\n};\n\nconst isThEligible = (p) => Boolean(p && p.id && p.text && !thSent.has(p.id));\n\nconst eligibleIgList = igPosts.filter(isIgEligible);\nconst eligibleThList = thPosts.filter(isThEligible);\nconst eligibleIg = eligibleIgList.length;\nconst eligibleTh = eligibleThList.length;\n\nconst lowIg = igPosts.length > 0 && eligibleIg <= 6;\nconst lowTh = thPosts.length > 0 && eligibleTh <= 6;\nif (!lowIg && !lowTh) {\n  return [];\n}\n\nlet isManual = false;\ntry { isManual = ($execution?.mode === 'manual'); } catch {}\n\nconst qr = gs.queueRefill || {};\nconst lastAt = Number(qr.lastRefillAlertAt || 0);\nconst sameOrWorseIg = lowIg ? (qr.lastIgCount === undefined || eligibleIg < Number(qr.lastIgCount)) : false;\nconst sameOrWorseTh = lowTh ? (qr.lastThCount === undefined || eligibleTh < Number(qr.lastThCount)) : false;\nconst cooldownOk = !lastAt || (nowEpoch - lastAt >= 86400) || sameOrWorseIg || sameOrWorseTh;\n\nif (!isManual && !cooldownOk) {\n  return [];\n}\n\nconst sd = $getWorkflowStaticData('global');\nconst modelsCacheValid = Boolean(\n  Array.isArray(sd.cachedModels) &&\n  sd.cachedModels.length > 0 &&\n  Number(sd.modelsCachedAt || 0) > 0 &&\n  (nowEpoch - Number(sd.modelsCachedAt) < 21600)\n);\n\nreturn [{\n  json: {\n    needsRefill: true,\n    nowEpoch,\n    lowIg,\n    lowTh,\n    eligibleIg,\n    eligibleTh,\n    igTotal: igPosts.length,\n    thTotal: thPosts.length,\n    modelsCacheValid,\n    igAllIds: igPosts.map((p) => p.id).filter(Boolean),\n    thAllIds: thPosts.map((p) => p.id).filter(Boolean),\n    igTopFallback: igPosts.filter((p) => igSent.has(p.id)).slice(-5).map((p) => ({\n      id: p.id,\n      media_type: p.media_type,\n      category: p.category || '',\n      title: p.title || '',\n      captionHead: String(p.caption || '').split('\\n')[0].slice(0, 120),\n      score: 1,\n    })),\n    thTopFallback: thPosts.filter((p) => thSent.has(p.id)).slice(-5).map((p) => ({\n      id: p.id,\n      pillar: p.pillar || '',\n      topic_tag: p.topic_tag || 'Creator Tips',\n      textHead: String(p.text || '').split('\\n')[0].slice(0, 120),\n      score: 1,\n    })),\n  },\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        580,
+        920
+      ],
+      "id": "tg-grw-qchk-01",
+      "name": "Kuyruk Doluluk Kontrolü"
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v21.0/17841440817947810/media?fields=id,caption,media_type,like_count,comments_count,timestamp,permalink&limit=25",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        820,
+        920
+      ],
+      "id": "tg-grw-igtop-01",
+      "name": "Instagram Top Etkileşim Çek",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "FHKGjqwlc4mZYCqj",
+          "name": "Instagram API (@socialora1)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://graph.threads.net/v1.0/me/threads?fields=id,text,topic_tag,timestamp,permalink&limit=25",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1040,
+        920
+      ],
+      "id": "tg-grw-thtop-01",
+      "name": "Threads Top Etkileşim Çek",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "hFc78ADPjjUELAPw",
+          "name": "Threads API (@socialora1)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first()?.json || {};\nconst rows = Array.isArray(raw.data) ? raw.data : [];\nconst picked = rows.filter((r) => r && r.id && r.text).slice(0, 10);\nif (picked.length === 0) {\n  return [{ json: { skip: true, id: '', text: '', topic_tag: '' } }];\n}\nreturn picked.map((r) => ({\n  json: {\n    skip: false,\n    id: String(r.id),\n    text: String(r.text || ''),\n    topic_tag: String(r.topic_tag || ''),\n    timestamp: String(r.timestamp || ''),\n    permalink: String(r.permalink || ''),\n  },\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1260,
+        920
+      ],
+      "id": "tg-grw-thids-01",
+      "name": "Threads İçgörü Hedeflerini Hazırla"
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.threads.net/v1.0/{{ $json.id || '0' }}/insights?metric=views,likes,replies,reposts,quotes",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "options": {
+          "timeout": 12000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1480,
+        920
+      ],
+      "id": "tg-grw-thins-01",
+      "name": "Threads Gönderi Metrikleri Çek",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "hFc78ADPjjUELAPw",
+          "name": "Threads API (@socialora1)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const qInfo = $('Kuyruk Doluluk Kontrolü').first()?.json || {};\nconst igRaw = $('Instagram Top Etkileşim Çek').first()?.json || {};\nconst thTargets = $('Threads İçgörü Hedeflerini Hazırla').all().map((i) => i.json);\nconst thInsights = $input.all().map((i) => i.json);\n\nconst igLive = (Array.isArray(igRaw.data) ? igRaw.data : [])\n  .filter((m) => m && m.caption)\n  .map((m) => ({\n    id: String(m.id || ''),\n    media_type: String(m.media_type || 'IMAGE'),\n    likes: Number(m.like_count || 0),\n    comments: Number(m.comments_count || 0),\n    score: Number(m.like_count || 0) + Number(m.comments_count || 0) * 3,\n    captionHead: String(m.caption || '').split('\\n')[0].slice(0, 140),\n  }))\n  .sort((a, b) => b.score - a.score)\n  .slice(0, 5);\n\nconst top5Ig = igLive.length >= 5 ? igLive : [...igLive, ...(qInfo.igTopFallback || []).filter((f) => !igLive.some((l) => l.id === f.id))].slice(0, 5);\n\nconst thScored = [];\nfor (let i = 0; i < thTargets.length; i++) {\n  const t = thTargets[i];\n  if (!t || t.skip || !t.id) continue;\n  const ins = thInsights[i] || {};\n  const metrics = {};\n  for (const row of (Array.isArray(ins.data) ? ins.data : [])) {\n    const val = Array.isArray(row.values) && row.values[0] ? Number(row.values[0].value || 0) : Number(row.total_value?.value || 0);\n    metrics[row.name] = Number.isFinite(val) ? val : 0;\n  }\n  const views = Number(metrics.views || 0);\n  const likes = Number(metrics.likes || 0);\n  const replies = Number(metrics.replies || 0);\n  const reposts = Number(metrics.reposts || 0);\n  const quotes = Number(metrics.quotes || 0);\n  const score = likes + replies * 3 + reposts * 2 + quotes * 2 + Math.round(views * 0.05);\n  thScored.push({\n    id: t.id,\n    topic_tag: t.topic_tag || 'Creator Tips',\n    views,\n    likes,\n    replies,\n    reposts,\n    score,\n    textHead: String(t.text || '').split('\\n')[0].slice(0, 140),\n  });\n}\nthScored.sort((a, b) => b.score - a.score);\nconst top5Th = thScored.length >= 5 ? thScored.slice(0, 5) : [...thScored, ...(qInfo.thTopFallback || []).filter((f) => !thScored.some((l) => l.id === f.id))].slice(0, 5);\n\nreturn [{\n  json: {\n    ...qInfo,\n    top5Ig,\n    top5Th,\n  },\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1700,
+        920
+      ],
+      "id": "tg-grw-top5-01",
+      "name": "En İyi 5 Formatı Analiz Et"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ Boolean($json.modelsCacheValid) }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1920,
+        920
+      ],
+      "id": "tg-grw-gcache-if-01",
+      "name": "Refill Model Önbelleği Geçerli mi?"
+    },
+    {
+      "parameters": {
+        "url": "https://generativelanguage.googleapis.com/v1beta/models?pageSize=200",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2140,
+        1060
+      ],
+      "id": "tg-grw-gdisc-01",
+      "name": "Gemini Modelleri Keşfet (Refill)",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GKMR8LAL70kOA0mV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const src = $('En İyi 5 Formatı Analiz Et').first()?.json || {};\nconst sd = $getWorkflowStaticData('global');\nconst nowSec = Math.floor(Date.now() / 1000);\nconst disc = $input.first()?.json || {};\nconst rawModels = Array.isArray(disc.models) ? disc.models : [];\n\nlet candidates = [];\nif (rawModels.length > 0) {\n  candidates = rawModels\n    .filter((m) => {\n      const name = String(m.name || '').replace(/^models\\//, '');\n      const methods = Array.isArray(m.supportedGenerationMethods) ? m.supportedGenerationMethods : [];\n      return name.includes('flash')\n        && methods.includes('generateContent')\n        && !/(image|tts|live|audio|preview|exp|thinking|robotics|computer|embedding)/i.test(name);\n    })\n    .map((m) => String(m.name || '').replace(/^models\\//, ''));\n  if (candidates.length > 0) {\n    sd.cachedModels = candidates;\n    sd.modelsCachedAt = nowSec;\n  }\n} else if (Array.isArray(sd.cachedModels) && sd.cachedModels.length > 0) {\n  candidates = sd.cachedModels;\n}\n\nconst defaults = ['gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-flash-latest'];\nconst ordered = [...new Set([...candidates, ...defaults])];\nconst primaryModel = ordered.find((n) => n === 'gemini-3.5-flash')\n  || ordered.find((n) => n === 'gemini-3.5-flash-lite')\n  || ordered.find((n) => /^gemini-3\\.\\d+-flash/.test(n))\n  || ordered.find((n) => n === 'gemini-2.5-flash')\n  || ordered[0];\nconst fallbackModel = ordered.find((n) => n !== primaryModel && /2\\.5-flash|flash-latest|3\\.5-flash-lite/.test(n))\n  || ordered.find((n) => n !== primaryModel)\n  || primaryModel;\n\nconst dateTag = new Date((nowSec + 3 * 3600) * 1000).toISOString().slice(0, 10).replace(/-/g, '');\nconst targetsDesc = [];\nif (src.lowIg) targetsDesc.push('Instagram (remaining eligible: ' + src.eligibleIg + ' of ' + src.igTotal + ')');\nif (src.lowTh) targetsDesc.push('Threads (remaining eligible: ' + src.eligibleTh + ' of ' + src.thTotal + ')');\n\nconst prompt = [\n  'Analyze the top 5 highest-engagement creator posts below and generate EXACTLY 10 brand-new, high-retention English content drafts for: ' + targetsDesc.join(' and ') + '.',\n  '',\n  'Top 5 Instagram formats observed:',\n  JSON.stringify(src.top5Ig || [], null, 2),\n  '',\n  'Top 5 Threads formats observed:',\n  JSON.stringify(src.top5Th || [], null, 2),\n  '',\n  'Return ONLY a valid JSON object with key \"drafts\" containing an array of EXACTLY 10 objects.',\n  'Each object MUST have:',\n  '- \"id\": unique slug starting with \"refill_' + dateTag + '_01\" .. \"refill_' + dateTag + '_10\"',\n  '- \"platform\": \"instagram\" or \"threads\" (split evenly if both are low; otherwise all 10 for the low platform)',\n  '- \"format\": e.g. \"REELS\", \"CAROUSEL\", \"framework\", \"hook_truth\", \"question\", \"contrast\", or \"tool_natural\"',\n  '- \"topic_tag\": one of [\"Instagram Growth\", \"Creator Tips\", \"Video Editing\", \"Content Strategy\", \"UGC Creators\", \"Social Media Design\", \"YouTube Tips\", \"TikTok Tips\"]',\n  '- \"title\": crisp 5-8 word hook title (for Instagram/concept)',\n  '- \"text\": full draft body (for Instagram: 3-layer caption with <115-char opener, 3 actionable steps, 1 save/tool CTA, 3-5 niche hashtags; for Threads: 120-380 char human creator post)',\n  '- \"reply_text\": for Threads framework/hook_truth drafts, a link-free 2-sentence micro-case-study reply; for tool_natural, a natural reply pointing to the matching https://www.getsocialora.com/tools/... page',\n  '- \"tool_slug\": matching Socialora free tool slug (e.g. \"instagram-shadowban-checker\", \"reels-tiktok-safe-zone-guide\", \"instagram-bio-generator\", \"instagram-sponsorship-rate-calculator\", \"tiktok-shadowban-checker\")',\n  '',\n  'STRICT RULES:',\n  '1) 100% natural English ONLY.',\n  '2) NEVER use em-dashes (U+2014), en-dashes (U+2013), or bullet dots (U+2022). Use commas or plain hyphens (-).',\n  '3) NEVER use AI cliches: game-changer, elevate, unlock, skyrocket, delve, realm, unleash, tapestry, let us dive in, in conclusion.',\n  '4) NEVER invent fake follower guarantees or metrics.',\n].join('\\n');\n\nconst buildBody = (model) => {\n  const genCfg = { temperature: 0.75, topP: 0.9, maxOutputTokens: 4096, responseMimeType: 'application/json' };\n  if (String(model).includes('2.5')) genCfg.thinkingConfig = { thinkingBudget: 0 };\n  return {\n    system_instruction: { parts: [{ text: 'You are the Lead Growth Strategist for Socialora (@socialora1 / getsocialora.com/tools). Output strict valid JSON only.' }] },\n    contents: [{ role: 'user', parts: [{ text: prompt }] }],\n    generationConfig: genCfg,\n  };\n};\n\nreturn [{\n  json: {\n    ...src,\n    primaryModel,\n    fallbackModel,\n    requestBody: buildBody(primaryModel),\n    fallbackBody: buildBody(fallbackModel),\n  },\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2360,
+        920
+      ],
+      "id": "tg-grw-gprep-01",
+      "name": "Gemini 3.5 Flash Prompt Hazırla"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/models/{{ $json.primaryModel }}:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.requestBody) }}",
+        "options": {
+          "timeout": 25000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2580,
+        920
+      ],
+      "id": "tg-grw-gpri-01",
+      "name": "Gemini 3.5 Flash - 10 Taslak Üret",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GKMR8LAL70kOA0mV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ Boolean($json.candidates && $json.candidates[0] && $json.candidates[0].content && $json.candidates[0].content.parts && $json.candidates[0].content.parts[0] && $json.candidates[0].content.parts[0].text) }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2800,
+        920
+      ],
+      "id": "tg-grw-gok-if-01",
+      "name": "Refill Taslak Geldi mi?"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/models/{{ $('Gemini 3.5 Flash Prompt Hazırla').first().json.fallbackModel }}:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($('Gemini 3.5 Flash Prompt Hazırla').first().json.fallbackBody) }}",
+        "options": {
+          "timeout": 25000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2800,
+        1100
+      ],
+      "id": "tg-grw-gbak-01",
+      "name": "Gemini Yedek - 10 Taslak Üret",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GKMR8LAL70kOA0mV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs = require('fs');\nconst path = require('path');\nconst src = $('Gemini 3.5 Flash Prompt Hazırla').first()?.json || {};\nconst gOut = $input.first()?.json || {};\nconst GROWTH_PATH = 'C:\\\\Users\\\\idoca\\\\.n8n\\\\socialora-growth.json';\nconst REFILL_PATH = 'C:\\\\Users\\\\idoca\\\\Socialora\\\\automation\\\\pending_queue_refill.json';\n\nconst rawText = String(gOut?.mergedResponse ?? gOut?.candidates?.[0]?.content?.parts?.[0]?.text ?? gOut?.content?.parts?.[0]?.text ?? '').trim();\nconst cleanedJson = rawText.replace(new RegExp('^\\\\x60{3}(?:json)?\\\\s*|\\\\s*\\\\x60{3}$', 'gi'), '').trim();\n\nlet parsedDrafts = [];\ntry {\n  const parsed = JSON.parse(cleanedJson);\n  parsedDrafts = Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.drafts) ? parsed.drafts : []);\n} catch {\n  parsedDrafts = [];\n}\n\nconst sanitizeText = (s) => String(s || '')\n  .replace(/\\s*\\u2014\\s*/g, ', ')\n  .replace(/[\\u2013\\u2022]/g, '-')\n  .replace(/\\b(?:game-changer|elevate your game|elevate|unlock|skyrocket|delve|realm|unleash|tapestry|let'?s dive in|in conclusion)\\b/gi, '')\n  .replace(/[ \\t]{2,}/g, ' ')\n  .trim();\n\nconst ALLOWED_TAGS = new Set([\n  'Instagram Growth', 'Creator Tips', 'Video Editing', 'Content Strategy',\n  'UGC Creators', 'Social Media Design', 'YouTube Tips', 'TikTok Tips',\n]);\n\nconst sanitized = parsedDrafts\n  .filter((d) => d && typeof d.text === 'string' && d.text.trim().length >= 30 && !/[çğıöşüÇĞİÖŞÜ]/.test(d.text))\n  .slice(0, 10)\n  .map((d, idx) => ({\n    id: String(d.id || ('refill_' + (idx + 1))).replace(/[^a-z0-9_]/gi, '_'),\n    platform: d.platform === 'instagram' || d.platform === 'threads' ? d.platform : (src.lowIg && !src.lowTh ? 'instagram' : 'threads'),\n    format: String(d.format || 'framework'),\n    topic_tag: ALLOWED_TAGS.has(String(d.topic_tag || '')) ? String(d.topic_tag) : 'Creator Tips',\n    title: sanitizeText(d.title || ''),\n    text: sanitizeText(d.text),\n    reply_text: d.reply_text ? sanitizeText(d.reply_text) : '',\n    tool_slug: String(d.tool_slug || 'instagram-shadowban-checker').replace(/[^a-z0-9-]/gi, ''),\n    status: 'pending_review',\n  }));\n\nconst nowIso = new Date(Number(src.nowEpoch || Math.floor(Date.now() / 1000)) * 1000).toISOString();\nconst payload = {\n  version: 1,\n  status: sanitized.length > 0 ? 'pending_review' : 'alert_only_generation_failed',\n  generatedAt: nowIso,\n  modelUsed: String(gOut?.modelVersion || src.primaryModel || 'gemini-3.5-flash'),\n  thresholdEligible: 6,\n  instagram: {\n    eligibleRemaining: src.eligibleIg,\n    totalInQueue: src.igTotal,\n    needsRefill: Boolean(src.lowIg),\n    top5Analyzed: src.top5Ig || [],\n    drafts: sanitized.filter((d) => d.platform === 'instagram'),\n  },\n  threads: {\n    eligibleRemaining: src.eligibleTh,\n    totalInQueue: src.thTotal,\n    needsRefill: Boolean(src.lowTh),\n    top5Analyzed: src.top5Th || [],\n    drafts: sanitized.filter((d) => d.platform === 'threads'),\n  },\n  drafts: sanitized,\n};\n\nfs.mkdirSync(path.dirname(REFILL_PATH), { recursive: true });\nconst tmpRefill = REFILL_PATH + '.tmp.' + Date.now();\nfs.writeFileSync(tmpRefill, JSON.stringify(payload, null, 2) + '\\n', 'utf8');\nfs.renameSync(tmpRefill, REFILL_PATH);\n\ntry {\n  const gs = fs.existsSync(GROWTH_PATH) ? JSON.parse(fs.readFileSync(GROWTH_PATH, 'utf8')) : {};\n  gs.queueRefill = {\n    lastRefillAlertAt: Number(src.nowEpoch || Math.floor(Date.now() / 1000)),\n    lastRefillAlertIso: nowIso,\n    lastIgCount: src.eligibleIg,\n    lastThCount: src.eligibleTh,\n    draftCount: sanitized.length,\n    modelUsed: payload.modelUsed,\n  };\n  const tmpGs = GROWTH_PATH + '.tmp.' + Date.now();\n  fs.writeFileSync(tmpGs, JSON.stringify(gs, null, 2), 'utf8');\n  fs.renameSync(tmpGs, GROWTH_PATH);\n} catch {}\n\nconst esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst lines = [\n  '⚠️ <b>Kuyruk Bitme Koruması Tetiklendi</b>',\n  '- Instagram kalan içerik: <b>' + src.eligibleIg + '</b> / ' + src.igTotal + (src.lowIg ? ' (ESIK &lt;= 6!)' : ' (normal)'),\n  '- Threads kalan içerik: <b>' + src.eligibleTh + '</b> / ' + src.thTotal + (src.lowTh ? ' (ESIK &lt;= 6!)' : ' (normal)'),\n  '- Kullanilan model: <code>' + esc(payload.modelUsed) + '</code>',\n  '- Uretilen yeni taslak: <b>' + sanitized.length + ' adet</b>',\n  '- Kayit dosyasi: <code>automation/pending_queue_refill.json</code>',\n];\n\nreturn [{\n  json: {\n    savedCount: sanitized.length,\n    refillPath: REFILL_PATH,\n    dmHtml: lines.join('\\n'),\n  },\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3040,
+        920
+      ],
+      "id": "tg-grw-qsave-01",
+      "name": "Taslakları Kaydet & DM Hazırla"
+    },
+    {
+      "parameters": {
+        "operation": "sendOwnerDm",
+        "htmlText": "={{ $json.dmHtml }}"
+      },
+      "type": "CUSTOM.telegramGrowth",
+      "typeVersion": 1,
+      "position": [
+        3280,
+        920
+      ],
+      "id": "tg-grw-qdm-01",
+      "name": "Telegram Growth - Kuyruk Uyarı DM",
+      "credentials": {
+        "telegramApi": {
+          "id": "telegramSocialora01",
+          "name": "Telegram Bot (@socialora_publisher_2026_bot)"
+        }
+      },
+      "onError": "continueRegularOutput"
     }
   ],
   "connections": {
@@ -477,6 +864,16 @@
         [
           {
             "node": "Canlı Kanal Gönderilerini Oku",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Meta Token Yenileme Kontrolü",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Kuyruk Doluluk Kontrolü",
             "type": "main",
             "index": 0
           }
@@ -593,6 +990,186 @@
         [
           {
             "node": "Sahibe Özel DM Raporu At",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Meta Token Yenileme Kontrolü": {
+      "main": [
+        [
+          {
+            "node": "Token Yenileme DM Gerekli mi?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Token Yenileme DM Gerekli mi?": {
+      "main": [
+        [
+          {
+            "node": "Telegram Growth - Token Yenileme DM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Kuyruk Doluluk Kontrolü": {
+      "main": [
+        [
+          {
+            "node": "Instagram Top Etkileşim Çek",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Instagram Top Etkileşim Çek": {
+      "main": [
+        [
+          {
+            "node": "Threads Top Etkileşim Çek",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Threads Top Etkileşim Çek": {
+      "main": [
+        [
+          {
+            "node": "Threads İçgörü Hedeflerini Hazırla",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Threads İçgörü Hedeflerini Hazırla": {
+      "main": [
+        [
+          {
+            "node": "Threads Gönderi Metrikleri Çek",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Threads Gönderi Metrikleri Çek": {
+      "main": [
+        [
+          {
+            "node": "En İyi 5 Formatı Analiz Et",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "En İyi 5 Formatı Analiz Et": {
+      "main": [
+        [
+          {
+            "node": "Refill Model Önbelleği Geçerli mi?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refill Model Önbelleği Geçerli mi?": {
+      "main": [
+        [
+          {
+            "node": "Gemini 3.5 Flash Prompt Hazırla",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gemini Modelleri Keşfet (Refill)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Modelleri Keşfet (Refill)": {
+      "main": [
+        [
+          {
+            "node": "Gemini 3.5 Flash Prompt Hazırla",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini 3.5 Flash Prompt Hazırla": {
+      "main": [
+        [
+          {
+            "node": "Gemini 3.5 Flash - 10 Taslak Üret",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini 3.5 Flash - 10 Taslak Üret": {
+      "main": [
+        [
+          {
+            "node": "Refill Taslak Geldi mi?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refill Taslak Geldi mi?": {
+      "main": [
+        [
+          {
+            "node": "Taslakları Kaydet & DM Hazırla",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gemini Yedek - 10 Taslak Üret",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Yedek - 10 Taslak Üret": {
+      "main": [
+        [
+          {
+            "node": "Taslakları Kaydet & DM Hazırla",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Taslakları Kaydet & DM Hazırla": {
+      "main": [
+        [
+          {
+            "node": "Telegram Growth - Kuyruk Uyarı DM",
             "type": "main",
             "index": 0
           }

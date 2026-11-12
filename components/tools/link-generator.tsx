@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 const inputClass =
   'mt-2 h-12 w-full rounded-xl border border-border bg-background px-4 text-base outline-none focus-visible:ring-3 focus-visible:ring-ring/40'
@@ -95,6 +96,8 @@ export function LinkGenerator() {
           </p>
         )}
       </div>
+
+      {valid && <SmartMomentumOffer />}
     </div>
   )
 }

@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
 
+const TOOLKIT_NAME = 'Socialora Free Creator Toolkit'
+
 const TOOLS_OG_IMAGE = {
   url: '/tools-og-card.png',
   width: 1200,
   height: 630,
-  alt: 'Socialora Free Creator Tools - Browser Utilities With No Login Required',
+  alt: 'Socialora Free Creator Toolkit - Browser Utilities With No Login Required',
 }
 
 export function buildToolsMetadata({
@@ -12,20 +14,22 @@ export function buildToolsMetadata({
   description,
   canonicalPath,
   fullOgTitle,
+  absoluteTitle,
 }: {
   title: string
   description: string
   canonicalPath: string
   fullOgTitle?: string
+  absoluteTitle?: string
 }): Metadata {
-  const ogTitle = fullOgTitle ?? `${title} · Socialora`
+  const ogTitle = fullOgTitle ?? `${title} · ${TOOLKIT_NAME}`
   return {
-    title,
+    title: absoluteTitle ? { absolute: absoluteTitle } : title,
     description,
     alternates: { canonical: canonicalPath },
     openGraph: {
       type: 'website',
-      siteName: 'Socialora',
+      siteName: TOOLKIT_NAME,
       locale: 'en_US',
       url: canonicalPath,
       title: ogTitle,

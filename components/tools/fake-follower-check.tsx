@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 type Status = 'ok' | 'watch' | 'warn' | 'na'
 type Signal = { label: string; status: Status; detail: string }
@@ -336,6 +337,8 @@ export function FakeFollowerCheck() {
           </p>
         )}
       </div>
+
+      {result && <SmartMomentumOffer />}
     </div>
   )
             }

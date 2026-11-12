@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 type Status = 'ok' | 'watch' | 'warn' | 'na'
 type Signal = { label: string; status: Status; detail: string }
@@ -261,6 +262,8 @@ export function ProfileViewerCheck() {
           </p>
         )}
       </div>
+
+      {result && <SmartMomentumOffer />}
 
       <div className="mt-6 rounded-2xl border border-border bg-background p-5">
         <h3 className="text-base font-semibold">4 real ways to see who is checking your Instagram</h3>

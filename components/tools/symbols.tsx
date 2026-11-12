@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 const GROUPS: { name: string; items: string }[] = [
   { name: 'Hearts', items: '♡ ♥ ❤ ❣ ❥ ❦ ❧ ღ ❀ ♢ ♦ ☆' },
@@ -35,6 +36,7 @@ async function copyText(text: string): Promise<boolean> {
 export function SymbolsPicker() {
   const [active, setActive] = useState(0)
   const [copied, setCopied] = useState('')
+  const [used, setUsed] = useState(false)
 
   const items = GROUPS[active].items.split(' ').filter(Boolean)
 
@@ -42,6 +44,7 @@ export function SymbolsPicker() {
     const ok = await copyText(s)
     if (ok) {
       setCopied(s)
+      setUsed(true)
       setTimeout(() => setCopied(''), 1200)
     }
   }
@@ -82,6 +85,8 @@ export function SymbolsPicker() {
       <p className="mt-4 h-5 text-sm text-muted-foreground" aria-live="polite">
         {copied ? `Copied ${copied}` : 'Tap a symbol to copy it.'}
       </p>
+
+      {used && <SmartMomentumOffer />}
     </div>
   )
 }

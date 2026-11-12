@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { SITE } from '@/lib/site'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 const W = 1080
 const H = 1920
@@ -71,70 +71,102 @@ function drawCard(
   username: string,
 ) {
   const g = ctx.createLinearGradient(0, 0, W, H)
-  g.addColorStop(0, '#2a1f6b')
-  g.addColorStop(1, '#0e0e1f')
+  g.addColorStop(0, '#090D16')
+  g.addColorStop(0.55, '#111827')
+  g.addColorStop(1, '#1E1B4B')
   ctx.fillStyle = g
   ctx.fillRect(0, 0, W, H)
 
+  // Subtle ambient editorial glow
+  const glow = ctx.createRadialGradient(W / 2, 560, 40, W / 2, 560, 520)
+  glow.addColorStop(0, 'rgba(99, 102, 241, 0.24)')
+  glow.addColorStop(1, 'rgba(99, 102, 241, 0)')
+  ctx.fillStyle = glow
+  ctx.fillRect(0, 0, W, H)
+
   ctx.textAlign = 'center'
-  ctx.fillStyle = '#ffffff'
-  ctx.font = 'bold 56px sans-serif'
-  ctx.fillText('INSTAGRAM ACCOUNT SCORECARD', W / 2, 220)
+  ctx.fillStyle = '#94A3B8'
+  ctx.font = 'bold 34px sans-serif'
+  ctx.fillText('SOCIALORA CREATOR AUDIT', W / 2, 165)
+
+  ctx.fillStyle = '#F8FAFC'
+  ctx.font = 'bold 54px sans-serif'
+  ctx.fillText('INSTAGRAM ACCOUNT SCORECARD', W / 2, 235)
 
   if (username) {
-    ctx.fillStyle = '#c4b5fd'
-    ctx.font = '600 52px sans-serif'
-    ctx.fillText(username, W / 2, 310)
+    ctx.fillStyle = '#A5B4FC'
+    ctx.font = '600 48px sans-serif'
+    ctx.fillText(username, W / 2, 315)
   }
 
   const cx = W / 2
   const cy = 640
-  const r = 260
-  ctx.lineWidth = 44
+  const r = 250
+  ctx.lineWidth = 40
   ctx.lineCap = 'round'
-  ctx.strokeStyle = 'rgba(255,255,255,0.12)'
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)'
   ctx.beginPath()
   ctx.arc(cx, cy, r, 0, Math.PI * 2)
   ctx.stroke()
-  ctx.strokeStyle = '#a78bfa'
+
+  const ringGrad = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r)
+  ringGrad.addColorStop(0, '#818CF8')
+  ringGrad.addColorStop(1, '#34D399')
+  ctx.strokeStyle = ringGrad
   ctx.beginPath()
   ctx.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * total) / 100)
   ctx.stroke()
 
-  ctx.fillStyle = '#ffffff'
-  ctx.font = 'bold 220px sans-serif'
-  ctx.fillText(String(total), cx, cy + 75)
-  ctx.fillStyle = '#c4b5fd'
-  ctx.font = '600 44px sans-serif'
-  ctx.fillText('out of 100', cx, cy + 150)
+  ctx.fillStyle = '#FFFFFF'
+  ctx.font = 'bold 215px sans-serif'
+  ctx.fillText(String(total), cx, cy + 72)
+  ctx.fillStyle = '#A5B4FC'
+  ctx.font = '600 42px sans-serif'
+  ctx.fillText('OUT OF 100', cx, cy + 146)
 
-  ctx.fillStyle = '#ffffff'
-  ctx.font = 'bold 84px sans-serif'
-  ctx.fillText(labelFor(total), cx, 1040)
+  ctx.fillStyle = '#F8FAFC'
+  ctx.font = 'bold 78px sans-serif'
+  ctx.fillText(labelFor(total), cx, 1020)
 
-  const left = 140
-  const barW = W - 280
+  // Breakdown card container
+  const cardX = 96
+  const cardY = 1090
+  const cardW = W - 192
+  const cardH = 600
+  ctx.fillStyle = 'rgba(255,255,255,0.04)'
+  ctx.strokeStyle = 'rgba(255,255,255,0.12)'
+  ctx.lineWidth = 2
+  ctx.beginPath()
+  ctx.roundRect(cardX, cardY, cardW, cardH, 32)
+  ctx.fill()
+  ctx.stroke()
+
+  const left = 148
+  const barW = W - 296
   parts.forEach((p, i) => {
-    const y = 1180 + i * 140
+    const y = 1175 + i * 135
     ctx.textAlign = 'left'
-    ctx.fillStyle = '#e5e7eb'
-    ctx.font = '600 40px sans-serif'
+    ctx.fillStyle = '#E2E8F0'
+    ctx.font = '600 38px sans-serif'
     ctx.fillText(p.label, left, y)
     ctx.textAlign = 'right'
+    ctx.fillStyle = '#94A3B8'
     ctx.fillText(`${Math.round(p.points)}/${p.max}`, left + barW, y)
-    ctx.fillStyle = 'rgba(255,255,255,0.12)'
-    ctx.fillRect(left, y + 24, barW, 26)
-    ctx.fillStyle = '#a78bfa'
-    ctx.fillRect(left, y + 24, barW * (p.points / p.max), 26)
+    ctx.fillStyle = 'rgba(255,255,255,0.1)'
+    ctx.beginPath()
+    ctx.roundRect(left, y + 24, barW, 24, 12)
+    ctx.fill()
+    ctx.fillStyle = '#818CF8'
+    const fillW = Math.max(24, barW * (p.points / p.max))
+    ctx.beginPath()
+    ctx.roundRect(left, y + 24, fillW, 24, 12)
+    ctx.fill()
   })
 
   ctx.textAlign = 'center'
-  ctx.fillStyle = 'rgba(255,255,255,0.6)'
-  ctx.font = '34px sans-serif'
-  ctx.fillText('Check your own score for free', W / 2, 1770)
-  ctx.fillStyle = '#ffffff'
-  ctx.font = 'bold 44px sans-serif'
-  ctx.fillText(SITE.url.replace(/^https?:\/\/(www\.)?/, ''), W / 2, 1835)
+  ctx.fillStyle = '#E2E8F0'
+  ctx.font = '600 38px sans-serif'
+  ctx.fillText('Free Profile Audit: getsocialora.com/tools', W / 2, 1805)
 }
 
 const inputClass =
@@ -329,20 +361,36 @@ export function AccountScorecard() {
       </div>
 
       <div className={result ? 'mt-6' : 'hidden'}>
-        <p className="text-sm font-medium">Your shareable card</p>
+        <p className="text-sm font-medium">Your shareable Story scorecard</p>
         <canvas
           ref={canvasRef}
           className="mx-auto mt-3 max-h-[480px] max-w-full rounded-xl border border-border"
           style={{ height: 'auto', width: 'auto' }}
         />
-        <button
-          type="button"
-          onClick={download}
-          className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground"
-        >
-          Download card (PNG)
-        </button>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={download}
+            className="inline-flex h-11 items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground"
+          >
+            Download My Creator Scorecard (Story PNG)
+          </button>
+          {result && (
+            <a
+              href={`https://www.threads.net/intent/post?text=${encodeURIComponent(
+                `My Instagram Account Scorecard is ${result.total}/100 (${labelFor(result.total)}, ${result.rate.toFixed(2)}% engagement rate). Run your free profile audit on getsocialora.com/tools`,
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-border bg-background px-6 text-sm font-medium hover:bg-muted/60"
+            >
+              Share Score on Threads
+            </a>
+          )}
+        </div>
       </div>
+
+      {result && <SmartMomentumOffer />}
     </div>
   )
 }

@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 import { FONT_STYLES, type FontStyle } from '@/lib/font-styles'
 import { FONT_CONFIGS, type FontConfig } from '@/lib/tool-data/font-configs'
 
@@ -20,6 +21,7 @@ export function FontGenerator() {
 
   const [text, setText] = useState('')
   const [copied, setCopied] = useState('')
+  const [hasCopied, setHasCopied] = useState(false)
   const [selectedId, setSelectedId] = useState('')
 
   const source = text.trim() === '' ? config.example : text
@@ -48,6 +50,7 @@ export function FontGenerator() {
       document.body.removeChild(area)
     }
     setCopied(id)
+    setHasCopied(true)
     setTimeout(() => setCopied(''), 1500)
   }
 
@@ -134,6 +137,8 @@ export function FontGenerator() {
           )
         })}
       </ul>
+
+      {(text.trim().length > 0 || hasCopied || selectedId !== '') && <SmartMomentumOffer />}
 
       {config.cheat && (
         <section className="mt-6 rounded-2xl border border-border bg-card p-5">

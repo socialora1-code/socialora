@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 function toNumber(value: string): number {
   const cleaned = value.replace(/,/g, '').trim()
@@ -95,6 +96,8 @@ export function EngagementRateCalculator() {
           </p>
         )}
       </div>
+
+      {rate !== null && result && <SmartMomentumOffer />}
     </div>
   )
 }

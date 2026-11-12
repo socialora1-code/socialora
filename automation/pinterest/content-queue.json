@@ -9,7 +9,7 @@
     "recommended_dimensions": "1000x1500",
     "brand_colors": "Five harmonious board-coded light editorial palettes (coral_cream, sage_emerald, sand_indigo, oat_terracotta, sky_cobalt) sharing one cohesive Socialora studio grid.",
     "rules": [
-      "For drafts, combine a saveable comparison + 3-step cheat sheet with a genuine uncluttered mini UI crop from the matching tool page inside a crisp 1000x1500 studio layout.",
+      "For drafts, pair a clear DON'T DO THIS vs DO THIS comparison + 38-char mobile SEO headline on top with Steps 1-2 clear on bottom-left, Step 3/score blurred on bottom-right over a real /tools/ crop, and a high-contrast Pill CTA.",
       "Screenshot capture requires live HTTP 200 + a real readable h1; never create a fake screenshot.",
       "Cover hooks must be 4 to 7 honest words; every Pin contains one immediately usable takeaway and a modest Socialora signature.",
       "Before a scheduled Pin, check the verified publicly served generated asset at /pinterest/{id}.png and the matching visual-manifest.json; if absent or inaccessible, skip rather than use a generic illustration.",
@@ -20,7 +20,7 @@
     ],
     "asset_pipeline": {
       "source": "Authentic English-locale site tool UI crops captured with headless Chromium + editorial HTML/CSS studio renderer",
-      "generator": "automation/pinterest/build_visual_assets.py",
+      "generator": "automation/pinterest/build_visual_assets.mjs",
       "workflow": ".github/workflows/socialora-pinterest-assets.yml",
       "image_url_pattern": "https://www.getsocialora.com/pinterest/{id}.png",
       "manifest_url": "https://www.getsocialora.com/pinterest/visual-manifest.json",
@@ -37,82 +37,121 @@
       "status": "published",
       "board": "Free Instagram & Photo Tools",
       "title": "Social Media Photo Resizer: One Photo, Multiple Formats",
-      "description": "The same photo won't fit every layout. Start with a sharp original, choose a format, preview the crop, then download the size you need. This free browser tool supports Instagram posts, Stories, YouTube thumbnails and more. Your photo stays on your device.",
-      "url": "https://www.getsocialora.com/tools/social-media-photo-resizer?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_photo_resize_01",
+      "description": "Use a free social media photo resizer to convert one sharp master image into Instagram 4:5 post dimensions, vertical 9:16 Stories, and crisp YouTube thumbnail sizes without blurry server compression. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/social-media-photo-resizer?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_photo_resize_01",
       "image_brief": "A bold vertical before-and-after layout showing the same original portrait as a feed post and Story preview. Labels 'Before' and 'Sized for Instagram', no fake results.",
       "image_url": "https://i.pinimg.com/1200x/0a/e3/9f/0ae39f442857f955e8f85a3a829c8159.jpg",
       "published_pin_id": "267753140343754783",
-      "published_at": "2026-11-09T18:58:36Z"
+      "published_at": "2026-11-09T18:58:36Z",
+      "tags": [
+        "Social Media Photo Resizer",
+        "Instagram Image Sizes",
+        "Creator Tools",
+        "Content Creation",
+        "Social Media Design"
+      ]
     },
     {
       "id": "pnt_nocrop_blur_02",
       "status": "draft",
       "board": "Free Instagram & Photo Tools",
-      "title": "Instagram No Crop Photo: Post Full Vertical Pictures cleanly",
-      "description": "Stop letting Instagram clip heads or details off your favorite photos. Place your full image inside a subtle blurred frame sized for 4:5 feed or 9:16 Stories. Try Socialora's free Instagram No Crop Photo Maker right in your browser.",
-      "url": "https://www.getsocialora.com/tools/instagram-no-crop-blur-background?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_nocrop_blur_02",
+      "title": "Instagram No Crop Photo: Post Full Vertical Pictures Cleanly",
+      "description": "Stop letting Instagram crop heads or room edges off your favorite vertical shots. Wrap any photo in a matching blur background for 4:5 feed posts and 9:16 Stories right in your browser with zero login. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-no-crop-blur-background?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_nocrop_blur_02",
       "image_brief": "Premium light editorial Pinterest poster, not generic dark-purple template. Illustrate the SAME imaginary cafe portrait subject in a true composition comparison: left awkward tight crop, right full portrait fitted with softly blurred background. Headline 5 words, small Socialora footer, readable at phone width; label example, do not claim a real customer result.",
       "image_url": null,
       "published_pin_id": null,
       "cover_hook": "Post Full Photos Without Cropping",
       "visual_style": "sage_emerald",
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled Post Full Photos Without Cropping with comparison, 3 actionable steps, and a cropped preview of the free Instagram No Crop Photo Maker (Blur Background) browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled Post Full Photos Without Cropping with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Instagram No Crop Photo Maker (Blur Background) browser tool.",
       "tags": [
-        "Instagram Tips",
+        "Instagram No Crop Photo",
+        "Blur Background Instagram",
+        "Instagram 4:5 Post Size",
         "Photography Tips",
-        "Social Media Tools",
-        "Instagram Feed",
-        "Content Creation"
+        "Creator Tools"
+      ],
+      "comparison": {
+        "dont": "Force-crop 16:9 photos into 1:1 and slice off faces or context",
+        "do": "Pad full shots into 4:5 (1080x1350) with soft ambient edge blur"
+      },
+      "steps": [
+        "Choose your full-resolution horizontal or portrait photo",
+        "Select Instagram 4:5 feed preset and adjust soft edge blur strength",
+        "Preview final 1080x1350 frame clarity score inside the live browser tool"
       ]
     },
     {
       "id": "pnt_safezone_03",
       "status": "published",
       "board": "Reels & TikTok Creator Tips",
-      "title": "Reels & TikTok Safe Zones: Keep Captions Visible",
-      "description": "Important subtitles can disappear behind on-screen controls. Keep key text near the clear center and preview your layout before publishing. Use the free safe-zone guide to check your next short video.",
-      "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_safezone_03",
+      "title": "Reels Safe Zone Guide: Keep Captions Visible on Mobile",
+      "description": "Prevent your Instagram Reels captions and TikTok subtitles from disappearing behind app buttons and bottom usernames. Preview overlay margins and download a transparent safe zone template before exporting. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_safezone_03",
       "image_brief": "Simple vertical phone mockup with distinct safe central text area and lightly shaded UI-edge zones; label diagram as illustrative, not pixel-exact.",
       "image_url": "https://i.pinimg.com/1200x/ca/2d/9a/ca2d9abc1c2bdb776523928822aeaaba.jpg",
       "published_pin_id": "267753140343764268",
       "cover_hook": "Keep Captions Off the Buttons",
       "visual_style": "annotation-phone-guide",
-      "published_at": "2026-11-10T00:28:03Z"
+      "published_at": "2026-11-10T00:28:03Z",
+      "tags": [
+        "Reels Safe Zone Guide",
+        "TikTok Safe Zone",
+        "Instagram Reels Captions",
+        "Video Editing Tips",
+        "Short Form Video"
+      ]
     },
     {
       "id": "pnt_thumbnail_04",
       "status": "published",
       "board": "YouTube & Video Creator Tools",
-      "title": "YouTube Thumbnail Maker: Find a Clear Video Frame",
-      "description": "A useful thumbnail starts with a sharp, readable moment. Scrub your own video, choose a clear frame with room for text, then save it as an image using this free browser tool.",
-      "url": "https://www.getsocialora.com/tools/video-frame-to-thumbnail?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_thumbnail_04",
+      "title": "YouTube Thumbnail Maker: Extract a Clear Video Frame Free",
+      "description": "Replace blurry paused phone screenshots with a full-resolution cover still extracted directly from your video file. Pick the sharpest expression with clean headline space using this free frame-to-thumbnail browser tool. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/video-frame-to-thumbnail?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_thumbnail_04",
       "image_brief": "Video filmstrip with one frame selected and displayed as a thumbnail card, simple 3-step visual.",
       "image_url": "https://i.pinimg.com/1200x/97/9f/38/979f383aefa6b040a46e0bbf917245e7.jpg",
       "published_pin_id": "267753140343773531",
       "cover_hook": "Find a Better Thumbnail Frame",
       "visual_style": "video-storyboard",
       "alt_text": "Editorial illustrated guide with three video filmstrip frames labeled blurry, clear and busy; the clear middle frame is selected and enlarged, alongside tips for a strong thumbnail.",
-      "published_at": "2026-11-10T06:35:37Z"
+      "published_at": "2026-11-10T06:35:37Z",
+      "tags": [
+        "YouTube Thumbnail Maker",
+        "Video Frame Extractor",
+        "Reel Cover Tips",
+        "Video Editing",
+        "YouTube Growth"
+      ]
     },
     {
       "id": "pnt_scorecard_05",
       "status": "draft",
       "board": "Free Instagram & Photo Tools",
       "title": "Instagram Profile Audit: Free Account Scorecard & Action Plan",
-      "description": "Not sure what is slowing down your Instagram profile growth? Run an illustrative profile scorecard using your public numbers to spot weak areas in bio clarity and interaction balance before your next post.",
-      "url": "https://www.getsocialora.com/tools/instagram-account-scorecard?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_scorecard_05",
+      "description": "Diagnose why profile visits are not turning into followers with a free Instagram account scorecard. Benchmark public engagement rate, follower ratio, and posting consistency in seconds with zero password required. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-account-scorecard?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_scorecard_05",
       "image_brief": "Illustrative scorecard showing neutral sample values, explicitly marked 'Example only', never imply direct access to the user's analytics.",
       "image_url": null,
       "published_pin_id": null,
       "cover_hook": "Audit Your Account Weekly",
       "visual_style": "sage_emerald",
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled Audit Your Account Weekly with comparison, 3 actionable steps, and a cropped preview of the free Instagram Account Scorecard browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled Audit Your Account Weekly with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Instagram Account Scorecard browser tool.",
       "tags": [
-        "Instagram Growth",
-        "Social Media Audit",
-        "Instagram Marketing",
-        "Content Strategy",
-        "Digital Marketing"
+        "Instagram Profile Audit",
+        "Instagram Account Scorecard",
+        "Instagram Engagement Rate",
+        "Instagram Growth Tips",
+        "Creator Strategy"
+      ],
+      "comparison": {
+        "dont": "Guess why 5,000 Reel views only turned into 2 profile follows",
+        "do": "Score bio clarity, follower ratio, and recent interaction balance out of 100"
+      },
+      "steps": [
+        "Enter public followers, following, and 10-post average likes",
+        "Compare engagement ratio against accounts in your exact follower tier",
+        "Reveal your 100-point Account Scorecard and top bottleneck fix in browser"
       ]
     },
     {
@@ -120,41 +159,59 @@
       "status": "draft",
       "board": "Free Instagram & Photo Tools",
       "title": "Instagram Grid Maker: Split One Photo Into 3x3 Tiles Easily",
-      "description": "Planning a clean 3x3 visual banner for your Instagram profile? Split any high-resolution photo into numbered tiles without distortion, then post from bottom-right to top-left so every seam aligns.",
-      "url": "https://www.getsocialora.com/tools/instagram-grid-maker?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_gridmaker_06",
+      "description": "Turn any banner or announcement image into a seamless 3x3 Instagram profile grid without crooked seams. Use this free Instagram grid splitter to export numbered tiles in exact posting order on your device. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-grid-maker?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_gridmaker_06",
       "image_brief": "A single photo visually divided into a 3x3 grid with arrows showing tile sequence; use generic illustration.",
       "image_url": null,
       "published_pin_id": null,
       "cover_hook": "One Photo, Nine Crisp Tiles",
       "visual_style": "sage_emerald",
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled One Photo, Nine Crisp Tiles with comparison, 3 actionable steps, and a cropped preview of the free Instagram Grid Maker browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled One Photo, Nine Crisp Tiles with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Instagram Grid Maker browser tool.",
       "tags": [
+        "Instagram Grid Maker",
+        "3x3 Instagram Grid",
         "Instagram Aesthetic",
-        "Instagram Grid",
-        "Instagram Tips",
-        "Graphic Design",
+        "Profile Grid Layout",
         "Social Media Design"
+      ],
+      "comparison": {
+        "dont": "Upload tile #1 first and scramble your entire 3x3 profile banner",
+        "do": "Slice 3:4 portrait tiles cleanly and upload in exact reverse sequence"
+      },
+      "steps": [
+        "Drop your high-res hero banner and pick 3x3, 3x2, or 3x1 layout",
+        "Switch tile shape to Portrait 3:4 to match the modern Instagram profile grid",
+        "Export numbered tiles and reveal exact Post 1 to Post 9 upload sequence"
       ]
     },
     {
       "id": "pnt_video_safe_07",
       "status": "draft",
       "board": "Reels & TikTok Creator Tips",
-      "title": "Reels & TikTok Safe Zone: 3 Checks Before Uploading Short Video",
-      "description": "Check text placement before exporting your next Reel or TikTok. Keep headlines inside the clear central safe zone away from playback buttons, and test readability at mobile width with this free overlay guide.",
-      "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_video_safe_07",
+      "title": "Reels & TikTok Safe Zone: 3 Checks Before Uploading Video",
+      "description": "Protect your short-form video hooks from getting covered by Like buttons, share icons, and bottom caption overlays. Test your vertical 9:16 frame against Instagram Reels, TikTok, and Shorts margins in browser. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_video_safe_07",
       "image_brief": "Three illustrated checkpoints: opening frame, readable captions, safe text placement. No fabricated metrics.",
       "image_url": null,
       "published_pin_id": null,
       "cover_hook": "Three Checks Before Export",
       "visual_style": "coral_cream",
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (coral_cream) titled Three Checks Before Export with comparison, 3 actionable steps, and a cropped preview of the free Reels, TikTok and YouTube Shorts Safe Zone Guide browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (coral_cream) titled Three Checks Before Export with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Reels, TikTok and YouTube Shorts Safe Zone Guide browser tool.",
       "tags": [
-        "Instagram Reels",
-        "TikTok Tips",
-        "Video Editing Tips",
-        "Short Form Video",
-        "Content Creators"
+        "Reels Safe Zone",
+        "TikTok Safe Zone Guide",
+        "YouTube Shorts Margins",
+        "Video Editing Checklist",
+        "Short Form Video"
+      ],
+      "comparison": {
+        "dont": "Place key hook text in the bottom 25% where usernames block every word",
+        "do": "Lock headlines inside the safe center-upper box away from side buttons"
+      },
+      "steps": [
+        "Pick Instagram Reels, TikTok, or YouTube Shorts overlay preset",
+        "Upload a test frame from your 1080x1920 vertical video timeline",
+        "Inspect red danger margins and download the transparent PNG overlay guide"
       ]
     },
     {
@@ -162,52 +219,70 @@
       "status": "draft",
       "board": "Free Caption & Content Ideas",
       "title": "Instagram Bio Ideas: Simple 3-Line Formula to Get Followers",
-      "description": "Struggling to explain what your Instagram page does in 150 characters? Follow this 3-line structure, who you help, what you post, and one clear call to action, then draft clean variations in seconds.",
-      "url": "https://www.getsocialora.com/tools/instagram-bio-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_08_bio-3line",
+      "description": "Turn cold profile visitors into followers with a clear 3-line Instagram bio formula. Combine searchable Name keywords, who your page helps, and a crisp call to action using this free Instagram bio generator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-bio-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_08_bio-3line",
       "cover_hook": "3-Line Bio That Converts",
       "image_brief": "A three-line real-world example, with each line highlighted: who, value, next step. Avoid fake social profile screenshots.",
       "visual_style": "sand_indigo",
       "content_pillar": "writing",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled 3-Line Bio That Converts with comparison, 3 actionable steps, and a cropped preview of the free Instagram Bio Generator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled 3-Line Bio That Converts with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Instagram Bio Generator browser tool.",
       "tags": [
-        "Instagram Bio",
-        "Instagram Growth",
-        "Personal Branding",
-        "Social Media Tips",
-        "Creator Tips"
+        "Instagram Bio Ideas",
+        "Instagram Bio Generator",
+        "Instagram Bio Formula",
+        "Profile Optimization",
+        "Instagram Growth"
+      ],
+      "comparison": {
+        "dont": "List vague hobbies like \"Creator | Coffee | Lifestyle | DM for collabs\"",
+        "do": "State who you help, what you share weekly, and one clear next click"
+      },
+      "steps": [
+        "Put your target niche keyword beside your name for Instagram Search SEO",
+        "Write Line 1 around the exact problem your content solves in 5 seconds",
+        "Generate custom 150-character 3-line bio drafts in the live browser tool"
       ]
     },
     {
       "id": "pnt_09_tiktokbio",
       "status": "draft",
       "board": "Free Caption & Content Ideas",
-      "title": "TikTok Bio Ideas That Explain Your Niche Under 80 Characters",
-      "description": "TikTok gives you only 80 characters to explain why someone should follow. Lead with your niche topic, add one clear posting promise, and generate clean bio drafts ready to paste.",
-      "url": "https://www.getsocialora.com/tools/tiktok-bio-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_09_tiktokbio",
+      "title": "TikTok Bio Ideas: Explain Your Niche Under 80 Characters",
+      "description": "Make every letter of TikTok's strict 80-character bio limit count. Pair your core video topic with a weekly series hook and test concise drafts cleanly in this free TikTok bio generator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/tiktok-bio-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_09_tiktokbio",
       "cover_hook": "Fix Your TikTok Bio in Seconds",
       "image_brief": "A clean profile header mockup with a before/after rewriting example. No follower count.",
       "visual_style": "sand_indigo",
       "content_pillar": "writing",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Fix Your TikTok Bio in Seconds with comparison, 3 actionable steps, and a cropped preview of the free TikTok Bio Generator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Fix Your TikTok Bio in Seconds with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free TikTok Bio Generator browser tool.",
       "tags": [
-        "TikTok Marketing",
+        "TikTok Bio Ideas",
+        "TikTok Bio Generator",
+        "TikTok Profile Tips",
         "TikTok Growth",
-        "Social Media Strategy",
-        "Creator Economy",
-        "Digital Marketing"
+        "Creator Tips"
+      ],
+      "comparison": {
+        "dont": "Waste 80 characters on filler quotes that get cut off mid-sentence",
+        "do": "Pack [Topic] + [Weekly Series] + [1 Action] cleanly under 80 chars"
+      },
+      "steps": [
+        "Type your main video niche in 2 to 3 plain searchable words",
+        "Add one specific weekly promise or upload cadence viewers recognize",
+        "Test live 80-character truncation and copy ready bio drafts in browser"
       ]
     },
     {
       "id": "pnt_10_captionhook",
       "status": "published",
       "board": "Free Caption & Content Ideas",
-      "title": "Instagram Caption Generator: A Hook, Context, and Next Step",
-      "description": "Start your Instagram caption with one specific hook, add the context your audience needs, and finish with a useful next step. Draft a version in Socialora’s free Instagram Caption Generator, then edit it to sound like you.",
-      "url": "https://www.getsocialora.com/tools/instagram-caption-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_10_captionhook",
+      "title": "Instagram Caption Ideas: Write Hooks That Earn Read-More Taps",
+      "description": "Stop losing readers before the Instagram read-more fold. Open your caption with a clear takeaway or checklist teaser, add concise context, and test engaging options with this free Instagram caption generator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-caption-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_10_captionhook",
       "cover_hook": "Write Captions People Read",
       "image_brief": "A typography-led 3-section stack: hook, value, action; show one short original caption example.",
       "visual_style": "magazine_feature",
@@ -215,160 +290,230 @@
       "image_url": "https://i.pinimg.com/1200x/3d/4e/3a/3d4e3a4b7a1ecee705e453ced38e51d4.jpg",
       "published_pin_id": "267753140343782351",
       "published_at": "2026-11-10T13:07:09Z",
-      "composition": "magazine_feature"
+      "composition": "magazine_feature",
+      "tags": [
+        "Instagram Caption Ideas",
+        "Instagram Caption Generator",
+        "Social Media Copywriting",
+        "Instagram Hooks",
+        "Content Strategy"
+      ]
     },
     {
       "id": "pnt_11_reelideas",
       "status": "draft",
       "board": "Free Caption & Content Ideas",
       "title": "Instagram Reel Ideas: 3 Angles When You Have Nothing to Post",
-      "description": "Out of Reel ideas? Take one question your audience asks, turn it into a quick demo, a mistake to avoid, or a side-by-side comparison, and generate tailored ideas with Socialora.",
-      "url": "https://www.getsocialora.com/tools/instagram-content-ideas-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_11_reelideas",
+      "description": "Never stare at a blank content calendar again. Turn one common follower question into a quick visual mistake fix, side-by-side comparison, or 3-step demo using this free Instagram content ideas generator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-content-ideas-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_11_reelideas",
       "cover_hook": "Never Run Out of Reel Ideas",
       "image_brief": "A creator desk visual with three distinct mini storyboards showing demo, mistake, tip; no generic random icons.",
       "visual_style": "sand_indigo",
       "content_pillar": "writing",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Never Run Out of Reel Ideas with comparison, 3 actionable steps, and a cropped preview of the free Instagram Content Ideas Generator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Never Run Out of Reel Ideas with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Instagram Content Ideas Generator browser tool.",
       "tags": [
-        "Instagram Reels",
-        "Content Ideas",
-        "Instagram Marketing",
-        "Content Creation",
-        "Social Media Growth"
+        "Instagram Reel Ideas",
+        "Content Ideas Generator",
+        "Instagram Content Strategy",
+        "Reels Ideas 2026",
+        "Creator Tips"
+      ],
+      "comparison": {
+        "dont": "Wait for random viral audio trends before filming anything all week",
+        "do": "Turn 1 niche question into a mistake teardown, myth check, or quick demo"
+      },
+      "steps": [
+        "Enter your specific niche and one common beginner mistake",
+        "Pair the topic with a 3-second problem-first visual hook format",
+        "Generate 50+ tailored Reel and Carousel angles in the live browser tool"
       ]
     },
     {
       "id": "pnt_12_tiktokcaption",
       "status": "draft",
       "board": "Free Caption & Content Ideas",
-      "title": "TikTok Caption Ideas That Boost Search Context & Replies",
-      "description": "Don't waste your TikTok caption on vague hashtags. Write one searchable opening phrase, add a practical takeaway from your clip, and draft engaging captions free in seconds.",
-      "url": "https://www.getsocialora.com/tools/tiktok-caption-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_12_tiktokcaption",
+      "title": "TikTok Caption Ideas: Boost Search Context & Comment Replies",
+      "description": "Turn your TikTok caption box into a discovery signal instead of a wall of generic tags. Write keyword-rich opening phrases and curiosity prompts with this free TikTok caption generator in seconds. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/tiktok-caption-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_12_tiktokcaption",
       "cover_hook": "Make TikTok Captions Work",
       "image_brief": "A bold TikTok-style thumbnail paired with two contrasting caption treatments, highlighting the one with actual useful detail.",
       "visual_style": "sand_indigo",
       "content_pillar": "writing",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Make TikTok Captions Work with comparison, 3 actionable steps, and a cropped preview of the free TikTok Caption Generator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Make TikTok Captions Work with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free TikTok Caption Generator browser tool.",
       "tags": [
+        "TikTok Caption Ideas",
+        "TikTok Caption Generator",
+        "TikTok SEO Keywords",
         "TikTok Tips",
-        "Social Media Copywriting",
-        "TikTok SEO",
-        "Content Strategy",
         "Short Form Video"
+      ],
+      "comparison": {
+        "dont": "Paste \"#fyp #viral #trending\" with zero context about your video",
+        "do": "Write a 6-word searchable phrase plus a low-friction A/B comment prompt"
+      },
+      "steps": [
+        "Identify the exact phrase someone types into TikTok search for your clip",
+        "Keep key words in the first 55 characters before the caption folds",
+        "Generate clean search-friendly TikTok captions & comment hooks in browser"
       ]
     },
     {
       "id": "pnt_13_hashtags",
       "status": "draft",
       "board": "Free Caption & Content Ideas",
-      "title": "Instagram Hashtag Strategy: Choose Specific Tags That Fit",
-      "description": "Stop pasting giant generic hashtag blocks on Instagram. Combine broad topic tags with specific niche and format keywords that describe your actual post, generated cleanly in your browser.",
-      "url": "https://www.getsocialora.com/tools/instagram-hashtag-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_13_hashtags",
+      "title": "Instagram Hashtag Strategy: Pick 3 to 5 Specific Niche Tags",
+      "description": "Ditch the recycled 28-hashtag block that confuses Instagram topic signals. Combine exact niche descriptors with format tags using this free Instagram hashtag generator right in your browser. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-hashtag-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_13_hashtags",
       "cover_hook": "Choose Tags That Fit",
       "image_brief": "Two organized keyword clusters: relevant niche tags versus generic noise; no invented performance graph.",
       "visual_style": "sand_indigo",
       "content_pillar": "writing",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Choose Tags That Fit with comparison, 3 actionable steps, and a cropped preview of the free Instagram Hashtag Generator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Choose Tags That Fit with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Instagram Hashtag Generator browser tool.",
       "tags": [
-        "Instagram Hashtags",
+        "Instagram Hashtag Strategy",
+        "Instagram Hashtag Generator",
         "Instagram SEO",
-        "Instagram Tips",
-        "Social Media Strategy",
-        "Marketing Tips"
+        "Instagram Reach Tips",
+        "Content Strategy"
+      ],
+      "comparison": {
+        "dont": "Paste the exact same 28 generic hashtags from Notes onto every upload",
+        "do": "Pick 3 to 5 laser-specific topic + format tags matching frame 1"
+      },
+      "steps": [
+        "Enter the specific problem or niche featured in today's Reel or Carousel",
+        "Separate broad industry tags from tight buyer or creator search tags",
+        "Build clean 3 to 5 tag sets with zero spam signals inside the browser tool"
       ]
     },
     {
       "id": "pnt_14_username",
       "status": "draft",
       "board": "Free Caption & Content Ideas",
-      "title": "Instagram Username Ideas: Clean Brand Handles People Spell Right",
-      "description": "Choosing a new Instagram username? Stick to short two-word combinations without random numbers or extra underscores, and brainstorm clean handle variations with this free generator.",
-      "url": "https://www.getsocialora.com/tools/instagram-username-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_14_username",
+      "title": "Instagram Username Ideas: Clean Brand Handles People Spell",
+      "description": "Create a memorable Instagram handle under 30 characters without messy numbers or double underscores. Brainstorm clean two-word creator and brand handle combinations with this free Instagram username generator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-username-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_14_username",
       "cover_hook": "Pick a Handle People Remember",
       "image_brief": "A branded name-card grid with 3 original illustrative handles, marked as examples not availability claims.",
       "visual_style": "sand_indigo",
       "content_pillar": "writing",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Pick a Handle People Remember with comparison, 3 actionable steps, and a cropped preview of the free Instagram Username Generator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Pick a Handle People Remember with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Instagram Username Generator browser tool.",
       "tags": [
-        "Branding Tips",
-        "Instagram Tips",
-        "Business Name Ideas",
+        "Instagram Username Ideas",
+        "Instagram Username Generator",
+        "Brand Handle Ideas",
         "Social Media Branding",
         "Creator Tips"
+      ],
+      "comparison": {
+        "dont": "Pick hard-to-spell handles like \"@alex_designs__2026_official\"",
+        "do": "Use crisp 2-word handles people remember and spell after hearing once"
+      },
+      "steps": [
+        "Enter your core name or brand keyword plus a short niche modifier",
+        "Filter out extra dots, numbers, and hard-to-type character chains",
+        "Generate 30-char compliant brand handle variations in the browser tool"
       ]
     },
     {
       "id": "pnt_15_facebookcaption",
       "status": "draft",
       "board": "Free Caption & Content Ideas",
-      "title": "Facebook Post Captions That Get Engagement Without Hard Selling",
-      "description": "Make your Facebook page posts feel helpful instead of pushy. Lead with one specific insight, add brief practical steps, and draft natural Facebook captions free.",
-      "url": "https://www.getsocialora.com/tools/facebook-caption-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_15_facebookcaption",
+      "title": "Facebook Post Captions: Engaging Ideas Without Hard Selling",
+      "description": "Write helpful Facebook page captions that spark real discussion and shares instead of getting scrolled past. Draft clear insight-led posts and natural questions with this free Facebook caption generator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/facebook-caption-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_15_facebookcaption",
       "cover_hook": "Lead With Useful Context",
       "image_brief": "Minimal editorial post mockup with a one-paragraph useful tip; emphasize readability.",
       "visual_style": "sand_indigo",
       "content_pillar": "writing",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Lead With Useful Context with comparison, 3 actionable steps, and a cropped preview of the free Facebook Caption Generator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Lead With Useful Context with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Facebook Caption Generator browser tool.",
       "tags": [
-        "Facebook Marketing",
-        "Copywriting Tips",
-        "Social Media Marketing",
-        "Small Business Tips",
-        "Content Writing"
+        "Facebook Post Captions",
+        "Facebook Caption Generator",
+        "Facebook Marketing Tips",
+        "Social Media Copywriting",
+        "Small Business Tips"
+      ],
+      "comparison": {
+        "dont": "Open with \"Check out our link today!\" before giving the reader value",
+        "do": "Lead with one relatable lesson and close with an easy opinion question"
+      },
+      "steps": [
+        "Pick a single takeaway your audience can use in under 30 seconds",
+        "Format short 2-line paragraphs so mobile feed readers never hit a wall",
+        "Generate ready-to-edit Facebook caption drafts in the live browser tool"
       ]
     },
     {
       "id": "pnt_16_xbio",
       "status": "draft",
       "board": "Free Caption & Content Ideas",
-      "title": "X (Twitter) Bio Ideas: Turn Thread Readers Into Followers",
-      "description": "Improve follow conversion on X by clarifying your niche, what you share weekly, and who it helps in one sharp line. Generate clean Twitter/X bio drafts free.",
-      "url": "https://www.getsocialora.com/tools/twitter-bio-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_16_xbio",
+      "title": "Twitter / X Bio Ideas: Turn Thread Readers Into Followers",
+      "description": "Clarify who you help and what you publish weekly in 160 characters on X (Twitter). Craft punchy authority bios without buzzwords using this free Twitter bio generator right in your browser. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/twitter-bio-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_16_xbio",
       "cover_hook": "One-Line X Bio With Proof",
       "image_brief": "One strong short bio highlighted on a profile-card layout, compared with an overly vague line.",
       "visual_style": "sand_indigo",
       "content_pillar": "writing",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled One-Line X Bio With Proof with comparison, 3 actionable steps, and a cropped preview of the free Twitter / X Bio Generator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled One-Line X Bio With Proof with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Twitter / X Bio Generator browser tool.",
       "tags": [
-        "Twitter Tips",
-        "Social Media Growth",
+        "Twitter Bio Ideas",
+        "X Bio Generator",
+        "Twitter Growth Tips",
         "Personal Branding",
-        "Copywriting",
-        "Tech Marketing"
+        "Copywriting Tips"
+      ],
+      "comparison": {
+        "dont": "Fill 160 chars with vague labels like \"Founder | Enthusiast | Dreamer\"",
+        "do": "Combine what you build, proof/focus, and what readers get if they follow"
+      },
+      "steps": [
+        "Lead with one concrete noun phrase describing what you build or cover",
+        "Add one specific proof point or weekly series readers can expect",
+        "Generate concise 160-char Twitter / X bio options in the browser tool"
       ]
     },
     {
       "id": "pnt_17_discordbio",
       "status": "draft",
       "board": "Free Caption & Content Ideas",
-      "title": "Discord About Me Bio Ideas That Read Cleanly in Server Cards",
-      "description": "Keep your Discord About Me clean and expressive without overflowing symbols. Generate short bio ideas tailored to gaming, design, or creator communities.",
-      "url": "https://www.getsocialora.com/tools/discord-bio-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_17_discordbio",
+      "title": "Discord Bio Ideas: Clean About Me Profiles for Any Server",
+      "description": "Make your Discord About Me profile easy to scan across gaming, design, and creator servers without messy symbol spam. Generate clean Discord bio templates tailored to your interests free in browser. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/discord-bio-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_17_discordbio",
       "cover_hook": "Short Discord Bios That Fit",
       "image_brief": "Three playful but tasteful identity cards on a dark violet background, each with a different interest, no platform endorsement.",
       "visual_style": "sand_indigo",
       "content_pillar": "writing",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Short Discord Bios That Fit with comparison, 3 actionable steps, and a cropped preview of the free Discord Bio Generator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Short Discord Bios That Fit with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Discord Bio Generator browser tool.",
       "tags": [
-        "Discord Tips",
-        "Profile Ideas",
+        "Discord Bio Ideas",
+        "Discord Bio Generator",
+        "Discord Profile Tips",
         "Online Community",
-        "Gaming Setup",
-        "Social Media Tips"
+        "Creator Tools"
+      ],
+      "comparison": {
+        "dont": "Clutter your Discord profile card with broken ASCII walls and overflow text",
+        "do": "Use clean Markdown dividers, time zone/role focus, and 1 hobby line"
+      },
+      "steps": [
+        "List 2 core communities, skills, or games you are active in right now",
+        "Keep total length compact so server pop-out cards show every line cleanly",
+        "Generate clean formatted Discord About Me options inside the browser tool"
       ]
     },
     {
@@ -376,96 +521,132 @@
       "status": "draft",
       "board": "YouTube & Video Creator Tools",
       "title": "YouTube Channel Name Ideas: 3 Brand Checks Before Launch",
-      "description": "Brainstorming a YouTube channel name? Test pronunciation, long-term topic flexibility, and handle availability before launching, then generate ideas with this free tool.",
-      "url": "https://www.getsocialora.com/tools/youtube-channel-name-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_18_ytchannelname",
+      "description": "Choose a memorable YouTube channel name that scales as your content grows. Test pronunciation, spelling clarity, and niche fit using this free YouTube channel name generator in your browser. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/youtube-channel-name-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_18_ytchannelname",
       "cover_hook": "Name Your Channel Right",
       "image_brief": "A wordmark study showing three illustrative channel name concepts, marked not availability-checked.",
       "visual_style": "oat_terracotta",
       "content_pillar": "youtube",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (oat_terracotta) titled Name Your Channel Right with comparison, 3 actionable steps, and a cropped preview of the free YouTube Channel Name Generator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (oat_terracotta) titled Name Your Channel Right with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free YouTube Channel Name Generator browser tool.",
       "tags": [
-        "YouTube Growth",
-        "YouTube Tips",
+        "YouTube Channel Name Ideas",
+        "YouTube Name Generator",
+        "Starting a YouTube Channel",
         "Channel Branding",
-        "Video Creators",
-        "Starting a YouTube Channel"
+        "YouTube Tips"
+      ],
+      "comparison": {
+        "dont": "Lock yourself into a hyper-narrow year or gadget name you outgrow in 6 months",
+        "do": "Pick a pronounceable 2-word brand name with clear topic flexibility"
+      },
+      "steps": [
+        "Combine your core topic keyword with an action or studio word",
+        "Run the spoken radio test: can a viewer spell it after hearing it once?",
+        "Generate fresh YouTube channel name combinations in the browser tool"
       ]
     },
     {
       "id": "pnt_19_yttags",
       "status": "draft",
       "board": "YouTube & Video Creator Tools",
-      "title": "YouTube Tags Guide: Accurate Video SEO Without Keyword Stuffing",
-      "description": "YouTube tags work best for clarifying exact video topics and spelling variants, not spamming random keywords. Generate clean, focused tag sets tailored to your video title.",
-      "url": "https://www.getsocialora.com/tools/youtube-tag-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_19_yttags",
+      "title": "YouTube Tag Generator: Clean Video SEO Without Stuffing",
+      "description": "Help YouTube catch spelling variations and exact topic context without spamming unrelated keywords. Generate focused 6-to-10 tag sets matched to your video title in this free YouTube tag generator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/youtube-tag-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_19_yttags",
       "cover_hook": "Use Video Tags the Right Way",
       "image_brief": "A video outline leading to a small set of precise tags and crossing out unrelated tags; no SEO ranking claims.",
       "visual_style": "oat_terracotta",
       "content_pillar": "youtube",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (oat_terracotta) titled Use Video Tags the Right Way with comparison, 3 actionable steps, and a cropped preview of the free YouTube Tag Generator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (oat_terracotta) titled Use Video Tags the Right Way with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free YouTube Tag Generator browser tool.",
       "tags": [
-        "YouTube SEO",
-        "YouTube Marketing",
-        "Video Marketing",
-        "Content Strategy",
-        "YouTube Tips"
+        "YouTube Tag Generator",
+        "YouTube SEO Tags",
+        "YouTube Video Optimization",
+        "YouTube Tips",
+        "Video Marketing"
+      ],
+      "comparison": {
+        "dont": "Stuff 40 unrelated trending creator names into your YouTube tag box",
+        "do": "Add 6 to 10 exact topic phrases and common spelling variations only"
+      },
+      "steps": [
+        "Enter your exact video title keyword phrase first",
+        "Add natural search variants and common misspellings viewers type",
+        "Copy comma-separated YouTube Studio tags directly from the browser tool"
       ]
     },
     {
       "id": "pnt_20_ytthumb",
       "status": "draft",
       "board": "YouTube & Video Creator Tools",
-      "title": "YouTube Thumbnail Downloader: Inspect & Compare Cover Designs",
-      "description": "Need to review or archive your published YouTube thumbnails at full resolution? Download clean cover images in one click and check contrast, mobile sizing, and headline placement.",
-      "url": "https://www.getsocialora.com/tools/youtube-thumbnail-downloader?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_20_ytthumb",
+      "title": "YouTube Thumbnail Downloader: Inspect & Audit Cover Designs",
+      "description": "Grab full-HD 1280x720 YouTube thumbnails from any public watch or Shorts link to review mobile readability, contrast, and text framing. Runs instantly in your browser with no sign-up required. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/youtube-thumbnail-downloader?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_20_ytthumb",
       "cover_hook": "Inspect Cover Readability",
       "image_brief": "A desktop thumbnail and mobile thumbnail shown side-by-side, with same illustrative image.",
       "visual_style": "oat_terracotta",
       "content_pillar": "youtube",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (oat_terracotta) titled Inspect Cover Readability with comparison, 3 actionable steps, and a cropped preview of the free YouTube Thumbnail Downloader browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (oat_terracotta) titled Inspect Cover Readability with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free YouTube Thumbnail Downloader browser tool.",
       "tags": [
-        "YouTube Thumbnails",
-        "YouTube Tips",
-        "Video Editing",
-        "Graphic Design Tips",
-        "Creator Tools"
+        "YouTube Thumbnail Downloader",
+        "YouTube Thumbnail Sizes",
+        "YouTube Cover Design",
+        "Video Editing Tips",
+        "YouTube Strategy"
+      ],
+      "comparison": {
+        "dont": "Guess how your thumbnail looks without comparing full-HD vs mobile scale",
+        "do": "Pull exact 1280x720 and 480x360 crops to audit contrast and facial focus"
+      },
+      "steps": [
+        "Paste any public YouTube watch, Shorts, or youtu.be link",
+        "Inspect all available resolutions side by side from HD to mobile",
+        "Open and save full-resolution cover images directly inside the browser tool"
       ]
     },
     {
       "id": "pnt_21_ytframe",
       "status": "draft",
       "board": "YouTube & Video Creator Tools",
-      "title": "Video Frame to Thumbnail: Extract Crisp Cover Stills Free",
-      "description": "Stop taking blurry screenshots of paused videos for your covers. Scrub your own MP4 at 0.1-second precision and export a sharp thumbnail frame right in your browser.",
-      "url": "https://www.getsocialora.com/tools/video-frame-to-thumbnail?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_21_ytframe",
+      "title": "Video Frame to Thumbnail: Grab Crisp 0.1s Cover Stills Free",
+      "description": "Stop screenshotting paused phone videos and getting blurry Reel covers or soft YouTube thumbnails. Scrub any MP4 at 0.1-second precision and export full-resolution cover frames directly in your browser. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/video-frame-to-thumbnail?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_21_ytframe",
       "cover_hook": "Grab Sharp Video Frames",
       "image_brief": "Filmstrip with selected original illustrative frame and enlarged thumbnail, plus tiny mobile preview.",
       "visual_style": "oat_terracotta",
       "content_pillar": "youtube",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (oat_terracotta) titled Grab Sharp Video Frames with comparison, 3 actionable steps, and a cropped preview of the free Video Frame to Thumbnail Maker browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (oat_terracotta) titled Grab Sharp Video Frames with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Video Frame to Thumbnail Maker browser tool.",
       "tags": [
-        "YouTube Thumbnails",
-        "Reel Covers",
-        "Video Editing Tips",
-        "Social Media Tools",
-        "Content Creation"
+        "Video Frame to Thumbnail",
+        "Extract Frame From Video",
+        "Reel Cover Maker",
+        "YouTube Thumbnail Tool",
+        "Video Editing"
+      ],
+      "comparison": {
+        "dont": "Pause your phone player and screenshot motion blur with UI icons on top",
+        "do": "Step frame-by-frame at 0.1s precision and export native 1280x720 or 9:16 stills"
+      },
+      "steps": [
+        "Load your local MP4 video file privately (never uploaded to any server)",
+        "Use the -0.1s and +0.1s buttons to isolate a sharp, unblurred moment",
+        "Pick YouTube 16:9 or Reels 9:16 preset and capture your crisp cover frame"
       ]
     },
     {
       "id": "pnt_22_igengagement",
       "status": "published",
       "board": "Social Media Calculators & Insights",
-      "title": "Instagram Engagement Rate: Look Beyond Likes",
-      "description": "Likes alone don't show the full picture. Compare interactions against the same audience size and timeframe to make your own posts easier to evaluate. Try Socialora's free Instagram Engagement Rate Calculator.",
-      "url": "https://www.getsocialora.com/tools/instagram-engagement-rate-calculator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_22_igengagement",
+      "title": "Instagram Engagement Rate Calculator: Look Beyond Raw Likes",
+      "description": "Benchmark your Instagram engagement rate fairly by comparing average likes and comments against follower size across your last 10 to 20 posts. Run the free Instagram engagement rate calculator instantly with no login. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-engagement-rate-calculator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_22_igengagement",
       "cover_hook": "Look Beyond Instagram Likes",
       "image_brief": "A clean, labeled illustrative equation layout with no unsupported industry benchmark.",
       "visual_style": "magazine_feature",
@@ -473,116 +654,168 @@
       "image_url": "https://i.pinimg.com/1200x/2f/45/82/2f4582c3ec170199d832ff34ce5b8ff8.jpg",
       "published_pin_id": "267753140343776911",
       "published_at": "2026-11-10T09:43:43Z",
-      "composition": "magazine_feature"
+      "composition": "magazine_feature",
+      "tags": [
+        "Instagram Engagement Rate Calculator",
+        "Instagram Analytics",
+        "Creator Benchmarks",
+        "Instagram Growth",
+        "Social Media Metrics"
+      ]
     },
     {
       "id": "pnt_23_tiktokengagement",
       "status": "draft",
       "board": "Social Media Calculators & Insights",
-      "title": "TikTok Engagement Rate: How to Measure Video Performance Fairly",
-      "description": "Compare your TikTok videos consistently instead of guessing from like counts alone. Enter your video numbers into this free calculator to evaluate real interaction ratios.",
-      "url": "https://www.getsocialora.com/tools/tiktok-engagement-rate-calculator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_23_tiktokengagement",
+      "title": "TikTok Engagement Rate Calculator: Measure Video Reach Fairly",
+      "description": "Evaluate TikTok videos beyond raw heart counts by factoring in comments, shares, and follower base together. Benchmark your last 10 uploads in seconds with this free TikTok engagement rate calculator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/tiktok-engagement-rate-calculator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_23_tiktokengagement",
       "cover_hook": "Compare Clips More Fairly",
       "image_brief": "Two original short-form video cards with clearly labeled illustrative counts and same calculation basis.",
       "visual_style": "sky_cobalt",
       "content_pillar": "calc",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sky_cobalt) titled Compare Clips More Fairly with comparison, 3 actionable steps, and a cropped preview of the free TikTok Engagement Rate Calculator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sky_cobalt) titled Compare Clips More Fairly with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free TikTok Engagement Rate Calculator browser tool.",
       "tags": [
+        "TikTok Engagement Rate Calculator",
         "TikTok Analytics",
-        "TikTok Growth",
-        "Social Media Metrics",
-        "Creator Tips",
-        "Digital Marketing"
+        "TikTok Video Metrics",
+        "TikTok Growth Tips",
+        "Creator Strategy"
+      ],
+      "comparison": {
+        "dont": "Judge a 10K-view video against a 2K-view video from likes alone",
+        "do": "Weight likes, comments, and shares against audience size across 10 clips"
+      },
+      "steps": [
+        "Gather average likes, comments, and shares from your last 10 TikToks",
+        "Enter follower count to normalize across creator size tiers",
+        "Reveal your exact TikTok Engagement Rate % and tier verdict in browser"
       ]
     },
     {
       "id": "pnt_24_ytengagement",
       "status": "draft",
       "board": "Social Media Calculators & Insights",
-      "title": "YouTube Engagement Rate: Compare Videos Beyond Raw View Counts",
-      "description": "Understand how strongly your audience interacts with each YouTube upload. Use our free YouTube Engagement Rate Calculator to compare similar video formats cleanly.",
-      "url": "https://www.getsocialora.com/tools/youtube-engagement-rate-calculator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_24_ytengagement",
+      "title": "YouTube Engagement Rate Calculator: Audit Audience Reaction",
+      "description": "Check how actively subscribers interact with your long-form uploads and YouTube Shorts. Compare likes and comments per subscriber cleanly using this free YouTube engagement rate calculator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/youtube-engagement-rate-calculator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_24_ytengagement",
       "cover_hook": "Views Aren't Whole Story",
       "image_brief": "A visual guide showing views, likes and comments as separate illustrative measures; no fake growth curve.",
       "visual_style": "sky_cobalt",
       "content_pillar": "calc",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sky_cobalt) titled Views Aren't Whole Story with comparison, 3 actionable steps, and a cropped preview of the free YouTube Engagement Rate Calculator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sky_cobalt) titled Views Aren't Whole Story with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free YouTube Engagement Rate Calculator browser tool.",
       "tags": [
+        "YouTube Engagement Rate Calculator",
         "YouTube Analytics",
-        "YouTube Strategy",
+        "YouTube Channel Metrics",
         "Video Marketing",
-        "Content Creators",
-        "Marketing Analytics"
+        "YouTube Tips"
+      ],
+      "comparison": {
+        "dont": "Compare long tutorials and 15-second Shorts with raw view totals only",
+        "do": "Track likes plus comments relative to subscriber base for each format"
+      },
+      "steps": [
+        "Enter total channel subscribers and last-10-video average likes",
+        "Include average comments per upload to weight real conversation",
+        "Reveal your YouTube Engagement Benchmark score inside the browser tool"
       ]
     },
     {
       "id": "pnt_25_followergoal",
       "status": "draft",
       "board": "Social Media Calculators & Insights",
-      "title": "Social Media Follower Goal Calculator: Plan Realistic Milestones",
-      "description": "Break big follower targets into calm weekly checkpoints. Enter your starting count, target goal, and recent daily pace to map out an indicative timeline, zero hype.",
-      "url": "https://www.getsocialora.com/tools/follower-goal-calculator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_25_followergoal",
+      "title": "Follower Goal Calculator: Plan Realistic Weekly Growth Steps",
+      "description": "Break big follower goals into calm weekly checkpoints instead of chasing overnight spikes. Enter your current followers, target milestone, and weekly pace in this free follower goal calculator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/follower-goal-calculator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_25_followergoal",
       "cover_hook": "Turn Big Goals Into Steps",
       "image_brief": "A weekly planning calendar with illustrative milestones marked as examples, not a forecast.",
       "visual_style": "sky_cobalt",
       "content_pillar": "calc",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sky_cobalt) titled Turn Big Goals Into Steps with comparison, 3 actionable steps, and a cropped preview of the free Follower Goal Calculator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sky_cobalt) titled Turn Big Goals Into Steps with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Follower Goal Calculator browser tool.",
       "tags": [
-        "Social Media Strategy",
-        "Goal Setting",
-        "Instagram Growth",
-        "Creator Business",
-        "Content Planning"
+        "Follower Goal Calculator",
+        "Instagram Growth Planner",
+        "Social Media Milestones",
+        "Content Planning",
+        "Creator Business"
+      ],
+      "comparison": {
+        "dont": "Write \"Hit 10K followers someday\" with zero weekly upload plan",
+        "do": "Map exact weeks to 25%, 50%, 75%, and 100% milestones from your real pace"
+      },
+      "steps": [
+        "Enter your current follower count and next concrete target milestone",
+        "Add your realistic 30-day average weekly follower gain",
+        "Reveal your milestone timeline chart and target completion month in browser"
       ]
     },
     {
       "id": "pnt_26_sponsorrate",
       "status": "draft",
       "board": "Social Media Calculators & Insights",
-      "title": "Instagram Sponsorship Rate Calculator: Price Brand Deals Smartly",
-      "description": "Quoting a brand deal? Never rely on follower count alone. Calculate an indicative baseline taking engagement and deliverables into account with Socialora's free sponsorship calculator.",
-      "url": "https://www.getsocialora.com/tools/instagram-sponsorship-rate-calculator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_26_sponsorrate",
+      "title": "Instagram Sponsorship Rate Calculator: Price Brand Deals",
+      "description": "Stop underpricing sponsored Reels, feed posts, and Story packages when brands reach out. Calculate fair USD creator rates based on followers, engagement, and deliverables with this free sponsorship rate calculator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-sponsorship-rate-calculator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_26_sponsorrate",
       "cover_hook": "Don't Guess Sponsor Rates",
       "image_brief": "A notepad with four scope factors and a small label 'Estimate only', no invented dollar claims.",
       "visual_style": "sky_cobalt",
       "content_pillar": "calc",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sky_cobalt) titled Don't Guess Sponsor Rates with comparison, 3 actionable steps, and a cropped preview of the free Instagram Sponsorship Rate & Account Worth Calculator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sky_cobalt) titled Don't Guess Sponsor Rates with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Instagram Sponsorship Rate & Account Worth Calculator browser tool.",
       "tags": [
-        "UGC Creator",
-        "Influencer Marketing",
-        "Brand Deals",
-        "Creator Economy",
-        "Social Media Marketing"
+        "Instagram Sponsorship Rate Calculator",
+        "UGC Creator Pricing",
+        "Influencer Brand Deals",
+        "Creator Rates",
+        "Creator Business"
+      ],
+      "comparison": {
+        "dont": "Quote flat $75 for a Reel + Story bundle + paid ad rights blindly",
+        "do": "Price Reel, 3-frame Story link set, and bundle floors from engagement"
+      },
+      "steps": [
+        "Enter followers plus average likes and comments across recent posts",
+        "Compare base Reel rate vs Story set vs full campaign bundle pricing",
+        "Reveal your USD Sponsorship Rate Sheet and copyable pitch email in browser"
       ]
     },
     {
       "id": "pnt_27_xengagement",
       "status": "draft",
       "board": "Social Media Calculators & Insights",
-      "title": "X (Twitter) Engagement Rate Calculator: Measure Post Impact",
-      "description": "Evaluate X posts beyond raw impression spikes. Compare replies, reposts, and likes fairly across your recent threads using Socialora's free X Engagement Rate Calculator.",
-      "url": "https://www.getsocialora.com/tools/x-engagement-rate-calculator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_27_xengagement",
+      "title": "Twitter / X Engagement Rate Calculator: Measure Post Impact",
+      "description": "See how well your threads and posts spark replies and reposts compared to raw impressions. Benchmark your X account interaction rate cleanly with this free Twitter engagement rate calculator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/x-engagement-rate-calculator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_27_xengagement",
       "cover_hook": "Track Replies Over Vanity",
       "image_brief": "A calm two-column metric explainer with neutral placeholders and no claimed benchmark.",
       "visual_style": "sky_cobalt",
       "content_pillar": "calc",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sky_cobalt) titled Track Replies Over Vanity with comparison, 3 actionable steps, and a cropped preview of the free Twitter / X Engagement Rate Calculator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sky_cobalt) titled Track Replies Over Vanity with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Twitter / X Engagement Rate Calculator browser tool.",
       "tags": [
-        "Twitter Marketing",
-        "Social Media Analytics",
-        "Digital Marketing",
-        "Growth Marketing",
+        "Twitter Engagement Rate Calculator",
+        "X Analytics",
+        "Twitter Growth Tips",
+        "Social Media Metrics",
         "Content Strategy"
+      ],
+      "comparison": {
+        "dont": "Chase empty impression spikes that drive zero replies or profile clicks",
+        "do": "Measure likes, replies, and reposts per follower across your last 20 posts"
+      },
+      "steps": [
+        "Enter your X followers plus average likes across 20 recent posts",
+        "Add average replies and reposts to capture real thread conversation",
+        "Check your exact X Engagement Rate % and tier rating live in browser"
       ]
     },
     {
@@ -590,131 +823,185 @@
       "status": "draft",
       "board": "Free Instagram & Photo Tools",
       "title": "WhatsApp Link Generator: Create One-Tap Bio Chat Links Free",
-      "description": "Let clients message you on WhatsApp in one tap without saving your number first. Generate a custom click-to-chat URL with an optional starter message free in seconds.",
-      "url": "https://www.getsocialora.com/tools/whatsapp-link-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_28_whatsapplink",
+      "description": "Let clients and customers message you on WhatsApp in one tap without saving your phone number in contacts first. Build a clean wa.me click-to-chat link with a prefilled starter message free in browser. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/whatsapp-link-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_28_whatsapplink",
       "cover_hook": "One Link for Instant Chats",
       "image_brief": "A phone chat mockup and a link card with clearly fictional placeholder number; no realistic personal info.",
       "visual_style": "sage_emerald",
       "content_pillar": "photo",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled One Link for Instant Chats with comparison, 3 actionable steps, and a cropped preview of the free WhatsApp Link Generator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled One Link for Instant Chats with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free WhatsApp Link Generator browser tool.",
       "tags": [
-        "WhatsApp Marketing",
-        "Small Business Tips",
+        "WhatsApp Link Generator",
+        "Click to Chat Link",
         "Instagram Bio Link",
         "Lead Generation",
-        "Digital Marketing"
+        "Small Business Tools"
+      ],
+      "comparison": {
+        "dont": "Put a raw phone number in bio and lose leads who never save contacts",
+        "do": "Drop one wa.me link with a prefilled starter prompt for instant chats"
+      },
+      "steps": [
+        "Enter your phone number starting with country code (no plus or zero)",
+        "Add a short prefilled prompt like \"Hi, I would like info on...\"",
+        "Generate, test, and copy your ready wa.me bio link inside the browser tool"
       ]
     },
     {
       "id": "pnt_29_symbols",
       "status": "draft",
       "board": "Free Instagram & Photo Tools",
-      "title": "Clean Bio Symbols: Copy-Paste Icons to Organize Social Bios",
-      "description": "Make your Instagram, TikTok, or X bio easy to scan using minimal dividers, arrows, and checkmarks that render cleanly across iOS and Android without clutter.",
-      "url": "https://www.getsocialora.com/tools/copy-paste-symbols?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_29_symbols",
+      "title": "Instagram Bio Symbols: Copy-Paste Icons for Clean Formatting",
+      "description": "Organize your Instagram, TikTok, or X bio with clean arrows, dividers, stars, and checkmarks that stay legible on iOS and Android. Tap once to copy minimalist text symbols free in your browser. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/copy-paste-symbols?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_29_symbols",
       "cover_hook": "Subtle Symbols, Cleaner Bio",
       "image_brief": "A before/after short bio with subtle symbols and improved hierarchy, not decorative symbols everywhere.",
       "visual_style": "sage_emerald",
       "content_pillar": "photo",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled Subtle Symbols, Cleaner Bio with comparison, 3 actionable steps, and a cropped preview of the free Copy and Paste Symbols browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled Subtle Symbols, Cleaner Bio with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Copy and Paste Symbols browser tool.",
       "tags": [
-        "Instagram Bio",
-        "Typography Tips",
+        "Instagram Bio Symbols",
+        "Copy and Paste Symbols",
+        "Bio Formatting Icons",
         "Social Media Design",
-        "Creator Tips",
-        "Aesthetic Bio"
+        "Creator Tips"
+      ],
+      "comparison": {
+        "dont": "Crowd every line with heavy emojis that distract from your bio CTA link",
+        "do": "Use subtle minimal arrows and clean dividers to guide the eye downward"
+      },
+      "steps": [
+        "Pick a minimal category like Arrows, Lines, or Shapes for clean contrast",
+        "Use at most 1 subtle icon per bio line so mobile reading stays instant",
+        "Tap any verified cross-device symbol to copy straight to your clipboard"
       ]
     },
     {
       "id": "pnt_30_gridorder",
       "status": "draft",
       "board": "Free Instagram & Photo Tools",
-      "title": "Instagram Grid Posting Order: Avoid Uploading Tiles Backwards",
-      "description": "Keep your 3x3 Instagram grid perfectly aligned by following the 9-to-1 posting sequence. Slice your image into ordered tiles easily with Socialora's free Grid Maker.",
-      "url": "https://www.getsocialora.com/tools/instagram-grid-maker?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_30_gridorder",
+      "title": "Instagram Grid Posting Order: Stop Uploading Tiles Backwards",
+      "description": "Keep your split 3x3 Instagram profile grid aligned by exporting and posting tiles in exact 9-to-1 reverse sequence. Slice any photo and download labeled tiles easily with this free Instagram grid maker. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-grid-maker?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_30_gridorder",
       "cover_hook": "Check Tile Order First",
       "image_brief": "A 3×3 illustrated tile board with small numbers showing export/posting order distinctly.",
       "visual_style": "sage_emerald",
       "content_pillar": "photo",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled Check Tile Order First with comparison, 3 actionable steps, and a cropped preview of the free Instagram Grid Maker browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled Check Tile Order First with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Instagram Grid Maker browser tool.",
       "tags": [
-        "Instagram Grid",
+        "Instagram Grid Posting Order",
+        "Instagram Grid Maker",
+        "3x3 Profile Banner",
         "Instagram Aesthetic",
-        "Instagram Tips",
-        "Social Media Planning",
-        "Content Creation"
+        "Social Media Design"
+      ],
+      "comparison": {
+        "dont": "Start posting from top-left (tile 1) and scramble your entire banner",
+        "do": "Post bottom-right first (Post 1) so the final tile aligns at top-left"
+      },
+      "steps": [
+        "Upload your announcement banner and select 3x3 or 3x1 split grid",
+        "Match your profile grid tile shape (Portrait 3:4 or Square 1:1)",
+        "Reveal numbered Post 1 to Post 9 tiles and export in exact upload order"
       ]
     },
     {
       "id": "pnt_31_reelscaption",
       "status": "draft",
       "board": "Reels & TikTok Creator Tips",
-      "title": "Reels Captions Blocked? Use This Free Video Safe-Zone Guide",
-      "description": "Stop losing text behind TikTok, Reels, or Shorts buttons. Preview exact app overlay margins on your video frame and download a transparent safe-zone guide free.",
-      "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_31_reelscaption",
+      "title": "Reels Safe Zone Guide: Fix Blocked Video Captions Fast",
+      "description": "Stop letting the Instagram Reels caption drawer and Share buttons hide your best on-screen hook text. Check safe boundaries over your video frame and export a free PNG overlay guide in seconds. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_31_reelscaption",
       "cover_hook": "Keep Captions Out of Overlap",
       "image_brief": "An illustrated vertical phone composition showing blocked bottom caption versus centered readable caption; say 'Illustrative placement'.",
       "visual_style": "coral_cream",
       "content_pillar": "reels",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (coral_cream) titled Keep Captions Out of Overlap with comparison, 3 actionable steps, and a cropped preview of the free Reels, TikTok and YouTube Shorts Safe Zone Guide browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (coral_cream) titled Keep Captions Out of Overlap with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Reels, TikTok and YouTube Shorts Safe Zone Guide browser tool.",
       "tags": [
-        "Instagram Reels",
-        "CapCut Tips",
-        "TikTok Editing",
-        "Video Editing",
-        "Social Media Tips"
+        "Reels Safe Zone Guide",
+        "Instagram Reels Captions",
+        "TikTok Text Placement",
+        "Video Editing Tips",
+        "Creator Tools"
+      ],
+      "comparison": {
+        "dont": "Drop subtitles across the bottom 30% where usernames cover every word",
+        "do": "Keep opening titles and captions centered inside the clear green safe box"
+      },
+      "steps": [
+        "Select Instagram Reels, TikTok, or YouTube Shorts layout preset",
+        "Load your opening video frame to inspect exact button overlap zones",
+        "Preview safe margin boundaries and export your transparent PNG guide"
       ]
     },
     {
       "id": "pnt_32_reelsopening",
       "status": "draft",
       "board": "Reels & TikTok Creator Tips",
-      "title": "How to Open Your Instagram Reel: 3 Elements in Frame One",
-      "description": "Make the very first frame of your Reel unmistakable. Pair a sharp focal subject, a short centered hook headline, and clean safe-zone margins using Socialora's free preview tool.",
-      "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_32_reelsopening",
+      "title": "Instagram Reel Hook Framing: 3 Checks for Frame One Clarity",
+      "description": "Make the first second of your Reel readable on mute by aligning focal subject, bold 5-word headline, and button-free safe margins. Test your opening frame layout free in your browser before exporting. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_32_reelsopening",
       "cover_hook": "Make Frame 1 Work Harder",
       "image_brief": "Three small vertical storyboard panels marked subject, contrast, safe placement, not false platform UI precision.",
       "visual_style": "coral_cream",
       "content_pillar": "reels",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (coral_cream) titled Make Frame 1 Work Harder with comparison, 3 actionable steps, and a cropped preview of the free Reels, TikTok and YouTube Shorts Safe Zone Guide browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (coral_cream) titled Make Frame 1 Work Harder with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Reels, TikTok and YouTube Shorts Safe Zone Guide browser tool.",
       "tags": [
-        "Instagram Reels Tips",
-        "Video Hooks",
-        "Short Form Content",
-        "Creator Strategy",
-        "Social Media Growth"
+        "Instagram Reel Hook Framing",
+        "Reels Safe Zone Guide",
+        "First Frame Hooks",
+        "Video Editing",
+        "Instagram Growth"
+      ],
+      "comparison": {
+        "dont": "Center faces and headlines behind right-side icons or top status bars",
+        "do": "Place subject + 5-word hook headline inside the clean middle-third zone"
+      },
+      "steps": [
+        "Pause your finished vertical video right at 0:00.1 on mute",
+        "Check if a tired scroller can read all headline words in half a second",
+        "Verify exact button-free placement inside the live Safe Zone preview tool"
       ]
     },
     {
       "id": "pnt_33_nocrop",
       "status": "draft",
       "board": "Free Instagram & Photo Tools",
-      "title": "Instagram No-Crop Blur Framing: Keep Full Portraits Sharp",
-      "description": "Fit wide or extra-tall photography into Instagram without cropping out important context. Wrap your full photo in soft ambient blur right inside your browser.",
-      "url": "https://www.getsocialora.com/tools/instagram-no-crop-blur-background?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_33_nocrop",
+      "title": "Instagram No-Crop Blur Framing: Fit Full Photos in 4:5",
+      "description": "Keep full landscape photography and tall vertical shots intact on Instagram without harsh white bars or clipped edges. Generate clean 1080x1350 blurred-background frames free right inside your browser. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-no-crop-blur-background?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_33_nocrop",
       "cover_hook": "Keep the Whole Portrait Sharp",
       "image_brief": "An original scenic photo framing exercise with sharp centered full image and blurred edge treatment.",
       "visual_style": "sage_emerald",
       "content_pillar": "photo",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled Keep the Whole Portrait Sharp with comparison, 3 actionable steps, and a cropped preview of the free Instagram No Crop Photo Maker (Blur Background) browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled Keep the Whole Portrait Sharp with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Instagram No Crop Photo Maker (Blur Background) browser tool.",
       "tags": [
+        "Instagram No Crop Blur",
+        "4:5 Instagram Photo",
+        "Blur Background Tool",
         "Photography Tips",
-        "Instagram Photo",
-        "Photo Editing",
-        "Content Creator Tips",
-        "Social Media Tools"
+        "Instagram Feed"
+      ],
+      "comparison": {
+        "dont": "Crop half the scenery out or use stark black bars that look unfinished",
+        "do": "Center the uncropped photo inside matching soft ambient blur at 4:5"
+      },
+      "steps": [
+        "Load any wide 16:9 or tall shot privately in your browser tab",
+        "Select Instagram 4:5 (1080x1350) and compare Soft vs Medium blur",
+        "Inspect crisp foreground framing and export ready-to-post 4:5 JPG"
       ]
     },
     {
@@ -722,8 +1009,8 @@
       "status": "draft",
       "board": "Free Instagram & Photo Tools",
       "title": "Social Media Photo Resizer: Export Exact Sizes in Seconds",
-      "description": "Resize one master photo into sharp Instagram 4:5 posts, 9:16 Stories, and 16:9 thumbnails without distortion or watermarks. Preview exact crops free in your browser.",
-      "url": "https://www.getsocialora.com/tools/social-media-photo-resizer?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_photo_resize_redesign_34",
+      "description": "Prevent Instagram and YouTube from re-compressing odd-sized uploads into blurry graphics. Crop and export exact 1080x1350, 1080x1920, and 1280x720 dimensions privately with this free photo resizer. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/social-media-photo-resizer?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_photo_resize_redesign_34",
       "cover_hook": "One Photo, Every Format",
       "image_brief": "Magazine-style composition with a genuine Socialora photo resizer screenshot, spacious bright typography and visual hierarchy. Teach why previewing the crop matters; avoid fake user uploads.",
       "visual_style": "sage_emerald",
@@ -732,13 +1019,22 @@
       "replacement_after_utc": "2026-11-11T18:58:36.000Z",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled One Photo, Every Format with comparison, 3 actionable steps, and a cropped preview of the free Social Media Photo Resizer browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled One Photo, Every Format with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Social Media Photo Resizer browser tool.",
       "tags": [
-        "Social Media Sizes",
-        "Instagram Feed Size",
-        "Graphic Design Cheat Sheet",
-        "Content Creation",
-        "Photo Resizer"
+        "Social Media Photo Resizer",
+        "1080x1350 Instagram Size",
+        "YouTube Thumbnail Size",
+        "Social Media Design",
+        "Creator Tools"
+      ],
+      "comparison": {
+        "dont": "Upload random screenshot dimensions and let server compression blur text",
+        "do": "Pre-crop exact 1080x1350 feed, 1080x1920 Story, and 1280x720 presets"
+      },
+      "steps": [
+        "Choose your sharp original graphic or photo file from your device",
+        "Pick exact platform preset (Instagram 4:5, Story 9:16, YouTube, or X)",
+        "Preview edge alignment and export pixel-exact JPEG in the browser tool"
       ]
     },
     {
@@ -746,8 +1042,8 @@
       "status": "draft",
       "board": "Reels & TikTok Creator Tips",
       "title": "Reels Safe Zone Guide: Keep Captions Away From App Buttons",
-      "description": "Protect your vertical video subtitles from getting hidden under Reels, TikTok, or Shorts interface overlays. Preview your frame and download a transparent safe-zone PNG free.",
-      "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_safezone_redesign_35",
+      "description": "Ensure viewers can read every subtitle and callout on Instagram Reels, TikTok, and YouTube Shorts without UI icons blocking the frame. Test any screenshot and download a free transparent overlay PNG. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/reels-tiktok-safe-zone-guide?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_safezone_redesign_35",
       "cover_hook": "Keep Reel Text Always Visible",
       "image_brief": "A bright educational design featuring a verified screenshot of the actual Reels/TikTok safe zone tool with a single takeaway. No fake platform screenshot or unsupported pixel guarantees.",
       "visual_style": "coral_cream",
@@ -756,13 +1052,22 @@
       "replacement_after_utc": "2026-11-12T00:28:03.000Z",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (coral_cream) titled Keep Reel Text Always Visible with comparison, 3 actionable steps, and a cropped preview of the free Reels, TikTok and YouTube Shorts Safe Zone Guide browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (coral_cream) titled Keep Reel Text Always Visible with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Reels, TikTok and YouTube Shorts Safe Zone Guide browser tool.",
       "tags": [
-        "Reels Safe Zone",
+        "Reels Safe Zone Guide",
+        "TikTok Overlay Margins",
+        "YouTube Shorts Safe Area",
         "Video Editing Tips",
-        "TikTok Tips",
-        "Short Form Video",
         "Creator Tools"
+      ],
+      "comparison": {
+        "dont": "Export vertical edits blind and lose half your hook text behind Share icons",
+        "do": "Overlay the exact green safe-zone guide in CapCut or Premiere before export"
+      },
+      "steps": [
+        "Switch between Instagram Reels, TikTok, and Shorts boundary presets",
+        "Drop in a frame from your timeline to spot hidden corner overlaps",
+        "Reveal full red/green overlay map and download transparent PNG guide"
       ]
     },
     {
@@ -770,8 +1075,8 @@
       "status": "draft",
       "board": "YouTube & Video Creator Tools",
       "title": "Video Frame to Thumbnail: Pick a Sharp Cover Image Free",
-      "description": "Compare exact moments from your Reel or YouTube video at 0.1-second precision and export a sharp PNG cover image with clean room for text, no sign-up needed.",
-      "url": "https://www.getsocialora.com/tools/video-frame-to-thumbnail?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_thumbnail_redesign_36",
+      "description": "Grab clean, unblurred cover stills straight from your MP4 video file at 0.1-second precision for YouTube thumbnails and Reel covers. Runs 100% locally in your browser with zero file upload delay. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/video-frame-to-thumbnail?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_thumbnail_redesign_36",
       "cover_hook": "Choose a Clear Cover Frame",
       "image_brief": "Premium vivid gallery with authentic Socialora frame-to-thumbnail tool screenshot, concise actionable advice and mobile-first cover hierarchy.",
       "visual_style": "oat_terracotta",
@@ -780,13 +1085,22 @@
       "replacement_after_utc": "2026-11-12T06:35:37.000Z",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (oat_terracotta) titled Choose a Clear Cover Frame with comparison, 3 actionable steps, and a cropped preview of the free Video Frame to Thumbnail Maker browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (oat_terracotta) titled Choose a Clear Cover Frame with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Video Frame to Thumbnail Maker browser tool.",
       "tags": [
-        "YouTube Thumbnails",
+        "Video Frame to Thumbnail",
+        "YouTube Thumbnail Extractor",
         "Instagram Reel Cover",
-        "Video Marketing",
-        "Content Creation",
+        "Video Editing",
         "Creator Tools"
+      ],
+      "comparison": {
+        "dont": "Use fuzzy screenshots with playback bars or mid-blink facial blur",
+        "do": "Step 0.1s at a time on your local MP4 to pull native full-res stills"
+      },
+      "steps": [
+        "Open your exported MP4 directly in browser (zero cloud upload wait)",
+        "Fine-tune the exact frame using -0.1s and +0.1s stepper controls",
+        "Capture crisp 1280x720 or 1080x1920 cover image inside the live browser tool"
       ]
     },
     {
@@ -794,36 +1108,52 @@
       "status": "published",
       "board": "Reels & TikTok Creator Tips",
       "title": "Instagram Reel Hooks: Fix Your First 2 Seconds to Hold Viewers",
-      "description": "Viewers decide whether to watch or swipe before your second sentence. Replace slow greetings with a mistake callout, outcome preview, or fast visual contrast. Save this 3-formula hook cheat sheet and generate niche opening lines with Socialora's free Instagram Content Ideas Generator.",
+      "description": "Stop losing half your audience during slow greetings on Instagram Reels. Replace generic intros with a mistake callout, outcome preview, or visual contrast and draft tailored hooks with this free Reel ideas generator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
       "alt_text": "Cream and coral editorial Pinterest cheat sheet titled Fix Your First 2 Seconds showing slow opener vs strong Reel hook comparison, three reusable opening formulas, and a preview of the free Socialora Instagram Content Ideas Generator tool.",
-      "url": "https://www.getsocialora.com/tools/instagram-content-ideas-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_37_reel_3sec_hooks",
+      "url": "https://www.getsocialora.com/tools/instagram-content-ideas-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_37_reel_3sec_hooks",
       "cover_hook": "Fix Your First 2 Seconds",
       "visual_style": "editorial_split",
       "content_pillar": "reels",
       "image_url": "https://i.pinimg.com/736x/a4/30/86/a430868bf32d669846292bc8ea40c2a3.jpg",
       "published_pin_id": "267753140343810418",
       "published_at": "2026-11-11T16:03:20Z",
-      "composition": "editorial_split"
+      "composition": "editorial_split",
+      "tags": [
+        "Instagram Reel Hooks",
+        "Video Hook Formulas",
+        "Instagram Content Ideas",
+        "Instagram Growth",
+        "Short Form Video"
+      ]
     },
     {
       "id": "pnt_38_caption_readmore_hook",
       "status": "draft",
       "board": "Free Caption & Content Ideas",
       "title": "Instagram Caption Hooks: Write First Lines That Get Read",
-      "description": "Only the first line of your Instagram caption shows before 'more'. Open with a specific promise or checklist teaser instead of filler greetings, and generate hook drafts free.",
-      "url": "https://www.getsocialora.com/tools/instagram-caption-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_38_caption_readmore_hook",
+      "description": "Only ~115 characters of your Instagram caption show before \"...more\". Open with a sharp curiosity hook or checklist teaser instead of filler greetings, and draft fresh captions in this free browser generator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-caption-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_38_caption_readmore_hook",
       "cover_hook": "Make Readers Tap More",
       "visual_style": "sand_indigo",
       "content_pillar": "writing",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Make Readers Tap More with comparison, 3 actionable steps, and a cropped preview of the free Instagram Caption Generator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Make Readers Tap More with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Instagram Caption Generator browser tool.",
       "tags": [
-        "Instagram Captions",
+        "Instagram Caption Hooks",
+        "Instagram Caption Generator",
         "Copywriting Tips",
-        "Instagram Growth",
-        "Social Media Copy",
-        "Content Marketing"
+        "Instagram Engagement",
+        "Content Strategy"
+      ],
+      "comparison": {
+        "dont": "Start captions with \"Happy Tuesday everyone! Today I wanted to share...\"",
+        "do": "Open with \"3 things silently cutting your Reel reach (#2 happens at export):\""
+      },
+      "steps": [
+        "Put your sharpest payoff inside the first 115 visible characters",
+        "End the caption with one low-friction save or comment prompt",
+        "Generate custom hook lines and hashtag sets inside the browser generator"
       ]
     },
     {
@@ -831,20 +1161,29 @@
       "status": "draft",
       "board": "Free Caption & Content Ideas",
       "title": "Instagram Bio SEO: Turn Profile Visits Into Followers Fast",
-      "description": "Optimize your Instagram Name keywords and 3-line bio structure so cold visitors know what you offer within 2 seconds, and prevent mobile truncation before hitting Follow.",
-      "url": "https://www.getsocialora.com/tools/instagram-bio-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_39_instagram_seo_bio",
+      "description": "Make your Instagram profile searchable and crystal clear to cold visitors in 2 seconds. Optimize your bold Name keywords and 3-line bio structure using this free Instagram bio generator with zero login. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-bio-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_39_instagram_seo_bio",
       "cover_hook": "Turn Profile Visits Into Follows",
       "visual_style": "sand_indigo",
       "content_pillar": "writing",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Turn Profile Visits Into Follows with comparison, 3 actionable steps, and a cropped preview of the free Instagram Bio Generator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Turn Profile Visits Into Follows with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Instagram Bio Generator browser tool.",
       "tags": [
-        "Instagram SEO",
-        "Instagram Bio",
-        "Instagram Growth Tips",
-        "Social Media Strategy",
-        "Digital Marketing"
+        "Instagram Bio SEO",
+        "Instagram Bio Generator",
+        "Instagram Search Optimization",
+        "Instagram Growth",
+        "Creator Tips"
+      ],
+      "comparison": {
+        "dont": "Leave your bold Name line as just a first name with zero niche keywords",
+        "do": "Format Name as \"Maya | Reels & UGC Tools\" + 3-line value bio"
+      },
+      "steps": [
+        "Add 2 high-intent search words to your bold Instagram Name field",
+        "Write Line 1 around who you help and Line 2 around your weekly series",
+        "Preview full mobile bio formatting and copy drafts in the browser tool"
       ]
     },
     {
@@ -852,62 +1191,89 @@
       "status": "draft",
       "board": "Social Media Calculators & Insights",
       "title": "UGC Creator Pricing: How to Quote Usage Rights & Base Rates",
-      "description": "Know what to charge before replying to a brand brief. Separate base production from 30-to-90-day paid ad usage rights and check fair baseline estimates with this free calculator.",
-      "url": "https://www.getsocialora.com/tools/instagram-sponsorship-rate-calculator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_40_ugc_usage_rights",
+      "description": "Know exactly what to charge before replying to a brand sponsorship email. Separate base video creation from 30-to-90-day paid ad usage rights and check fair benchmarks in this free sponsorship rate calculator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-sponsorship-rate-calculator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_40_ugc_usage_rights",
       "cover_hook": "Price Usage Rights Smartly",
       "visual_style": "sky_cobalt",
       "content_pillar": "calc",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sky_cobalt) titled Price Usage Rights Smartly with comparison, 3 actionable steps, and a cropped preview of the free Instagram Sponsorship Rate & Account Worth Calculator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sky_cobalt) titled Price Usage Rights Smartly with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Instagram Sponsorship Rate & Account Worth Calculator browser tool.",
       "tags": [
-        "UGC Creator",
-        "UGC Tips",
-        "Creator Business",
-        "Brand Collaborations",
-        "Influencer Rates"
+        "UGC Creator Pricing",
+        "Sponsorship Rate Calculator",
+        "Brand Deal Rates",
+        "UGC Creators",
+        "Creator Business"
+      ],
+      "comparison": {
+        "dont": "Give away unlimited paid ad whitelisting for the price of one organic post",
+        "do": "Quote base production + 20-30% monthly paid usage rights separately"
+      },
+      "steps": [
+        "Ask if the brand needs organic posting only or paid ad usage rights",
+        "Factor follower tier, recent engagement, and Story bundle add-ons",
+        "Run exact USD deal ranges and copy your brand pitch email in browser"
       ]
     },
     {
       "id": "pnt_41_shadowban_reach_check",
       "status": "draft",
       "board": "Reels & TikTok Creator Tips",
-      "title": "Instagram Reach Drop Checklist: What to Check Before Deleting",
-      "description": "Views dropped suddenly on Instagram? Before deleting recent Reels or panicking about shadowbans, inspect Account Status, 3-second hook hold, and tag hygiene cleanly.",
-      "url": "https://www.getsocialora.com/tools/instagram-shadowban-checker?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_41_shadowban_reach_check",
+      "title": "Instagram Shadowban Check: Diagnose Sudden Reach Drops Free",
+      "description": "Views suddenly fell off Explore and hashtags on Instagram? Run a 30-second Instagram shadowban check comparing your baseline views, non-follower reach %, and Account Status flags without sharing your password. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-shadowban-checker?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_41_shadowban_reach_check",
       "cover_hook": "Check Reach Before Deleting",
       "visual_style": "coral_cream",
       "content_pillar": "reels",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (coral_cream) titled Check Reach Before Deleting with comparison, 3 actionable steps, and a cropped preview of the free Instagram Shadowban Tester browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (coral_cream) titled Check Reach Before Deleting with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Instagram Shadowban Tester browser tool.",
       "tags": [
-        "Instagram Reach",
-        "Instagram Algorithm",
+        "Instagram Shadowban Check",
+        "Instagram Reach Drop",
+        "Instagram Explore Reach",
         "Instagram Growth",
-        "Content Strategy",
-        "Creator Tips"
+        "Creator Tools"
+      ],
+      "comparison": {
+        "dont": "Panic-delete your last 5 Reels and trigger fresh algorithmic cooldowns",
+        "do": "Audit Account Status, non-follower Explore %, and recent hook drop-off first"
+      },
+      "steps": [
+        "Enter your normal average Reel views vs last 3 to 5 upload average",
+        "Add non-follower reach % from Insights and check Account Status ticks",
+        "Reveal your Restriction Verdict and 3-Step Reach Reset Plan in browser"
       ]
     },
     {
       "id": "pnt_42_tiktok_200view_check",
       "status": "draft",
       "board": "Reels & TikTok Creator Tips",
-      "title": "Stuck at 200 Views on TikTok? 3 Fast Retention & Hook Checks",
-      "description": "Tired of TikTok videos stalling around 200 views? Audit your first-2-second cut, completion rate, and For You eligibility without spam-reuploading.",
-      "url": "https://www.getsocialora.com/tools/tiktok-shadowban-checker?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_42_tiktok_200view_check",
+      "title": "TikTok Shadowban Checker: Break the 200-View Ceiling Fast",
+      "description": "Stuck around 200 views on TikTok? Test whether your page has a real For You Page (FYP) restriction or an opening-hook drop-off, and get a clean 48-hour recovery plan with zero login required. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/tiktok-shadowban-checker?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_42_tiktok_200view_check",
       "cover_hook": "Stuck at 200 TikTok Views?",
       "visual_style": "coral_cream",
       "content_pillar": "reels",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (coral_cream) titled Stuck at 200 TikTok Views? with comparison, 3 actionable steps, and a cropped preview of the free TikTok Shadowban Checker browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (coral_cream) titled Stuck at 200 TikTok Views? with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free TikTok Shadowban Checker browser tool.",
       "tags": [
-        "TikTok Growth",
-        "TikTok Algorithm",
-        "TikTok Tips",
-        "Short Form Video",
-        "Content Creation"
+        "TikTok Shadowban Checker",
+        "200 Views TikTok Fix",
+        "TikTok For You Page",
+        "TikTok Growth Tips",
+        "Short Form Video"
+      ],
+      "comparison": {
+        "dont": "Delete and re-upload the exact same MP4 file (triggers duplicate hash flags)",
+        "do": "Check FYP % in Studio Analytics and re-shoot only the first 2 seconds"
+      },
+      "steps": [
+        "Enter your baseline TikTok views vs your last 3 to 5 stuck uploads",
+        "Check For You Page traffic % inside TikTok Studio Analytics",
+        "Run the live FYP Diagnostic Score and 3-Step Reset Protocol in browser"
       ]
     },
     {
@@ -915,20 +1281,29 @@
       "status": "draft",
       "board": "Free Instagram & Photo Tools",
       "title": "Instagram 4:5 Post Size: Keep Carousels Sharp at 1080x1350",
-      "description": "Stop blurry Instagram carousels caused by wrong aspect ratios. Always export feed graphics at 1080x1350 (4:5) and resize existing photos cleanly right in your browser.",
-      "url": "https://www.getsocialora.com/tools/social-media-photo-resizer?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_43_ig_45_feed_size",
+      "description": "Avoid blurry Instagram carousel text and awkward cropping by exporting every feed graphic at exact 1080x1350 (4:5). Resize existing photos and designs cleanly right in your browser with no watermarks. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/social-media-photo-resizer?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_43_ig_45_feed_size",
       "cover_hook": "Keep Graphics Crisp Always",
       "visual_style": "sage_emerald",
       "content_pillar": "photo",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled Keep Graphics Crisp Always with comparison, 3 actionable steps, and a cropped preview of the free Social Media Photo Resizer browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled Keep Graphics Crisp Always with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Social Media Photo Resizer browser tool.",
       "tags": [
-        "Instagram Sizes",
-        "Canva Tips",
-        "Graphic Design Tips",
-        "Instagram Carousel",
+        "Instagram 4:5 Post Size",
+        "1080x1350 Carousel Size",
+        "Photo Resizer Tool",
+        "Instagram Design Tips",
         "Social Media Design"
+      ],
+      "comparison": {
+        "dont": "Export 1:1 square or odd phone screenshots that sacrifice 20% screen height",
+        "do": "Lock feed carousels and single graphics to crisp 1080x1350 (4:5)"
+      },
+      "steps": [
+        "Load your raw graphic or photograph privately into the browser tool",
+        "Choose Instagram post (1080 x 1350) preset to maximize feed real estate",
+        "Verify crisp edges and export exact 1080x1350 file in one click"
       ]
     },
     {
@@ -936,41 +1311,59 @@
       "status": "draft",
       "board": "Social Media Calculators & Insights",
       "title": "YouTube Money Calculator: Estimate Niche CPM & RPM Scenarios",
-      "description": "Wondering what 10K or 100K YouTube views could estimate in your niche? Compare realistic RPM ranges instead of viral myths with Socialora's free YouTube calculator.",
-      "url": "https://www.getsocialora.com/tools/youtube-money-calculator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_44_yt_money_cpm",
+      "description": "See realistic monthly and yearly YouTube ad revenue ranges before chasing viral view guesses. Compare low and high RPM tiers by niche and monthly views using this free YouTube money calculator. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/youtube-money-calculator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_44_yt_money_cpm",
       "cover_hook": "Estimate Real YouTube Revenue",
       "visual_style": "sky_cobalt",
       "content_pillar": "calc",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sky_cobalt) titled Estimate Real YouTube Revenue with comparison, 3 actionable steps, and a cropped preview of the free YouTube Money Calculator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sky_cobalt) titled Estimate Real YouTube Revenue with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free YouTube Money Calculator browser tool.",
       "tags": [
+        "YouTube Money Calculator",
+        "YouTube RPM CPM",
         "YouTube Monetization",
-        "YouTube Income",
         "Creator Finance",
-        "YouTube Strategy",
-        "Video Marketing"
+        "YouTube Tips"
+      ],
+      "comparison": {
+        "dont": "Assume 100K Shorts views pay the same RPM as 100K long-form tech views",
+        "do": "Model realistic low-to-high RPM bands per 1,000 monetized views"
+      },
+      "steps": [
+        "Enter your monthly YouTube views separately for long-form vs Shorts",
+        "Adjust low and high RPM dollars per 1,000 views for your niche",
+        "Reveal estimated monthly and yearly YouTube payout range in browser"
       ]
     },
     {
       "id": "pnt_45_ig_scorecard_audit",
       "status": "draft",
       "board": "Free Instagram & Photo Tools",
-      "title": "Instagram Profile Audit Checklist: 3 Fixes to Convert Visits",
-      "description": "Turn profile visits into followers by auditing your Name keywords, compact bio pitch, and top three pinned posts. Run a quick illustrative check with our free Scorecard tool.",
-      "url": "https://www.getsocialora.com/tools/instagram-account-scorecard?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_45_ig_scorecard_audit",
+      "title": "Instagram Account Scorecard: Audit Profile Conversion Free",
+      "description": "Find the exact weak link holding back your Instagram follower conversion across engagement, follow ratio, posting activity, and comment rate. Get a 100-point scorecard and shareable Story PNG in seconds. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/instagram-account-scorecard?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_45_ig_scorecard_audit",
       "cover_hook": "Audit Your Profile Setup",
       "visual_style": "sage_emerald",
       "content_pillar": "photo",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled Audit Your Profile Setup with comparison, 3 actionable steps, and a cropped preview of the free Instagram Account Scorecard browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sage_emerald) titled Audit Your Profile Setup with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Instagram Account Scorecard browser tool.",
       "tags": [
-        "Instagram Audit",
-        "Instagram Growth",
-        "Profile Optimization",
-        "Social Media Strategy",
-        "Creator Tips"
+        "Instagram Account Scorecard",
+        "Instagram Profile Audit",
+        "Instagram Follower Growth",
+        "Creator Metrics",
+        "Instagram Tips"
+      ],
+      "comparison": {
+        "dont": "Keep posting daily without checking which profile signal leaks followers",
+        "do": "Grade engagement, follower/following ratio, and comments out of 100"
+      },
+      "steps": [
+        "Plug in public followers, following, posts, and 10-post average stats",
+        "Spot which of the 4 profile pillars scores lowest for your account size",
+        "Reveal your 100-point Score + downloadable 1080x1920 Story Scorecard"
       ]
     },
     {
@@ -978,20 +1371,29 @@
       "status": "draft",
       "board": "Free Caption & Content Ideas",
       "title": "Threads Bio Fonts: Style Profile Headlines Without Clutter",
-      "description": "Want your Threads bio to stand out cleanly? Use subtle bold Unicode styling on a single label while keeping key search words plain. Preview styles free in your browser.",
-      "url": "https://www.getsocialora.com/tools/threads-font-generator?utm_source=pinterest&utm_medium=organic_pin&utm_campaign=pnt_46_threads_font_bio",
+      "description": "Make key labels pop in your Threads bio and short posts without hurting screen-reader readability. Preview clean bold and serif Unicode text styles in browser with character count checks built in. Save this pin to your creator toolkit and click through to run the free browser tool instantly.",
+      "url": "https://www.getsocialora.com/tools/threads-font-generator?utm_source=pinterest&utm_medium=pin&utm_campaign=pnt_46_threads_font_bio",
       "cover_hook": "Style Threads Bio Cleanly",
       "visual_style": "sand_indigo",
       "content_pillar": "writing",
       "image_url": null,
       "published_pin_id": null,
-      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Style Threads Bio Cleanly with comparison, 3 actionable steps, and a cropped preview of the free Threads Font Generator browser tool.",
+      "alt_text": "Cohesive editorial Socialora Pinterest guide (sand_indigo) titled Style Threads Bio Cleanly with comparison, Curiosity Gap comparison, steps 1-2, blurred live preview, and a cropped preview of the free Threads Font Generator browser tool.",
       "tags": [
-        "Threads App",
-        "Threads Tips",
-        "Instagram Threads",
-        "Typography Tips",
-        "Social Media Bio"
+        "Threads Bio Fonts",
+        "Threads Font Generator",
+        "Threads Profile Tips",
+        "Social Media Typography",
+        "Creator Tips"
+      ],
+      "comparison": {
+        "dont": "Turn your entire 150-character Threads bio into unreadable cursive symbols",
+        "do": "Use clean bold Unicode on one 2-word label and keep core topics plain"
+      },
+      "steps": [
+        "Type only the short headline or series tag you want to highlight",
+        "Check live preview and 150-character counter before copying",
+        "Test readable Unicode styles safely in the live Threads Font Generator"
       ]
     }
   ],

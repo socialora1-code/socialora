@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 const SIZES = [
   { id: 'original', label: 'Original video size', w: 0, h: 0 },
@@ -191,6 +192,8 @@ export function FrameGrabber() {
           Download image
         </button>
       </div>
+
+      {captured && <SmartMomentumOffer />}
     </div>
   )
 }

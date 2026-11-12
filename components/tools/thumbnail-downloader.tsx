@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 const SIZES = [
   { id: 'maxresdefault', label: 'Full HD (1280 x 720)' },
@@ -97,6 +98,7 @@ export function ThumbnailDownloader() {
               To save an image, open it, then right-click it (or press and hold on a phone) and choose save. Sizes that
               do not exist for this video are hidden.
             </p>
+            <SmartMomentumOffer />
           </>
         )}
       </div>

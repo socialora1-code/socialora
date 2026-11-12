@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 function randomInt(max: number): number {
   const limit = Math.floor(0x100000000 / max) * max
@@ -131,6 +132,8 @@ export function GiveawayPicker() {
           </div>
         )}
       </div>
+
+      {winners && <SmartMomentumOffer />}
     </div>
   )
 }

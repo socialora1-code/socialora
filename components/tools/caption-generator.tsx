@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 type Category = {
   id: string
@@ -343,6 +344,8 @@ export function CaptionGenerator() {
           {copied === 'tags' ? 'Copied' : 'Copy hashtags'}
         </button>
       </div>
+
+      <SmartMomentumOffer />
 
       <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
         These captions are starting points built from templates. Change a word or two so they sound like you. The

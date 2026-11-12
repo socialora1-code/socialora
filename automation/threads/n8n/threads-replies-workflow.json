@@ -56,7 +56,10 @@
           "id": "hFc78ADPjjUELAPw",
           "name": "Threads API (@socialora1)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
@@ -80,7 +83,10 @@
           "id": "hFc78ADPjjUELAPw",
           "name": "Threads API (@socialora1)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
@@ -118,11 +124,14 @@
           "name": "Threads API (@socialora1)"
         }
       },
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
-        "jsCode": "const roots = $('Son 5 Gönderiyi Hazırla').all();\nconst replyPages = $input.all();\nconst nowSec = Math.floor(Date.now() / 1000);\nconst todayTrt = new Date((nowSec + 3 * 3600) * 1000).toISOString().slice(0, 10);\n\nconst GROWTH_PATH = 'C:\\\\Users\\\\idoca\\\\.n8n\\\\socialora-growth.json';\nconst readDiskPlatform = () => {\n  try {\n    const fs = require('fs');\n    if (!fs.existsSync(GROWTH_PATH)) return {};\n    const full = JSON.parse(fs.readFileSync(GROWTH_PATH, 'utf8'));\n    return (full && typeof full.threadsReplies === 'object' && full.threadsReplies) ? full.threadsReplies : {};\n  } catch { return {}; }\n};\nconst sd = $getWorkflowStaticData('global');\nconst diskTr = readDiskPlatform();\nif (!Array.isArray(sd.repliedIds)) sd.repliedIds = [];\nif (Array.isArray(diskTr.repliedIds)) sd.repliedIds = [...new Set([...sd.repliedIds, ...diskTr.repliedIds])].slice(-300);\nconst sdCount = sd.dayTrt === todayTrt ? Number(sd.countToday || 0) : 0;\nconst diskCount = diskTr.dayTrt === todayTrt ? Number(diskTr.countToday || 0) : 0;\nsd.dayTrt = todayTrt;\nsd.countToday = Math.max(sdCount, diskCount);\nsd.lastPublishedAt = Math.max(Number(sd.lastPublishedAt || 0), Number(diskTr.lastPublishedAt || 0));\n\nif (sd.countToday >= 12) return [];\nconst repliedSet = new Set(sd.repliedIds);\nconst candidates = [];\n\nfor (let i = 0; i < replyPages.length; i++) {\n  const root = roots[i]?.json || {};\n  const rows = Array.isArray(replyPages[i]?.json?.data) ? replyPages[i].json.data : [];\n  for (const r of rows) {\n    if (!r || !r.id) continue;\n    const uname = String(r.username || '').toLowerCase();\n    if (!uname || uname === (root.myUsername || 'socialora1')) continue;\n    if (repliedSet.has(String(r.id)) || r.has_replies === true) continue;\n    const txt = String(r.text || '').trim();\n    if (txt.length < 3 || /https?:\\/\\/|t\\.me\\/|crypto|airdrop|whatsapp/i.test(txt)) continue;\n    const ts = r.timestamp ? Math.floor(Date.parse(r.timestamp) / 1000) : nowSec;\n    if (nowSec - ts > 172800 || nowSec - ts < 90) continue;\n    candidates.push({\n      threadsUserId: root.threadsUserId,\n      myUsername: root.myUsername,\n      rootId: root.rootId,\n      rootText: root.rootText,\n      rootPermalink: root.rootPermalink,\n      commentId: String(r.id),\n      commenter: uname,\n      commentText: txt,\n      commentTs: ts,\n      commentPermalink: String(r.permalink || ''),\n    });\n  }\n}\n\nif (candidates.length === 0) return [];\ncandidates.sort((a, b) => a.commentTs - b.commentTs);\nreturn [{ json: candidates[0] }];"
+        "jsCode": "const roots = $('Son 5 Gönderiyi Hazırla').all();\nconst replyPages = $input.all();\nconst nowSec = Math.floor(Date.now() / 1000);\nconst todayTrt = new Date((nowSec + 3 * 3600) * 1000).toISOString().slice(0, 10);\n\nconst GROWTH_PATH = 'C:\\\\Users\\\\idoca\\\\.n8n\\\\socialora-growth.json';\nconst fs = require('fs');\nconst nodePath = require('path');\n\nconst readFull = () => {\n  try {\n    if (!fs.existsSync(GROWTH_PATH)) return {};\n    return JSON.parse(fs.readFileSync(GROWTH_PATH, 'utf8')) || {};\n  } catch { return {}; }\n};\n\nconst writeThreadsReplies = (nextTr) => {\n  const full = readFull();\n  full.threadsReplies = nextTr;\n  fs.mkdirSync(nodePath.dirname(GROWTH_PATH), { recursive: true });\n  const tmp = GROWTH_PATH + '.tmp.' + Date.now() + '.' + Math.random().toString(36).slice(2, 8);\n  fs.writeFileSync(tmp, JSON.stringify(full, null, 2), 'utf8');\n  fs.renameSync(tmp, GROWTH_PATH);\n};\n\nconst full = readFull();\nconst diskTr = (full && typeof full.threadsReplies === 'object' && full.threadsReplies) ? full.threadsReplies : {};\nconst sd = $getWorkflowStaticData('global');\n\nif (!Array.isArray(sd.repliedIds)) sd.repliedIds = [];\nif (Array.isArray(diskTr.repliedIds)) {\n  sd.repliedIds = [...new Set([...sd.repliedIds, ...diskTr.repliedIds])].slice(-300);\n}\nconst sdCount = sd.dayTrt === todayTrt ? Number(sd.countToday || 0) : 0;\nconst diskCount = diskTr.dayTrt === todayTrt ? Number(diskTr.countToday || 0) : 0;\nsd.dayTrt = todayTrt;\nsd.countToday = Math.max(sdCount, diskCount);\nsd.lastPublishedAt = Math.max(Number(sd.lastPublishedAt || 0), Number(diskTr.lastPublishedAt || 0));\n\nconst liveHasReplies = new Map();\nfor (let i = 0; i < replyPages.length; i++) {\n  const rows = Array.isArray(replyPages[i]?.json?.data) ? replyPages[i].json.data : [];\n  for (const r of rows) {\n    if (r && r.id) liveHasReplies.set(String(r.id), r.has_replies === true);\n  }\n}\n\nconst repliedSet = new Set(sd.repliedIds);\nlet approvals = Array.isArray(diskTr.pendingApprovals) ? diskTr.pendingApprovals : [];\nlet changed = false;\n\nfor (const ap of approvals) {\n  if (!ap || !ap.commentId) continue;\n  const cid = String(ap.commentId);\n  if (ap.status === 'skipped' && !repliedSet.has(cid)) {\n    repliedSet.add(cid);\n    sd.repliedIds.push(cid);\n    changed = true;\n  }\n  if ((ap.status === 'pending_approval' || ap.status === 'approved') && (repliedSet.has(cid) || liveHasReplies.get(cid) === true)) {\n    ap.status = 'already_replied';\n    repliedSet.add(cid);\n    if (!sd.repliedIds.includes(cid)) sd.repliedIds.push(cid);\n    changed = true;\n  }\n}\n\nconst pruned = approvals.filter((ap) => ap && (nowSec - Number(ap.draftedAt || nowSec) <= 7 * 86400)).slice(-80);\nif (pruned.length !== approvals.length) changed = true;\napprovals = pruned;\n\nif (changed) {\n  sd.repliedIds = sd.repliedIds.slice(-300);\n  writeThreadsReplies({\n    ...diskTr,\n    repliedIds: sd.repliedIds,\n    dayTrt: sd.dayTrt,\n    countToday: sd.countToday,\n    lastPublishedAt: sd.lastPublishedAt,\n    pendingApprovals: approvals,\n  });\n}\n\nif (sd.countToday >= 12) return [];\n\nconst readyToPublish = approvals\n  .filter((ap) => {\n    if (!ap || !ap.commentId || !ap.replyText) return false;\n    const cid = String(ap.commentId);\n    if (repliedSet.has(cid) || liveHasReplies.get(cid) === true) return false;\n    if (ap.status === 'approved') return true;\n    if (ap.status === 'pending_approval' && (nowSec - Number(ap.draftedAt || 0) >= 900)) return true;\n    return false;\n  })\n  .sort((a, b) => Number(a.draftedAt || 0) - Number(b.draftedAt || 0));\n\nif (readyToPublish.length > 0) {\n  const item = readyToPublish[0];\n  const triggerReason = item.status === 'approved' ? 'manual_approved' : 'auto_timeout_900s';\n  return [{\n    json: {\n      mode: 'publish_ready',\n      triggerReason,\n      approvalId: String(item.approvalId || item.commentId),\n      threadsUserId: String(item.threadsUserId || roots[0]?.json?.threadsUserId || '29067357699551135'),\n      myUsername: String(roots[0]?.json?.myUsername || 'socialora1'),\n      rootId: String(item.rootId || ''),\n      rootText: String(item.rootText || ''),\n      commentId: String(item.commentId),\n      commenter: String(item.commenter || ''),\n      commentText: String(item.commentText || ''),\n      replyText: String(item.replyText || ''),\n      draftedAt: Number(item.draftedAt || nowSec),\n    }\n  }];\n}\n\nconst pendingIds = new Set(approvals.map((ap) => String(ap.commentId)));\nconst candidates = [];\nfor (let i = 0; i < replyPages.length; i++) {\n  const root = roots[i]?.json || {};\n  const rows = Array.isArray(replyPages[i]?.json?.data) ? replyPages[i].json.data : [];\n  for (const r of rows) {\n    if (!r || !r.id) continue;\n    const cid = String(r.id);\n    const uname = String(r.username || '').toLowerCase();\n    if (!uname || uname === (root.myUsername || 'socialora1')) continue;\n    if (repliedSet.has(cid) || pendingIds.has(cid) || r.has_replies === true) continue;\n    const txt = String(r.text || '').trim();\n    if (txt.length < 3 || /https?:\\/\\/|t\\.me\\/|crypto|airdrop|whatsapp/i.test(txt)) continue;\n    const ts = r.timestamp ? Math.floor(Date.parse(r.timestamp) / 1000) : nowSec;\n    if (nowSec - ts > 172800 || nowSec - ts < 90) continue;\n    candidates.push({\n      threadsUserId: root.threadsUserId,\n      myUsername: root.myUsername,\n      rootId: root.rootId,\n      rootText: root.rootText,\n      rootPermalink: root.rootPermalink,\n      commentId: cid,\n      commenter: uname,\n      commentText: txt,\n      commentTs: ts,\n      commentPermalink: String(r.permalink || ''),\n    });\n  }\n}\n\nif (candidates.length === 0) return [];\ncandidates.sort((a, b) => a.commentTs - b.commentTs);\n\nconst modelsCacheValid = Boolean(\n  Array.isArray(sd.cachedModels) &&\n  sd.cachedModels.length > 0 &&\n  Number(sd.modelsCachedAt || 0) > 0 &&\n  (nowSec - Number(sd.modelsCachedAt || 0) < 21600)\n);\n\nreturn [{ json: { mode: 'draft_new', modelsCacheValid, ...candidates[0] } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -131,7 +140,99 @@
         340
       ],
       "id": "th-rep-pick-01",
-      "name": "Bekleyen Yorum Seç"
+      "name": "Bekleyen Onay & Yorum Seç"
+    },
+    {
+      "parameters": {
+        "mode": "rules",
+        "rules": {
+          "values": [
+            {
+              "outputKey": "publish_ready",
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.mode }}",
+                    "rightValue": "publish_ready",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "outputKey": "draft_new",
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.mode }}",
+                    "rightValue": "draft_new",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1460,
+        340
+      ],
+      "id": "th-rep-sw-01",
+      "name": "Mod Yönlendir (Yayınla / Taslak)"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ Boolean($json.modelsCacheValid) }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1680,
+        500
+      ],
+      "id": "th-rep-cache-01",
+      "name": "Model Önbelleği Geçerli mi?"
     },
     {
       "parameters": {
@@ -145,8 +246,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1460,
-        340
+        1900,
+        620
       ],
       "id": "th-rep-gem-disc",
       "name": "Gemini Modelleri Keşfet",
@@ -156,17 +257,20 @@
           "name": "Google Gemini(PaLM) Api account"
         }
       },
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
-        "jsCode": "const src = $('Bekleyen Yorum Seç').first()?.json;\nif (!src) return [];\nconst rawModels = Array.isArray($json.models) ? $json.models : [];\nconst candidates = rawModels\n  .filter((m) => {\n    const name = String(m.name || '').replace(/^models\\//, '');\n    const methods = Array.isArray(m.supportedGenerationMethods) ? m.supportedGenerationMethods : [];\n    return name.includes('flash') && methods.includes('generateContent') && !/(image|tts|live|audio|preview|exp|thinking|robotics|computer|embedding)/i.test(name);\n  })\n  .map((m) => String(m.name || '').replace(/^models\\//, ''));\nconst defaults = ['gemini-3.5-flash-lite', 'gemini-2.5-flash-lite', 'gemini-2.5-flash'];\nconst ordered = [...new Set([...candidates, ...defaults])];\nconst primaryModel = ordered.find((n) => n === 'gemini-3.5-flash-lite') || ordered[0];\nconst fallbackModel = ordered.find((n) => n === 'gemini-2.5-flash-lite') || ordered.find((n) => n !== primaryModel) || primaryModel;\n\nconst prompt = `Our post on Threads:\\n\"${src.rootText}\"\\n\\n@${src.commenter} replied:\\n\"${src.commentText}\"\\n\\nWrite ONLY a warm, helpful, human 1-2 sentence reply strictly in natural English ONLY (never reply in Turkish or any other non-English language). No links unless they asked for our free tool. No emojis, no markdown, no hashtags, no em-dashes, no cliché praise like \"Great comment!\".`;\nconst buildBody = (model) => {\n  const genCfg = { temperature: 0.7, topP: 0.9, maxOutputTokens: 220 };\n  if (String(model).includes('2.5')) genCfg.thinkingConfig = { thinkingBudget: 0 };\n  return {\n    system_instruction: { parts: [{ text: 'You are the founder/editor running @socialora1 on Threads (creator tools & organic growth notes). Always write strictly in natural English only (never Turkish), like a thoughtful human creator keeping a conversation going. Plain text only, max 260 characters.' }] },\n    contents: [{ role: 'user', parts: [{ text: prompt }] }],\n    generationConfig: genCfg,\n  };\n};\nreturn [{ json: { ...src, primaryModel, fallbackModel, requestBody: buildBody(primaryModel), fallbackBody: buildBody(fallbackModel) } }];"
+        "jsCode": "const src = $('Bekleyen Onay & Yorum Seç').first()?.json;\nif (!src || src.mode !== 'draft_new') return [];\n\nconst sd = $getWorkflowStaticData('global');\nconst nowSec = Math.floor(Date.now() / 1000);\nconst disc = $input.first()?.json || {};\nconst rawModels = Array.isArray(disc.models) ? disc.models : [];\nlet candidates = [];\nif (rawModels.length > 0) {\n  candidates = rawModels\n    .filter((m) => {\n      const name = String(m.name || '').replace(/^models\\//, '');\n      const methods = Array.isArray(m.supportedGenerationMethods) ? m.supportedGenerationMethods : [];\n      return name.includes('flash') && methods.includes('generateContent') && !/(image|tts|live|audio|preview|exp|thinking|robotics|computer|embedding)/i.test(name);\n    })\n    .map((m) => String(m.name || '').replace(/^models\\//, ''));\n  if (candidates.length > 0) {\n    sd.cachedModels = candidates;\n    sd.modelsCachedAt = nowSec;\n  }\n} else if (Array.isArray(sd.cachedModels) && sd.cachedModels.length > 0) {\n  candidates = sd.cachedModels;\n}\n\nconst defaults = ['gemini-3.5-flash-lite', 'gemini-2.5-flash-lite', 'gemini-2.5-flash'];\nconst ordered = [...new Set([...candidates, ...defaults])];\nconst primaryModel = ordered.find((n) => n === 'gemini-3.5-flash-lite') || ordered[0];\nconst fallbackModel = ordered.find((n) => n === 'gemini-2.5-flash-lite') || ordered.find((n) => n !== primaryModel) || primaryModel;\n\nconst prompt = `Our post on Threads:\\n\"${src.rootText}\"\\n\\n@${src.commenter} replied:\\n\"${src.commentText}\"\\n\\nWrite ONLY a warm, helpful, human 1-2 sentence reply strictly in natural English ONLY (never reply in Turkish or any other non-English language). No links unless they asked for our free tool. No emojis, no markdown, no hashtags, no em-dashes, no en-dashes, no bullet symbols, no cliche words like elevate, game-changer, unlock, skyrocket, delve, realm, unleash, tapestry.`;\nconst buildBody = (model) => {\n  const genCfg = { temperature: 0.7, topP: 0.9, maxOutputTokens: 220 };\n  if (String(model).includes('2.5')) genCfg.thinkingConfig = { thinkingBudget: 0 };\n  return {\n    system_instruction: { parts: [{ text: 'You are the founder/editor running @socialora1 on Threads (creator tools & organic growth notes). Always write strictly in natural English only (never Turkish), like a thoughtful human creator keeping a conversation going. Plain text only, max 260 characters.' }] },\n    contents: [{ role: 'user', parts: [{ text: prompt }] }],\n    generationConfig: genCfg,\n  };\n};\nreturn [{ json: { ...src, primaryModel, fallbackModel, requestBody: buildBody(primaryModel), fallbackBody: buildBody(fallbackModel) } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1680,
-        340
+        2120,
+        500
       ],
       "id": "th-rep-gem-prep",
       "name": "Yanıt Promptu Hazırla"
@@ -187,8 +291,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1900,
-        340
+        2340,
+        500
       ],
       "id": "th-rep-gem-pri",
       "name": "Gemini Yanıt Üret (Ana)",
@@ -198,7 +302,10 @@
           "name": "Google Gemini(PaLM) Api account"
         }
       },
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
@@ -225,8 +332,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2120,
-        340
+        2560,
+        500
       ],
       "id": "th-rep-gem-ok",
       "name": "Yanıt Geldi mi?"
@@ -247,8 +354,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2120,
-        520
+        2560,
+        680
       ],
       "id": "th-rep-gem-bak",
       "name": "Gemini Yanıt Üret (Yedek)",
@@ -258,20 +365,60 @@
           "name": "Google Gemini(PaLM) Api account"
         }
       },
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
-        "jsCode": "const src = $('Yanıt Promptu Hazırla').first()?.json;\nconst raw = $json.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || '';\nconst clean = raw.replace(/\\s*[\\u2014\\u2013]\\s*/g, ', ').replace(/[*_`#\\u2022]/g, '').replace(/[\\u{1F300}-\\u{1FAFF}]/gu, '').replace(/\\s+/g, ' ').trim().slice(0, 320);\nif (!src || clean.length < 4 || /[çğıöşüÇĞİÖŞÜ]/.test(clean)) return [];\nreturn [{ json: { ...src, replyText: clean } }];"
+        "jsCode": "const src = $('Yanıt Promptu Hazırla').first()?.json;\nconst raw = $json.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || '';\nconst clean = raw\n  .replace(/\\s*[\\u2014\\u2013]\\s*/g, ', ')\n  .replace(/[*_`#\\u2022]/g, '')\n  .replace(/[\\u{1F300}-\\u{1FAFF}]/gu, '')\n  .replace(/\\s+/g, ' ')\n  .trim()\n  .slice(0, 320);\nconst bannedCliche = /\\b(?:elevate your game|game-changer|unlock|skyrocket|let's dive in|delve|realm|unleash|tapestry)\\b/i;\nif (!src || clean.length < 4 || /[çğıöşüÇĞİÖŞÜ]/.test(clean) || bannedCliche.test(clean)) return [];\nreturn [{ json: { ...src, replyText: clean } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2360,
-        340
+        2780,
+        500
       ],
       "id": "th-rep-clean-01",
       "name": "Yanıtı Temizle"
+    },
+    {
+      "parameters": {
+        "jsCode": "const info = $('Yanıtı Temizle').first()?.json || {};\nif (!info.commentId || !info.replyText) return [];\n\nconst GROWTH_PATH = 'C:\\\\Users\\\\idoca\\\\.n8n\\\\socialora-growth.json';\nconst fs = require('fs');\nconst nodePath = require('path');\n\nlet full = {};\ntry {\n  if (fs.existsSync(GROWTH_PATH)) full = JSON.parse(fs.readFileSync(GROWTH_PATH, 'utf8')) || {};\n} catch { full = {}; }\n\nconst prev = (full && typeof full.threadsReplies === 'object' && full.threadsReplies) ? full.threadsReplies : {};\nconst approvals = Array.isArray(prev.pendingApprovals) ? prev.pendingApprovals : [];\nconst approvalId = String(info.commentId);\nconst nowSec = Math.floor(Date.now() / 1000);\n\nif (!approvals.some((a) => String(a.commentId) === String(info.commentId))) {\n  approvals.push({\n    approvalId,\n    commentId: String(info.commentId),\n    threadsUserId: String(info.threadsUserId || '29067357699551135'),\n    rootId: String(info.rootId || ''),\n    rootText: String(info.rootText || '').slice(0, 180),\n    commenter: String(info.commenter || ''),\n    commentText: String(info.commentText || '').slice(0, 300),\n    commentPermalink: String(info.commentPermalink || ''),\n    replyText: String(info.replyText || ''),\n    draftedAt: nowSec,\n    expiresAt: nowSec + 900,\n    status: 'pending_approval',\n  });\n}\n\nfull.threadsReplies = {\n  ...prev,\n  repliedIds: Array.isArray(prev.repliedIds) ? prev.repliedIds.slice(-300) : [],\n  pendingApprovals: approvals.slice(-80),\n};\n\nfs.mkdirSync(nodePath.dirname(GROWTH_PATH), { recursive: true });\nconst tmp = GROWTH_PATH + '.tmp.' + Date.now() + '.' + Math.random().toString(36).slice(2, 8);\nfs.writeFileSync(tmp, JSON.stringify(full, null, 2), 'utf8');\nfs.renameSync(tmp, GROWTH_PATH);\n\nconst esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst htmlText = [\n  '💬 <b>Yeni Threads Yorumu (Onay Bekliyor)</b>',\n  '',\n  '<b>Yorumcu:</b> @' + esc(info.commenter),\n  '<b>Gönderimiz:</b> ' + esc(String(info.rootText || '').slice(0, 110)),\n  '<b>Gelen Yorum:</b> ' + esc(String(info.commentText || '').slice(0, 200)),\n  '<b>Hazırlanan Yanıt:</b> ' + esc(info.replyText),\n  '',\n  'Onaylamak için: /approve_' + esc(approvalId),\n  'İptal etmek için: /skip_' + esc(approvalId),\n  '',\n  '<i>15 dakika (900 sn) içinde müdahale olmazsa bir sonraki kontrolde otomatik yayınlanır.</i>'\n].join('\\n');\n\nreturn [{ json: { ok: true, approvalId, commentId: info.commentId, htmlText } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3000,
+        500
+      ],
+      "id": "th-rep-queue-01",
+      "name": "Onay Kuyruğuna Kaydet"
+    },
+    {
+      "parameters": {
+        "operation": "sendOwnerDm",
+        "htmlText": "={{ $json.htmlText }}"
+      },
+      "type": "CUSTOM.telegramGrowth",
+      "typeVersion": 1,
+      "position": [
+        3220,
+        500
+      ],
+      "id": "th-rep-askdm-01",
+      "name": "Telegram Onay DM Gönder",
+      "credentials": {
+        "telegramApi": {
+          "id": "telegramSocialora01",
+          "name": "Telegram Bot (@socialora_publisher_2026_bot)"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
@@ -289,8 +436,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
       "position": [
-        2580,
-        340
+        1700,
+        200
       ],
       "id": "th-rep-cont-01",
       "name": "Yanıt Konteyneri Oluştur",
@@ -299,7 +446,10 @@
           "id": "hFc78ADPjjUELAPw",
           "name": "Threads API (@socialora1)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
@@ -310,8 +460,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        2780,
-        340
+        1920,
+        200
       ],
       "id": "th-rep-wait-01",
       "name": "4 Sn Bekle"
@@ -319,7 +469,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://graph.threads.net/v1.0/{{ $('Yanıtı Temizle').first().json.threadsUserId }}/threads_publish",
+        "url": "=https://graph.threads.net/v1.0/{{ $('Bekleyen Onay & Yorum Seç').first().json.threadsUserId }}/threads_publish",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpQueryAuth",
         "sendBody": true,
@@ -332,8 +482,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
       "position": [
-        2980,
-        340
+        2140,
+        200
       ],
       "id": "th-rep-pub-01",
       "name": "Yanıtı Yayınla",
@@ -342,17 +492,20 @@
           "id": "hFc78ADPjjUELAPw",
           "name": "Threads API (@socialora1)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
-        "jsCode": "const GROWTH_PATH = 'C:\\\\Users\\\\idoca\\\\.n8n\\\\socialora-growth.json';\nconst syncDiskPlatform = (patch, incrementCount) => {\n  const fs = require('fs');\n  const path = require('path');\n  let full = {};\n  try {\n    if (fs.existsSync(GROWTH_PATH)) full = JSON.parse(fs.readFileSync(GROWTH_PATH, 'utf8')) || {};\n  } catch { full = {}; }\n  const prev = (full && typeof full.threadsReplies === 'object' && full.threadsReplies) ? full.threadsReplies : {};\n  const mergedIds = [...new Set([...(Array.isArray(prev.repliedIds) ? prev.repliedIds : []), ...(Array.isArray(patch.repliedIds) ? patch.repliedIds : [])])];\n  const prevDiskCount = prev.dayTrt === patch.dayTrt ? Number(prev.countToday || 0) : 0;\n  const baseCount = Math.max(prevDiskCount, Number(patch.prevSdCount || 0));\n  const nextCount = incrementCount ? baseCount + 1 : Math.max(baseCount, Number(patch.countToday || 0));\n  const nextObj = {\n    ...prev,\n    ...patch,\n    repliedIds: mergedIds.slice(-300),\n    lastPublishedAt: Math.max(Number(prev.lastPublishedAt || 0), Number(patch.lastPublishedAt || 0)),\n    countToday: nextCount,\n  };\n  delete nextObj.prevSdCount;\n  if (Array.isArray(patch.sentHistory)) {\n    const prevH = Array.isArray(prev.sentHistory) ? prev.sentHistory : [];\n    const seenH = new Set(prevH.map((h) => h.postId + ':' + h.sentAt));\n    const combined = [...prevH];\n    for (const h of patch.sentHistory) {\n      const k = h.postId + ':' + h.sentAt;\n      if (!seenH.has(k)) { seenH.add(k); combined.push(h); }\n    }\n    nextObj.sentHistory = combined.slice(-80);\n  }\n  full.threadsReplies = nextObj;\n  fs.mkdirSync(path.dirname(GROWTH_PATH), { recursive: true });\n  const tmp = GROWTH_PATH + '.tmp.' + Date.now() + '.' + Math.random().toString(36).slice(2, 8);\n  fs.writeFileSync(tmp, JSON.stringify(full, null, 2), 'utf8');\n  fs.renameSync(tmp, GROWTH_PATH);\n  return nextObj;\n};\nconst info = $('Yanıtı Temizle').first()?.json || {};\nconst sd = $getWorkflowStaticData('global');\nif (!Array.isArray(sd.repliedIds)) sd.repliedIds = [];\nif (info.commentId && !sd.repliedIds.includes(info.commentId)) sd.repliedIds.push(info.commentId);\nsd.repliedIds = sd.repliedIds.slice(-300);\nconst nowSec = Math.floor(Date.now() / 1000);\nconst todayTrt = new Date((nowSec + 3 * 3600) * 1000).toISOString().slice(0, 10);\nconst prevSdCount = sd.dayTrt === todayTrt ? Number(sd.countToday || 0) : 0;\nsd.lastPublishedAt = nowSec;\nconst synced = syncDiskPlatform({\n  repliedIds: sd.repliedIds,\n  dayTrt: todayTrt,\n  prevSdCount,\n  lastPublishedAt: sd.lastPublishedAt\n}, true);\nsd.repliedIds = synced.repliedIds;\nsd.dayTrt = synced.dayTrt;\nsd.countToday = synced.countToday;\nsd.lastPublishedAt = synced.lastPublishedAt;\nreturn [{ json: {\n  ok: true,\n  publishedReplyId: $json.id || null,\n  repliedToComment: info.commentId,\n  commenter: info.commenter,\n  countToday: sd.countToday,\n  htmlText: `💬 <b>Threads Yanıtı Gönderildi</b> (@${info.commenter})\\n\\n<b>Gelen Yorum:</b> ${String(info.commentText||'').slice(0,160)}\\n<b>Bizim Yanıt:</b> ${String(info.replyText||'')}`\n} }];"
+        "jsCode": "const GROWTH_PATH = 'C:\\\\Users\\\\idoca\\\\.n8n\\\\socialora-growth.json';\nconst fs = require('fs');\nconst nodePath = require('path');\n\nconst info = $('Bekleyen Onay & Yorum Seç').first()?.json || {};\nconst nowSec = Math.floor(Date.now() / 1000);\nconst todayTrt = new Date((nowSec + 3 * 3600) * 1000).toISOString().slice(0, 10);\n\nlet full = {};\ntry {\n  if (fs.existsSync(GROWTH_PATH)) full = JSON.parse(fs.readFileSync(GROWTH_PATH, 'utf8')) || {};\n} catch { full = {}; }\n\nconst prev = (full && typeof full.threadsReplies === 'object' && full.threadsReplies) ? full.threadsReplies : {};\nconst sd = $getWorkflowStaticData('global');\nif (!Array.isArray(sd.repliedIds)) sd.repliedIds = [];\nconst mergedIds = [...new Set([...(Array.isArray(prev.repliedIds) ? prev.repliedIds : []), ...sd.repliedIds, ...(info.commentId ? [String(info.commentId)] : [])])].slice(-300);\n\nconst prevDiskCount = prev.dayTrt === todayTrt ? Number(prev.countToday || 0) : 0;\nconst prevSdCount = sd.dayTrt === todayTrt ? Number(sd.countToday || 0) : 0;\nconst nextCount = Math.max(prevDiskCount, prevSdCount) + 1;\n\nconst nextStatus = info.triggerReason === 'manual_approved' ? 'published' : 'auto_published';\nconst approvals = (Array.isArray(prev.pendingApprovals) ? prev.pendingApprovals : []).map((ap) => {\n  if (ap && String(ap.commentId) === String(info.commentId)) {\n    return {\n      ...ap,\n      status: nextStatus,\n      publishedAt: nowSec,\n      publishedReplyId: String($json.id || ''),\n    };\n  }\n  return ap;\n}).slice(-80);\n\nconst nextObj = {\n  ...prev,\n  repliedIds: mergedIds,\n  dayTrt: todayTrt,\n  countToday: nextCount,\n  lastPublishedAt: nowSec,\n  pendingApprovals: approvals,\n};\n\nfull.threadsReplies = nextObj;\nfs.mkdirSync(nodePath.dirname(GROWTH_PATH), { recursive: true });\nconst tmp = GROWTH_PATH + '.tmp.' + Date.now() + '.' + Math.random().toString(36).slice(2, 8);\nfs.writeFileSync(tmp, JSON.stringify(full, null, 2), 'utf8');\nfs.renameSync(tmp, GROWTH_PATH);\n\nsd.repliedIds = nextObj.repliedIds;\nsd.dayTrt = nextObj.dayTrt;\nsd.countToday = nextObj.countToday;\nsd.lastPublishedAt = nextObj.lastPublishedAt;\n\nconst esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst title = info.triggerReason === 'manual_approved'\n  ? '✅ <b>Onaylanan Threads Yanıtı Yayınlandı</b>'\n  : '⏱ <b>15 Dk Onay Süresi Doldu, Threads Yanıtı Otomatik Yayınlandı</b>';\n\nreturn [{\n  json: {\n    ok: true,\n    publishedReplyId: $json.id || null,\n    repliedToComment: info.commentId,\n    commenter: info.commenter,\n    triggerReason: info.triggerReason,\n    countToday: sd.countToday,\n    htmlText: title + ' (@' + esc(info.commenter) + ')\\n\\n<b>Gelen Yorum:</b> ' + esc(String(info.commentText || '').slice(0, 160)) + '\\n<b>Yayınlanan Yanıt:</b> ' + esc(String(info.replyText || ''))\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3200,
-        340
+        2360,
+        200
       ],
       "id": "th-rep-save-01",
       "name": "Yanıt Kaydını İşle"
@@ -365,8 +518,8 @@
       "type": "CUSTOM.telegramGrowth",
       "typeVersion": 1,
       "position": [
-        3420,
-        340
+        2580,
+        200
       ],
       "id": "th-rep-dm-01",
       "name": "Telegram Bildirim Gönder",
@@ -376,7 +529,10 @@
           "name": "Telegram Bot (@socialora_publisher_2026_bot)"
         }
       },
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     }
   ],
   "connections": {
@@ -439,15 +595,51 @@
       "main": [
         [
           {
-            "node": "Bekleyen Yorum Seç",
+            "node": "Bekleyen Onay & Yorum Seç",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Bekleyen Yorum Seç": {
+    "Bekleyen Onay & Yorum Seç": {
       "main": [
+        [
+          {
+            "node": "Mod Yönlendir (Yayınla / Taslak)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mod Yönlendir (Yayınla / Taslak)": {
+      "main": [
+        [
+          {
+            "node": "Yanıt Konteyneri Oluştur",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Model Önbelleği Geçerli mi?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model Önbelleği Geçerli mi?": {
+      "main": [
+        [
+          {
+            "node": "Yanıt Promptu Hazırla",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Gemini Modelleri Keşfet",
@@ -523,7 +715,18 @@
       "main": [
         [
           {
-            "node": "Yanıt Konteyneri Oluştur",
+            "node": "Onay Kuyruğuna Kaydet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Onay Kuyruğuna Kaydet": {
+      "main": [
+        [
+          {
+            "node": "Telegram Onay DM Gönder",
             "type": "main",
             "index": 0
           }

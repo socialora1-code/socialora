@@ -1,4 +1,4 @@
-# Socialora Threads — Organic Growth Playbook (`@socialora1`)
+# Socialora Threads - Organic Growth Playbook (`@socialora1`)
 
 Updated: `2026-11-11` | Account: `@socialora1` (`29067357699551135`) | Audience: Global English-speaking creators, UGC freelancers, and indie brands | Goal: Conversation-driven follower growth, profile visits, and qualified clicks without spam.
 
@@ -8,7 +8,7 @@ Updated: `2026-11-11` | Account: `@socialora1` (`29067357699551135`) | Audience:
 
 Threads behaves much closer to an interest-graph conversation engine than Instagram Feed:
 1. **Replies & Back-and-Forth Conversations** carry the strongest algorithmic boost. Posts that spark genuine creator opinions, disagreements, or *"here's what worked for me"* replies travel far beyond followers.
-2. **Reposts & Quote Threads** happen when a post states a sharp truth, contrast, or concise checklist in 2–5 lines.
+2. **Reposts & Quote Threads** happen when a post states a sharp truth, contrast, or concise checklist in 2 to 5 lines.
 3. **External Links in Main Posts Can Reduce Native Distribution:** Never fill every post with URLs. Keep **~80% of main posts 100% link-free**. On the ~20% of posts that reference a free tool, put the crisp hook/tip in the main post and place the tool link cleanly in the **first self-reply (`reply_to_id`)** whenever helpful.
 4. **No Hashtag Walls:** Never paste `#instagramtips #reels #viral #growth` blocks on Threads. Use plain human text (and at most 1 clean `topic_tag` if desired).
 
@@ -17,18 +17,18 @@ Threads behaves much closer to an interest-graph conversation engine than Instag
 ## 2. Content Mix & Voice (Zero-Robotic, Zero-Hype)
 
 ### Content Pillars
-- **35% Creator Observations & Contrarian Takes (`hook_truth` / `contrast`):** Short "Stop doing X → Start doing Y" contrasts, 2-second hook rewrites, retention reality checks.
+- **35% Creator Observations & Contrarian Takes (`hook_truth` / `contrast`):** Short "Stop doing X, start doing Y" contrasts, 2-second hook rewrites, retention reality checks.
 - **30% Open-Ended Creator Questions (`question`):** Real prompts creators love answering (*"What's the lowest-effort Reel format that outperformed your high-effort edits?"*, *"Do you still use hashtags on Reels or rely on caption keywords?"*).
-- **20% Mini Frameworks & Checklists (`framework`):** 3–4 line scannable checklists creators bookmark or repost.
-- **15–20% Natural Free Tool & Workflow Drops (`tool_natural`):** Real problem + quick fix + optional `getsocialora.com/tools/...` link in the self-reply (`reply_text`), zero hard sell.
+- **20% Mini Frameworks & Checklists (`framework`):** 3 to 4 line scannable checklists creators bookmark or repost.
+- **15-20% Natural Free Tool & Workflow Drops (`tool_natural`):** Real problem + quick fix + optional `getsocialora.com/tools/...` link in the self-reply (`reply_text`), zero hard sell.
 
 ### Copywriting Rules (Benchmark: Real Practitioner Notes, Zero Textbook Jargon)
-- Write like a sharp builder/editor talking directly to peers — **concrete everyday dialogue, specific word-for-word scripts, and real workflow scenes beat abstract theory every time**.
+- Write like a sharp builder/editor talking directly to peers: **concrete everyday dialogue, specific word-for-word scripts, and real workflow scenes beat abstract theory every time**.
   - *Avoid marketing jargon:* Never lean on stiff phrases like *"3-second hold rate"*, *"vanity metric"*, *"real leverage metric"*, *"unconnected reach cohort"*, *"dwell time"*, or *"high-contrast typography"*. Say what actually happens in plain speech (*"people scroll past in two seconds"*, *"friends send it in DMs"*, *"readers squint on a phone in sunlight"*).
   - *Give concrete examples:* Show the exact bad sentence vs exact rewrite (like real names/lines: `"Hey guys, today..."` vs `"Stop cropping 4:5 photos without checking this line."`), or name exact numbers viewers recognize (`214 views`, `115 characters`, `45 seconds`).
 - Keep most posts between **80 and 340 characters** (max 500 chars API cap). Crisp line breaks, readable rhythm.
 - Zero emoji clutter (0 or 1 subtle symbol max, never emoji chains).
-- **Zero AI formatting cues:** NEVER use em-dashes (`—`), en-dashes (`–`), or bullet symbols (`•`, `→`). Use commas, periods, colons, or plain numbered points (`1.`, `2.`) instead.
+- **Zero AI formatting cues:** NEVER use em-dashes, en-dashes, or bullet symbols. Use commas, periods, colons, or plain numbered points (`1.`, `2.`) instead.
 - **Banned AI Clichés:** *"In today's fast-paced world"*, *"Game-changer"*, *"Unlock"*, *"Unleash"*, *"Skyrocket"*, *"Let's dive in"*, *"In conclusion"*, *"Here's the secret nobody tells you"*.
 - **Truth Rule:** Never invent fake case studies, fake client metrics, or guaranteed follower claims.
 - **Cold-Start Graph Rule:** Always complete Threads' onboarding checklist (`Follow 10+ relevant English creator/software accounts`) and reply naturally in-niche so the account enters the English Creator/Tools interest graph instead of sitting isolated at 0 following.
@@ -39,10 +39,10 @@ Threads behaves much closer to an interest-graph conversation engine than Instag
 
 - **Daily Cap:** Publish **3 to 4 native posts per Europe/Istanbul day** across peak Europe + US blocks (safe, high-discovery cadence for a conversational text network).
 - **Minimum Spacing:** At least **2.5 hours** between any two published Threads posts (never burst-posting).
-- **Global EU + US Peak Windows (with Daily Randomized Minutes):** `threads-publish-workflow.json` uses a 10-minute local jitter gate (`Zaman Penceresi & Dakika Sapması`) so posts publish at **different non-robotic minutes every day** (`:04–:52`):
-  - **Slot 1 (`14:xx–15:xx TSİ`):** UK/EU midday + US East early morning (`06:00–08:30 EST`).
-  - **Slot 2 (`17:xx–18:xx TSİ`):** EU late afternoon + US East morning/lunch (`09:00–11:30 EST`).
-  - **Slot 3 (`20:xx–21:xx TSİ`):** EU prime evening + US East midday + US West morning (`09:00–11:30 PST`).
+- **Global EU + US Peak Windows (with Daily Randomized Minutes):** `threads-publish-workflow.json` uses a 10-minute local jitter gate (`Zaman Penceresi & Dakika Sapması`) so posts publish at **different non-robotic minutes every day** (`:04 to :52`):
+  - **Slot 1 (`14:xx-15:xx TSİ`):** UK/EU midday + US East early morning (`06:00-08:30 EST`).
+  - **Slot 2 (`17:xx-18:xx TSİ`):** EU late afternoon + US East morning/lunch (`09:00-11:30 EST`).
+  - **Slot 3 (`20:xx-21:xx TSİ`):** EU prime evening + US East midday + US West morning (`09:00-11:30 PST`).
   - **Slot 4 (`23:xx TSİ`):** US East evening + US West afternoon (`15:00 EST / 12:00 PST`).
 - **Topic Discovery Multiplier:** Pass `topic_tag` on Threads API posts so each native insight enters Threads' live topic discovery feeds without hashtag clutter; funnel tool visitors from `getsocialora.com/tools/*` and footer links to `@socialora1`.
 - **Live Duplicate Guard:** `threads-publish-workflow.json` reads recent `@socialora1` posts from `graph.threads.net/v1.0/me/threads` before publishing to enforce the 4/day cap, 2.5-hour spacing, and duplicate text protection.

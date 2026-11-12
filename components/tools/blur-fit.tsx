@@ -1,7 +1,9 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 const PRESETS = [
   { id: 'ig-post', label: 'Instagram post 4:5 (1080 x 1350)', w: 1080, h: 1350 },
@@ -20,6 +22,7 @@ export function BlurFit() {
   const [img, setImg] = useState<HTMLImageElement | null>(null)
   const [presetId, setPresetId] = useState('ig-post')
   const [blurId, setBlurId] = useState('medium')
+  const [exported, setExported] = useState(false)
   const [error, setError] = useState('')
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const urlRef = useRef<string | null>(null)
@@ -34,6 +37,7 @@ export function BlurFit() {
       return
     }
     setError('')
+    setExported(false)
     if (urlRef.current) URL.revokeObjectURL(urlRef.current)
     const url = URL.createObjectURL(file)
     urlRef.current = url
@@ -105,6 +109,7 @@ export function BlurFit() {
     a.href = canvas.toDataURL('image/jpeg', 0.92)
     a.download = `no-crop-${preset.id}-${preset.w}x${preset.h}.jpg`
     a.click()
+    setExported(true)
   }
 
   return (
@@ -124,7 +129,10 @@ export function BlurFit() {
         Where will you post it?
         <select
           value={presetId}
-          onChange={(e) => setPresetId(e.target.value)}
+          onChange={(e) => {
+            setPresetId(e.target.value)
+            setExported(false)
+          }}
           className="h-11 rounded-xl border border-border bg-background px-3 text-sm font-normal"
         >
           {PRESETS.map((p) => (
@@ -142,7 +150,10 @@ export function BlurFit() {
             <button
               key={b.id}
               type="button"
-              onClick={() => setBlurId(b.id)}
+              onClick={() => {
+                setBlurId(b.id)
+                setExported(false)
+              }}
               aria-pressed={b.id === blurId}
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 b.id === blurId ? 'border-foreground bg-foreground text-background' : 'border-border bg-background'
@@ -169,7 +180,33 @@ export function BlurFit() {
         >
           Download photo
         </button>
+
+        {exported && (
+          <div className="mt-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm">
+            <p className="font-medium text-foreground">
+              {preset.id === 'ig-post'
+                ? 'Image exported in crisp 4:5! Posting this now? Grab free initial views or Auto-Likes for your new post'
+                : `Image exported cleanly (${preset.w}x${preset.h})! Posting this now? Grab free initial views or Auto-Likes for your new post`}
+            </p>
+            <div className="mt-3 flex flex-wrap gap-3">
+              <Link
+                href="/instagram"
+                className="inline-flex h-9 items-center justify-center rounded-full bg-primary px-4 text-xs font-medium text-primary-foreground"
+              >
+                Auto-Likes &amp; Instagram Growth
+              </Link>
+              <Link
+                href="/free-instagram-views"
+                className="inline-flex h-9 items-center justify-center rounded-full border border-border bg-background px-4 text-xs font-medium hover:bg-muted/60"
+              >
+                Grab 1,000 Free Initial Views
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
+
+      {img && <SmartMomentumOffer />}
     </div>
   )
 }

@@ -72,7 +72,10 @@
           "id": "hFc78ADPjjUELAPw",
           "name": "Threads API (@socialora1)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
@@ -97,7 +100,10 @@
           "id": "hFc78ADPjjUELAPw",
           "name": "Threads API (@socialora1)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
@@ -120,11 +126,14 @@
       ],
       "id": "th-pub-gh-01",
       "name": "GitHub - Threads Kuyruğu Çek",
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
-        "jsCode": "const me = $('Threads Profilini Doğrula').first()?.json || {};\nconst threadsUserId = String(me.id || '').trim();\nif (!threadsUserId) {\n  throw new Error('Threads profili doğrulanamadı. Tokenı kontrol edin.');\n}\n\nconst recentRaw = $('Son Gönderileri Çek').first()?.json || {};\nconst recentPosts = Array.isArray(recentRaw.data) ? recentRaw.data : [];\n\nconst ghRaw = $input.first()?.json || {};\nlet posts = [];\ntry {\n  const parsed = typeof ghRaw === 'string' ? JSON.parse(ghRaw) : (typeof ghRaw.data === 'string' ? JSON.parse(ghRaw.data) : ghRaw);\n  if (Array.isArray(parsed.posts)) posts = parsed.posts;\n} catch {}\n\nif (posts.length === 0) return [];\n\nconst GROWTH_PATH = 'C:\\\\Users\\\\idoca\\\\.n8n\\\\socialora-growth.json';\nconst readDiskPlatform = () => {\n  try {\n    const fs = require('fs');\n    if (!fs.existsSync(GROWTH_PATH)) return {};\n    const full = JSON.parse(fs.readFileSync(GROWTH_PATH, 'utf8'));\n    return (full && typeof full.threads === 'object' && full.threads) ? full.threads : {};\n  } catch { return {}; }\n};\nconst sd = $getWorkflowStaticData('global');\nconst diskTh = readDiskPlatform();\nif (!Array.isArray(sd.sentIds)) sd.sentIds = [];\nif (Array.isArray(diskTh.sentIds)) sd.sentIds = [...new Set([...sd.sentIds, ...diskTh.sentIds])];\nif (!Array.isArray(sd.sentHistory)) sd.sentHistory = [];\nif (Array.isArray(diskTh.sentHistory)) {\n  const seenH = new Set(sd.sentHistory.map((h) => h.postId + ':' + h.sentAt));\n  for (const h of diskTh.sentHistory) { const k = h.postId + ':' + h.sentAt; if (!seenH.has(k)) { seenH.add(k); sd.sentHistory.push(h); } }\n  sd.sentHistory = sd.sentHistory.slice(-80);\n}\nsd.lastPublishedAt = Math.max(Number(sd.lastPublishedAt || 0), Number(diskTh.lastPublishedAt || 0));\n\nconst nowSec = Math.floor(Date.now() / 1000);\nconst trtNow = new Date((nowSec + 3 * 3600) * 1000);\nconst todayTrt = trtNow.toISOString().slice(0, 10);\nconst hourTrt = trtNow.getUTCHours();\n\nlet isManual = false;\ntry { if (typeof $execution !== 'undefined' && $execution.mode === 'manual') isManual = true; } catch {}\ntry { if ($('Manuel Tetikle').isExecuted) isManual = true; } catch {}\n\nlet latestLiveTs = 0;\nlet liveTodayCount = 0;\nconst liveTexts = [];\nfor (const m of recentPosts) {\n  if (m.text) liveTexts.push(String(m.text).toLowerCase().trim());\n  if (m.timestamp) {\n    const ts = Math.floor(Date.parse(m.timestamp) / 1000);\n    if (Number.isFinite(ts) && ts > 0) {\n      if (ts > latestLiveTs) latestLiveTs = ts;\n      const dStr = new Date((ts + 3 * 3600) * 1000).toISOString().slice(0, 10);\n      if (dStr === todayTrt) liveTodayCount += 1;\n    }\n  }\n}\n\nconst sdCountToday = sd.dayTrt === todayTrt ? Number(sd.countToday || 0) : 0;\nconst diskCountToday = diskTh.dayTrt === todayTrt ? Number(diskTh.countToday || 0) : 0;\nsd.dayTrt = todayTrt;\nsd.countToday = Math.max(liveTodayCount, sdCountToday, diskCountToday);\nif (!isManual) {\n  if (hourTrt < 14 || hourTrt > 23) return [];\n  const effectiveLast = Math.max(sd.lastPublishedAt, latestLiveTs);\n  if (sd.countToday >= 4) return [];\n  if (effectiveLast && (nowSec - effectiveLast < 2.5 * 3600)) return [];\n  \n}\n\nconst sentSet = new Set(sd.sentIds);\nconst candidate = posts.find((p) => {\n  if (!p || !p.id || !p.text) return false;\n  if (sentSet.has(p.id)) return false;\n  const firstLine = String(p.text).split('\\n')[0].toLowerCase().trim();\n  if (firstLine.length >= 18 && liveTexts.some((t) => t.includes(firstLine))) return false;\n  return true;\n});\n\nif (!candidate) return [];\n\nconst body = {\n  media_type: candidate.image_url ? 'IMAGE' : 'TEXT',\n  text: String(candidate.text).slice(0, 500)\n};\nif (candidate.image_url) body.image_url = candidate.image_url;\nif (candidate.topic_tag) {\n  const tag = String(candidate.topic_tag).replace(/[.&]/g, ' ').replace(/\\s+/g, ' ').trim().slice(0, 50);\n  if (tag) body.topic_tag = tag;\n}\n\nreturn [{\n  json: {\n    threadsUserId,\n    username: String(me.username || 'socialora1'),\n    postId: candidate.id,\n    payload: body,\n    replyText: candidate.reply_text ? String(candidate.reply_text).slice(0, 500) : '',\n    nowSec\n  }\n}];"
+        "jsCode": "const me = $('Threads Profilini Doğrula').first()?.json || {};\nconst threadsUserId = String(me.id || '').trim();\nif (!threadsUserId) {\n  throw new Error('Threads profili doğrulanamadı. Tokenı kontrol edin.');\n}\n\nconst recentRaw = $('Son Gönderileri Çek').first()?.json || {};\nconst recentPosts = Array.isArray(recentRaw.data) ? recentRaw.data : [];\n\nconst ghRaw = $input.first()?.json || {};\nlet posts = [];\ntry {\n  const fs = require('fs');\n  const LOCAL_QUEUE = 'C:\\\\Users\\\\idoca\\\\Socialora\\\\automation\\\\threads\\\\content-queue.json';\n  if (fs.existsSync(LOCAL_QUEUE)) {\n    const localParsed = JSON.parse(fs.readFileSync(LOCAL_QUEUE, 'utf8'));\n    if (Array.isArray(localParsed.posts) && localParsed.posts.length > 0) posts = localParsed.posts;\n  }\n} catch {}\nif (posts.length === 0) {\n  try {\n    const parsed = typeof ghRaw === 'string' ? JSON.parse(ghRaw) : (typeof ghRaw.data === 'string' ? JSON.parse(ghRaw.data) : ghRaw);\n    if (Array.isArray(parsed.posts)) posts = parsed.posts;\n  } catch {}\n}\n\nif (posts.length === 0) return [];\n\nconst GROWTH_PATH = 'C:\\\\Users\\\\idoca\\\\.n8n\\\\socialora-growth.json';\nconst readDiskPlatform = () => {\n  try {\n    const fs = require('fs');\n    if (!fs.existsSync(GROWTH_PATH)) return {};\n    const full = JSON.parse(fs.readFileSync(GROWTH_PATH, 'utf8'));\n    return (full && typeof full.threads === 'object' && full.threads) ? full.threads : {};\n  } catch { return {}; }\n};\nconst sd = $getWorkflowStaticData('global');\nconst diskTh = readDiskPlatform();\nif (!Array.isArray(sd.sentIds)) sd.sentIds = [];\nif (Array.isArray(diskTh.sentIds)) sd.sentIds = [...new Set([...sd.sentIds, ...diskTh.sentIds])];\nif (!Array.isArray(sd.sentHistory)) sd.sentHistory = [];\nif (Array.isArray(diskTh.sentHistory)) {\n  const seenH = new Set(sd.sentHistory.map((h) => h.postId + ':' + h.sentAt));\n  for (const h of diskTh.sentHistory) { const k = h.postId + ':' + h.sentAt; if (!seenH.has(k)) { seenH.add(k); sd.sentHistory.push(h); } }\n  sd.sentHistory = sd.sentHistory.slice(-80);\n}\nsd.lastPublishedAt = Math.max(Number(sd.lastPublishedAt || 0), Number(diskTh.lastPublishedAt || 0));\n\nconst nowSec = Math.floor(Date.now() / 1000);\nconst trtNow = new Date((nowSec + 3 * 3600) * 1000);\nconst todayTrt = trtNow.toISOString().slice(0, 10);\nconst hourTrt = trtNow.getUTCHours();\n\nlet isManual = false;\ntry { if (typeof $execution !== 'undefined' && $execution.mode === 'manual') isManual = true; } catch {}\ntry { if ($('Manuel Tetikle').isExecuted) isManual = true; } catch {}\n\nlet latestLiveTs = 0;\nlet liveTodayCount = 0;\nconst liveTexts = [];\nfor (const m of recentPosts) {\n  if (m.text) liveTexts.push(String(m.text).toLowerCase().trim());\n  if (m.timestamp) {\n    const ts = Math.floor(Date.parse(m.timestamp) / 1000);\n    if (Number.isFinite(ts) && ts > 0) {\n      if (ts > latestLiveTs) latestLiveTs = ts;\n      const dStr = new Date((ts + 3 * 3600) * 1000).toISOString().slice(0, 10);\n      if (dStr === todayTrt) liveTodayCount += 1;\n    }\n  }\n}\n\nconst sdCountToday = sd.dayTrt === todayTrt ? Number(sd.countToday || 0) : 0;\nconst diskCountToday = diskTh.dayTrt === todayTrt ? Number(diskTh.countToday || 0) : 0;\nsd.dayTrt = todayTrt;\nsd.countToday = Math.max(liveTodayCount, sdCountToday, diskCountToday);\nif (!isManual) {\n  if (hourTrt < 14 || hourTrt > 23) return [];\n  const effectiveLast = Math.max(sd.lastPublishedAt, latestLiveTs);\n  if (sd.countToday >= 4) return [];\n  if (effectiveLast && (nowSec - effectiveLast < 2.5 * 3600)) return [];\n}\n\nconst sentSet = new Set(sd.sentIds);\nconst candidate = posts.find((p) => {\n  if (!p || !p.id || !p.text) return false;\n  if (sentSet.has(p.id)) return false;\n  const firstLine = String(p.text).split('\\n')[0].toLowerCase().trim();\n  if (firstLine.length >= 18 && liveTexts.some((t) => t.includes(firstLine))) return false;\n  return true;\n});\n\nif (!candidate) return [];\n\nconst cleanText = (s) => String(s || '')\n  .replace(/\\s*[\\u2014\\u2013]\\s*/g, ', ')\n  .replace(/[\\u2022]/g, '-')\n  .trim();\n\nconst ALLOWED_TAGS = new Set([\n  'Instagram Growth',\n  'Creator Tips',\n  'Video Editing',\n  'Content Strategy',\n  'UGC Creators',\n  'Social Media Design',\n  'YouTube Tips',\n  'TikTok Tips'\n]);\n\nconst body = {\n  media_type: candidate.image_url ? 'IMAGE' : 'TEXT',\n  text: cleanText(candidate.text).slice(0, 500)\n};\nif (candidate.image_url) body.image_url = candidate.image_url;\nif (candidate.topic_tag) {\n  const rawTag = String(candidate.topic_tag).replace(/[.&]/g, ' ').replace(/\\s+/g, ' ').trim().slice(0, 50);\n  if (ALLOWED_TAGS.has(rawTag)) {\n    body.topic_tag = rawTag;\n  } else if (rawTag) {\n    body.topic_tag = 'Creator Tips';\n  }\n}\n\nconst replyText = candidate.reply_text ? cleanText(candidate.reply_text).slice(0, 500) : '';\nconst hasUrlInReply = /https?:\\/\\//i.test(replyText);\nconst isSecondWave = Boolean(replyText && !hasUrlInReply && (candidate.pillar === 'framework' || candidate.pillar === 'hook_truth'));\nlet h = 2166136261;\nconst seed = String(candidate.id) + ':' + todayTrt;\nfor (let i = 0; i < seed.length; i++) h = Math.imul(h ^ seed.charCodeAt(i), 16777619) >>> 0;\nconst replyDelaySec = isSecondWave ? (240 + (h % 121)) : 4;\n\nreturn [{\n  json: {\n    threadsUserId,\n    username: String(me.username || 'socialora1'),\n    postId: candidate.id,\n    pillar: candidate.pillar || '',\n    payload: body,\n    replyText,\n    replyDelaySec,\n    isSecondWave,\n    nowSec\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -161,7 +170,10 @@
           "id": "hFc78ADPjjUELAPw",
           "name": "Threads API (@socialora1)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
@@ -204,7 +216,10 @@
           "id": "hFc78ADPjjUELAPw",
           "name": "Threads API (@socialora1)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
@@ -231,7 +246,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2000,
+        2220,
         360
       ],
       "id": "th-pub-ifreply-01",
@@ -245,7 +260,7 @@
         "genericAuthType": "httpQueryAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ media_type: 'TEXT', text: $('İçerik Seç & Tekrar Kontrolü').first().json.replyText, reply_to_id: $json.id }) }}",
+        "jsonBody": "={{ JSON.stringify({ media_type: 'TEXT', text: $('İçerik Seç & Tekrar Kontrolü').first().json.replyText, reply_to_id: $('Threads Gönderisini Yayınla').first().json.id }) }}",
         "options": {
           "timeout": 20000
         }
@@ -253,7 +268,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
       "position": [
-        2240,
+        2680,
         240
       ],
       "id": "th-pub-repcont-01",
@@ -263,7 +278,10 @@
           "id": "hFc78ADPjjUELAPw",
           "name": "Threads API (@socialora1)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
@@ -274,7 +292,7 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        2460,
+        2900,
         240
       ],
       "id": "th-pub-repwait-01",
@@ -296,7 +314,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
       "position": [
-        2680,
+        3120,
         240
       ],
       "id": "th-pub-repsend-01",
@@ -306,7 +324,10 @@
           "id": "hFc78ADPjjUELAPw",
           "name": "Threads API (@socialora1)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
@@ -315,8 +336,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2920,
-        380
+        2000,
+        360
       ],
       "id": "th-pub-save-01",
       "name": "Yayın Kaydını Güncelle"
@@ -333,6 +354,21 @@
       ],
       "id": "th-pub-gate-01",
       "name": "Zaman Penceresi & Dakika Sapması"
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $('İçerik Seç & Tekrar Kontrolü').first().json.replyDelaySec || 4 }}",
+        "unit": "seconds"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2460,
+        240
+      ],
+      "id": "th-pub-delay-01",
+      "name": "Yanıt Gecikmesi Bekle"
     }
   ],
   "connections": {
@@ -417,7 +453,7 @@
       "main": [
         [
           {
-            "node": "İlk Yanıt Var mı?",
+            "node": "Yayın Kaydını Güncelle",
             "type": "main",
             "index": 0
           }
@@ -428,18 +464,12 @@
       "main": [
         [
           {
-            "node": "İlk Yanıt Konteyneri",
+            "node": "Yanıt Gecikmesi Bekle",
             "type": "main",
             "index": 0
           }
         ],
-        [
-          {
-            "node": "Yayın Kaydını Güncelle",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "İlk Yanıt Konteyneri": {
@@ -466,13 +496,7 @@
     },
     "İlk Yanıtı Yayınla": {
       "main": [
-        [
-          {
-            "node": "Yayın Kaydını Güncelle",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Zamanlayıcı (10 Dk)": {
@@ -491,6 +515,28 @@
         [
           {
             "node": "Threads Profilini Doğrula",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Yayın Kaydını Güncelle": {
+      "main": [
+        [
+          {
+            "node": "İlk Yanıt Var mı?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Yanıt Gecikmesi Bekle": {
+      "main": [
+        [
+          {
+            "node": "İlk Yanıt Konteyneri",
             "type": "main",
             "index": 0
           }

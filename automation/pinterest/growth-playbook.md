@@ -1,4 +1,4 @@
-# Socialora Pinterest — Global Organic Growth Playbook
+# Socialora Pinterest - Global Organic Growth Playbook
 Updated 2026-11-10. Account: @socialoratools (BUSINESS). Website: https://www.getsocialora.com/tools.
 
 ## Objective and audience
@@ -59,7 +59,7 @@ The production asset renderer is **2026-11-11-v4-editorial** across five harmoni
 
 **Weekly test and improvement:** After sufficient actual Pinterest data accumulate, record valid Pin impressions, saves, outbound clicks (and optionally outbound-click rate when impressions > 0) per creative style and board. Test one factor at a time (composition, hook/topic, or destination). Prefer new angles on topics with real saves/clicks; do not repeatedly post the same screenshot, board, or deep-link. Fresh accounts can report 0 and lag; zero does not justify fake engagement tactics or artificial clicks.
 
-**Checks before publishing:** manifest image status is `asset_only_not_published`, `renderer_version` equals `2026-11-10-v3-layouts`, composition exists, screenshot from verified `https://www.getsocialora.com/tools/<slug>`, cover hook matches queue, target image URL returns genuine image, and UI is readable. Pin should use only one original prepared asset for its draft ID. Publisher validates time/board/destination limits first, and never uses a second fallback publisher.
+**Checks before publishing:** manifest image status is `asset_only_not_published`, `renderer_version` equals `2026-11-11-v4-editorial`, composition exists, screenshot from verified `https://www.getsocialora.com/tools/<slug>`, cover hook matches queue, target image URL returns genuine image, and UI is readable. Pin should use only one original prepared asset for its draft ID. Publisher validates time/board/destination limits first, and never uses a second fallback publisher.
 
 ## Draft fallback behavior (2026-11-10)
 During each existing scheduled run, if the best draft lacks an accessible authentic v3 screenshot image, repeats a recent URL/board/topic, or fails crop/readability checks, inspect up to ten OTHER as-yet-unpublished draft candidates from different boards/styles. Publish at most ONE suitable Pin with the official Pinterest API, and only after the real recent-Pin / 3h / 4 daily caps are checked. If API returns an error or rate limit, STOP without retrying a different draft in the same run. If no valid candidate exists, preserve all drafts and skip just this run; later scheduled runs continue. Never fabricate engagement or loosen quality gates to hit a numerical quota.

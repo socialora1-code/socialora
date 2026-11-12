@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 function toNum(s: string): number {
   const n = Number(s.replace(/[^0-9]/g, ''))
@@ -140,6 +141,7 @@ export function GoalCalculator() {
           <p className="mt-4 text-xs text-muted-foreground">
             This is an estimate based on steady growth. Real growth goes up and down.
           </p>
+          <SmartMomentumOffer />
         </div>
       )}
     </div>

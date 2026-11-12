@@ -5,8 +5,10 @@ import { TOOLS } from '@/lib/tool-list'
 
 export const metadata: Metadata = buildToolsMetadata({
   title: 'Free Social Media Tools',
+  absoluteTitle: 'Free Social Media Tools · Socialora Free Creator Toolkit',
+  fullOgTitle: 'Socialora Free Creator Toolkit',
   description:
-    'Free tools for Instagram, TikTok, YouTube, X and more: font generators, calculators and generators. No sign-up needed.',
+    'Free creator toolkit for Instagram, TikTok, YouTube, X and more: font generators, calculators and editing utilities. No sign-up needed.',
   canonicalPath: '/tools',
 })
 

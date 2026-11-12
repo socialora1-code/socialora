@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { GENERATORS } from '@/lib/generators'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 const inputClass =
   'mt-2 h-12 w-full rounded-xl border border-border bg-background px-4 text-base outline-none focus-visible:ring-3 focus-visible:ring-ring/40'
@@ -92,6 +93,7 @@ export function Generator({ id }: { id: string }) {
               More ideas
             </button>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{config.note}</p>
+            <SmartMomentumOffer />
           </>
         )}
       </div>

@@ -1,7 +1,9 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 const W = 1080
 const H = 1920
@@ -109,6 +111,7 @@ export function SafeZone() {
   const [img, setImg] = useState<HTMLImageElement | null>(null)
   const [zoneId, setZoneId] = useState('reels')
   const [showGuide, setShowGuide] = useState(true)
+  const [tested, setTested] = useState(false)
   const [error, setError] = useState('')
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const urlRef = useRef<string | null>(null)
@@ -127,7 +130,10 @@ export function SafeZone() {
     const url = URL.createObjectURL(file)
     urlRef.current = url
     const image = new Image()
-    image.onload = () => setImg(image)
+    image.onload = () => {
+      setImg(image)
+      setTested(true)
+    }
     image.onerror = () => setError('This image could not be opened. Try a JPG or PNG.')
     image.src = url
   }
@@ -159,6 +165,7 @@ export function SafeZone() {
     if (!ctx) return
     drawGuide(ctx, zone)
     save(off, 'image/png', `${zone.id}-safe-zone-guide-1080x1920.png`)
+    setTested(true)
   }
 
   function downloadWithPhoto() {
@@ -169,7 +176,8 @@ export function SafeZone() {
     if (!ctx) return
     drawBase(ctx, img)
     drawGuide(ctx, zone)
-    save(off, 'image/jpeg', `${zone.id}-photo-with-safe-zone-1080x1920.jpg`)
+    save(off, 'image/png', `${zone.id}-checked-frame-1080x1920.png`)
+    setTested(true)
   }
 
   return (
@@ -181,7 +189,10 @@ export function SafeZone() {
             <button
               key={z.id}
               type="button"
-              onClick={() => setZoneId(z.id)}
+              onClick={() => {
+                setZoneId(z.id)
+                setTested(true)
+              }}
               aria-pressed={z.id === zoneId}
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 z.id === zoneId ? 'border-foreground bg-foreground text-background' : 'border-border bg-background'
@@ -222,27 +233,53 @@ export function SafeZone() {
           The areas are approximate.
         </p>
         <div className="mt-4 flex flex-wrap justify-center gap-3">
-          <button
-            type="button"
-            onClick={downloadGuide}
-            className="inline-flex h-11 items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground"
-          >
-            Download guide overlay (PNG)
-          </button>
           {img && (
             <button
               type="button"
               onClick={downloadWithPhoto}
-              className="inline-flex h-11 items-center justify-center rounded-full border border-border bg-background px-6 text-sm font-medium"
+              className="inline-flex h-11 items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground"
             >
-              Download photo with guide
+              Download Checked Frame (PNG)
             </button>
           )}
+          <button
+            type="button"
+            onClick={downloadGuide}
+            className={`inline-flex h-11 items-center justify-center rounded-full px-6 text-sm font-medium ${
+              img ? 'border border-border bg-background' : 'bg-primary text-primary-foreground'
+            }`}
+          >
+            Download guide overlay (PNG)
+          </button>
         </div>
         <p className="mt-3 text-center text-xs text-muted-foreground">
           The overlay is transparent. Place it over your video in your editor, then remove it before you export.
         </p>
+
+        {(img || tested) && (
+          <div className="mt-4 rounded-2xl border border-border bg-muted/40 p-4 text-center">
+            <p className="text-sm font-medium">
+              Frame placement verified. Ready to publish and give this video strong initial watch momentum?
+            </p>
+            <div className="mt-3 flex flex-wrap justify-center gap-3">
+              <Link
+                href="/free-instagram-views"
+                className="inline-flex h-10 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground"
+              >
+                Test 1,000 Free Instagram Views
+              </Link>
+              <Link
+                href="/tiktok"
+                className="inline-flex h-10 items-center justify-center rounded-full border border-border bg-background px-5 text-sm font-medium hover:bg-muted/60"
+              >
+                Explore TikTok Reach Packages
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
+
+      {(img || tested) && <SmartMomentumOffer />}
     </div>
   )
 }
