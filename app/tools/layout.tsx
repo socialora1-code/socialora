@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
+import { TOOLS } from '@/lib/tool-list'
 
 const TOOLKIT_TITLE = 'Socialora Free Creator Toolkit'
 const TOOLKIT_DESCRIPTION =
-  '51 free browser creator tools for Instagram, TikTok, YouTube, X and Telegram. Zero login, no password, and instant client-side results.'
+  `${TOOLS.length + 1} free browser creator tools for Instagram, TikTok, YouTube, X and Telegram. Zero login, no password, and instant client-side results.`
 
 export const metadata: Metadata = {
   title: {

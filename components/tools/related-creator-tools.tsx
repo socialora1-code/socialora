@@ -20,7 +20,7 @@ const STANDALONE_CALCULATOR: ToolLinkItem = {
     'Free Instagram engagement rate calculator. Enter followers, average likes and comments to measure your interaction rate.',
 }
 
-const ALL_51_TOOLS: ToolLinkItem[] = [
+const ALL_TOOLS: ToolLinkItem[] = [
   ...TOOLS.map((t) => ({
     slug: t.slug,
     href: `/tools/${t.slug}`,
@@ -33,20 +33,20 @@ const ALL_51_TOOLS: ToolLinkItem[] = [
 ]
 
 export function getRelatedTools(currentSlug: string, count = 4): ToolLinkItem[] {
-  const current = ALL_51_TOOLS.find((t) => t.slug === currentSlug)
+  const current = ALL_TOOLS.find((t) => t.slug === currentSlug)
   const currentGroup = current?.group || ''
   const currentPlatform = current?.platform || ''
 
   // 1. Same category first
-  const sameGroup = ALL_51_TOOLS.filter((t) => t.slug !== currentSlug && t.group === currentGroup)
+  const sameGroup = ALL_TOOLS.filter((t) => t.slug !== currentSlug && t.group === currentGroup)
 
   // 2. Same platform second
-  const samePlatform = ALL_51_TOOLS.filter(
+  const samePlatform = ALL_TOOLS.filter(
     (t) => t.slug !== currentSlug && t.group !== currentGroup && t.platform === currentPlatform,
   )
 
   // 3. Fallback popular tools
-  const others = ALL_51_TOOLS.filter(
+  const others = ALL_TOOLS.filter(
     (t) => t.slug !== currentSlug && t.group !== currentGroup && t.platform !== currentPlatform,
   )
 
@@ -57,14 +57,16 @@ interface RelatedCreatorToolsProps {
   currentSlug: string
   heading?: string
   subheading?: string
+  links?: ToolLinkItem[]
 }
 
 export function RelatedCreatorTools({
   currentSlug,
   heading = 'Related Creator Tools',
   subheading = 'Explore complementary free creator utilities to grow your audience and refine your content workflow.',
+  links,
 }: RelatedCreatorToolsProps) {
-  const related = getRelatedTools(currentSlug, 4)
+  const related = links ?? getRelatedTools(currentSlug, 4)
 
   return (
     <section className="mt-14 border-t border-border pt-12" aria-labelledby="related-tools-heading">
@@ -79,7 +81,7 @@ export function RelatedCreatorTools({
           href="/tools"
           className="shrink-0 text-sm font-medium text-primary underline underline-offset-4 hover:no-underline"
         >
-          Browse All 51 Free Tools
+          Browse All {ALL_TOOLS.length} Free Tools
         </Link>
       </div>
 

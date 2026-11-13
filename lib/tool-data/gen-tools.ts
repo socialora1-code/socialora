@@ -2,6 +2,26 @@ import type { ToolDef } from '@/lib/tool-data/types'
 
 export const GEN_TOOLS: readonly ToolDef[] = [
   {
+    slug: 'instagram-hook-generator',
+    kind: 'gen',
+    group: 'Generators',
+    platform: 'Instagram',
+    name: 'Instagram Hook Generator',
+    title: 'Free Instagram Hook Generator for Reels',
+    h1: 'Instagram Hook Generator for Reels',
+    description: 'Turn a Reel topic into short opening lines for your voiceover or on-screen text. Edit and copy ideas in your browser.',
+    intro: 'Enter the moment, question or example that will open your Reel. Pick an opening line and edit it to match what viewers see.',
+    widget: 'hook-instagram',
+    tips: [
+      'Name a specific detail in the first line, then show it in the clip.',
+      'Read the line out loud and cut any words the video already explains.',
+    ],
+    faqs: [
+      { q: 'What is a Reel hook?', a: 'A hook is the opening line or visual that tells viewers why the rest of the Reel is relevant to them.' },
+      { q: 'Can I use a hook as on-screen text?', a: 'Yes. Keep it short enough to read and leave space for the Instagram controls.' },
+    ],
+  },
+  {
     slug: 'instagram-bio-generator',
     kind: 'gen',
     group: 'Bio Generators',

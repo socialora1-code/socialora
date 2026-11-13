@@ -106,6 +106,23 @@ const BIO_NOTE = 'These ideas are built from templates and your own words. Edit 
 const IDEA_NOTE = 'These are starting points built from templates. Change the wording to match your style.'
 
 export const GENERATORS: Record<string, GenConfig> = {
+  'hook-instagram': templateConfig({
+    label: 'What should the viewer notice?',
+    placeholder: 'e.g. a shortcut for invoice approvals',
+    empty: 'Enter a topic to get opening lines for your Reel.',
+    note: 'Pick a hook you can support with a clip or demonstration. Replace broad wording with the exact detail viewers will see.',
+    count: 4,
+    templates: [
+      'Here is the first thing I check when it comes to {t}.',
+      'Watch this example of {t}. Can you spot the decision that changes the result?',
+      'Before your next attempt at {t}, check this one detail.',
+      'What does {t} look like in practice? Start with this clip.',
+      'I will show you the part of {t} that is easy to miss.',
+      'If you are comparing approaches to {t}, watch what happens here.',
+      'Here is one question to ask before you try {t}.',
+      'Can you explain {t} in one clip? This is where I would start.',
+    ],
+  }),
   'bio-instagram': bioConfig(
     150,
     [

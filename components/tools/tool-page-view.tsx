@@ -15,10 +15,12 @@ import { LinkGenerator } from '@/components/tools/link-generator'
 import { GiveawayPicker } from '@/components/tools/picker'
 import { PhotoResizer } from '@/components/tools/photo-resizer'
 import { RelatedCreatorTools } from '@/components/tools/related-creator-tools'
+import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 import { SafeZone } from '@/components/tools/safe-zone'
 import { SymbolsPicker } from '@/components/tools/symbols'
 import { ThumbnailDownloader } from '@/components/tools/thumbnail-downloader'
 import { SITE } from '@/lib/site'
+import { getToolNiches, type NicheToolPage } from '@/lib/tool-data/niche-tools'
 import type { ToolDef } from '@/lib/tool-data/types'
 
 const DEFAULT_CTA = {
@@ -120,14 +122,18 @@ const STEPS: Record<string, readonly string[]> = {
   ],
 }
 
-function Widget({ tool }: { tool: ToolDef }) {
+function Widget({ tool, niche }: { tool: ToolDef; niche?: NicheToolPage }) {
   switch (tool.kind) {
     case 'font':
       return <FontGenerator />
     case 'calc':
       return <Calculator id={tool.widget ?? ''} />
     case 'gen':
-      return <Generator id={tool.widget ?? ''} />
+      return <Generator
+        id={tool.widget ?? ''}
+        initialValues={niche ? nicheGeneratorInputs(tool.widget, niche.inputs) : undefined}
+        showOffer={!niche}
+      />
     case 'picker':
       return <GiveawayPicker />
     case 'link':
@@ -148,8 +154,10 @@ function Widget({ tool }: { tool: ToolDef }) {
       return <SafeZone />
     case 'frame':
       return <FrameGrabber />
-          case 'caption':
-      return <CaptionGenerator />
+    case 'caption':
+      return <CaptionGenerator preset={niche?.captions && niche.tags ? {
+        label: niche.audience, topic: niche.inputs[0], captions: niche.captions, tags: niche.tags,
+      } : undefined} />
           case 'fakecheck':
       return <FakeFollowerCheck />
     case 'profileviewers':
@@ -163,15 +171,23 @@ function Widget({ tool }: { tool: ToolDef }) {
   }
 }
 
-export function ToolPageView({ tool }: { tool: ToolDef }) {
+function nicheGeneratorInputs(widget: string | undefined, [first, second = '']: NicheToolPage['inputs']): Record<string, string> {
+  if (widget === 'hashtag-instagram') return { keyword: first, second }
+  if (widget === 'username-instagram') return { name: first, word: second }
+  return { topic: first, extra: second }
+}
+
+export function ToolPageView({ tool, niche }: { tool: ToolDef; niche?: NicheToolPage }) {
   const cta = tool.cta ?? DEFAULT_CTA
   const steps = STEPS[tool.kind] ?? []
+  const basePath = `/tools/${tool.slug}`
+  const niches = getToolNiches(tool.slug)
 
-  const url = `${SITE.url}/tools/${tool.slug}`
+  const url = new URL(niche?.path ?? basePath, SITE.url).href
   const sharedToolUrl = new URL(url)
   sharedToolUrl.searchParams.set('utm_source', 'telegram')
   sharedToolUrl.searchParams.set('utm_medium', 'share')
-  sharedToolUrl.searchParams.set('utm_campaign', `creator_tool_${tool.slug}`)
+  sharedToolUrl.searchParams.set('utm_campaign', `creator_tool_${tool.slug}${niche ? `_${niche.niche}` : ''}`)
   const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(sharedToolUrl.toString())}&text=${encodeURIComponent(
     `Useful free tool: ${tool.name}. Works in your browser, no sign-up required.`,
   )}`
@@ -201,7 +217,8 @@ export function ToolPageView({ tool }: { tool: ToolDef }) {
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
         { '@type': 'ListItem', position: 2, name: 'Free Tools', item: `${SITE.url}/tools` },
-        { '@type': 'ListItem', position: 3, name: tool.name, item: url },
+        { '@type': 'ListItem', position: 3, name: niche ? tool.name.split(' for ')[0] : tool.name, item: new URL(basePath, SITE.url).href },
+        ...(niche ? [{ '@type': 'ListItem', position: 4, name: niche.audience, item: url }] : []),
       ],
     },
   ]
@@ -216,8 +233,14 @@ export function ToolPageView({ tool }: { tool: ToolDef }) {
       <p className="mt-3 leading-relaxed text-muted-foreground">{tool.intro}</p>
 
       <div className="mt-8">
-        <Widget tool={tool} />
+        <Widget tool={tool} niche={niche} />
       </div>
+      {niche && (
+        <section className="mt-6 rounded-2xl border border-border bg-card p-5" aria-labelledby="niche-example">
+          <h2 id="niche-example" className="text-lg font-semibold">Example for {niche.audience}</h2>
+          <p className="mt-2 break-words leading-relaxed">{niche.example}</p>
+        </section>
+      )}
       <p className="mt-4 text-right text-sm">
         <a
           href={telegramShareUrl}
@@ -331,6 +354,7 @@ export function ToolPageView({ tool }: { tool: ToolDef }) {
         </div>
       </section>
 
+      {niche ? <SmartMomentumOffer intro={niche.nextStep} /> : (
       <section className="mt-12 rounded-3xl border border-border bg-card p-6" aria-labelledby="cta-title">
         <h2 id="cta-title" className="text-xl font-semibold tracking-tight">
           Grow your profile
@@ -353,8 +377,33 @@ export function ToolPageView({ tool }: { tool: ToolDef }) {
           </a>
         </div>
       </section>
+      )}
 
-      <RelatedCreatorTools currentSlug={tool.slug} />
+      {!niche && niches.length > 0 && (
+        <nav aria-label="Versions by niche" className="mt-10">
+          <h2 className="text-2xl font-semibold tracking-tight">Use this generator for your niche</h2>
+          <ul className="mt-3 flex flex-wrap gap-2">
+            {niches.map((entry) => (
+              <li key={entry.path}>
+                <Link href={entry.path} className="inline-flex rounded-full border border-border px-4 py-2 text-sm hover:bg-muted">
+                  {entry.audience}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+      <RelatedCreatorTools
+        currentSlug={tool.slug}
+        heading={niche ? `Related tools for ${niche.audience}` : undefined}
+        subheading={niche ? 'Explore the general generator and compare examples from other businesses.' : undefined}
+        links={niche ? [
+          { slug: tool.slug, href: basePath, name: tool.name.split(' for ')[0], group: tool.group, platform: tool.platform, description: 'Start with your own topic in the general generator.' },
+          ...niches.filter((entry) => entry.path !== niche.path).slice(0, 3).map((entry) => ({
+            slug: entry.niche, href: entry.path, name: entry.name, group: tool.group, platform: tool.platform, description: entry.description,
+          })),
+        ] : undefined}
+      />
     </div>
   )
 }

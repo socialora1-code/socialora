@@ -10,6 +10,7 @@ import {
   type LandingPage,
 } from '@/lib/landing-pages'
 import { SITE } from '@/lib/site'
+import { NICHE_TOOL_PAGES } from '@/lib/tool-data/niche-tools'
 import { TOOLS } from '@/lib/tool-list'
 
 // İçerik gerçekten değiştiğinde bu tarihi güncelle
@@ -54,7 +55,6 @@ const PLATFORM_ROUTES = [
   '/buy-arabic-instagram-followers',
   '/buy-brazilian-instagram-followers',
 ]
-const TOOL_ROUTES = ['/tools', '/tools/instagram-engagement-rate-calculator']
 
 const PLATFORM_LANDING: [string, readonly LandingPage[]][] = [
   ['/tiktok', TIKTOK_LANDING_PAGES],
@@ -112,5 +112,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }))
 
-  return [...pages, ...landing, ...otherLanding, ...tools, ...posts]
+  const nicheTools: MetadataRoute.Sitemap = NICHE_TOOL_PAGES.map(({ path }) => ({
+    url: new URL(path, SITE.url).href,
+    changeFrequency: 'monthly',
+    priority: 0.8,
+  }))
+
+  return [...pages, ...landing, ...otherLanding, ...tools, ...nicheTools, ...posts]
 }

@@ -218,19 +218,25 @@ async function copyText(text: string) {
   }
 }
 
-export function CaptionGenerator() {
-  const [categoryId, setCategoryId] = useState('selfie')
-  const [topic, setTopic] = useState('')
+export function CaptionGenerator({ preset }: {
+  preset?: { label: string; topic: string; captions: string[]; tags: string[] }
+} = {}) {
+  const [categoryId, setCategoryId] = useState(preset ? 'niche' : 'selfie')
+  const [topic, setTopic] = useState(preset?.topic ?? '')
   const [round, setRound] = useState(0)
   const [copied, setCopied] = useState('')
 
-  const category = CATEGORIES.find((c) => c.id === categoryId) ?? CATEGORIES[0]
+  const categories = preset
+    ? [{ id: 'niche', label: preset.label, captions: preset.captions, tags: preset.tags, emojis: [''] }, ...CATEGORIES]
+    : CATEGORIES
+  const category = categories.find((c) => c.id === categoryId) ?? categories[0]
   const t = clean(topic)
+  const nicheTopic = category.id === 'niche' ? (t || preset?.topic || '') : t
   const usable = category.captions
-    .filter((c) => t || !c.includes('{t}'))
-    .map((c) => c.replace(/\{t\}/g, t))
+    .filter((c) => nicheTopic || !c.includes('{t}'))
+    .map((c) => c.replace(/\{t\}/g, () => nicheTopic))
 
-  const count = Math.min(6, usable.length)
+  const count = Math.min(category.id === 'niche' ? 2 : 6, usable.length)
   const picks = Array.from({ length: count }, (_, i) => {
     const index = (round * count + i) % usable.length
     return {
@@ -257,7 +263,7 @@ export function CaptionGenerator() {
         <fieldset>
           <legend className="text-sm font-medium">What kind of post is it?</legend>
           <div className="mt-3 flex flex-wrap gap-2">
-            {CATEGORIES.map((c) => (
+            {categories.map((c) => (
               <button
                 key={c.id}
                 type="button"
@@ -298,7 +304,7 @@ export function CaptionGenerator() {
 
       <ul className="mt-6 grid gap-3" aria-live="polite">
         {picks.map((item) => {
-          const full = `${item.text} ${item.emoji}`
+          const full = item.emoji ? `${item.text} ${item.emoji}` : item.text
           return (
             <li key={item.key} className="rounded-2xl border border-border bg-card p-4">
               <p className="break-words text-base">
@@ -345,7 +351,7 @@ export function CaptionGenerator() {
         </button>
       </div>
 
-      <SmartMomentumOffer />
+      {!preset && <SmartMomentumOffer />}
 
       <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
         These captions are starting points built from templates. Change a word or two so they sound like you. The

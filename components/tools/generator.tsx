@@ -7,9 +7,13 @@ import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 const inputClass =
   'mt-2 h-12 w-full rounded-xl border border-border bg-background px-4 text-base outline-none focus-visible:ring-3 focus-visible:ring-ring/40'
 
-export function Generator({ id }: { id: string }) {
+export function Generator({ id, initialValues, showOffer = true }: {
+  id: string
+  initialValues?: Record<string, string>
+  showOffer?: boolean
+}) {
   const config = GENERATORS[id]
-  const [values, setValues] = useState<Record<string, string>>({})
+  const [values, setValues] = useState<Record<string, string>>(initialValues ?? {})
   const [round, setRound] = useState(0)
   const [copied, setCopied] = useState('')
 
@@ -93,7 +97,7 @@ export function Generator({ id }: { id: string }) {
               More ideas
             </button>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{config.note}</p>
-            <SmartMomentumOffer />
+            {showOffer && <SmartMomentumOffer />}
           </>
         )}
       </div>
