@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, type ReactNode } from 'react'
 import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
+import { useStudioCopy } from '@/components/tools/studio-copy'
 import {
   CAPTION_TONES,
   CONTENT_GOALS,
@@ -41,37 +42,6 @@ function StudioPanel({ children }: { children: ReactNode }) {
       <div className="mt-4">{children}</div>
     </section>
   )
-}
-
-function useStudioCopy() {
-  const [lastCopy, setLastCopy] = useState({ key: '', message: '' })
-
-  async function copy(key: string, text: string) {
-    let succeeded = false
-    try {
-      await navigator.clipboard.writeText(text)
-      succeeded = true
-    } catch {
-      const active = document.activeElement
-      const field = document.createElement('textarea')
-      field.value = text
-      field.style.position = 'fixed'
-      field.style.insetInlineStart = '-9999px'
-      document.body.appendChild(field)
-      try {
-        field.select()
-        succeeded = document.execCommand('copy')
-      } catch {
-        succeeded = false
-      } finally {
-        field.remove()
-        if (active instanceof HTMLElement) active.focus()
-      }
-    }
-    setLastCopy({ key: succeeded ? key : '', message: succeeded ? 'Copied to clipboard.' : 'Copy failed. Select the text to copy it manually.' })
-  }
-
-  return { lastCopy, copy, clearCopy: () => setLastCopy({ key: '', message: '' }) }
 }
 
 function FirstHourMomentum({ copied }: { copied: boolean }) {

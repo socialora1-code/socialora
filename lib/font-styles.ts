@@ -110,3 +110,11 @@ export const FONT_STYLES: readonly FontStyle[] = [
   { id: 'brackets', name: 'Brackets', convert: (t) => `『${t}』` },
   { id: 'wings', name: 'Wings', convert: (t) => `༺ ${t} ༻` },
 ]
+
+export function orderFontStyles(featuredIds: readonly string[] = [], only?: readonly string[]) {
+  const pool = only ? FONT_STYLES.filter((style) => only.includes(style.id)) : FONT_STYLES
+  const featured = featuredIds
+    .map((id) => pool.find((style) => style.id === id))
+    .filter((style): style is FontStyle => Boolean(style))
+  return { featured, ordered: [...featured, ...pool.filter((style) => !featured.includes(style))] }
+}

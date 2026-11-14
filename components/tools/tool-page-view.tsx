@@ -6,6 +6,7 @@ import { ShadowbanCheck } from '@/components/tools/shadowban-check'
 import { BlurFit } from '@/components/tools/blur-fit'
 import { CaptionGenerator } from '@/components/tools/caption-generator'
 import { Calculator } from '@/components/tools/calculator'
+import { DiscordFontStudio } from '@/components/tools/discord-font-studio'
 import { FontGenerator } from '@/components/tools/font-generator'
 import { FrameGrabber } from '@/components/tools/frame-grabber'
 import { Generator } from '@/components/tools/generator'
@@ -30,6 +31,16 @@ const DEFAULT_CTA = {
 }
 
 const STUDIO_STEPS: Record<string, readonly string[]> = {
+  'instagram-giveaway-picker': [
+    'Paste one username or one username and comment per line. Try the sample data for a practice draw.',
+    'Set primary and backup counts, apply any comment rules, and check the eligible entries.',
+    'Pick winners and copy the Story or feed announcement.',
+  ],
+  'discord-font-generator': [
+    'Choose where the text will appear and type your own text or start with an example.',
+    'Add a symbol if you want, then choose a style and check the live preview.',
+    'Copy the style or copy it again from your favorites tray.',
+  ],
   'hashtag-facebook': [
     'Enter a topic and an optional second keyword, or pick a quick niche.',
     'Choose your content goal and select a few relevant tags from the three buckets.',
@@ -143,7 +154,7 @@ const STEPS: Record<string, readonly string[]> = {
 function Widget({ tool, niche }: { tool: ToolDef; niche?: NicheToolPage }) {
   switch (tool.kind) {
     case 'font':
-      return <FontGenerator />
+      return tool.slug === 'discord-font-generator' ? <DiscordFontStudio /> : <FontGenerator />
     case 'calc':
       return <Calculator id={tool.widget ?? ''} />
     case 'gen':
@@ -197,7 +208,7 @@ function nicheGeneratorInputs(widget: string | undefined, [first, second = '']: 
 
 export function ToolPageView({ tool, niche }: { tool: ToolDef; niche?: NicheToolPage }) {
   const cta = tool.cta ?? DEFAULT_CTA
-  const steps = STUDIO_STEPS[tool.widget ?? ''] ?? STEPS[tool.kind] ?? []
+  const steps = STUDIO_STEPS[tool.slug] ?? STUDIO_STEPS[tool.widget ?? ''] ?? STEPS[tool.kind] ?? []
   const basePath = `/tools/${tool.slug}`
   const niches = getToolNiches(tool.slug)
 

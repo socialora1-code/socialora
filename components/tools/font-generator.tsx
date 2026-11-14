@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
-import { FONT_STYLES, type FontStyle } from '@/lib/font-styles'
+import { orderFontStyles } from '@/lib/font-styles'
 import { FONT_CONFIGS, type FontConfig } from '@/lib/tool-data/font-configs'
 
 const DEFAULT_CONFIG: FontConfig = {
@@ -25,12 +25,7 @@ export function FontGenerator() {
   const [selectedId, setSelectedId] = useState('')
 
   const source = text.trim() === '' ? config.example : text
-  const pool = FONT_STYLES.filter((s) => !config.only || config.only.includes(s.id))
-  const featured = (config.featured ?? [])
-    .map((id) => pool.find((s) => s.id === id))
-    .filter((s): s is FontStyle => Boolean(s))
-  const rest = pool.filter((s) => !featured.includes(s))
-  const ordered = [...featured, ...rest]
+  const { featured, ordered } = orderFontStyles(config.featured, config.only)
   const selected = ordered.find((s) => s.id === selectedId) ?? ordered[0]
   const selectedOutput = selected.convert(source)
   const initial = (source.match(/[A-Za-z0-9]/)?.[0] ?? 'S').toUpperCase()
