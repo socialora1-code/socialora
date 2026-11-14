@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { CALCULATORS } from '@/lib/calculators'
+import { isEarningsSimulator } from '@/lib/earnings-simulator'
+import { EarningsSimulator } from '@/components/tools/earnings-simulator'
 import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 function toNumber(value: string): number {
@@ -22,6 +24,28 @@ const inputClass =
   'mt-2 h-12 w-full rounded-xl border border-border bg-background px-4 text-base outline-none focus-visible:ring-3 focus-visible:ring-ring/40'
 
 export function Calculator({ id }: { id: string }) {
+  if (!isEarningsSimulator(id)) return <StandardCalculator key={id} id={id} />
+
+  const originalTool = id === 'tiktok-coins'
+    ? 'TikTok Coins & Diamonds converter'
+    : id === 'instagram-sponsorship'
+      ? 'Instagram sponsorship rate calculator'
+      : null
+
+  return (
+    <>
+      {originalTool ? (
+        <details className="mb-4 rounded-2xl border border-border bg-card">
+          <summary className="cursor-pointer px-4 py-3 text-sm font-semibold">{originalTool}</summary>
+          <StandardCalculator key={id} id={id} showOffer={false} />
+        </details>
+      ) : null}
+      <EarningsSimulator key={id} id={id} />
+    </>
+  )
+}
+
+function StandardCalculator({ id, showOffer = true }: { id: string; showOffer?: boolean }) {
   const config = CALCULATORS[id]
   const [values, setValues] = useState<Record<string, string>>(() =>
     Object.fromEntries((config?.fields ?? []).map((f) => [f.id, f.defaultValue ?? ''])),
@@ -41,8 +65,8 @@ export function Calculator({ id }: { id: string }) {
     sponsorshipFollowers > 0 && Number.isFinite(numbers.likes)
       ? (((numbers.likes + sponsorshipComments) / sponsorshipFollowers) * 100).toFixed(2)
       : '0.00'
-  const cleanHeadline = (result?.headline ?? '').replace(/[\u2013\u2014]/g, '-')
-  const cleanBundle = (result?.lines?.[2]?.[1] ?? result?.headline ?? '').replace(/[\u2013\u2014]/g, '-')
+  const cleanHeadline = (result?.headline ?? '')
+  const cleanBundle = (result?.lines?.[2]?.[1] ?? result?.headline ?? '')
   const tierLabel = getCreatorTier(sponsorshipFollowers)
 
   function copyPitchEmail() {
@@ -132,7 +156,7 @@ export function Calculator({ id }: { id: string }) {
         )}
       </div>
 
-      {result && <SmartMomentumOffer />}
+      {result && showOffer && <SmartMomentumOffer />}
     </div>
   )
 }

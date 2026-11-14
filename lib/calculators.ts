@@ -25,12 +25,6 @@ const usd2 = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 })
-const usd3 = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 3,
-  maximumFractionDigits: 3,
-})
 
 const ok = (n: number) => !Number.isNaN(n)
 const opt = (n: number) => (Number.isNaN(n) ? 0 : n)
@@ -56,68 +50,7 @@ function engagementConfig(audience: CalcField, metrics: CalcField[], bands: [num
   }
 }
 
-function viewsRangeConfig(lowDefault: string, highDefault: string, note: string): CalcConfig {
-  return {
-    fields: [
-      { id: 'views', label: 'Monthly views', placeholder: 'e.g. 100000' },
-      { id: 'rpmLow', label: 'Low earnings per 1,000 views ($)', placeholder: 'e.g. 1', defaultValue: lowDefault },
-      { id: 'rpmHigh', label: 'High earnings per 1,000 views ($)', placeholder: 'e.g. 5', defaultValue: highDefault },
-    ],
-    empty: 'Enter your monthly views to see an estimated earnings range.',
-    compute: (v) => {
-      if (!(v.views > 0) || !ok(v.rpmLow) || !ok(v.rpmHigh)) return null
-      const a = Math.min(v.rpmLow, v.rpmHigh)
-      const b = Math.max(v.rpmLow, v.rpmHigh)
-      const low = (v.views / 1000) * a
-      const high = (v.views / 1000) * b
-      return {
-        headline: `${usd.format(low)} - ${usd.format(high)}`,
-        sub: 'Estimated per month',
-        lines: [
-          ['Estimated per year', `${usd.format(low * 12)} - ${usd.format(high * 12)}`],
-          ['Earnings per 1,000 views used', `${usd2.format(a)} - ${usd2.format(b)}`],
-        ],
-        note,
-      }
-    },
-  }
-}
-
 export const CALCULATORS: Record<string, CalcConfig> = {
-  'youtube-earnings': viewsRangeConfig(
-    '1',
-    '5',
-    'This is an estimate for planning only. Real earnings depend on your country, niche, audience, season and on how many views are monetized. The numbers in the boxes are examples, replace them with your own.',
-  ),
-  'facebook-earnings': viewsRangeConfig(
-    '1',
-    '4',
-    'This is an estimate for planning only. Facebook programs, eligibility and rates change, and earnings depend on your content and audience. Replace the example numbers with your own.',
-  ),
-  'spotify-earnings': {
-    fields: [
-      { id: 'streams', label: 'Monthly streams', placeholder: 'e.g. 50000' },
-      { id: 'low', label: 'Low payout per stream ($)', placeholder: 'e.g. 0.003', defaultValue: '0.003' },
-      { id: 'high', label: 'High payout per stream ($)', placeholder: 'e.g. 0.005', defaultValue: '0.005' },
-    ],
-    empty: 'Enter your monthly streams to see an estimated payout range.',
-    compute: (v) => {
-      if (!(v.streams > 0) || !ok(v.low) || !ok(v.high)) return null
-      const a = Math.min(v.low, v.high)
-      const b = Math.max(v.low, v.high)
-      const low = v.streams * a
-      const high = v.streams * b
-      return {
-        headline: `${usd.format(low)} - ${usd.format(high)}`,
-        sub: 'Estimated per month, before splits and fees',
-        lines: [
-          ['Estimated per year', `${usd.format(low * 12)} - ${usd.format(high * 12)}`],
-          ['Payout per stream used', `${usd3.format(a)} - ${usd3.format(b)}`],
-        ],
-        note: 'Spotify does not pay a fixed rate per stream. The money goes to the rights holders and passes through your label or distributor, so your own share can be lower. Use this as a rough guide.',
-      }
-    },
-  },
   'twitch-earnings': {
     fields: [
       { id: 'subs', label: 'Paid subscribers', placeholder: 'e.g. 100' },
@@ -191,7 +124,7 @@ export const CALCULATORS: Record<string, CalcConfig> = {
           ['Viewer recharge cost on TikTok.com/coin (Web)', usd2.format(webBuyerCost)],
           ['Viewer recharge cost in iOS / Android App', usd2.format(appBuyerCost)],
         ],
-        note: 'Creators receive roughly 50% of the coin value via Diamonds ($0.005 per Diamond / ~$5 per 1,000 Coins). Buying coins on TikTok Web is up to 25–30% cheaper than in-app purchases.',
+        note: 'Creators receive roughly 50% of the coin value via Diamonds ($0.005 per Diamond / ~$5 per 1,000 Coins). Buying coins on TikTok Web is up to 25-30% cheaper than in-app purchases.',
       }
     },
   },
@@ -211,12 +144,12 @@ export const CALCULATORS: Record<string, CalcConfig> = {
       const low = Math.max(25, baseLow)
       const high = Math.max(50, baseHigh)
       return {
-        headline: `${usd.format(low)} – ${usd.format(high)}`,
+        headline: `${usd.format(low)} - ${usd.format(high)}`,
         sub: `Estimated Sponsored Reel / Feed Post Rate (${er.toFixed(2)}% Engagement)`,
         lines: [
-          ['Sponsored Reel (15–60s)', `${usd.format(low * 1.15)} – ${usd.format(high * 1.25)}`],
-          ['3-Frame Story Set with Link Sticker', `${usd.format(low * 0.35)} – ${usd.format(high * 0.45)}`],
-          ['Reel + Story Bundle Package', `${usd.format(low * 1.35)} – ${usd.format(high * 1.5)}`],
+          ['Sponsored Reel (15-60s)', `${usd.format(low * 1.15)} - ${usd.format(high * 1.25)}`],
+          ['3-Frame Story Set with Link Sticker', `${usd.format(low * 0.35)} - ${usd.format(high * 0.45)}`],
+          ['Reel + Story Bundle Package', `${usd.format(low * 1.35)} - ${usd.format(high * 1.5)}`],
         ],
         note: 'Brand deals depend on your niche (finance, tech and beauty pay higher CPMs), audience location and usage rights. Stronger view and follower numbers directly increase your negotiating floor.',
       }
@@ -236,14 +169,14 @@ export const CALCULATORS: Record<string, CalcConfig> = {
       const postPriceHigh = Math.max(20, (v.views / 1000) * (cpm * 1.3))
       const reachPct = v.subscribers > 0 ? ((v.views / v.subscribers) * 100).toFixed(1) : 'N/A'
       return {
-        headline: `${usd2.format(postPriceLow)} – ${usd2.format(postPriceHigh)}`,
+        headline: `${usd2.format(postPriceLow)} - ${usd2.format(postPriceHigh)}`,
         sub: 'Estimated Price per 24h Sponsored Post',
         lines: [
-          ['10 Sponsored Posts / Month', `${usd.format(postPriceLow * 10)} – ${usd.format(postPriceHigh * 10)}`],
-          ['20 Sponsored Posts / Month', `${usd.format(postPriceLow * 20)} – ${usd.format(postPriceHigh * 20)}`],
+          ['10 Sponsored Posts / Month', `${usd.format(postPriceLow * 10)} - ${usd.format(postPriceHigh * 10)}`],
+          ['20 Sponsored Posts / Month', `${usd.format(postPriceLow * 20)} - ${usd.format(postPriceHigh * 20)}`],
           ['24h View-to-Subscriber Ratio', `${reachPct}%`],
         ],
-        note: 'Crypto, finance and B2B Telegram channels command $15–$40+ CPM, while general entertainment averages $4–$10 CPM. Growing active members and consistent post views raises your ad rate.',
+        note: 'Crypto, finance and B2B Telegram channels command $15-$40+ CPM, while general entertainment averages $4-$10 CPM. Growing active members and consistent post views raises your ad rate.',
       }
     },
   },
