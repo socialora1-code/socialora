@@ -29,6 +29,24 @@ const DEFAULT_CTA = {
   label: 'Get free Instagram views',
 }
 
+const STUDIO_STEPS: Record<string, readonly string[]> = {
+  'hashtag-facebook': [
+    'Enter a topic and an optional second keyword, or pick a quick niche.',
+    'Choose your content goal and select a few relevant tags from the three buckets.',
+    'Copy your selected set, or copy the entire pack to review it in your draft.',
+  ],
+  'caption-facebook': [
+    'Enter your post topic and pick a format and tone.',
+    'Choose a draft with a hook, context and a question that fit your post.',
+    'Copy the caption on its own or with its matching hashtags.',
+  ],
+  'caption-snapchat': [
+    'Enter your Snap topic and choose a tone for Stories or Spotlight.',
+    'Copy the hook for a text overlay or review the full draft for your caption.',
+    'Copy the draft with its matching hashtags when they fit your Spotlight post.',
+  ],
+}
+
 const STEPS: Record<string, readonly string[]> = {
   font: [
     'Type or paste your text in the box.',
@@ -179,7 +197,7 @@ function nicheGeneratorInputs(widget: string | undefined, [first, second = '']: 
 
 export function ToolPageView({ tool, niche }: { tool: ToolDef; niche?: NicheToolPage }) {
   const cta = tool.cta ?? DEFAULT_CTA
-  const steps = STEPS[tool.kind] ?? []
+  const steps = STUDIO_STEPS[tool.widget ?? ''] ?? STEPS[tool.kind] ?? []
   const basePath = `/tools/${tool.slug}`
   const niches = getToolNiches(tool.slug)
 

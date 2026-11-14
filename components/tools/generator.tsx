@@ -2,16 +2,32 @@
 
 import { useState } from 'react'
 import { GENERATORS } from '@/lib/generators'
+import { CaptionStudio, HashtagStudio } from '@/components/tools/post-studio'
 import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 const inputClass =
   'mt-2 h-12 w-full rounded-xl border border-border bg-background px-4 text-base outline-none focus-visible:ring-3 focus-visible:ring-ring/40'
 
-export function Generator({ id, initialValues, showOffer = true }: {
+type GeneratorProps = {
   id: string
   initialValues?: Record<string, string>
   showOffer?: boolean
-}) {
+}
+
+export function Generator({ id, initialValues, showOffer = true }: GeneratorProps) {
+  switch (id) {
+    case 'hashtag-facebook':
+      return <HashtagStudio initialValues={initialValues} showOffer={showOffer} />
+    case 'caption-facebook':
+      return <CaptionStudio platform="facebook" initialValues={initialValues} showOffer={showOffer} />
+    case 'caption-snapchat':
+      return <CaptionStudio platform="snapchat" initialValues={initialValues} showOffer={showOffer} />
+    default:
+      return <TemplateGenerator id={id} initialValues={initialValues} showOffer={showOffer} />
+  }
+}
+
+function TemplateGenerator({ id, initialValues, showOffer }: GeneratorProps) {
   const config = GENERATORS[id]
   const [values, setValues] = useState<Record<string, string>>(initialValues ?? {})
   const [round, setRound] = useState(0)
