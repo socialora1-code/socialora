@@ -29,27 +29,6 @@ const usd2 = new Intl.NumberFormat('en-US', {
 const ok = (n: number) => !Number.isNaN(n)
 const opt = (n: number) => (Number.isNaN(n) ? 0 : n)
 
-function engagementConfig(audience: CalcField, metrics: CalcField[], bands: [number, number, number]): CalcConfig {
-  return {
-    fields: [audience, ...metrics],
-    empty: `Enter your ${audience.label.toLowerCase()} and your average interactions to see your engagement rate.`,
-    compute: (v) => {
-      const base = v[audience.id]
-      if (!(base > 0)) return null
-      if (!ok(v[metrics[0].id])) return null
-      const total = metrics.reduce((sum, m) => sum + opt(v[m.id]), 0)
-      const rate = (total / base) * 100
-      const [low, mid, high] = bands
-      const label = rate < low ? 'Low' : rate < mid ? 'Average' : rate < high ? 'Good' : 'High'
-      return {
-        headline: `${rate.toFixed(2)}%`,
-        sub: label,
-        note: 'Rates vary by niche and usually fall as accounts grow. Treat the label as a rule of thumb, not a verdict.',
-      }
-    },
-  }
-}
-
 export const CALCULATORS: Record<string, CalcConfig> = {
   'twitch-earnings': {
     fields: [
@@ -76,32 +55,6 @@ export const CALCULATORS: Record<string, CalcConfig> = {
       }
     },
   },
-  'tiktok-engagement': engagementConfig(
-    { id: 'followers', label: 'Followers', placeholder: 'e.g. 10000' },
-    [
-      { id: 'likes', label: 'Average likes per video', placeholder: 'e.g. 500' },
-      { id: 'comments', label: 'Average comments per video', placeholder: 'e.g. 20' },
-      { id: 'shares', label: 'Average shares per video (optional)', placeholder: 'e.g. 10' },
-    ],
-    [2, 5, 10],
-  ),
-  'x-engagement': engagementConfig(
-    { id: 'followers', label: 'Followers', placeholder: 'e.g. 5000' },
-    [
-      { id: 'likes', label: 'Average likes per post', placeholder: 'e.g. 40' },
-      { id: 'replies', label: 'Average replies per post', placeholder: 'e.g. 5' },
-      { id: 'reposts', label: 'Average reposts per post (optional)', placeholder: 'e.g. 3' },
-    ],
-    [0.5, 1, 3],
-  ),
-  'youtube-engagement': engagementConfig(
-    { id: 'subscribers', label: 'Subscribers', placeholder: 'e.g. 8000' },
-    [
-      { id: 'likes', label: 'Average likes per video', placeholder: 'e.g. 300' },
-      { id: 'comments', label: 'Average comments per video', placeholder: 'e.g. 25' },
-    ],
-    [1, 3, 6],
-  ),
   'tiktok-coins': {
     fields: [
       { id: 'coins', label: 'TikTok Coins or Gift value (Coins)', placeholder: 'e.g. 5000' },

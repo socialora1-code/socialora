@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { CALCULATORS } from '@/lib/calculators'
 import { isEarningsSimulator } from '@/lib/earnings-simulator'
 import { EarningsSimulator } from '@/components/tools/earnings-simulator'
+import { EngagementBenchmark } from '@/components/tools/engagement-benchmark'
+import { isBenchmark } from '@/lib/engagement-benchmark'
 import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 
 function toNumber(value: string): number {
@@ -23,15 +25,20 @@ function getCreatorTier(followers: number): string {
 const inputClass =
   'mt-2 h-12 w-full rounded-xl border border-border bg-background px-4 text-base outline-none focus-visible:ring-3 focus-visible:ring-ring/40'
 
+const originalToolLabels: Record<string, string> = {
+  'tiktok-coins': 'TikTok Coins & Diamonds converter',
+  'instagram-sponsorship': 'Instagram sponsorship rate calculator',
+  'twitch-earnings': 'Twitch subscription and Bits earnings',
+  'telegram-earnings': 'Telegram sponsored post earnings',
+}
+
 export function Calculator({ id }: { id: string }) {
-  if (!isEarningsSimulator(id)) return <StandardCalculator key={id} id={id} />
+  const simulator = isBenchmark(id) ? <EngagementBenchmark key={id} id={id} />
+    : isEarningsSimulator(id) ? <EarningsSimulator key={id} id={id} />
+    : null
+  if (!simulator) return <StandardCalculator key={id} id={id} />
 
-  const originalTool = id === 'tiktok-coins'
-    ? 'TikTok Coins & Diamonds converter'
-    : id === 'instagram-sponsorship'
-      ? 'Instagram sponsorship rate calculator'
-      : null
-
+  const originalTool = originalToolLabels[id]
   return (
     <>
       {originalTool ? (
@@ -40,7 +47,7 @@ export function Calculator({ id }: { id: string }) {
           <StandardCalculator key={id} id={id} showOffer={false} />
         </details>
       ) : null}
-      <EarningsSimulator key={id} id={id} />
+      {simulator}
     </>
   )
 }
