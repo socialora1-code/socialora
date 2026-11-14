@@ -25,11 +25,14 @@ export function ToolsSection() {
     <section aria-labelledby="tools-title" className="border-t border-border">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-          <SectionHeading id="tools-title" eyebrow="Free tools" title="Free tools for creators" />
+          <SectionHeading id="tools-title" eyebrow="No login" title="Free Socialora creator tools" />
           <Link href="/tools" className="text-sm font-medium text-primary underline-offset-4 hover:underline">
             See all free tools
           </Link>
         </div>
+        <p className="mt-4 text-sm text-muted-foreground">
+          Use a calculator, generator or giveaway picker in your browser and see the result as soon as you enter your details.
+        </p>
         <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {tools.map((tool) => (
             <li key={tool.slug}>

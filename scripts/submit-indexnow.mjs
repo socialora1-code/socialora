@@ -3,7 +3,6 @@ import { readdir, readFile } from 'node:fs/promises'
 const origin = new URL('https://www.getsocialora.com')
 const publicDirectory = new URL('../public/', import.meta.url)
 const endpoint = 'https://api.indexnow.org/indexnow'
-const submit = process.argv.includes('--submit')
 const mainPaths = new Set([
   '/', '/tools', '/instagram', '/tiktok', '/youtube', '/x', '/telegram', '/blog', '/free-instagram-views',
 ])
@@ -14,17 +13,21 @@ async function getText(url, label) {
   return response.text()
 }
 
-function getUrlList(xml) {
+function getUrlList(xml, paths) {
   if (!/<urlset(?:\s|>)/.test(xml)) throw new Error('Expected a sitemap URL set')
   const urls = new Set()
   for (const [, value] of xml.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/g)) {
     const url = new URL(value)
     if (url.origin !== origin.origin || url.username || url.password || url.search || url.hash) continue
-    if (mainPaths.has(url.pathname) || url.pathname.startsWith('/tools/')) {
+    if (paths.size ? paths.has(url.pathname) : mainPaths.has(url.pathname) || url.pathname.startsWith('/tools/')) {
       urls.add(url.href)
     }
   }
-  if (!urls.has(origin.href) || !urls.has(new URL('/tools', origin).href) || urls.size < 3) {
+  if (paths.size) {
+    const found = new Set([...urls].map(url => new URL(url).pathname))
+    const missing = [...paths].filter(path => !found.has(path))
+    if (missing.length) throw new Error('Paths missing from the live sitemap: ' + missing.join(', '))
+  } else if (!urls.has(origin.href) || !urls.has(new URL('/tools', origin).href) || urls.size < 3) {
     throw new Error('Expected the homepage, tools hub and at least one tool in the live sitemap')
   }
   if (urls.size > 10000) throw new Error('The URL set exceeds the single request limit of 10,000')
@@ -33,8 +36,10 @@ function getUrlList(xml) {
 
 async function main() {
   const args = process.argv.slice(2)
-  if (args.length > 1 || args.some((arg) => arg !== '--submit')) {
-    throw new Error('Usage: npm run indexnow [-- --submit]')
+  const submit = args.includes('--submit')
+  const requested = args.filter(arg => arg !== '--submit')
+  if (args.length - requested.length > 1 || requested.some(path => !/^\/(?:[a-z0-9-]+(?:\/[a-z0-9-]+)*)?$/.test(path))) {
+    throw new Error('Usage: npm run indexnow [-- --submit] [/path ...]')
   }
   const [keyFiles, sitemap] = await Promise.all([
     readdir(publicDirectory),
@@ -47,7 +52,7 @@ async function main() {
   if (filename !== `${key}.txt`) throw new Error('The IndexNow key file name and content differ')
 
   const keyLocation = new URL(filename, origin)
-  const urlList = getUrlList(sitemap)
+  const urlList = getUrlList(sitemap, new Set(requested))
   const nicheCount = urlList.filter((url) => /^\/tools\/[^/]+\/[^/]+\/?$/.test(new URL(url).pathname)).length
   if (!submit) {
     console.log(JSON.stringify({ host: origin.host, total: urlList.length, nicheCount, urlList }, null, 2))

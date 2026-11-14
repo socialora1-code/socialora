@@ -260,10 +260,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
     group: 'Hashtag Generators',
     platform: 'Facebook',
     name: 'Facebook Hashtag Generator',
-    title: 'Facebook Hashtag Generator - Free Hashtag Ideas',
+    title: 'Facebook Hashtag Generator | Free, No Login',
     h1: 'Facebook Hashtag Generator',
     description:
-      'Free Facebook hashtag generator. Enter your topic and get short sets of hashtag ideas to copy into your posts.',
+      'Use this free hashtag generator for Facebook. Enter a topic and get instant hashtag ideas to copy into your post. No login needed.',
     intro:
       'Facebook posts work best with only a few hashtags. Enter your topic and get small sets built from your keyword.',
     widget: 'hashtag-facebook',
@@ -273,6 +273,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
       'Create one branded tag for your page and use it consistently.',
     ],
     faqs: [
+      {
+        q: 'Can I make Facebook hashtags from two keywords?',
+        a: 'Yes. Enter a main topic such as baking and an optional detail such as sourdough. The generator suggests tags using both, including #bakingsourdough.',
+      },
       {
         q: 'Do hashtags matter on Facebook?',
         a: 'They help a little with grouping posts by topic, but they matter less than on Instagram. Good content comes first.',
@@ -369,10 +373,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
     group: 'Caption Generators',
     platform: 'Facebook',
     name: 'Facebook Caption Generator',
-    title: 'Facebook Caption Generator - Free Post Ideas',
+    title: 'Facebook Caption Generator | Free, No Login',
     h1: 'Facebook Caption Generator',
     description:
-      'Free Facebook caption generator. Enter your post topic and get friendly caption ideas to copy and use.',
+      'Use the free Facebook caption generator for instant post and status ideas. Enter a topic, pick a caption and copy it. No login needed.',
     intro:
       'Facebook captions that ask a question or tell a short story get more replies. Enter your post topic and get ideas you can edit.',
     widget: 'caption-facebook',
@@ -382,6 +386,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
       'Add one photo or video. Posts with media usually stand out more in the feed.',
     ],
     faqs: [
+      {
+        q: 'Can I use this as a Facebook post caption generator for a status update?',
+        a: 'Yes. Enter the subject of your status, such as a shop opening. Copy a draft and add the details people need, such as the opening date and time.',
+      },
       {
         q: 'How long should a Facebook caption be?',
         a: 'Short is fine. A line or two with a clear point works well. Longer posts are good for stories people care about.',
@@ -402,10 +410,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
     group: 'Caption Generators',
     platform: 'Snapchat',
     name: 'Snapchat Caption Generator',
-    title: 'Snapchat Caption Generator - Short Caption Ideas',
+    title: 'Snapchat Caption Generator | Free, No Login',
     h1: 'Snapchat Caption Generator',
     description:
-      'Free Snapchat caption generator. Type a topic and get short, fun caption ideas for your snaps and stories.',
+      'Use the free Snapchat caption generator for instant Snap and Story text ideas. Type a topic and copy a short caption. No login needed.',
     intro:
       'Snaps need short captions that fit the moment. Enter what you are posting about and get quick ideas you can copy.',
         about: [
@@ -420,6 +428,10 @@ export const GEN_TOOLS: readonly ToolDef[] = [
       'Use contrast: put light text on dark photos and dark text on bright ones.',
     ],
     faqs: [
+      {
+        q: 'Can I use this Snapchat caption maker for text overlays?',
+        a: 'Yes. Copy a short line from the generator and paste it into the text editor on your Snap. Add or position the text in Snapchat.',
+      },
       {
         q: 'Can I use these for Stories too?',
         a: 'Yes. They work for snaps, Stories and Spotlight, as long as they match the content.',

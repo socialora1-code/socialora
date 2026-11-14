@@ -2,17 +2,18 @@ import type { BlogPost } from '@/lib/blog'
 
 export const youtubeMonetization: BlogPost = {
   slug: 'youtube-monetization-requirements',
-  title: 'YouTube Monetization Requirements: What You Need to Get Paid',
+  title: 'YouTube Monetization Requirements: How to Get Paid',
   description:
-    'A simple guide to YouTube Partner Program requirements: subscribers, watch hours, Shorts views, and how to reach them faster.',
+    'Check the YouTube monetization requirements for ads and early Partner Program access. Compare subscribers, watch hours and Shorts views in this free guide.',
   category: 'YouTube',
   date: '2026-10-11',
+  updated: '2026-11-14',
   blocks: [
     {
       type: 'p',
       text: "Want to earn money from YouTube? You need to join the YouTube Partner Program (YPP). Here is what it usually takes, in plain words. Always check YouTube's own help page for the latest rules, because they can change.",
     },
-    { type: 'h2', text: 'The main requirements' },
+    { type: 'h2', text: 'What are the requirements to get paid on YouTube?' },
     {
       type: 'ul',
       items: [
@@ -24,7 +25,18 @@ export const youtubeMonetization: BlogPost = {
     },
     {
       type: 'p',
-      text: 'YouTube also has an early access level with lower numbers. It unlocks fan features first, and ad revenue comes at the full level.',
+      text: 'YouTube reviews your channel before approval. Qualified watch hours from the Shorts Feed do not count toward the 4,000 watch hours.',
+    },
+    { type: 'h3', text: 'YouTube monetization criteria at 500 subscribers' },
+    {
+      type: 'p',
+      text: 'In eligible countries, the expanded YouTube Partner Program requires 500 subscribers, three valid public uploads in 90 days, and either 3,000 qualified watch hours in 12 months or 3 million qualified Shorts views in 90 days. This tier offers features such as memberships and Super Thanks. The higher threshold applies to ad revenue sharing.',
+    },
+    {
+      type: 'cta',
+      text: 'Check eligible countries and current application rules in YouTube Help.',
+      href: 'https://support.google.com/youtube/answer/13429240',
+      label: 'See official YouTube eligibility rules',
     },
     { type: 'h2', text: 'How to reach 4,000 watch hours faster' },
     {
@@ -37,16 +49,16 @@ export const youtubeMonetization: BlogPost = {
         'Share your videos where your audience already hangs out.',
       ],
     },
-    { type: 'h2', text: 'Can views and watch time services help?' },
+    { type: 'h2', text: 'Which views and watch hours count?' },
     {
       type: 'p',
-      text: 'Many creators use growth services to give a new video a stronger start. A video with more views and subscribers looks more trusted to new visitors, and that can help real people click. Real content and real viewers are still what keep a channel growing, so use a service as a boost, not a replacement.',
+      text: 'Use the Earn tab in YouTube Studio to see progress toward the thresholds. YouTube excludes watch hours and Shorts views from ad campaigns, and artificially inflated traffic can be removed.',
     },
     {
       type: 'cta',
-      text: 'Need a stronger start for your channel? See our YouTube views, watch time, and subscribers.',
-      href: '/youtube',
-      label: 'See YouTube services',
+      text: 'If your channel is monetized, estimate possible earnings using your own rate per 1,000 views.',
+      href: '/tools/youtube-money-calculator',
+      label: 'Open the free YouTube earnings calculator',
     },
   ],
 }

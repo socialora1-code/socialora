@@ -45,10 +45,10 @@ export const CALC_TOOLS: readonly ToolDef[] = [
     group: 'Calculators',
     platform: 'Facebook',
     name: 'Facebook Earnings Calculator',
-    title: 'Facebook Earnings Calculator - Estimate Your Income',
+    title: 'Facebook Money Calculator | Free, No Login',
     h1: 'Facebook Earnings Calculator',
     description:
-      'Free Facebook earnings calculator. Enter your monthly views and an earnings range per 1,000 views to estimate possible income from your page or videos.',
+      'Use the free Facebook money calculator for an instant earnings estimate. Enter monthly views and a payout range per 1,000 views. No login needed.',
     intro:
       'Curious what your Facebook views could earn? Enter your monthly views and a low and high rate per 1,000 views, and see an estimated monthly and yearly range.',
     widget: 'facebook-earnings',
@@ -58,6 +58,10 @@ export const CALC_TOOLS: readonly ToolDef[] = [
       'Video that keeps people watching tends to earn more than short clips that people scroll past.',
     ],
     faqs: [
+      {
+        q: 'How much could 1 million Facebook views earn?',
+        a: 'Enter 1,000,000 monthly views and use your own earnings per 1,000 views. At example rates of $1 and $4, the estimate is $1,000 to $4,000. Check actual payouts in your Meta dashboard.',
+      },
       {
         q: 'Does everyone earn money from Facebook views?',
         a: 'No. You need to be eligible for a monetization program, and eligibility rules differ by country and change over time. Check your account for what is available to you.',
@@ -78,10 +82,10 @@ export const CALC_TOOLS: readonly ToolDef[] = [
     group: 'Calculators',
     platform: 'Spotify',
     name: 'Spotify Royalty Calculator',
-    title: 'Spotify Royalty Calculator - Estimate Payout per Stream',
+    title: 'Spotify Royalty Calculator | Free, No Login',
     h1: 'Spotify Royalty Calculator',
     description:
-      'Free Spotify royalty calculator. Enter your monthly streams and a payout range per stream to estimate what a track or artist could earn.',
+      'Use the free Spotify royalty calculator for an instant estimate. Enter your streams and payout rates to see monthly and yearly ranges. No login needed.',
     intro:
       'See roughly what your streams are worth. Enter your monthly streams and a low and high payout per stream, and get a monthly and yearly estimate.',
         about: [
@@ -96,6 +100,10 @@ export const CALC_TOOLS: readonly ToolDef[] = [
       'Look at your real payments in your distributor’s report and update the numbers here to get a better picture.',
     ],
     faqs: [
+      {
+        q: 'How does this streaming royalties calculator work?',
+        a: 'Enter monthly streams and two example royalty rates. For 50,000 streams at $0.003 to $0.005 per stream, the estimate is $150 to $250 before splits and fees.',
+      },
       {
         q: 'How much does Spotify pay per stream?',
         a: 'There is no single rate. Spotify shares revenue with the rights holders, and the amount per stream moves over time. The example range here is only a starting point you can change.',

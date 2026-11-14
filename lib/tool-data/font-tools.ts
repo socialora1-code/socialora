@@ -81,10 +81,10 @@ export const FONT_TOOLS: readonly ToolDef[] = [
     group: 'Font Generators',
     platform: 'Discord',
     name: 'Discord Font Generator',
-    title: 'Discord Font Generator - Fancy Text for Nicknames & Messages',
+    title: 'Discord Font Generator | Free, No Login',
     h1: 'Discord Font Generator',
     description:
-      'Free Discord font generator. Turn plain text into fancy styles for nicknames, server profiles and messages, then copy and paste.',
+      'Try the free Discord font generator for instant text styles. Copy and paste Discord fonts into nicknames, profiles or messages. No login needed.',
     intro:
       'Stand out in your Discord server with a fancy nickname or a styled announcement. Type your text, pick a style and paste it into Discord.',
     tips: [
@@ -93,6 +93,10 @@ export const FONT_TOOLS: readonly ToolDef[] = [
       'Test your nickname by typing it in the member search of your server, so you know people can still find you.',
     ],
     faqs: [
+      {
+        q: 'How do I copy and paste Discord fonts?',
+        a: 'Type your text here, use Copy next to the style you want, and paste it into the Discord message or nickname field. Preview the result before saving.',
+      },
       {
         q: 'Can I use fancy text in my Discord nickname?',
         a: 'In most cases yes, because nicknames accept most Unicode characters. Server rules can still limit it, so check with the moderators.',

@@ -7,10 +7,10 @@ export const UTIL_TOOLS: readonly ToolDef[] = [
     group: 'Utility Tools',
     platform: 'Instagram',
     name: 'Instagram Giveaway Picker',
-    title: 'Instagram Giveaway Picker - Random Winner Generator',
+    title: 'Instagram Giveaway Generator | Free, No Login',
     h1: 'Instagram Giveaway Picker',
     description:
-      'Free random winner picker for Instagram giveaways. Paste the names of your entrants, choose how many winners you need and pick fairly in one click.',
+      'Use this free Instagram giveaway generator to pick winners instantly. Paste your entrant list, choose a winner count and draw. No login needed.',
     intro:
       'Pick giveaway winners fairly and fast. Paste the usernames of everyone who entered, one per line, choose how many winners you need and press the button.',
        about: [
@@ -24,6 +24,10 @@ export const UTIL_TOOLS: readonly ToolDef[] = [
       'Pick a backup winner too, in case someone does not reply.',
     ],
     faqs: [
+      {
+        q: 'Can I use the Instagram giveaway winner picker for backup winners?',
+        a: 'Yes. Include backups in the number of names you draw, then record the order. If you need one winner and two backups, draw three names at once.',
+      },
       {
         q: 'Can this tool read the comments on my post?',
         a: 'No. You paste the names yourself, and the tool picks randomly from your list.',

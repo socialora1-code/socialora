@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Hero } from '@/components/home/hero'
 import { HowItWorksSteps } from '@/components/home/how-it-works-steps'
@@ -10,6 +11,16 @@ import { SectionHeading } from '@/components/site/page-hero'
 import { POSTS } from '@/lib/blog'
 
 const GUIDES = POSTS.slice(0, 3)
+
+const title = 'Socialora | Free Creator Tools and Social Media Services'
+const description = 'Explore Socialora’s free social media tools with instant results and no login. Compare paid Instagram, TikTok and YouTube services with prices shown upfront.'
+
+export const metadata: Metadata = {
+  title: { absolute: title },
+  description,
+  openGraph: { title, description, url: '/' },
+  twitter: { card: 'summary_large_image', title, description },
+}
 
 export default function HomePage() {
   return (
