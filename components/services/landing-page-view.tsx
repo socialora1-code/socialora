@@ -6,28 +6,17 @@ import { PlatformIcon } from '@/components/site/platform-icon'
 import { getPlatform, getService, getStartingPriceCents } from '@/lib/catalog'
 import { formatUSD } from '@/lib/format'
 import { getLandingPagesFor, type LandingPage } from '@/lib/landing-pages'
+import { serviceSchema } from '@/lib/service-schema'
 
 export function LandingPageView({ page }: { page: LandingPage }) {
   const platform = getPlatform(page.platformId ?? 'instagram')!
   const service = getService(platform, page.serviceId)!
   const others = getLandingPagesFor(platform.id).filter((p) => p.slug !== page.slug)
 
-  const minPrice = (getStartingPriceCents(service) / 100).toFixed(2)
-  const optionCount = service.pricing.options.length
   const jsonLd = [
     {
       '@context': 'https://schema.org',
-      '@type': 'Product',
-      name: page.title,
-      description: page.description,
-      brand: { '@type': 'Brand', name: 'Socialora' },
-      offers: {
-        '@type': 'AggregateOffer',
-        priceCurrency: 'USD',
-        lowPrice: minPrice,
-        offerCount: optionCount,
-        availability: 'https://schema.org/InStock',
-      },
+      ...serviceSchema(platform, service, { name: page.title, description: page.description }),
     },
     {
       '@context': 'https://schema.org',

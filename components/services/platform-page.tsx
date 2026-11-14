@@ -2,7 +2,8 @@ import { KeyRound, Mail, ShieldCheck, TriangleAlert } from 'lucide-react'
 import { PlatformServices } from '@/components/services/platform-services'
 import { ComplianceNotice } from '@/components/site/compliance-notice'
 import { PlatformIcon } from '@/components/site/platform-icon'
-import { getPlatform, getStartingPriceCents, type PlatformId } from '@/lib/catalog'
+import { getPlatform, type PlatformId } from '@/lib/catalog'
+import { serviceSchema } from '@/lib/service-schema'
 
 const PAGE_HEADINGS: Partial<Record<PlatformId, string>> = {
   instagram: 'Buy Instagram Followers, Likes & Views',
@@ -15,20 +16,18 @@ const PAGE_HEADINGS: Partial<Record<PlatformId, string>> = {
 export function PlatformPage({ platformId }: { platformId: PlatformId }) {
   const platform = getPlatform(platformId)!
   const heading = PAGE_HEADINGS[platform.id] ?? `${platform.name} growth services`
-  const minPrice = (Math.min(...platform.services.map((s) => getStartingPriceCents(s))) / 100).toFixed(2)
-  const offerCount = platform.services.reduce((sum, s) => sum + s.pricing.options.length, 0)
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Product',
+    '@type': 'CollectionPage',
     name: heading,
     description: platform.description,
-    brand: { '@type': 'Brand', name: 'Socialora' },
-    offers: {
-      '@type': 'AggregateOffer',
-      priceCurrency: 'USD',
-      lowPrice: minPrice,
-      offerCount,
-      availability: 'https://schema.org/InStock',
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: platform.services.map((service, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: serviceSchema(platform, service),
+      })),
     },
   }
 
