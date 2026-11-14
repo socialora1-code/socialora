@@ -21,6 +21,7 @@ export type BlogBlock =
   | { type: 'p'; text: string }
   | { type: 'ul'; items: readonly string[] }
   | { type: 'cta'; text: string; href: string; label: string }
+  | { type: 'ypp-simulator' }
 
 export interface BlogPost {
   slug: string
@@ -55,6 +56,7 @@ export function getPost(slug: string): BlogPost | undefined {
 
 export function readingMinutes(post: BlogPost): number {
   const words = post.blocks
+    .filter((block) => block.type !== 'ypp-simulator')
     .map((block) => (block.type === 'ul' ? block.items.join(' ') : block.text))
     .join(' ')
     .split(/\s+/).length

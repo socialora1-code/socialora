@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { YppSimulator } from '@/components/tools/ypp-simulator'
 import { formatPostDate, getPost, POSTS, readingMinutes, type BlogBlock } from '@/lib/blog'
 import { SITE } from '@/lib/site'
 
@@ -37,6 +38,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 function Block({ block }: { block: BlogBlock }) {
   switch (block.type) {
+    case 'ypp-simulator':
+      return <YppSimulator />
     case 'h2':
       return <h2 className="mt-10 text-2xl font-semibold tracking-tight">{block.text}</h2>
     case 'h3':

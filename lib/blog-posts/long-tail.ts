@@ -18,7 +18,7 @@ export const youtubeMonetization: BlogPost = {
       type: 'ul',
       items: [
         '1,000 subscribers.',
-        '4,000 public watch hours in the last 12 months, or 10 million public Shorts views in the last 90 days.',
+        '4,000 qualified public watch hours in the last 12 months, or 10 million qualified public Shorts views in the last 90 days.',
         'A channel that follows YouTube monetization policies.',
         '2-step verification turned on for your Google account.',
       ],
@@ -27,6 +27,7 @@ export const youtubeMonetization: BlogPost = {
       type: 'p',
       text: 'YouTube reviews your channel before approval. Qualified watch hours from the Shorts Feed do not count toward the 4,000 watch hours.',
     },
+    { type: 'ypp-simulator' },
     { type: 'h3', text: 'YouTube monetization criteria at 500 subscribers' },
     {
       type: 'p',
