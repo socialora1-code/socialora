@@ -313,16 +313,16 @@ export function ToolPageView({ tool, niche }: { tool: ToolDef; niche?: NicheTool
       <p className="mt-3 text-xs text-muted-foreground">
         Prefer daily visual tips &amp; Reel teardowns? Follow{' '}
         <a
-          href="https://www.instagram.com/socialora1/"
+          href="https://www.instagram.com/getsocialora"
           target="_blank"
           rel="noopener noreferrer"
           className="font-medium text-foreground underline underline-offset-4 hover:no-underline"
         >
-          @socialora1 on Instagram
+          @getsocialora on Instagram
         </a>{' '}
         or join creator discussions on{' '}
         <a
-          href="https://www.threads.com/@socialora1"
+          href="https://www.threads.net/@getsocialora"
           target="_blank"
           rel="noopener noreferrer"
           className="font-medium text-foreground underline underline-offset-4 hover:no-underline"
