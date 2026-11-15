@@ -113,7 +113,7 @@ function TemplateGenerator({ id, initialValues, showOffer }: GeneratorProps) {
               More ideas
             </button>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{config.note}</p>
-            {showOffer && <SmartMomentumOffer />}
+            {showOffer && <SmartMomentumOffer facebook={id === 'bio-facebook'} />}
           </>
         )}
       </div>

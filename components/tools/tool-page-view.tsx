@@ -383,7 +383,7 @@ export function ToolPageView({ tool, niche }: { tool: ToolDef; niche?: NicheTool
         </div>
       </section>
 
-      {niche ? <SmartMomentumOffer intro={niche.nextStep} /> : (
+      {tool.platform === 'Facebook' ? <SmartMomentumOffer facebook /> : niche ? <SmartMomentumOffer intro={niche.nextStep} /> : (
       <section className="mt-12 rounded-3xl border border-border bg-card p-6" aria-labelledby="cta-title">
         <h2 id="cta-title" className="text-xl font-semibold tracking-tight">
           Grow your profile

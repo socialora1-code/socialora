@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { AssumptionSelect, NumberControl, boundedNumber, controlClass, maxCount } from '@/components/tools/simulator-controls'
 import Link from 'next/link'
-import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
+import { FacebookOfferLinks, SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 import { AUDIENCE_REGIONS, EARNINGS_SIMULATORS, projectEarnings, type EarningsSimulatorId } from '@/lib/earnings-simulator'
 
 const maxRate = 100000
@@ -11,7 +11,7 @@ const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD',
 const cardClass = 'min-w-0 rounded-2xl border border-border bg-background p-4 sm:p-5'
 const moneyClass = 'break-words text-xl font-semibold tracking-tight tabular-nums sm:text-2xl'
 
-function GrowthGap({ current, momentum }: { current: number; momentum: number }) {
+function GrowthGap({ current, momentum, facebook }: { current: number; momentum: number; facebook: boolean }) {
   const bars = [
     { label: 'Current estimated annual income', amount: current, color: 'bg-primary' },
     { label: '2x reach and social proof', amount: momentum, color: 'bg-emerald-400' },
@@ -41,16 +41,18 @@ function GrowthGap({ current, momentum }: { current: number; momentum: number })
       </p>
       <p className="mt-1 text-sm font-medium">Potential annual revenue gap</p>
       <p className="mt-4 text-sm text-muted-foreground">
-        The forecast uses eligible reach and your own rates. Use the Instagram trial to see how the service delivers views.
+        {facebook
+          ? 'This forecast uses eligible reach and your own rates. The follower offers below do not change the forecast or guarantee revenue.'
+          : 'The forecast uses eligible reach and your own rates. Use the Instagram trial to see how the service delivers views.'}
       </p>
-      <div className="mt-3 flex flex-wrap gap-2">
+      {facebook ? <FacebookOfferLinks /> : <div className="mt-3 flex flex-wrap gap-2">
         <Link href="/free-instagram-views" className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring">
           Test Free Views &amp; Reach Before Scaling
         </Link>
         <Link href="/order?platform=instagram&service=followers-365" className="inline-flex min-h-11 items-center rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring">
           Explore 365-Day Refill Growth Packages
         </Link>
-      </div>
+      </div>}
     </section>
   )
 }
@@ -243,8 +245,8 @@ export function EarningsSimulator({ id }: { id: EarningsSimulatorId }) {
       <p className="sr-only" role="status">
         Estimated 30-day income {usd.format(current.total30Days)}. Annual income {usd.format(current.totalYear)}. Annual growth gap {usd.format(momentum.totalYear - current.totalYear)}.
       </p>
-      <GrowthGap current={current.totalYear} momentum={momentum.totalYear} />
-      <SmartMomentumOffer />
+      <GrowthGap current={current.totalYear} momentum={momentum.totalYear} facebook={id === 'facebook-earnings'} />
+      <SmartMomentumOffer facebook={id === 'facebook-earnings'} />
     </div>
   )
 }

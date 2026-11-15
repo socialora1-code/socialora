@@ -133,7 +133,7 @@ export function FontGenerator() {
         })}
       </ul>
 
-      {(text.trim().length > 0 || hasCopied || selectedId !== '') && <SmartMomentumOffer />}
+      {(text.trim().length > 0 || hasCopied || selectedId !== '') && <SmartMomentumOffer facebook={slug === 'facebook-font-generator'} />}
 
       {config.cheat && (
         <section className="mt-6 rounded-2xl border border-border bg-card p-5">

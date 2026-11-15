@@ -1,14 +1,56 @@
 'use client'
 
 import Link from 'next/link'
+import { getPlatform, getPriceCents, getService } from '@/lib/catalog'
+
+export function FacebookOfferLinks() {
+  const facebook = getPlatform('facebook')!
+  const paidOptions = [
+    { id: 'followers', label: 'Lifetime refill' },
+    { id: 'followers-365', label: '365 day refill' },
+  ] as const
+
+  return (
+    <div className="mt-4 flex flex-wrap gap-2">
+      <Link href="/free-facebook-followers" className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring">
+        Get 10 free Facebook followers
+      </Link>
+      {paidOptions.map(({ id, label }) => {
+        const service = getService(facebook, id)!
+        const quantity = service.defaultQuantity
+        const price = getPriceCents(service, null, quantity)
+        return (
+          <Link key={id} href={`/order?platform=facebook&service=${id}&quantity=${quantity}`}
+            className="inline-flex min-h-11 items-center rounded-full border border-border bg-background px-4 text-sm font-semibold hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring">
+            {label}: {quantity.toLocaleString('en-US')} for ${(price! / 100).toLocaleString('en-US')}
+          </Link>
+        )
+      })}
+    </div>
+  )
+}
 
 export function SmartMomentumOffer({
   className = '',
   intro,
+  facebook = false,
 }: {
   className?: string
   intro?: string
+  facebook?: boolean
 }) {
+  if (facebook) {
+    return (
+      <aside aria-label="Facebook follower offers" className={`mt-6 rounded-2xl border border-primary/30 bg-background/95 p-5 shadow-sm ${className}`}>
+        <p className="font-semibold">Grow your Facebook audience</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Try 10 followers for a public Facebook Page or profile, or choose a paid package with the refill terms you prefer.
+        </p>
+        <FacebookOfferLinks />
+      </aside>
+    )
+  }
+
   return (
     <aside
       aria-label="Next step momentum recommendation"

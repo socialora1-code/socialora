@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState, type ReactNode } from 'react'
-import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
+import { FacebookOfferLinks, SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 import { useStudioCopy } from '@/components/tools/studio-copy'
 import {
   CAPTION_TONES,
@@ -44,7 +44,7 @@ function StudioPanel({ children }: { children: ReactNode }) {
   )
 }
 
-function FirstHourMomentum({ copied }: { copied: boolean }) {
+function FirstHourMomentum({ copied, facebook = false }: { copied: boolean; facebook?: boolean }) {
   return (
     <aside
       aria-labelledby="first-hour-title"
@@ -58,10 +58,10 @@ function FirstHourMomentum({ copied }: { copied: boolean }) {
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
         Record views, watch time where available, and meaningful replies or shares. Compare the first hour with a recent post in the same format to gauge how quickly views and interactions accumulated.
       </p>
-      <div className="mt-4 flex flex-wrap gap-2">
+      {facebook ? <FacebookOfferLinks /> : <div className="mt-4 flex flex-wrap gap-2">
         <Link href="/free-instagram-views" className={primaryClass}>Try Free Instagram Views</Link>
         <Link href="/order?platform=instagram&service=followers-365" className={secondaryClass}>Explore 365-Day Refill Growth Packages</Link>
-      </div>
+      </div>}
     </aside>
   )
 }
@@ -161,8 +161,8 @@ export function HashtagStudio({ initialValues, showOffer }: { initialValues?: Re
             <p className="mt-2 text-sm text-muted-foreground" role="status">{lastCopy.message}</p>
           </section>
           <p className="mt-3 text-sm text-muted-foreground">Search for each tag in Facebook before posting. These suggestions use your topic and goal.</p>
-          <FirstHourMomentum copied={Boolean(lastCopy.key)} />
-          {showOffer && <SmartMomentumOffer />}
+          <FirstHourMomentum copied={Boolean(lastCopy.key)} facebook />
+          {showOffer && <SmartMomentumOffer facebook />}
         </>
       )}
     </div>
@@ -226,8 +226,8 @@ export function CaptionStudio({ platform, initialValues, showOffer }: { platform
           <p className="mt-3 text-sm text-muted-foreground">
             Match the draft to what your audience can see. Reading time is estimated at 200 words per minute. {platform === 'snapchat' && 'Use Copy Hook for a short text overlay.'}
           </p>
-          <FirstHourMomentum copied={Boolean(lastCopy.key)} />
-          {showOffer && <SmartMomentumOffer />}
+          <FirstHourMomentum copied={Boolean(lastCopy.key)} facebook={platform === 'facebook'} />
+          {showOffer && <SmartMomentumOffer facebook={platform === 'facebook'} />}
         </>
       )}
     </div>
