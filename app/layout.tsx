@@ -15,6 +15,8 @@ const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono'
 const HOME_TITLE = 'Buy Instagram & TikTok Followers, Likes and Views'
 const HOME_DESCRIPTION =
   'Buy Instagram, TikTok, YouTube and X (Twitter) followers, likes and views. Clear USD pricing, refill guarantees on selected services and no password needed.'
+const SHARE_TITLE = 'Socialora | Free Creator Tools and Social Media Services'
+const SHARE_DESCRIPTION = 'Explore free creator tools, practical guides and social media services from Socialora.'
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
@@ -27,13 +29,13 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: SITE.name,
     locale: 'en_US',
-    title: `${HOME_TITLE} · Socialora`,
-    description: HOME_DESCRIPTION,
+    title: SHARE_TITLE,
+    description: SHARE_DESCRIPTION,
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${HOME_TITLE} · Socialora`,
-    description: HOME_DESCRIPTION,
+    title: SHARE_TITLE,
+    description: SHARE_DESCRIPTION,
   },
   icons: { icon: [{ url: '/icon.svg', type: 'image/svg+xml' }], apple: '/apple-icon.png' },
 }
