@@ -1,7 +1,7 @@
 {
   "brand": "Socialora Creator Tools",
   "channel": "threads",
-  "account": "@socialora1",
+  "account": "@getsocialora",
   "playbook": "automation/threads/growth-playbook.md",
   "schedule_intent": "Warmup & organic growth: 3 to 4 linkless native posts per Europe/Istanbul day (min 2.5h gap) between 14:00 and 23:59 TRT with strict topic_tag and optional URL-free delayed practical note (120-240s).",
   "posts": [
@@ -29,7 +29,7 @@
       "id": "th_04_saves_vs_likes",
       "pillar": "hook_truth",
       "topic_tag": "Instagram Growth",
-      "text": "\"Nice video!\" is politeness. A forward to a friend is distribution.\n\nBefore scripting your next post, check:\n- Does it name a specific mistake people make on mobile?\n- Would an editor send this to a client without adding context?\n- Is there one step they can reuse tonight?\n\nA saveable checklist beats a forgettable compliment. What made you bookmark a post this week?"
+      "text": "\"Nice video!\" is politeness. A forward to a friend is distribution.\n\nBefore scripting your next post, check:\nDoes it name a specific mistake people make on mobile?\nWould an editor send this to a client without adding context?\nIs there one step they can reuse tonight?\n\nA saveable checklist beats a forgettable compliment. What made you bookmark a post this week?"
     },
     {
       "id": "th_05_safezone_mistake",
@@ -42,7 +42,7 @@
       "id": "th_06_200view_question",
       "pillar": "question",
       "topic_tag": "Content Strategy",
-      "text": "When a clip you spent an hour cutting stalls early, avoid guessing why in the dark.\n\nRun the same draft through three checks:\n- Did frame one show the problem on mute?\n- Did the pacing drag between seconds two and five?\n- Was the topic clear to someone who does not follow you?\n\nYour timeline tells you more than the view counter. What is your first fix when a post stalls?"
+      "text": "When a clip you spent an hour cutting stalls early, avoid guessing why in the dark.\n\nRun the same draft through three checks:\nDid frame one show the problem on mute?\nDid the pacing drag between seconds two and five?\nWas the topic clear to someone who does not follow you?\n\nYour timeline tells you more than the view counter. What is your first fix when a post stalls?"
     },
     {
       "id": "th_07_ugc_pricing",
@@ -61,7 +61,7 @@
       "id": "th_09_shadowban_reality",
       "pillar": "hook_truth",
       "topic_tag": "Instagram Growth",
-      "text": "Before blaming a shadowban for low reach, audit your last three slow posts like a stranger.\n\nNot your favorite edit. Not the one that took longest.\n\nCheck three things:\n- Did frame one start with dead air?\n- Did you paste the same recycled hashtag block?\n- Did the title assume people already knew your context?\n\nWhich of those three shows up most in your drafts?",
+      "text": "Before blaming a shadowban for low reach, audit your last three slow posts like a stranger.\n\nNot your favorite edit. Not the one that took longest.\n\nCheck three things:\nDid frame one start with dead air?\nDid you paste the same recycled hashtag block?\nDid the title assume people already knew your context?\n\nWhich of those three shows up most in your drafts?",
       "reply_text": "Swapping out a slow intro and trimming bloated hashtag blocks usually answers the reach question faster than starting a new account."
     },
     {
@@ -99,473 +99,609 @@
       "id": "th_15_thumbnail_frame",
       "pillar": "tool_natural",
       "topic_tag": "Video Editing",
-      "text": "Pausing your phone player and taking a screenshot makes a soft, compressed cover.\n\nBefore uploading your next Reel or Short, extract a clean full-resolution frame directly from the video file and test it at tiny grid width:\n- Can you read the title at thumbnail size?\n- Does the crop slice the top or bottom line?\n- Is there clean contrast behind the text?\n\nHow do you pull your covers right now?"
+      "text": "A blurry cover often starts with a screenshot from the player.\n\nA screenshot captures what the phone displays. An export reads the source frame.\n\nExport a sharp frame and reopen it at grid size before adding type.\n\nWhich part of your cover usually goes soft first?",
+      "first_reply": "A frame during a pause is often sharper than one halfway through a gesture.",
+      "reply_text": "A frame during a pause is often sharper than one halfway through a gesture."
     },
     {
       "id": "th_16_silent_watchers",
       "pillar": "hook_truth",
       "topic_tag": "Video Editing",
-      "text": "Watch the first three seconds of your edit with your phone volume off.\n\nNot after you know the script. Like someone waiting in line without headphones.\n\nIf they cannot grasp the subject from frame one and the on-screen words alone, audio cannot save the hold rate.\n\nHow often do you review your finished edits completely muted before posting?",
-      "reply_text": "Putting a concise 4 to 6 word problem statement on frame one catches silent scrollers before your voiceover even finishes sentence one."
+      "text": "A Reel can sound clear and still be confusing on mute.\n\nSubtitles repeat words. An opening label explains what the viewer is seeing.\n\nMute the first two seconds and label the problem directly on the first shot.\n\nWould someone recognize your latest topic with the sound off?",
+      "reply_text": "Keep the opening label visible long enough for someone to read it once.",
+      "first_reply": "Keep the opening label visible long enough for someone to read it once."
     },
     {
       "id": "th_17_profile_grid_test",
       "pillar": "framework",
       "topic_tag": "Instagram Growth",
-      "text": "Before running traffic to your profile, open it from someone else's phone for three seconds.\n\nCheck three things cold:\n- Can a stranger tell who you help?\n- Do your top three pinned posts match your bio promise?\n- Is the next step obvious without scrolling far?\n\nYour grid is a landing page, not a diary. What would a first-time visitor notice first on yours?",
-      "reply_text": "Pinning one intro framework, one practical checklist, and one real example turns random Reel visitors into intentional followers."
+      "text": "A useful Reel can send people to a profile they cannot make sense of.\n\nThe clip answers one question. The profile explains why they should come back.\n\nAsk someone to read your bio and name one pinned post they would open.\n\nWhat would they think your page is about?",
+      "reply_text": "A pinned example often explains your work faster than an extra line of bio.",
+      "first_reply": "A pinned example often explains your work faster than an extra line of bio."
     },
     {
       "id": "th_18_tool_stack_question",
       "pillar": "question",
       "topic_tag": "AI Tools",
-      "text": "A useful workflow cleanup for creators:\n\nWrite down every editing, sizing, and AI app you opened this week, and next to each write the last post you finished with it.\n\nNot \"I tested a prompt.\" Not \"I opened the dashboard.\"\n\nA real asset exported and ready to publish. Which single tool earns its spot in your weekly stack every time?"
+      "text": "I can open five editing apps and still end up finishing the post in one.\n\nAn app you explore has a different job from a tool you rely on.\n\nWrite down the last finished asset each tool helped you ship.\n\nWhich app earns a place in your workflow every week?",
+      "first_reply": "Count the time spent exporting and fixing files when two apps look equally fast.",
+      "reply_text": "Count the time spent exporting and fixing files when two apps look equally fast."
     },
     {
       "id": "th_19_aspect_compression",
       "pillar": "tool_natural",
       "topic_tag": "Creator Tips",
-      "text": "Small text looking soft after upload is rarely a camera flaw. Most of the time it is a resolution mismatch.\n\nExport to the platform's native box instead:\nFeed photo: 1080 by 1350 (4:5).\nReels and Shorts: 1080 by 1920 (9:16).\nSquare tile: 1080 by 1080 (1:1).\n\nWhen the app stops resizing on the fly, thin lines stay crisp. Which format gives you the most compression trouble?"
+      "text": "Small captions can look sharp in the editor and soft after upload.\n\nCanvas size and text size are separate decisions.\n\nFor a vertical Reel, export at 1080 × 1920 and inspect the actual upload on a phone.\n\nWhich format gives you the most trouble with tiny text?",
+      "first_reply": "Leave a little space between thin letters so compression has fewer details to erase.",
+      "reply_text": "Leave a little space between thin letters so compression has fewer details to erase."
     },
     {
       "id": "th_20_comment_reply_loop",
       "pillar": "hook_truth",
       "topic_tag": "Content Strategy",
-      "text": "Staring at a blank doc for video ideas means you are inventing problems instead of collecting them.\n\nOpen your comments and DMs from the past month. Copy the exact phrasing someone used when asking how something works.\n\nNot a polished headline. Their actual words.\n\nUse that exact question as frame one of your next clip. Which question keeps repeating in your comments?",
-      "reply_text": "People stop immediately when frame one reads like a message they typed yesterday rather than a generic studio headline."
+      "text": "A comment that asks a follow up can be a better script brief than a blank document.\n\nA broad topic gives you a category. A real question gives you an opening line.\n\nCollect three recurring questions and answer one with a screen recording.\n\nWhat do viewers keep asking you to show?",
+      "reply_text": "Remove the commenter’s name when the question is all the example needs.",
+      "first_reply": "Remove the commenter’s name when the question is all the example needs."
     },
     {
       "id": "th_21_vanity_metrics",
       "pillar": "contrast",
       "topic_tag": "Instagram Growth",
-      "text": "A large follower number with quiet comments is an archive. It isn't a community.\n\nCompare two pages:\nPage A: Big follower count, generic clips, zero replies worth reading.\nPage B: Small focused audience, specific fixes, real conversations in the thread.\n\nBrands and buyers look at the second one first. Which metric tells you a post actually landed?"
+      "text": "A large follower count can sit next to a very quiet comment section.\n\nFollower count measures audience size. Repeat exchanges show who is taking part.\n\nLook for the same people coming back with questions over several posts.\n\nWho keeps showing up in your comments, and what do they ask?",
+      "first_reply": "A thoughtful follow up is a useful sign that a post started a conversation.",
+      "reply_text": "A thoughtful follow up is a useful sign that a post started a conversation."
     },
     {
       "id": "th_22_time_vs_hook",
       "pillar": "question",
       "topic_tag": "Video Editing",
-      "text": "Spending forty minutes color-grading the middle of a clip and two minutes typing the opening line is backwards.\n\nBefore opening your color panel next time, write three versions of frame one and test:\n- Which one names a clear mistake in under six words?\n- Which one works without audio?\n- Which one feels honest without hype?\n\nWhere do you spend too much editing time right now?"
+      "text": "It is easy to spend longer grading a clip than writing its first line.\n\nColor makes the clip pleasant to watch. The opening gives someone a reason to stay.\n\nTry two openings over the same edit and review both at phone size.\n\nWhich line would you keep if viewers saw only the first second?",
+      "first_reply": "Show the result before the setup when it makes the problem easier to understand.",
+      "reply_text": "Show the result before the setup when it makes the problem easier to understand."
     },
     {
       "id": "th_23_usage_rights",
       "pillar": "framework",
       "topic_tag": "Creator Tips",
-      "text": "\"Can we repost this across our ads forever?\" buried in paragraph four is not a minor detail.\n\nSeparate your quote into clean lines before saying yes:\nBase fee: filming and editing the deliverable.\nOrganic usage: posting on their feed.\nPaid ad rights: priced monthly, with an end date.\n\nClear contracts prevent awkward follow-ups later. Do you break out usage rights separately on brand quotes?",
-      "reply_text": "If a brand has a tight budget, keeping the base fee fair and narrowing ad usage to 30 days is cleaner than discounting your work permanently."
+      "text": "A brand can ask for one Reel and also expect months of ad use.\n\nProduction pays for making the clip. Usage pays for where and how long it runs.\n\nWrite the placements and duration into your quote before agreeing to a fee.\n\nWhich usage request has caught you off guard?",
+      "reply_text": "Ask who keeps the raw footage because that affects what the brand can remake later.",
+      "first_reply": "Ask who keeps the raw footage because that affects what the brand can remake later."
     },
     {
       "id": "th_24_loop_trick",
       "pillar": "hook_truth",
       "topic_tag": "Video Editing",
-      "text": "\"Thanks for watching, follow for more!\" is an exit cue. Viewers swipe away the moment they hear it.\n\nTrim the ending of your next short tutorial instead:\n- Cut trailing silence and outro music tails.\n- End right on the final completed step.\n- Phrase the last sentence so it leads straight back into frame one.\n\nHow clean are the last two seconds of your recent edits?"
+      "text": "The moment an outro says goodbye, the useful part of the video feels over.\n\nA loop joins the final image to the opening. An outro asks the viewer to wait.\n\nTry cutting from the finished edit straight back to the messy source frame.\n\nWhere would you cut the ending of your last Reel?",
+      "first_reply": "Play the join twice and listen for a click or awkward gap.",
+      "reply_text": "Play the join twice and listen for a click or awkward gap."
     },
     {
       "id": "th_25_free_tools_hub",
       "pillar": "tool_natural",
       "topic_tag": "Creator Tips",
-      "text": "Needing an account sign-up and a watermark removal paywall just to crop a photo into 4:5 is friction nobody wants.\n\nBefore bookmarking a new browser utility, run a simple check:\n- Does it work straight in the tab without login walls?\n- Does it export clean pixels without watermarks?\n- Does it finish the job in under a minute?\n\nWhat simple editing task still wastes too many clicks for you?"
+      "text": "A simple crop can take longer to set up than to do.\n\nA resize tool should solve the file task without forcing an account decision.\n\nTry one real photo, export it and check the dimensions before adding a tool to your stack.\n\nWhat is the smallest edit you still find annoying?",
+      "first_reply": "Keep the original file so you can compare sharpness and framing after export.",
+      "reply_text": "Keep the original file so you can compare sharpness and framing after export."
     },
     {
       "id": "th_26_consistency_rule",
       "pillar": "contrast",
       "topic_tag": "Content Strategy",
-      "text": "Posting at 9:00 AM every day with nothing concrete to say is a chore. It isn't consistency.\n\nConsistency is keeping the bar high enough that followers recognize your standard:\nNot daily filler. Not chasing every sound.\n\nThree solid posts a week you can sustain for six months beat a burnout sprint in November. What cadence keeps your quality intact?"
+      "text": "A daily slot can fill up even when you have nothing concrete to say.\n\nFrequency counts posts. Consistency makes the result recognizable to your audience.\n\nPick one useful format you can repeat for three weeks without rushing the example.\n\nWhat pace would still feel realistic on a busy week?",
+      "first_reply": "A format is easier to repeat when each post answers a different real question.",
+      "reply_text": "A format is easier to repeat when each post answers a different real question."
     },
     {
       "id": "th_27_best_performing_post",
       "pillar": "question",
       "topic_tag": "Content Strategy",
-      "text": "Open your top three posts from the last quarter and strip away the visuals for a minute.\n\nRead only the opening sentence and the core promise of each one.\n\nNot the transitions. Not the trending audio.\n\nLook at why a stranger cared enough to finish or save it. What pattern shows up across your own best posts?"
+      "text": "A good post may owe more to the problem it solves than its visual polish.\n\nFormat can help the idea travel. The takeaway gives someone a reason to keep it.\n\nTake your top three posts and write one sentence about the job each did.\n\nWhat do those three posts have in common?",
+      "first_reply": "Look for ideas people mention in replies because they may see a use you missed.",
+      "reply_text": "Look for ideas people mention in replies because they may see a use you missed."
     },
     {
       "id": "th_28_youtube_ctr",
       "pillar": "framework",
       "topic_tag": "Content Strategy",
-      "text": "If your thumbnail text and your video title say the exact same six words, you just wasted half your pitch.\n\nSplit their jobs instead:\nThumbnail: Show the visual contrast or broken result in three words.\nTitle: Promise the clear fix and who it is for.\n\nTogether they create curiosity without clickbait. How do you pair your cover text and title?",
-      "reply_text": "Checking your thumbnail at mobile feed width before uploading catches crowded words that looked fine on a desktop monitor."
+      "text": "If a YouTube title and thumbnail repeat the same words, each gets less room to explain the clip.\n\nThe title can name the task. The image can show the result.\n\nTry a title about fixing cluttered captions and a cover with an actual before and after.\n\nWhat does your thumbnail say that your title leaves out?",
+      "reply_text": "Shrink the thumbnail to a phone preview and see if the example still reads.",
+      "first_reply": "Shrink the thumbnail to a phone preview and see if the example still reads."
     },
     {
       "id": "th_29_profile_scorecard",
       "pillar": "tool_natural",
       "topic_tag": "Instagram Growth",
-      "text": "\"My Reel got views, why did nobody follow?\" is rarely a Reel problem. Usually the video worked and the profile leaked trust.\n\nRun a three-point check on your page today:\n- Does your bold Name line include searchable niche terms?\n- Does bio line one state a clear outcome?\n- Do your pinned posts prove the bio claim?\n\nWhich part of your profile needs the sharpest rewrite?"
+      "text": "A Reel can get attention while the profile gives a visitor no clear reason to follow.\n\nDiscovery happens in the feed. A follow depends on what the person expects to get next.\n\nOpen your profile from the Reel and compare the promise with the bio and pins.\n\nWould the next post look like it belongs to the same page?",
+      "first_reply": "Pin a sample of the work you want new followers to see again.",
+      "reply_text": "Pin a sample of the work you want new followers to see again."
     },
     {
       "id": "th_30_pattern_interrupt",
       "pillar": "hook_truth",
       "topic_tag": "Video Editing",
-      "text": "A ten-second talking clip with zero visual change loses attention by second four, even when the advice is solid.\n\nYou do not need flashy effects to fix it:\n- Punch in slightly at sentence two.\n- Cut to a clean screenshot of the mistake at sentence three.\n- Highlight the exact line you are fixing.\n\nSmall visual shifts reset eyes without feeling chaotic. What is your go-to pacing move?"
+      "text": "A screen tutorial feels slow when the picture and the point stay in the same place.\n\nA visual change should guide attention. Extra effects can compete with the instruction.\n\nZoom into the exact button just before you explain what it changes.\n\nWhere does your viewer actually need a visual cue?",
+      "first_reply": "Try pausing on the changed value so the effect is easy to verify.",
+      "reply_text": "Try pausing on the changed value so the effect is easy to verify."
     },
     {
       "id": "th_31_searchable_name",
       "pillar": "framework",
       "topic_tag": "Instagram Growth",
-      "text": "Leaving only your first name in Instagram's bold Name field hides you from people searching for what you do.\n\nTry this clean format instead:\nName field: Maya | Reel Editor & Safe Zone Tips\nBio line 1: Practical framing fixes for solo creators.\n\nNow search indexes the bold words while your bio stays human. Have you tuned your Name field for search yet?",
-      "reply_text": "Keep it to two natural terms people actually type into Search rather than stuffing five unrelated keywords."
+      "text": "A profile called just “Maya” tells a new visitor little about what she teaches.\n\nThe display name gives a quick topic cue. The bio can make the promise more specific.\n\nTry “Maya, Reel editing” and ask a stranger what they would expect to see.\n\nWhat phrase would your audience use to describe your work?",
+      "reply_text": "Keep the handle recognizable if people already search for it by name.",
+      "first_reply": "Keep the handle recognizable if people already search for it by name."
     },
     {
       "id": "th_32_threads_vs_ig",
       "pillar": "question",
       "topic_tag": "Content Strategy",
-      "text": "Treat Threads and Instagram Reels like the same feed and both underperform.\n\nUse each format for what it does naturally:\nThreads: Test sharp opinions, concrete text examples, and open questions fast.\nReels: Turn the ideas that sparked real replies into visual 10-second demonstrations.\n\nWhich idea from a text conversation turned into your best video lately?"
+      "text": "One idea can work on Threads and Reels with different material on the screen.\n\nA Reel can show the change in motion. A Threads post can explain why you made it.\n\nShow the settings change in the video and discuss the tradeoff in the text post.\n\nWhich idea have you adapted well across both formats?",
+      "first_reply": "Use the replies on one format to decide what detail to add to the other.",
+      "reply_text": "Use the replies on one format to decide what detail to add to the other."
     },
     {
       "id": "th_33_overdesigned_slides",
       "pillar": "contrast",
       "topic_tag": "Creator Tips",
-      "text": "Three gradients, tiny serif captions, and heavy drop shadows look impressive in a design file. On a phone screen in sunlight, people swipe past.\n\nTry restraint instead:\n- High-contrast dark text on clean off-white, or crisp light text on dark slate.\n- One focal point per slide.\n- Margins wide enough that thumbs never cover copy.\n\nWhich design habit do you strip out first when a slide feels cluttered?"
+      "text": "A slide can look good at full size and be tiring to read on a phone.\n\nVisual style draws the eye. Clear hierarchy helps it find the next line.\n\nView one slide at actual phone width and remove anything competing with the main sentence.\n\nWhat usually goes first when you simplify a slide?",
+      "first_reply": "Put your longest example on a test slide before picking sizes for the whole set.",
+      "reply_text": "Put your longest example on a test slide before picking sizes for the whole set."
     },
     {
       "id": "th_34_engagement_rate_context",
       "pillar": "tool_natural",
       "topic_tag": "Instagram Growth",
-      "text": "Forty likes on a giant page and forty likes on a six-hundred-follower page are not the same signal.\n\nBefore judging any post by raw hearts, check three things:\n- Saves compared to total reach.\n- Direct message shares per post.\n- Comments that ask a real follow-up question.\n\nRaw likes flatter the ego; intent signals guide your next topic. Which metric do you check first in Insights?"
+      "text": "Forty likes can represent very different responses on two accounts.\n\nA raw count measures actions. A rate puts those actions in context.\n\nCompare likes per reach for similar posts at the same age, then look at saves separately.\n\nWhich metric changes your interpretation most often?",
+      "first_reply": "Record the denominator beside the rate so a later comparison stays meaningful.",
+      "reply_text": "Record the denominator beside the rate so a later comparison stays meaningful."
     },
     {
       "id": "th_35_specific_beats_broad",
       "pillar": "hook_truth",
       "topic_tag": "Content Strategy",
-      "text": "\"How to grow on Instagram\" is a textbook chapter. Nobody stops mid-scroll for a chapter.\n\nTry naming one concrete moment instead:\nBroad: \"Improve your Reels captions.\"\nSpecific: \"Fix the first 90 characters of your caption so people tap more.\"\n\nSpecificity signals real experience immediately. What broad topic in your drafts could you narrow down to one step?",
-      "reply_text": "Every broad tip hides three smaller moments. Pick the single moment people get wrong five minutes before hitting Publish."
+      "text": "“How to grow on Instagram” is too broad for a short post to deliver well.\n\nA topic names the category. A specific problem tells the reader where to start.\n\nPick one moment, such as text falling outside the profile crop.\n\nWhich broad topic could you turn into a one minute fix?",
+      "reply_text": "Borrow exact words from a question someone has already asked you.",
+      "first_reply": "Borrow exact words from a question someone has already asked you."
     },
     {
       "id": "th_36_one_cta_rule",
       "pillar": "framework",
       "topic_tag": "Content Strategy",
-      "text": "\"Like, comment, save, share, and check my link\" is five errands. Viewers choose zero.\n\nAssign one clear job per post before you export:\nChecklist post: ask them to save for their next edit.\nComparison post: invite a thoughtful opinion below.\n\nOne calm direction outperforms a noisy list of demands. What single action fits your next post best?"
+      "text": "A post that asks people to save, reply and click makes the next move unclear.\n\nA useful action follows from the takeaway. Extra asks add choices.\n\nFor an export checklist, try asking people to save it for their next edit.\n\nWhat is the one action your last post actually needed?",
+      "first_reply": "Place the ask after the example so the reader knows what they are keeping.",
+      "reply_text": "Place the ask after the example so the reader knows what they are keeping."
     },
     {
       "id": "th_37_repurpose_smart",
       "pillar": "hook_truth",
       "topic_tag": "Content Strategy",
-      "text": "Copying the exact same URL and caption across four apps is syndication. It isn't repurposing.\n\nAdapt the core lesson to each room instead:\nThreads: A crisp three-paragraph contrast and a real question.\nInstagram Carousel: Step-by-step screenshots on clean 4:5 cards.\nReel: An eight-second visual before-and-after.\n\nSame insight, native format. Which platform feels easiest to adapt to first?"
+      "text": "The same caption can feel awkward on four different apps.\n\nReuse the idea and evidence. Match the opening to how people use each format.\n\nTurn a screen demo into a Threads note about the mistake and a carousel of steps.\n\nWhich part do you usually rewrite first?",
+      "first_reply": "Keep the most useful example even when you change the opening.",
+      "reply_text": "Keep the most useful example even when you change the opening."
     },
     {
       "id": "th_38_creator_burnout_q",
       "pillar": "question",
       "topic_tag": "Creator Tips",
-      "text": "A small sanity check for solo creators:\n\nLook at your last ten drafts and cross out the formats that drained three hours for minimal clarity.\n\nNot the topics you care about. Just the bloated packaging.\n\nKeeping two repeatable visual formats saves mental energy for the actual message. Which format feels lightest for you to produce each week?"
+      "text": "A content plan can look manageable until every slot requires a fresh edit.\n\nThe number of posts is only part of the load. Context switching adds time too.\n\nList one task you can batch and one format you can pause for a week.\n\nWhich part of production makes the week feel heavier than it should?",
+      "first_reply": "Track how long a finished piece takes instead of counting drafts started.",
+      "reply_text": "Track how long a finished piece takes instead of counting drafts started."
     },
     {
       "id": "th_39_trial_reels_ab_hooks",
       "pillar": "framework",
       "topic_tag": "Instagram Growth",
-      "text": "Instead of guessing which opener works better, film the body of your tip once and record two different two-second openings.\n\nKeep the middle and ending identical. Only swap frame one and the headline.\n\nNot two completely different topics. One variable at a time.\n\nWhen you test hooks side by side, what difference surprises you most?",
-      "reply_text": "Changing just the opening five words while keeping the rest identical teaches you faster than filming five brand-new topics."
+      "text": "Testing two Reels is hard to interpret when every edit changes.\n\nA hook test should vary the opening while the demo stays comparable.\n\nFilm one explanation and use two opening clips, then compare the early retention curves.\n\nWhat would you change in your first two seconds?",
+      "reply_text": "Record the audience and distribution differences when you compare the two results.",
+      "first_reply": "Record the audience and distribution differences when you compare the two results."
     },
     {
       "id": "th_40_sends_per_reach_2026",
       "pillar": "hook_truth",
       "topic_tag": "Instagram Growth",
-      "text": "A double-tap takes half a second and costs nothing. Forwarding a post to a coworker takes real conviction.\n\nBefore publishing your next breakdown, ask:\n- Who specifically would someone send this to in DMs?\n- Does it settle a debate or prevent an export mistake?\n- Can they read the point without clicking out?\n\nWhat kind of post do you forward to friends most often?"
+      "text": "A viewer can like a post and still have no reason to send it to a friend.\n\nLikes and sends describe different actions. Compare their rates separately.\n\nWrite one post that solves a colleague’s specific problem and check sends per reach.\n\nWhich of your posts would you forward to someone you know?",
+      "first_reply": "Include enough context for the recipient to use the post without reading the caption.",
+      "reply_text": "Include enough context for the recipient to use the post without reading the caption."
     },
     {
       "id": "th_41_small_wins_compound",
       "pillar": "hook_truth",
       "topic_tag": "Creator Tips",
-      "text": "Building a small page feels quiet at first because most early posts look identical to strangers.\n\nThen you tighten three basics:\n- Clearer frame-one conflict.\n- Cleaner 4:5 and 9:16 safe margins.\n- A bio that matches the posts people actually came for.\n\nMomentum shows up after the fundamentals lock together. Which basic improved your recent posts most?"
+      "text": "Early posts can feel interchangeable when every idea is still broad.\n\nRepeated topics help people recognize a page. Specific examples make each post memorable.\n\nTake one recurring problem and show three different situations where it happens.\n\nWhich problem could you own without repeating yourself?",
+      "first_reply": "Keep a record of which examples brought useful questions back.",
+      "reply_text": "Keep a record of which examples brought useful questions back."
     },
     {
       "id": "th_42_sunday_audit_q",
       "pillar": "question",
       "topic_tag": "Content Strategy",
-      "text": "A useful Sunday habit before scheduling next week:\n\nOpen your past seven posts and mark which one felt hardest to finish and which one sparked the best replies.\n\nNot the one with the fanciest B-roll.\n\nDouble down on the clear, repeatable angle and drop the overcomplicated setup. How do you plan next week's topics?"
+      "text": "A weekly audit gets clearer when it ends with one test for the next week.\n\nStats describe what happened. A test gives you something concrete to change.\n\nPick one post that worked and one that stalled, then compare the opening and the payoff.\n\nWhat would you test on your next post after that review?",
+      "first_reply": "Write the test before you open your scheduling tool.",
+      "reply_text": "Write the test before you open your scheduling tool."
     },
     {
       "id": "th_43_three_word_rule",
       "pillar": "hook_truth",
       "topic_tag": "Video Editing",
-      "text": "Putting eighteen words on screen at second one makes viewers read a paragraph while trying to watch motion. Most swipe before line two.\n\nTry tightening your opener instead:\nToo long: \"Here are the top three mistakes people make when sizing Reels.\"\nBetter: \"Check this crop line before exporting.\"\n\nFour to seven crisp words win on small screens. How short do you keep your frame-one text?",
-      "reply_text": "Read your opening title aloud in one breath. If you run out of air or pace, cut three words."
+      "text": "Eighteen words on the opening frame can compete with a moving demo.\n\nA headline needs to orient the viewer. Details can wait until the shot settles.\n\nLabel the problem in a short line and move the settings to the next moment.\n\nWhich word could come off your last opening frame?",
+      "reply_text": "Play the edit at normal speed once because pause makes any caption seem readable.",
+      "first_reply": "Play the edit at normal speed once because pause makes any caption seem readable."
     },
     {
       "id": "th_44_reply_velocity",
       "pillar": "framework",
       "topic_tag": "Content Strategy",
-      "text": "Posting into a quiet feed and closing the app right away leaves your own post without context.\n\nSpend ten minutes replying thoughtfully to real conversations in your niche:\n- Add a concrete example instead of \"Great post!\"\n- Answer a genuine question someone missed.\n- Share what actually broke when you tried it.\n\nReal presence beats broadcasting into the void. How do you start conversations on a small account?"
+      "text": "Some posts get questions you can use to clarify the original point.\n\nReplying can add context. Posting a stock comment adds little.\n\nAnswer the first sincere question with an example or a boundary the post left out.\n\nWhat question would help you make your latest post clearer?",
+      "first_reply": "A recurring question can become a separate post with more room for the answer.",
+      "reply_text": "A recurring question can become a separate post with more room for the answer."
     },
     {
       "id": "th_45_bad_cta",
       "pillar": "contrast",
       "topic_tag": "Content Strategy",
-      "text": "\"Follow me for more tips!\" is filler. People follow when the post itself proves tomorrow's post will be worth seeing.\n\nTry a grounded closer instead:\nWeak: \"Drop a comment and follow!\"\nBetter: \"Which crop habit are you fixing before your next upload?\"\n\nRespect the reader's intelligence and the replies get smarter too. What closer gets real answers from your audience?"
+      "text": "“Follow for tips” gives a stranger little idea what they will see tomorrow.\n\nA useful promise describes the next kind of problem you can solve.\n\nAfter a crop demo, name the next framing issue you plan to show.\n\nWhat would someone follow you specifically to learn?",
+      "first_reply": "An invitation works better when the current example already shows your approach.",
+      "reply_text": "An invitation works better when the current example already shows your approach."
     },
     {
       "id": "th_46_audio_vs_visual",
       "pillar": "question",
       "topic_tag": "Video Editing",
-      "text": "Trending audio can give a post initial discovery, yet weak visual clarity kills retention inside two seconds.\n\nTest your next clip in two passes:\n- First pass: watch completely muted to verify on-screen clarity.\n- Second pass: listen with headphones for clean vocal pacing and gentle backing audio.\n\nWhich breaks more Reels right now, muddy visuals or awkward audio levels?"
+      "text": "A good soundtrack can make a clip feel lively while the demo remains unclear.\n\nMusic sets the pace. Framing shows where to look.\n\nMute the clip and see if you can identify the first setting that changes.\n\nWhich shot would you revise before changing the audio?",
+      "first_reply": "Fade the music under instructions you need people to hear.",
+      "reply_text": "Fade the music under instructions you need people to hear."
     },
     {
       "id": "th_47_carousel_slide2_reserves",
       "pillar": "framework",
       "topic_tag": "Instagram Growth",
-      "text": "Treat Carousel Slide 2 like a backup cover, not a filler bridge.\n\nStructure the first two slides like this:\nSlide 1: Name the main mistake clearly.\nSlide 2: Show the concrete before-and-after example immediately.\n\nIf someone skips Slide 1 and sees Slide 2 later, the post still earns the swipe. How do you structure your first two slides?",
-      "reply_text": "Avoid putting \"Read below\" or empty intro quotes on Slide 2; lead straight with your strongest concrete proof or example."
+      "text": "“Thanks for swiping” takes up the most useful line on slide two.\n\nThe cover earns curiosity. The next slide needs to give the reader something concrete.\n\nStart slide two with a symptom and an action, then read it without the cover.\n\nWhat would you put on slide two if it had to stand alone?",
+      "reply_text": "Use an example the reader can recognize without the title slide.",
+      "first_reply": "Use an example the reader can recognize without the title slide."
     },
     {
       "id": "th_48_font_restraint",
       "pillar": "tool_natural",
       "topic_tag": "Creator Tips",
-      "text": "Decorative Unicode fonts in your entire bio look stylish on one phone and turn into unreadable boxes on screen readers and older devices.\n\nKeep plain text for what matters:\n- Your core offer and searchable keywords in clean standard letters.\n- At most one accent word if you really need emphasis.\n\nClarity converts better than novelty fonts. Have you ever checked how your bio renders on a different phone?"
+      "text": "Decorative bio letters can stop reading like words when the device or reader changes.\n\nVisual styling and readable text do different jobs in a profile.\n\nKeep your role and key terms in plain text, then preview your bio on another device.\n\nWhich part of your bio must everybody be able to read?",
+      "first_reply": "Use ordinary characters in any phrase people might need to search or copy.",
+      "reply_text": "Use ordinary characters in any phrase people might need to search or copy."
     },
     {
       "id": "th_49_dm_share_test",
       "pillar": "hook_truth",
       "topic_tag": "Content Strategy",
-      "text": "Before hitting Share on a breakdown, picture one specific person reading it on their lunch break.\n\nAsk yourself:\n- Would they send this to a teammate with \"Look at point 2\"?\n- Does it solve a real friction point without fluff?\n- Is every line clean enough to screenshot?\n\nWriting for one real peer sharpens every sentence. Who is in your head when you draft?"
+      "text": "A post becomes easier to write when you can picture who someone would send it to.\n\nA broad audience gives you a topic. A specific recipient gives you useful details.\n\nThink of a friend editing tonight and include one thing they could fix before export.\n\nWho would you send your last post to and why?",
+      "first_reply": "Give the recipient a small action they can take without asking the sender for context.",
+      "reply_text": "Give the recipient a small action they can take without asking the sender for context."
     },
     {
       "id": "th_50_yt_shorts_vs_reels",
       "pillar": "question",
       "topic_tag": "Video Editing",
-      "text": "Exporting one vertical edit to Reels, Shorts, and TikTok works cleanly only when you respect the strictest safe zone first.\n\nEach app covers slightly different corners with buttons, captions, and search bars.\n\nKeep subtitles and focal visuals inside the shared center box so you never cut three separate exports. Do you edit inside one shared safe box?"
+      "text": "A vertical export can look fine in one app and hide words in another.\n\nFrame dimensions are shared more often than interface safe areas.\n\nPreview the same clip in each destination and move crucial text into their common clear area.\n\nWhich app covers the most useful part of your frame?",
+      "first_reply": "Keep a clean master so per app adjustments do not require rebuilding the edit.",
+      "reply_text": "Keep a clean master so per app adjustments do not require rebuilding the edit."
     },
     {
       "id": "th_51_dead_air_cut",
       "pillar": "hook_truth",
       "topic_tag": "Video Editing",
-      "text": "Zoom into the first second of your timeline before you export.\n\nLook at that tiny breath, mouse click, or half-second pause before your first word lands.\n\nNot dramatic silence. Just dead air.\n\nTrimming those first ten frames makes the whole video feel twice as sharp without speeding up your voice. Do you trim the pre-breath on every talking clip?",
-      "reply_text": "Cutting right onto the first consonant and showing a clean visual shift at 00:00.0 immediately removes the \"camera just turned on\" lag."
+      "text": "There is often a pause before the first useful action in a screen recording.\n\nA short setup can provide context. Waiting for a cursor to move rarely does.\n\nCut to the moment before the click and play the first second at normal speed.\n\nWhere can your latest edit start a little later?",
+      "reply_text": "Check that the label survives the cut so the viewer knows what changed.",
+      "first_reply": "Check that the label survives the cut so the viewer knows what changed."
     },
     {
       "id": "th_52_tiktok_bio_line",
       "pillar": "tool_natural",
       "topic_tag": "Creator Tips",
-      "text": "With only 80 characters in a TikTok bio, every vague adjective steals space from clarity.\n\nCompare two lines:\nVague: \"Just a creator sharing daily vibes and lifestyle tips.\"\nClear: \"4:5 framing & Reel safe-zone fixes. New edit tips 3x/week.\"\n\nShort limits force honest positioning. What did you have to cut to make your bio fit cleanly?"
+      "text": "A short TikTok bio can spend its space on adjectives and still leave the topic unclear.\n\nA role tells people who you are. A concrete subject tells them what they can learn.\n\nTry one audience, one topic and a short prompt for the link if there is room.\n\nWhich phrase in your bio would you keep if space got tight?",
+      "first_reply": "Read the bio without the profile picture and see whether the promise still makes sense.",
+      "reply_text": "Read the bio without the profile picture and see whether the promise still makes sense."
     },
     {
       "id": "th_53_carousel_cover",
       "pillar": "contrast",
       "topic_tag": "Instagram Growth",
-      "text": "Carousels rarely fail on Slide 5. Most lose the reader on Slide 1 before a single swipe.\n\nCheck your cover slide for three common traps:\n- A 40-word paragraph squeezed onto the first card.\n- An abstract title nobody understands without context.\n- Text pushed too close to the 1:1 grid crop edges.\n\nOne clear headline in large type fixes all three. What makes you swipe on a Carousel cover?"
+      "text": "A carousel cover has one job before any of the slides matter.\n\nThe title creates a reason to swipe. The next slide proves there is something useful inside.\n\nName the problem on the cover and put the first example on slide two.\n\nWhat is your latest cover promising the reader?",
+      "first_reply": "A small preview catches covers that need too much setup to understand.",
+      "reply_text": "A small preview catches covers that need too much setup to understand."
     },
     {
       "id": "th_54_morning_batch",
       "pillar": "question",
       "topic_tag": "Content Strategy",
-      "text": "Writing, filming, editing, and captioning one post every single day from scratch burns out fast.\n\nSeparate the modes instead:\nDay 1: Outline five sharp hooks and examples in one sitting.\nDay 2: Film and export assets in one clean batch.\n\nGrouping similar work protects creative focus. Do you batch your production or create post by post?"
+      "text": "Making each post from start to finish in one sitting can make the week feel fragmented.\n\nWriting needs focus. Filming benefits from leaving the same setup ready.\n\nWrite three openings together, film the matching clips and edit them in a separate block.\n\nWhich step would save you the most time if you batched it?",
+      "first_reply": "Leave a short note about the intended cut so editing starts with a decision already made.",
+      "reply_text": "Leave a short note about the intended cut so editing starts with a decision already made."
     },
     {
       "id": "th_55_ugc_portfolio",
       "pillar": "framework",
       "topic_tag": "Creator Tips",
-      "text": "Waiting for a paid brand deal to build your first three sample clips keeps your inbox empty.\n\nPick three everyday products already on your desk and film clean spec examples:\n- One problem-and-solution opener.\n- One clear screen or product demo.\n- One natural voiceover with tight safe-zone captions.\n\nReal samples prove pacing faster than a media kit PDF. How did you create your first samples?",
-      "reply_text": "Keep spec clips under 20 seconds and label each one with the exact hook angle so brands see how you think, not just how you film."
+      "text": "You can build a useful UGC portfolio before you land a paid project.\n\nA practice clip shows how you solve a brief. Label it clearly as a sample.\n\nFilm a product walkthrough, a problem and solution, and a voiceover demo using something you own.\n\nWhich of those three samples best shows your style?",
+      "reply_text": "Add a short note explaining the audience and goal for each clip.",
+      "first_reply": "Add a short note explaining the audience and goal for each clip."
     },
     {
       "id": "th_56_fake_follower_trap",
       "pillar": "hook_truth",
       "topic_tag": "Instagram Growth",
-      "text": "Inactive or bought followers do not just sit quietly on your profile. They dilute your early test group.\n\nWhen you publish a post, the platform tests it on a slice of existing followers first.\n\nIf that slice scrolls instantly without watching or saving, wider distribution stalls early.\n\nHave you ever noticed a smaller, cleaner page outperforming a much larger account?"
+      "text": "Follower totals can look impressive while recent posts tell a quieter story.\n\nAccount size and relevant attention are different measures.\n\nBefore making a deal, read comments across recent posts and look for answers tied to the content.\n\nWhat public signal makes you trust an audience is engaged?",
+      "first_reply": "Ask for audience geography and recent reach when those details matter to the brief.",
+      "reply_text": "Ask for audience geography and recent reach when those details matter to the brief."
     },
     {
       "id": "th_57_fake_check_tool",
       "pillar": "tool_natural",
       "topic_tag": "Instagram Growth",
-      "text": "Before partnering on a collab or promo swap, look past the follower badge at the top of the profile.\n\nCheck their last 10 posts for three real signals:\n- Do comments reference the actual content or just drop single emojis?\n- Are views steady across normal uploads?\n- Do saves and replies match the apparent audience size?\n\nWhat red flag makes you pass on a collaboration fastest?"
+      "text": "A collab can look perfect in a profile screenshot and feel wrong once you read the replies.\n\nAudience fit matters alongside reach. Neither can be inferred from one number.\n\nRead the comments on five related posts and request recent audience data before you agree.\n\nWhat would make you walk away from a promising collab?",
+      "first_reply": "Look for repeat viewers asking detailed questions about the topic you plan to cover.",
+      "reply_text": "Look for repeat viewers asking detailed questions about the topic you plan to cover."
     },
     {
       "id": "th_58_save_ratio_goal",
       "pillar": "hook_truth",
       "topic_tag": "Content Strategy",
-      "text": "Daily view swings will drive you crazy if you watch every upload hour by hour.\n\nTrack one steadier signal across your last 10 posts instead: how often people save or forward a post relative to how many saw it.\n\nNot vanity impressions. Action per viewer.\n\nWhen that ratio climbs, topic fit is getting sharper. Which metric keeps you grounded?"
+      "text": "Watching views every hour can distract you from patterns across similar posts.\n\nViews track exposure. Saves per reach can help compare posts intended as references.\n\nLog the same age and format for several posts, then look for repeatable ideas.\n\nWhich post gets saved more than its view count would suggest?",
+      "first_reply": "Use the same time window when testing a new format against your baseline.",
+      "reply_text": "Use the same time window when testing a new format against your baseline."
     },
     {
       "id": "th_59_worst_advice",
       "pillar": "question",
       "topic_tag": "Creator Tips",
-      "text": "Obsessing over the exact minute to hit Publish while ignoring a blurry cover or weak opening line is focusing on the last 1% first.\n\nFix the big levers before tuning the clock:\n- Frame-one clarity on mute.\n- Readable typography inside safe zones.\n- A bio that matches the post topic.\n\nWhat old growth advice did you drop once you saw better results?"
+      "text": "A blurry cover can stay blurry at the perfect posting time.\n\nTiming changes who might see the post first. The opening still has to make sense.\n\nTest the crop, title and first frame before moving a scheduled slot.\n\nWhat small fix helped you more than a schedule change?",
+      "first_reply": "Look at the post in the feed instead of judging only the full screen edit.",
+      "reply_text": "Look at the post in the feed instead of judging only the full screen edit."
     },
     {
       "id": "th_60_grid_cohesion",
       "pillar": "framework",
       "topic_tag": "Creator Tips",
-      "text": "Wait, clean grid design does not mean matching every pastel shade like an agency template.\n\nTwo simple habits make any profile look intentional:\n- Keep cover titles inside the central 4:5 safe box so grid crops never slice words.\n- Use consistent readable font scale across your covers.\n\nVisitors care about clarity, not rigid color stripes. How much time do you spend on your grid look?"
+      "text": "A grid can feel coherent without giving every cover the same color.\n\nA shared visual hierarchy helps viewers scan. A rigid palette can hide the subject.\n\nKeep the headline position consistent and let the image carry the topic.\n\nWhat makes a profile feel like one person made it?",
+      "first_reply": "Use recognizable title sizes before you worry about matching every accent.",
+      "reply_text": "Use recognizable title sizes before you worry about matching every accent."
     },
     {
       "id": "th_61_grid_tool",
       "pillar": "tool_natural",
       "topic_tag": "Creator Tips",
-      "text": "Splitting a banner across a 3x3 Instagram grid breaks completely if you upload tile one first instead of tile nine.\n\nBefore posting a multi-tile layout:\n- Number your exported tiles in exact upload sequence.\n- Preview the 4:5 grid crop on each square.\n- Verify no single tile looks broken in the main feed.\n\nHave you ever posted a grid split in the wrong order?"
+      "text": "A tiled profile banner can break the moment you publish something new.\n\nTile order changes the initial display. Later posts can shift the whole layout.\n\nMock up the grid and keep each tile usable as a post on its own.\n\nHave you found a grid layout that survives a new upload?",
+      "first_reply": "Keep a standalone version of the banner for places where the grid cannot hold it.",
+      "reply_text": "Keep a standalone version of the banner for places where the grid cannot hold it."
     },
     {
       "id": "th_62_repost_winners",
       "pillar": "hook_truth",
       "topic_tag": "Content Strategy",
-      "text": "Throwing away your best breakdown after posting it once assumes everyone saw it the first time. Most of your current audience never did.\n\nInstead of copying the old file blindly:\n- Keep the proven core insight.\n- Rewrite the opening two seconds with a sharper angle.\n- Refresh the visual example for how people work today.\n\nWhich older post of yours deserves a cleaner second version?",
-      "reply_text": "Turning an older high-save Carousel into an 8-second visual Reel is one of the cleanest ways to reach a new audience with proven material."
+      "text": "A useful old post can still answer a current question for newer readers.\n\nRevisiting an idea gives it another example. Reposting the same asset gives people less to discuss.\n\nTake the strongest point and explain it with a fresh before and after.\n\nWhat topic would you return to with a better example?",
+      "reply_text": "Check older replies for the detail you can finally show this time.",
+      "first_reply": "Check older replies for the detail you can finally show this time."
     },
     {
       "id": "th_63_hook_vs_topic",
       "pillar": "contrast",
       "topic_tag": "Content Strategy",
-      "text": "A sharp editing tip paired with a sleepy opener disappears in the feed. A simple tip with an undeniable opener gets watched twice.\n\nSpend real time on those first words before touching transitions:\n- Draft five different first lines.\n- Cut any word that delays the point.\n- Read the winner at phone distance.\n\nHow many hook options do you write before picking one?"
+      "text": "A good tip can get missed when the opening makes it sound generic.\n\nThe topic is the useful idea. The hook tells the viewer why it matters now.\n\nStart with a broken caption crop and show the corrected view in the second shot.\n\nWhat good tip is hiding under a vague opening in your drafts?",
+      "first_reply": "Use a first image that still suggests the problem with no sound.",
+      "reply_text": "Use a first image that still suggests the problem with no sound."
     },
     {
       "id": "th_64_thread_length",
       "pillar": "question",
       "topic_tag": "Content Strategy",
-      "text": "An eight-part thread padded with filler transitions feels like homework. A tight four-paragraph note with one real example gets saved immediately.\n\nTrim your next post until every line earns its space:\n- One clear tension.\n- One concrete example.\n- One honest closing question.\n\nDo you prefer short single posts or multi-reply threads when reading advice?"
+      "text": "A long thread feels longer when the first few posts only introduce it.\n\nDepth comes from evidence and examples. Length alone does not add either.\n\nLead with the useful distinction, then show one case where it changes the decision.\n\nWhich part of a long post makes you keep reading?",
+      "first_reply": "Move background lower when the reader can understand the example first.",
+      "reply_text": "Move background lower when the reader can understand the example first."
     },
     {
       "id": "th_65_youtube_30sec",
       "pillar": "framework",
       "topic_tag": "Video Editing",
-      "text": "If someone clicks a tutorial titled \"How to center Reel captions\" and hears ninety seconds of backstory first, they leave before minute two.\n\nConfirm the promise inside the first fifteen seconds:\n- Show the exact broken layout immediately.\n- Name the quick fix they are about to see.\n- Start step one right away.\n\nRespecting the viewer's click earns the full watch. How fast do your videos get to step one?"
+      "text": "A YouTube tutorial can lose a viewer before the promised task begins.\n\nA quick setup helps orientation. Backstory can wait until the result is clear.\n\nShow the centered caption, name the setting and then start the walkthrough.\n\nWhat should someone see in the first ten seconds of your next tutorial?",
+      "first_reply": "Put a clear chapter marker where the walkthrough begins.",
+      "reply_text": "Put a clear chapter marker where the walkthrough begins."
     },
     {
       "id": "th_66_youtube_tags_tool",
       "pillar": "tool_natural",
       "topic_tag": "AI Tools",
-      "text": "Stuffing thirty video tags at the bottom will not rescue an unclear title or confusing cover.\n\nFocus where discovery actually reads first:\n- Natural spoken keywords inside your first sentence.\n- A clear, readable thumbnail paired with an honest title.\n- A concise first paragraph in the description explaining who the fix helps.\n\nWhere do you spend more time, titles or tags?"
+      "text": "Tags are easy to edit, so they can get more attention than the title deserves.\n\nTags help describe a video. The title and cover explain the promise to the viewer.\n\nRewrite the promise in plain words and verify that the opening delivers it.\n\nWhich of your titles would you simplify if you had one minute?",
+      "first_reply": "Check search phrasing against the exact task shown in the video.",
+      "reply_text": "Check search phrasing against the exact task shown in the video."
     },
     {
       "id": "th_67_no_clickbait",
       "pillar": "hook_truth",
       "topic_tag": "Content Strategy",
-      "text": "Clickbait buys a one-second tap and a two-second bounce. Clear curiosity backed by a real payoff builds repeat viewers.\n\nBefore publishing, check the gap between your hook and your ending:\n- Does the last step truly deliver what frame one promised?\n- Would someone feel glad they watched to the end?\n\nTrust compounds slowly and breaks fast. What topic tempts creators into clickbait most?"
+      "text": "A hook can raise a question without making a claim the clip cannot support.\n\nCuriosity names a gap. Clickbait makes the payoff bigger than the evidence.\n\nReplace “This changes everything” with the visible change viewers will see.\n\nWhat promise would you cut from your last opening?",
+      "first_reply": "The first useful shot should answer at least part of the question in the hook.",
+      "reply_text": "The first useful shot should answer at least part of the question in the hook."
     },
     {
       "id": "th_68_creator_burnout",
       "pillar": "contrast",
       "topic_tag": "Creator Tips",
-      "text": "Reinventing your visual layout, font size, and editing style from zero every morning exhausts creative energy before you even write a line.\n\nLock three repeatable templates once:\n- One split before-and-after layout.\n- One clean checklist card.\n- One tight talking-head safe frame.\n\nSave your brainpower for the message itself. How many reusable templates do you keep?"
+      "text": "Blank canvas decisions eat into the time reserved for the actual idea.\n\nA reusable layout handles routine choices. The example still needs fresh work.\n\nSave a simple cover grid and leave one area free for the new demo.\n\nWhich choice would you gladly stop making every time?",
+      "first_reply": "Reuse caption positions and test the longest line before filming.",
+      "reply_text": "Reuse caption positions and test the longest line before filming."
     },
     {
       "id": "th_69_niche_clarify_q",
       "pillar": "question",
       "topic_tag": "Instagram Growth",
-      "text": "Read your own profile as if you discovered it from a random Reel ten seconds ago.\n\nNot knowing your backstory. Not knowing your side projects.\n\nCan you answer two questions without scrolling past row one: who is this page for, and what practical help shows up next week?\n\nIf a friend glanced at your page today, how would they describe it in five words?"
+      "text": "Someone arriving from a random Reel has only a few clues about your niche.\n\nA niche names the audience and problem. A style tells people how you present it.\n\nFinish “I help [audience] do [task]” and compare it with your last three posts.\n\nWould a stranger describe your page in the same words you do?",
+      "first_reply": "Pick a problem people can recognize without knowing your category labels.",
+      "reply_text": "Pick a problem people can recognize without knowing your category labels."
     },
     {
       "id": "th_70_hashtag_clean",
       "pillar": "tool_natural",
       "topic_tag": "Instagram Growth",
-      "text": "Pasting the same twenty-eight hashtags from your Notes app onto every upload signals automation and blurs your topic.\n\nUse a clean filter instead:\n- Delete giant generic tags everyone spams.\n- Pick three to five exact tags describing the format and skill.\n- Match those same words in your caption's opening sentence.\n\nHow many hashtags are you using per post right now?"
+      "text": "A saved block of hashtags can stay the same long after your topics change.\n\nA relevant label describes this post. A copied block often describes the whole account.\n\nChoose only labels that match the clip and check how they read beside the caption.\n\nWhich hashtag do you keep using out of habit?",
+      "first_reply": "Use the words a viewer would use for the specific task shown in the clip.",
+      "reply_text": "Use the words a viewer would use for the specific task shown in the clip."
     },
     {
       "id": "th_71_dm_funnel",
       "pillar": "framework",
       "topic_tag": "Content Strategy",
-      "text": "Withholding the core tip behind \"DM me for the secret\" makes posts feel thin and transactional.\n\nGive away the complete method right inside the post instead:\n- Show the exact steps clearly.\n- Give the real example so they can apply it immediately.\n- Mention a helpful tool only if it genuinely speeds up the same workflow.\n\nGenerosity earns trust before anyone clicks. Which approach makes you trust a creator faster?"
+      "text": "A post that hides the main tip behind a DM has little value on its own.\n\nThe post can teach the action. A follow up can help someone adapt it.\n\nShow the setting in public and offer the editable template to people who need it.\n\nWhat extra would you actually ask for after reading a useful post?",
+      "first_reply": "Keep the public example complete enough to try without sending a message.",
+      "reply_text": "Keep the public example complete enough to try without sending a message."
     },
     {
       "id": "th_72_contrast_design",
       "pillar": "hook_truth",
       "topic_tag": "Creator Tips",
-      "text": "Pale gray text over a busy gradient looks acceptable on a wide studio monitor and vanishes on a dim phone screen outside.\n\nRun a quick legibility check before exporting:\n- Shrink the card down to postage-stamp size.\n- Check text contrast without zooming in.\n- Keep body copy brief and cleanly spaced.\n\nLegible beats clever every single time. Do you preview your graphics on your phone before posting?"
+      "text": "A line of gray type can look readable until it lands over a bright frame.\n\nContrast depends on the text and what sits immediately behind it.\n\nPreview the brightest shot on a phone and add a solid backing where letters disappear.\n\nWhere does your caption lose contrast most often?",
+      "first_reply": "Check the lightest and darkest frames rather than judging the opening alone.",
+      "reply_text": "Check the lightest and darkest frames rather than judging the opening alone."
     },
     {
       "id": "th_73_story_polls",
       "pillar": "framework",
       "topic_tag": "Instagram Growth",
-      "text": "Reels introduce you to strangers. Stories deepen trust with people who already chose to follow.\n\nStop dumping links onto blank Story slides and start using simple two-option polls:\n- Ask which editing bottleneck slows them down most.\n- Ask which breakdown they want filmed tomorrow.\n\nOne tap tells you what to make next without guessing. What question would you put in a Story poll today?",
-      "reply_text": "Turning the winning poll option into next week's first Reel guarantees you already have interested viewers waiting for it."
+      "text": "A Reel can bring in new viewers while a Story helps regulars tell you what they need next.\n\nDiscovery and feedback are separate jobs.\n\nAsk followers to choose between two real editing problems and film the one they pick.\n\nWhat two options would you put in a poll this week?",
+      "reply_text": "Use concrete choices so the answers point to a specific demo.",
+      "first_reply": "Use concrete choices so the answers point to a specific demo."
     },
     {
       "id": "th_74_pinned_comment_dwell",
       "pillar": "framework",
       "topic_tag": "Content Strategy",
-      "text": "A pinned comment can do real work without turning into a spam link.\n\nUse your pinned comment for one practical detail that didn't fit on screen:\n- The exact export dimensions.\n- A common edge case people ask about.\n- A direct question inviting their workflow setup.\n\nReaders who check comments stay longer and join the thread. How do you use pinned comments right now?"
+      "text": "A pinned comment can answer the detail you left out of the video.\n\nA follow up should add something the viewer can use. A repeated pitch takes up the same space.\n\nPin the exact export setting or the correction people keep asking for.\n\nWhat would your latest clip benefit from adding underneath?",
+      "first_reply": "Review the first few replies before deciding which clarification earns the pin.",
+      "reply_text": "Review the first few replies before deciding which clarification earns the pin."
     },
     {
       "id": "th_75_follower_goal_tool",
       "pillar": "tool_natural",
       "topic_tag": "Instagram Growth",
-      "text": "\"I want ten thousand followers\" is a wish. It isn't a plan you can execute on Tuesday morning.\n\nBreak the target into weekly habits instead:\n- Weekly uploads you can actually finish well.\n- Conversion checks on your bio and pinned posts.\n- Format audits on which posts brought real profile follows.\n\nSmall controllable numbers calm the process down. What weekly habit are you tracking right now?"
+      "text": "A follower target can be motivating and still leave Tuesday’s work undefined.\n\nThe target describes an outcome. A weekly habit gives you a way to work toward it.\n\nChoose one useful format, publish it twice and track profile visits alongside follows.\n\nWhat repeatable habit would you put on your own calendar?",
+      "first_reply": "Compare the same window each week so a single spike does not set the plan.",
+      "reply_text": "Compare the same window each week so a single spike does not set the plan."
     },
     {
       "id": "th_76_watch_loops",
       "pillar": "hook_truth",
       "topic_tag": "Video Editing",
-      "text": "Packing a three-part checklist into an eight-second clip works best when viewers want one second look to catch a detail.\n\nDo not force a cheesy trick loop:\n- Show clean, crisp visual steps quickly enough to stay engaging.\n- Keep text sharp inside the center safe zone.\n- Cut straight back to frame one without an outro fade.\n\nWhat makes you replay a short tutorial voluntarily?"
+      "text": "A short clip can be full of useful details and still move too fast to use.\n\nA replay can reward curiosity. Readable timing lets viewers catch the instruction in one pass.\n\nReveal the steps one at a time and hold the complete checklist at the end.\n\nWhich detail in your last clip deserved an extra second?",
+      "first_reply": "Time your own reading at normal speed before deciding how long to hold the final frame.",
+      "reply_text": "Time your own reading at normal speed before deciding how long to hold the final frame."
     },
     {
       "id": "th_77_break_200_300_ceiling",
       "pillar": "hook_truth",
       "topic_tag": "Video Editing",
-      "text": "Deleting a clip that stalled at low views erases your baseline. Learning from it and testing a tighter opener keeps momentum moving.\n\nBefore starting over on a stalled topic, check:\n- Can you trim the first two seconds of dead air?\n- Can you rewrite the frame-one text around the conflict?\n- Can you test a cleaner 4:5 or 9:16 crop?\n\nHave you ever recut an older clip and watched it land much better?",
-      "reply_text": "Keep the stalled original archived only if it broke your grid layout; otherwise leave it as signal and apply the lesson to the recut."
+      "text": "A Reel that stalls can still give you a baseline for the next edit.\n\nLow views describe distribution. A retention curve can show where interest changed.\n\nKeep the original, change the opening on a comparable clip and review both at the same age.\n\nWhat would you test first instead of deleting a slow post?",
+      "reply_text": "Avoid changing the cover, topic and opening all at once if you want to learn from it.",
+      "first_reply": "Avoid changing the cover, topic and opening all at once if you want to learn from it."
     },
     {
       "id": "th_78_collab_question",
       "pillar": "question",
       "topic_tag": "Creator Tips",
-      "text": "Growing completely solo in a vacuum makes every mistake take twice as long to spot.\n\nTwo small creators swapping honest feedback on each other's first two seconds catch blind spots immediately:\n- \"I didn't understand frame one muted.\"\n- \"Your caption line was hidden by the button.\"\n\nDo you have a creator peer who reviews your drafts before they go live?"
+      "text": "Working alone can make it hard to see where a tutorial stops making sense.\n\nA collaborator can bring a new example as well as a new audience.\n\nSwap one short draft and ask each other to point out the first unclear moment.\n\nWhat kind of creator would improve your next idea?",
+      "first_reply": "Agree on the audience and finished format before either person starts filming.",
+      "reply_text": "Agree on the audience and finished format before either person starts filming."
     },
     {
       "id": "th_79_whatsapp_link_tool",
       "pillar": "tool_natural",
       "topic_tag": "Creator Tips",
-      "text": "Asking a busy prospect to copy a phone number, open contacts, save it, and start a chat drops half of warm inquiries before hello.\n\nRemove steps wherever people reach out:\n- One clean direct message link.\n- A pre-filled opener naming what they are asking about.\n- Clear response hours right in the bio.\n\nWhere is the biggest friction in how people contact you right now?"
+      "text": "A prospective customer may need several taps just to start a WhatsApp chat.\n\nA contact number gives people information. A chat link opens the next step directly.\n\nTest the link on a phone without the contact saved and keep the draft message optional.\n\nWhere do people get stuck when they try to reach you?",
+      "first_reply": "Open the link yourself after pasting it into the profile or page where it will live.",
+      "reply_text": "Open the link yourself after pasting it into the profile or page where it will live."
     },
     {
       "id": "th_80_pacing_rule",
       "pillar": "hook_truth",
       "topic_tag": "Video Editing",
-      "text": "In a faceless screen tutorial, a static frame for six seconds feels frozen on mobile.\n\nKeep visual motion gentle and purposeful:\n- Highlight the exact button or line you are talking about.\n- Shift smoothly to the before-and-after crop every couple of seconds.\n- Keep typography steady so eyes never chase jumping words.\n\nWhat keeps a faceless tutorial engaging for you?"
+      "text": "A static screen can feel frozen while a viewer waits for the next instruction.\n\nMotion should direct the eye to a change. Constant movement makes settings harder to read.\n\nMove in as the cursor reaches the button, then hold on the result.\n\nWhich moment in your tutorials deserves a deliberate pause?",
+      "first_reply": "Keep the crop steady while you show the exact numbers someone needs to copy.",
+      "reply_text": "Keep the crop steady while you show the exact numbers someone needs to copy."
     },
     {
       "id": "th_81_giveaway_integrity",
       "pillar": "tool_natural",
       "topic_tag": "Creator Tips",
-      "text": "Vague giveaways with no clear closing time or selection rule hurt trust faster than they grow a page.\n\nIf you ever run a community giveaway, publish the basics upfront:\n- Exact closing date and timezone.\n- Simple entry criteria that fit real followers.\n- Transparent, verifiable selection when it closes.\n\nHow do you keep community promos honest and uncluttered?"
+      "text": "A giveaway can create confusion when people learn the rules after entering.\n\nThe prize motivates entry. Clear eligibility and selection rules tell people what to expect.\n\nState the closing time, eligible entries and how the winner will be chosen before opening it.\n\nWhat rule would you want clarified before entering a giveaway?",
+      "first_reply": "Keep a record of the rules and selection so you can answer questions consistently.",
+      "reply_text": "Keep a record of the rules and selection so you can answer questions consistently."
     },
     {
       "id": "th_82_first_1000",
       "pillar": "framework",
       "topic_tag": "Instagram Growth",
-      "text": "Getting your first thousand real followers rarely comes from one lucky viral clip. It comes from clarity.\n\nLock three pieces early:\n- One repeatable problem your audience hits every week.\n- Clear visual hooks that work muted.\n- Three pinned posts that explain your value in ten seconds.\n\nWhen those align, steady views actually stick. Which piece took you longest to figure out?"
+      "text": "A small account can attract the right people before any post goes viral.\n\nReach gets a stranger to the page. A consistent promise gives them a reason to stay.\n\nChoose one audience problem and publish several examples at different levels of difficulty.\n\nWhat would make someone return to your page after their first visit?",
+      "first_reply": "Pin a simple starting point so new viewers can see where the series begins.",
+      "reply_text": "Pin a simple starting point so new viewers can see where the series begins."
     },
     {
       "id": "th_83_swipe_curiosity",
       "pillar": "hook_truth",
       "topic_tag": "Instagram Growth",
-      "text": "Explaining the entire answer on Carousel Slide 1 leaves the viewer with zero reason to swipe.\n\nUse Slide 1 to frame the tension clearly instead:\nSlide 1: Name the exact problem and who hits it.\nSlide 2: Deliver the first concrete fix immediately.\n\nGive value early while saving the full breakdown for the swipe. How do you test if your Slide 1 earns the swipe?"
+      "text": "A carousel can lose momentum when slide one tries to do the whole job.\n\nThe cover should name the question. The next slide should start answering it.\n\nPut one useful claim on the cover and show its first example immediately after.\n\nWhat would make you swipe from your latest cover?",
+      "first_reply": "Make slide two useful on its own so the reader can enter the idea there.",
+      "reply_text": "Make slide two useful on its own so the reader can enter the idea there."
     },
     {
       "id": "th_84_tool_ideas_q",
       "pillar": "question",
       "topic_tag": "AI Tools",
-      "text": "Before paying for another AI or creator tool subscription, give it one messy real task from your actual week.\n\nTest the same brief across two tools and check:\n- How much did you have to rewrite or fix?\n- Can you export the asset cleanly in the size you need?\n- Would you trust it on a busy deadline day?\n\nWhat messy weekly task would you use as your test?"
+      "text": "A creator tool can look great in a demo and fail on the files you actually use.\n\nA feature list describes possibilities. A finished export shows whether it fits your workflow.\n\nTry your messiest real task, then time how long it takes to get a usable result.\n\nWhat task would you use to test a new tool this week?",
+      "first_reply": "Include the time spent exporting or repairing the result in the comparison.",
+      "reply_text": "Include the time spent exporting or repairing the result in the comparison."
     },
     {
       "id": "th_85_tg_growth_tip",
       "pillar": "framework",
       "topic_tag": "Content Strategy",
-      "text": "Running a Telegram channel as an automated link feed trains members to mute notifications in a week.\n\nShare the full actionable tip inside the message first:\n- Give the concrete checklist or example right in Telegram.\n- Start real discussions in the linked chat without spamming.\n- Share a site link only when there is an interactive utility waiting there.\n\nHow do you keep a community channel genuinely worth reading?",
-      "reply_text": "Posts that people can read, save, or forward intact inside Telegram build much stronger retention than bare headline-plus-URL drops."
+      "text": "A Telegram channel full of links asks members to leave before they get anything useful.\n\nA complete tip rewards opening the post. A link can extend it when someone needs the next step.\n\nWrite one useful instruction in the message and attach the tool only if it helps apply it.\n\nWhat kind of channel post do you actually save or forward?",
+      "reply_text": "Read the message without tapping the link and check whether it still teaches something.",
+      "first_reply": "Read the message without tapping the link and check whether it still teaches something."
     },
     {
       "id": "th_86_tt_engagement_tool",
       "pillar": "tool_natural",
       "topic_tag": "Video Editing",
-      "text": "Two short clips can pull the exact same view count and mean completely different things for your page.\n\nLook past the raw number to three signals:\n- Average watch time relative to clip length.\n- Saves and forwards per view.\n- Comments referencing the actual fix.\n\nOne sparks vanity numbers; the other builds real authority. Which retention signal do you watch closest?"
+      "text": "Two TikTok clips with the same views can give you different reasons to make a sequel.\n\nViews help measure exposure. Saves, comments and profile visits describe different next steps.\n\nCompare similar clips and look at the action closest to each clip’s goal.\n\nWhich response tells you your short clip did its job?",
+      "first_reply": "Pick the action you care about before checking the results.",
+      "reply_text": "Pick the action you care about before checking the results."
     },
     {
       "id": "th_87_comment_prompts",
       "pillar": "contrast",
       "topic_tag": "Content Strategy",
-      "text": "Ending a post with \"Thoughts?\" asks the reader to invent a conversation from scratch. Most keep scrolling.\n\nEnd with a specific choice instead:\nWeak: \"Let me know what you think!\"\nBetter: \"Which habit wastes more time in your edit: trimming pauses or picking cover frames?\"\n\nSpecific questions earn specific answers. What question got your best comment thread recently?"
+      "text": "“Thoughts?” asks readers to decide what conversation you meant to start.\n\nAn open question can work when the post gives people a concrete decision to discuss.\n\nAsk which of two edits they would keep and invite them to explain why.\n\nWhich prompt got you a better answer than a generic request for thoughts?",
+      "first_reply": "A real example lets people answer even when they have never tried your tool.",
+      "reply_text": "A real example lets people answer even when they have never tried your tool."
     },
     {
       "id": "th_88_caption_ideas_tool",
       "pillar": "tool_natural",
       "topic_tag": "AI Tools",
-      "text": "Staring at a blank caption box after finishing an edit happens when you try to write the caption before knowing the post's single takeaway.\n\nDraft it in three quick lines instead:\nLine 1: Name the visual mistake from frame one.\nMiddle: Give the concrete fix in plain language.\nLast line: Ask one genuine question.\n\nUsing AI as a rough draft starter works best when you supply the real example first. How do you draft your captions?"
+      "text": "The caption box is harder to fill when the video promises several takeaways.\n\nA caption can explain what to do next. It works best around one clear result.\n\nWrite one sentence for the result and one detail viewers can copy into their own edit.\n\nWhat is the one line your latest video needed under it?",
+      "first_reply": "Put any optional detail after the main sentence so the opening still reads on its own.",
+      "reply_text": "Put any optional detail after the main sentence so the opening still reads on its own."
     },
     {
       "id": "th_89_week_experiment",
       "pillar": "framework",
       "topic_tag": "Content Strategy",
-      "text": "Changing your hook, lighting, length, and posting time all in the same week makes it impossible to know what actually helped.\n\nTest one variable per week instead:\nWeek 1: Tighter frame-one conflict.\nWeek 2: Cleaner safe-zone subtitle placement.\nWeek 3: Simpler 4:5 cover framing.\n\nCalm iteration beats constant reinvention. What single variable are you testing this week?"
+      "text": "A week of changing everything can give you results you cannot explain.\n\nA comparison needs a clear difference. Extra changes make the explanation harder.\n\nKeep the format, length and topic steady while testing one new opening.\n\nWhat single change would you test next week?",
+      "first_reply": "Write the result you will look for before the post goes live.",
+      "reply_text": "Write the result you will look for before the post goes live."
     },
     {
       "id": "th_90_open_clinic_q",
       "pillar": "question",
       "topic_tag": "Creator Tips",
-      "text": "A quick Friday audit for your creator workflow:\n\nOpen your drafts folder and pick the one post you have been putting off because it feels slightly unclear.\n\nCheck three things:\n- Can you state the main point in one plain sentence?\n- Does frame one work silently?\n- Is the closing question worth answering?\n\nIf you fixed one draft today before weekend publishing, which bottleneck would you tackle first?"
+      "text": "A creator workflow can still feel slow after you find faster editing tools.\n\nThe delay might be choosing the idea, filming it or deciding what is ready.\n\nPick the stage where work piles up and show one example of a task that keeps getting stuck.\n\nWhere in your process would ten minutes of help matter most?",
+      "first_reply": "Name the last completed step before the work stops so someone can suggest a specific fix.",
+      "reply_text": "Name the last completed step before the work stops so someone can suggest a specific fix."
     }
   ]
 }
