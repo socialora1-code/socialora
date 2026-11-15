@@ -10,6 +10,7 @@ import {
   type Service,
   type Tier,
 } from '@/lib/catalog'
+import { normalizeFacebookProfile } from '@/lib/free-facebook-followers'
 
 export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
@@ -31,6 +32,7 @@ const NOT_USERNAMES = new Set(['p', 'reel', 'reels', 'stories', 'explore', 'tv',
 export function normalizeProfile(platform: Platform, raw: string): string | null {
   const value = raw.trim()
   if (value.length < 2 || value.length > 300) return null
+  if (platform.id === 'facebook') return normalizeFacebookProfile(value)?.link ?? null
 
   if (!LOOKS_LIKE_URL.test(value)) {
     return USERNAME_PATTERN.test(value) ? (value.startsWith('@') ? value : `@${value}`) : null

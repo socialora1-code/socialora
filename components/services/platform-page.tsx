@@ -11,6 +11,7 @@ const PAGE_HEADINGS: Partial<Record<PlatformId, string>> = {
   youtube: 'Buy YouTube Views, Watch Time & Subscribers',
   x: 'Buy X (Twitter) Followers & Views',
   telegram: 'Buy Telegram Members & Channel Subscribers',
+  facebook: 'Buy Facebook Followers',
 }
 
 export function PlatformPage({ platformId }: { platformId: PlatformId }) {

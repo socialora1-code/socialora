@@ -9,9 +9,9 @@ type Offer = {
   placeholder: string
   action: string
   success: string
-  upgrade: string
-  packagesHref: string
-  orderHref: string
+  upgrade?: string
+  packagesHref?: string
+  orderHref?: string
 }
 
 export function FreeOfferForm({ offer }: { offer: Offer }) {
@@ -60,14 +60,16 @@ export function FreeOfferForm({ offer }: { offer: Offer }) {
         </form>
       )}
       <div aria-live="polite">
-        {result !== 'ready' && (
+        {(result === 'success' || (result === 'claimed' && offer.upgrade)) && (
           <div className="mt-4 rounded-2xl border border-primary/40 bg-primary/5 p-5">
             {result === 'success' && <h2 className="text-xl font-semibold">{offer.success}</h2>}
-            <p className="mt-2 text-sm text-muted-foreground">{offer.upgrade}</p>
-            <div className="mt-4 flex flex-wrap gap-3">
-              <Link href={offer.packagesHref} className="inline-flex min-h-11 items-center rounded-xl bg-primary px-4 font-semibold text-primary-foreground">Explore packages</Link>
-              <Link href={offer.orderHref} className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 font-medium">Choose a paid package</Link>
-            </div>
+            {offer.upgrade && <p className="mt-2 text-sm text-muted-foreground">{offer.upgrade}</p>}
+            {(offer.packagesHref || offer.orderHref) && (
+              <div className="mt-4 flex flex-wrap gap-3">
+                {offer.packagesHref && <Link href={offer.packagesHref} className="inline-flex min-h-11 items-center rounded-xl bg-primary px-4 font-semibold text-primary-foreground">Explore packages</Link>}
+                {offer.orderHref && <Link href={offer.orderHref} className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 font-medium">Choose a paid package</Link>}
+              </div>
+            )}
           </div>
         )}
       </div>

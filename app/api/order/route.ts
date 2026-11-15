@@ -3,9 +3,10 @@ import { buildApprovalUrl, createApprovalToken, profileToLink, profileToUsername
 import { STANDARD_PACKAGE_NAME } from '@/lib/catalog'
 import { getInboxAddress, renderTableEmail, sendEmail } from '@/lib/email'
 import { formatQuantity, formatUSD } from '@/lib/format'
-import { serviceExtras } from '@/lib/panels'
+import { getPanelKey, serviceExtras } from '@/lib/panels'
 import { createInvoice, saveOrder } from '@/lib/pay-store'
 import { COMMISSION_PERCENT, normalizeRefCode } from '@/lib/referral'
+import { reliableSupportsQuantity } from '@/lib/reliable-smm'
 import { SITE } from '@/lib/site'
 import { validateOrder } from '@/lib/validation'
 
@@ -78,6 +79,13 @@ export async function POST(request: Request) {
   }
 
   const order = result.value
+  if (order.service.panel === 'reliablesmm') {
+    const key = getPanelKey('reliablesmm')
+    if (!key || !order.service.panelServiceId ||
+        !(await reliableSupportsQuantity(key, String(order.service.panelServiceId), order.quantity))) {
+      return NextResponse.json({ ok: false, error: 'This service is temporarily unavailable. No payment was requested.' }, { status: 503 })
+    }
+  }
   const referrer = await lookupReferrer(body, order.email)
   const reference = generateReference()
   const now = new Date()

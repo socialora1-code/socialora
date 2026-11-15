@@ -10,7 +10,7 @@
 
 import type { PanelId } from '@/lib/panels'
 
-export type PlatformId = 'instagram' | 'tiktok' | 'youtube' | 'x' | 'telegram'
+export type PlatformId = 'instagram' | 'tiktok' | 'youtube' | 'x' | 'telegram' | 'facebook'
 export type ServiceId =
   | 'followers'
   | 'views'
@@ -857,6 +857,42 @@ export const PLATFORMS: readonly Platform[] = [
           'Mixed global quality, all accounts have profile photos',
           'Subscribers come from Telegram search',
           'Needs: channel link. Groups are not supported',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'facebook',
+    name: 'Facebook',
+    path: '/facebook',
+    tagline: 'Followers with lifetime refill',
+    description: 'Facebook followers from global MQ profiles, with lifetime refill and clear USD pricing.',
+    profileFieldLabel: 'Public Facebook link',
+    profilePlaceholder: 'https://www.facebook.com/username',
+    allowedHosts: ['facebook.com'],
+    services: [
+      {
+        id: 'followers',
+        label: 'Followers',
+        unit: 'followers',
+        target: 'profile',
+        summary: 'Global Facebook followers from MQ profiles with lifetime refill.',
+        delivery: 'Start Time: 0-10 Minutes. Speed: Day 300K.',
+        refill: 'Lifetime',
+        defaultQuantity: 5000,
+        pricing: { kind: 'flat', options: flatOptions([5000, 10000, 25000, 50000, 100000, 150000, 200000, 250000, 300000], 300, false) },
+        panelServiceId: 7234,
+        panel: 'reliablesmm',
+        notes: [
+          'Location: Global',
+          'Quality: MQ Profiles',
+          'Start Time: 0-10 Minutes',
+          'Speed: Day 300K',
+          'Refill Time: Lifetime ♻️',
+          'Drop Rate: Not too much expected',
+          'Example Link: https://www.facebook.com/username',
+          'In case of high demand for the service, there may be changes in speed and start time.',
+          'Do not place the second order on the same link before your order is completed in the system.',
         ],
       },
     ],

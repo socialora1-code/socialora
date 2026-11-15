@@ -25,6 +25,8 @@ const ROUTES = [
   '/telegram',
   '/free-instagram-views',
   '/free-telegram-members',
+  '/free-facebook-followers',
+  '/facebook',
   '/buy-usa-instagram-followers',
   '/buy-spanish-instagram-followers',
   '/buy-arabic-instagram-followers',
@@ -45,6 +47,7 @@ const ROUTES = [
 ]
 
 const PLATFORM_ROUTES = [
+  '/facebook',
   '/instagram',
   '/tiktok',
   '/youtube',
