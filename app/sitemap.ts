@@ -24,6 +24,7 @@ const ROUTES = [
   '/x',
   '/telegram',
   '/free-instagram-views',
+  '/free-telegram-members',
   '/buy-usa-instagram-followers',
   '/buy-spanish-instagram-followers',
   '/buy-arabic-instagram-followers',

@@ -45,6 +45,15 @@ export function Hero() {
 
           <FreeViewsForm />
 
+          <Link href="/free-telegram-members"
+            className="mt-4 flex items-center justify-between gap-4 rounded-2xl border border-primary/40 bg-primary/5 p-4 transition hover:bg-primary/10">
+            <span>
+              <span className="block font-semibold">Free Telegram Members</span>
+              <span className="text-sm text-muted-foreground">Request 10 members for your public channel or group.</span>
+            </span>
+            <span className="shrink-0 text-sm font-semibold text-primary">Claim offer</span>
+          </Link>
+
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/order"
