@@ -13,12 +13,12 @@ export const SITE = {
 } as const
 
 export const MAIN_NAV = [
-  { href: '/free-instagram-views', label: 'Free Services' },
   { href: '/instagram', label: 'Instagram' },
   { href: '/tiktok', label: 'TikTok' },
   { href: '/youtube', label: 'YouTube' },
   { href: '/x', label: 'X' },
   { href: '/telegram', label: 'Telegram' },
+  { href: '/free-instagram-views', label: 'Free Views' },
   { href: '/tools', label: 'Free Tools' },
   { href: '/custom-request', label: 'Custom Request' },
   { href: '/track', label: 'Track' },
