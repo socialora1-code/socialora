@@ -8,6 +8,8 @@
  * All prices are stored in US cents to avoid floating-point rounding issues.
  */
 
+import type { PanelId } from '@/lib/panels'
+
 export type PlatformId = 'instagram' | 'tiktok' | 'youtube' | 'x' | 'telegram'
 export type ServiceId =
   | 'followers'
@@ -112,7 +114,7 @@ export interface Service {
   /** Service number at the supplier panel (used later for automation). Not a secret. */
   panelServiceId?: number
   /** Which supplier panel receives the order. Defaults to smmwiz. */
-  panel?: 'smmwiz' | 'hepsisosyal'
+  panel?: PanelId
   /** The panel needs only the username, not a link. */
   usernameOnly?: boolean
   /** Fixed package: one option, no quantity picker. */

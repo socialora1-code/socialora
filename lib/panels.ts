@@ -1,6 +1,6 @@
 import type { Service } from '@/lib/catalog'
 
-export type PanelId = 'smmwiz' | 'hepsisosyal'
+export type PanelId = 'smmwiz' | 'hepsisosyal' | 'reliablesmm'
 
 interface PanelConfig {
   url: string
@@ -10,10 +10,11 @@ interface PanelConfig {
 export const PANELS: Record<PanelId, PanelConfig> = {
   smmwiz: { url: 'https://smmwiz.com/api/v2', keyEnv: 'SMMWIZ_API_KEY' },
   hepsisosyal: { url: 'https://hepsisosyal.com/api/v2', keyEnv: 'SMM2_API_KEY' },
+  reliablesmm: { url: 'https://reliablesmm.com/api/v2', keyEnv: 'RELIABLE_API_KEY' },
 }
 
 export function isPanelId(value: unknown): value is PanelId {
-  return value === 'smmwiz' || value === 'hepsisosyal'
+  return typeof value === 'string' && Object.hasOwn(PANELS, value)
 }
 
 /** Old orders have no panel saved, so anything unknown means smmwiz. */
