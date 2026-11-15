@@ -40,6 +40,7 @@ export default function FreeTelegramMembersPage() {
         placeholder: '@yourchannel',
         action: 'Request 10 free members',
         inviteOfferName: 'free Telegram members',
+        inviteOffer: 'telegram',
         success: 'Order placed. Your 10 free members are queued for delivery.',
         upgrade: 'Need a larger order? Our professional Telegram Members package typically starts in 0 to 2 hours and includes a 30 day refill guarantee under the package terms.',
         packagesHref: '/telegram',

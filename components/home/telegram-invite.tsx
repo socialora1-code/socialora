@@ -1,12 +1,14 @@
 'use client'
 
 import { useEffect, useId, useRef } from 'react'
+import type { TelegramInviteOffer } from '@/lib/telegram-free-views'
 
-export function TelegramInvite({ open, onClose, onJoin, offerName = 'free views' }: {
+export function TelegramInvite({ open, onClose, onJoin, offerName = 'free views', offer }: {
   open: boolean
   onClose: () => void
   onJoin: () => void
   offerName?: string
+  offer?: TelegramInviteOffer
 }) {
   const dialog = useRef<HTMLDialogElement>(null)
   const title = useId()
@@ -27,7 +29,7 @@ export function TelegramInvite({ open, onClose, onJoin, offerName = 'free views'
       <p className="text-sm font-medium text-muted-foreground">Socialora Chat | Creator Growth &amp; Free Tools</p>
       <h3 id={title} className="mt-2 text-xl font-semibold leading-snug">Join our Telegram group to get {offerName}</h3>
       <p className="mb-5 mt-2 text-sm text-muted-foreground">Open the group in Telegram, join, then return here to claim your offer.</p>
-      <a href="/api/free-views/telegram/join" target="_blank" rel="noopener noreferrer" onClick={onJoin}
+      <a href={'/api/free-views/telegram/join' + (offer ? '?offer=' + offer : '')} target="_blank" rel="noopener noreferrer" onClick={onJoin}
         className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground hover:opacity-90">Join group</a>
     </dialog>
   )

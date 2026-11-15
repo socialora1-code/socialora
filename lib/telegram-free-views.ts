@@ -4,14 +4,24 @@ export const TELEGRAM_COOKIE = 'socialora_telegram_invite'
 export const SESSION_SECONDS = 90 * 24 * 60 * 60
 export const GROUP_URL = 'https://t.me/+Rl8KWCbkQoJiODQ0'
 
+export type TelegramInviteOffer = 'facebook' | 'telegram'
+
+export function isTelegramInviteOffer(value: string | null): value is TelegramInviteOffer {
+  return value === 'facebook' || value === 'telegram'
+}
+
+export function inviteCookieName(offer?: TelegramInviteOffer) {
+  return offer ? TELEGRAM_COOKIE + '_' + offer : TELEGRAM_COOKIE
+}
+
 export function telegramEnabled() {
   return process.env.FREE_VIEWS_TELEGRAM_ENABLED === 'true'
 }
 
-export function inviteSecret() {
+export function inviteSecret(offer?: TelegramInviteOffer) {
   const secret = process.env.FREE_VIEWS_TELEGRAM_BOT_TOKEN
   if (!secret) throw new Error('Telegram invitation is not configured')
-  return secret
+  return offer ? createHmac('sha256', secret).update('free-offer:' + offer).digest('hex') : secret
 }
 
 // This receipt records an invitation click, NOT Telegram identity or membership.

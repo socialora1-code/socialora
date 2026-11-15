@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useId, useState, type FormEvent } from 'react'
+import { useId, useState, type FormEvent } from 'react'
 import Link from 'next/link'
 import { TelegramInvite } from '@/components/home/telegram-invite'
+import type { TelegramInviteOffer } from '@/lib/telegram-free-views'
 
 type Offer = {
   endpoint: string
@@ -10,6 +11,7 @@ type Offer = {
   placeholder: string
   action: string
   inviteOfferName: string
+  inviteOffer: TelegramInviteOffer
   success: string
   upgrade?: string
   packagesHref?: string
@@ -22,41 +24,29 @@ export function FreeOfferForm({ offer }: { offer: Offer }) {
   const [result, setResult] = useState<'ready' | 'success' | 'claimed'>('ready')
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
-  const [telegram, setTelegram] = useState<{ enabled: boolean; configured: boolean; invited: boolean } | null>(null)
   const [showJoin, setShowJoin] = useState(false)
-
-  useEffect(() => {
-    const controller = new AbortController()
-    fetch('/api/free-views/telegram', { cache: 'no-store', signal: controller.signal })
-      .then(response => {
-        if (!response.ok) throw new Error('Unavailable')
-        return response.json()
-      })
-      .then(data => setTelegram(data))
-      .catch(() => {
-        if (!controller.signal.aborted) setError('Could not load the offer. Please refresh and try again.')
-      })
-    return () => controller.abort()
-  }, [])
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (busy || result === 'success' || !telegram) return
-    setNotice('')
-    if (telegram.enabled && !telegram.configured) {
-      setError('This offer is temporarily unavailable. Please try again later.')
-      return
-    }
-    if (telegram.enabled && !telegram.invited) {
-      setError('')
-      setShowJoin(true)
-      return
-    }
+    if (busy || result === 'success') return
     const link = new FormData(event.currentTarget).get('link')
     setBusy(true)
     setError('')
+    setNotice('')
     setResult('ready')
     try {
+      const status = await fetch('/api/free-views/telegram?offer=' + offer.inviteOffer, { cache: 'no-store' })
+      if (!status.ok) throw new Error('Invite status unavailable')
+      const invite = await status.json()
+      if (invite.enabled !== true || invite.configured !== true) {
+        setError('This offer is temporarily unavailable. Please try again later.')
+        return
+      }
+      if (invite.invited !== true) {
+        setShowJoin(true)
+        return
+      }
+
       const response = await fetch(offer.endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -66,7 +56,6 @@ export function FreeOfferForm({ offer }: { offer: Offer }) {
       if (response.ok && data.ok) setResult('success')
       else {
         if (data.code === 'TELEGRAM_INVITE_REQUIRED') {
-          setTelegram({ ...telegram, invited: false })
           setShowJoin(true)
         }
         setError(data.error || 'Please try again later.')
@@ -86,15 +75,14 @@ export function FreeOfferForm({ offer }: { offer: Offer }) {
           <label className="block text-sm font-medium" htmlFor={fieldId}>{offer.label}</label>
           <input className="w-full rounded-xl border border-border bg-background px-4 py-3"
             id={fieldId} name="link" required maxLength={120} placeholder={offer.placeholder} />
-          <button className="min-h-11 rounded-xl bg-primary px-5 font-semibold text-primary-foreground disabled:opacity-60" disabled={busy || !telegram}>
-            {busy ? 'Submitting...' : offer.action}
+          <button className="min-h-11 rounded-xl bg-primary px-5 font-semibold text-primary-foreground disabled:opacity-60" disabled={busy}>
+            {busy ? 'Please wait...' : offer.action}
           </button>
           {error && <p role="alert" className="text-sm text-muted-foreground">{error}</p>}
           {notice && <p role="status" className="text-sm text-muted-foreground">{notice}</p>}
         </form>
       )}
-      <TelegramInvite open={showJoin} offerName={offer.inviteOfferName} onClose={() => setShowJoin(false)} onJoin={() => {
-        setTelegram(current => current ? { ...current, invited: true } : current)
+      <TelegramInvite open={showJoin} offer={offer.inviteOffer} offerName={offer.inviteOfferName} onClose={() => setShowJoin(false)} onJoin={() => {
         setShowJoin(false)
         setError('')
         setNotice('After joining, return here and submit your request again.')

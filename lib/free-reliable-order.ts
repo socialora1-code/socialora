@@ -3,10 +3,10 @@ import { isIP } from 'node:net'
 import { cookies } from 'next/headers'
 import { getPanelKey } from '@/lib/panels'
 import { reliableRequest, reliableSupportsQuantity } from '@/lib/reliable-smm'
-import { TELEGRAM_COOKIE, telegramEnabled, inviteSecret, hasInviteReceipt, sameOrigin } from '@/lib/telegram-free-views'
+import { telegramEnabled, inviteCookieName, inviteSecret, hasInviteReceipt, sameOrigin, type TelegramInviteOffer } from '@/lib/telegram-free-views'
 
 type Offer = {
-  namespace: string
+  namespace: TelegramInviteOffer
   service: string
   quantity: number
   normalize: (raw: string) => { id: string; link: string } | null
@@ -41,12 +41,10 @@ export async function handleFreeReliableOrder(request: Request, offer: Offer) {
   }
   const channel = 'link' in body && typeof body.link === 'string' ? offer.normalize(body.link) : null
   if (!channel) return Response.json({ error: offer.invalidLink }, { status: 400 })
-  if (telegramEnabled()) {
-    if (!process.env.FREE_VIEWS_TELEGRAM_BOT_TOKEN) return unavailable()
-    const receipt = (await cookies()).get(TELEGRAM_COOKIE)?.value
-    if (!hasInviteReceipt(receipt, inviteSecret())) {
-      return Response.json({ ok: false, code: 'TELEGRAM_INVITE_REQUIRED', error: 'Open our Telegram group to continue.' }, { status: 403 })
-    }
+  if (!telegramEnabled() || !process.env.FREE_VIEWS_TELEGRAM_BOT_TOKEN) return unavailable()
+  const receipt = (await cookies()).get(inviteCookieName(offer.namespace))?.value
+  if (!hasInviteReceipt(receipt, inviteSecret(offer.namespace))) {
+    return Response.json({ ok: false, code: 'TELEGRAM_INVITE_REQUIRED', error: 'Open our Telegram group to continue.' }, { status: 403 })
   }
   const ip = request.headers.get('x-vercel-forwarded-for')?.trim()
   const key = getPanelKey('reliablesmm')

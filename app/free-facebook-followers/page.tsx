@@ -38,6 +38,7 @@ export default function FreeFacebookFollowersPage() {
         placeholder: 'https://www.facebook.com/yourpage',
         action: 'Request 10 free followers',
         inviteOfferName: 'free Facebook followers',
+        inviteOffer: 'facebook',
         success: 'Order placed. Your 10 free followers are queued for delivery.',
         upgrade: 'Need a larger order? Paid Facebook packages start at $15 for 5,000 followers. Choose a 365 day refill or lifetime refill.',
         packagesHref: '/facebook',
