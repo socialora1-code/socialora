@@ -12,13 +12,13 @@ export type ToolMenuGroup = {
 }
 
 const LINKS = [
+  { href: '/free-instagram-views', label: 'Free Services' },
   { href: '/', label: 'Home' },
   { href: '/instagram', label: 'Instagram' },
   { href: '/tiktok', label: 'TikTok' },
   { href: '/youtube', label: 'YouTube' },
   { href: '/x', label: 'X (Twitter)' },
   { href: '/telegram', label: 'Telegram' },
-  { href: '/free-instagram-views', label: 'Free Instagram Views' },
   { href: '/tools', label: 'Free Tools' },
   { href: '/custom-request', label: 'Custom Request' },
   { href: '/track', label: 'Track Order' },
