@@ -1,6 +1,7 @@
 import { ChevronDown } from 'lucide-react'
 import Link from 'next/link'
 import { Logo } from '@/components/site/logo'
+import { FreeServicesMenu } from '@/components/site/free-services-menu'
 import { MobileNav, type ToolMenuGroup } from '@/components/site/mobile-nav'
 import { buttonVariants } from '@/components/ui/button'
 import { MAIN_NAV } from '@/lib/site'
@@ -39,7 +40,9 @@ export function SiteHeader() {
         <nav aria-label="Main" className="hidden xl:block">
           <ul className="flex items-center gap-1">
             {MAIN_NAV.map((item) =>
-              item.href === '/tools' ? (
+              item.href === '/free-instagram-views' ? (
+                <li key={item.href}><FreeServicesMenu /></li>
+              ) : item.href === '/tools' ? (
                 <li key={item.href} className="group relative">
                   <Link
                     href="/tools"

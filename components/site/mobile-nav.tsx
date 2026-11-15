@@ -4,6 +4,7 @@ import { ChevronDown, Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { FreeServicesMenu } from '@/components/site/free-services-menu'
 
 export type ToolMenuGroup = {
   title: string
@@ -79,7 +80,9 @@ export function MobileNav({ toolGroups = [] }: { toolGroups?: ToolMenuGroup[] })
 
             <nav className="flex flex-1 flex-col px-5 py-4">
               {LINKS.map((item) =>
-                item.href === '/tools' && toolGroups.length > 0 ? (
+                item.href === '/free-instagram-views' ? (
+                  <FreeServicesMenu key={item.href} mobile onNavigate={() => setOpen(false)} />
+                ) : item.href === '/tools' && toolGroups.length > 0 ? (
                   <details key={item.label} className="border-b border-border">
                     <summary className="flex min-h-[60px] cursor-pointer list-none items-center justify-between text-lg font-semibold text-foreground [&::-webkit-details-marker]:hidden">
                       {item.label}
