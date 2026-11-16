@@ -111,7 +111,6 @@ const PALETTES = [
   },
 ];
 
-// 6 distinct warm stereo lo-fi / ambient profiles (76-94 BPM, different keys, sub-bass & vinyl dust)
 function hashString(str) {
   let h = 2166136261;
   const s = String(str || '');
@@ -712,24 +711,36 @@ const REEL_THEMES = [
 
 const AUDIO_PROFILES = [
   {
-    name: 'Porcelain Lo-Fi', bpm: 82, swing: .12, pad: .15,
-    chords: [[53, 57, 60, 64], [50, 53, 57, 60], [46, 53, 57, 62], [48, 55, 58, 62]],
-    bass: [41, 38, 34, 36], kicks: [0, 5], taps: [2, 6],
+    name: 'Deep House Pluck Groove', bpm: 120, swing: .05,
+    chords: [[60, 63, 67, 70], [56, 60, 63, 67], [58, 62, 65, 70], [55, 58, 62, 65]],
+    roots: [36, 44, 46, 43], kicks: [0, 4, 8, 12], bass: [2, 6, 10, 14],
+    claps: [4, 12], hats: [2, 6, 10, 14],
+    motifs: [[[1, 2], [5, 3], [10, 1], [14, 2]], [[2, 3], [7, 2], [11, 1]]],
+    padLevel: .037, pluckLevel: .105, pluckDecay: 8.8, pluckColor: .25,
   },
   {
-    name: 'Late Night Pocket', bpm: 90, swing: .16, pad: .11,
-    chords: [[52, 55, 59, 62], [48, 52, 55, 59], [55, 59, 62, 66], [50, 54, 57, 60]],
-    bass: [40, 36, 43, 38], kicks: [0, 3, 6], taps: [2, 6],
+    name: 'Warm Lo Fi Chill Beat', bpm: 88, swing: .24,
+    chords: [[57, 60, 64, 67], [53, 57, 60, 64], [55, 59, 62, 65], [52, 55, 59, 62]],
+    roots: [45, 41, 43, 40], kicks: [0, 7, 10], bass: [0, 7, 11],
+    claps: [4, 12], hats: [2, 5, 8, 11, 14],
+    motifs: [[[0, 1], [3, 2], [9, 3]], [[2, 2], [6, 1], [11, 0], [14, 2]]],
+    padLevel: .048, pluckLevel: .081, pluckDecay: 4.9, pluckColor: .16,
   },
   {
-    name: 'After Hours Lo-Fi', bpm: 86, swing: .14, pad: .18,
-    chords: [[53, 57, 60, 64], [48, 52, 55, 62], [50, 53, 57, 60], [46, 50, 53, 57]],
-    bass: [41, 36, 38, 34], kicks: [0, 5], taps: [2, 6],
+    name: 'Upbeat Creator Synth Pop', bpm: 132, swing: 0,
+    chords: [[62, 66, 69, 73], [57, 61, 64, 69], [59, 62, 66, 69], [55, 59, 62, 66]],
+    roots: [38, 45, 47, 43], kicks: [0, 4, 8, 11, 14], bass: [0, 3, 6, 8, 11, 14],
+    claps: [4, 12], hats: [2, 5, 6, 10, 13, 14],
+    motifs: [[[0, 1], [2, 2], [5, 3], [8, 2], [11, 1], [14, 2]], [[1, 3], [4, 2], [7, 1], [10, 2], [13, 0]]],
+    padLevel: .032, pluckLevel: .111, pluckDecay: 6.5, pluckColor: .38,
   },
   {
-    name: 'Amber Dusk', bpm: 78, swing: .10, pad: .21,
-    chords: [[55, 58, 62, 65], [51, 55, 58, 62], [58, 62, 65, 69], [53, 57, 60, 63]],
-    bass: [43, 39, 46, 41], kicks: [0, 4], taps: [2, 7],
+    name: 'Modern Minimal Bass', bpm: 106, swing: .10,
+    chords: [[58, 61, 65, 68], [54, 58, 61, 65], [56, 60, 63, 65], [53, 56, 60, 63]],
+    roots: [46, 42, 44, 41], kicks: [0, 6, 11], bass: [0, 4, 8, 13],
+    claps: [8], hats: [3, 7, 10, 14],
+    motifs: [[[3, 1], [12, 2]], [[2, 3], [9, 1], [14, 0]]],
+    padLevel: .031, pluckLevel: .064, pluckDecay: 9.2, pluckColor: .20,
   },
 ];
 
@@ -910,79 +921,104 @@ function buildReelHtml({ sheet, timing, theme }) {
 </html>`;
 }
 
-function writeReelAudio(file, postId, duration, timing, fps) {
-  const id = hashString(postId);
-  const profile = AUDIO_PROFILES[id % AUDIO_PROFILES.length];
+function writeReelAudio(file, postIndex, duration, timing, fps) {
+  const profile = AUDIO_PROFILES[postIndex % AUDIO_PROFILES.length];
   const rate = 48000;
   const count = Math.round(duration * rate);
   const left = new Float32Array(count);
   const right = new Float32Array(count);
-  const beat = 60 / profile.bpm;
+  const stepTime = 60 / profile.bpm / 4;
   const tau = 2 * Math.PI;
-  const toHz = midi => 440 * 2 ** ((midi - 69) / 12);
-  const shift = (id >>> 8) % 5 - 2;
-  let noiseSeed = id || 1;
+  const hz = midi => 440 * 2 ** ((midi - 69) / 12);
+  let noiseSeed = postIndex + 1;
+
   function noise() {
     noiseSeed = (Math.imul(noiseSeed, 1664525) + 1013904223) >>> 0;
     return noiseSeed / 2147483648 - 1;
   }
 
-  function mix(start, length, pan, volume, voice, attack = .015) {
+  function mix(start, length, pan, volume, voice, attack, release) {
     const first = Math.round(start * rate);
     const end = Math.min(count - first, Math.round(length * rate));
     const gainL = Math.sqrt((1 - pan) / 2) * volume;
     const gainR = Math.sqrt((1 + pan) / 2) * volume;
     for (let sample = 0; sample < end; sample++) {
       const t = sample / rate;
-      const fade = Math.min(1, t / attack, (length - t) / .09);
-      const signal = voice(t) * fade;
+      const fade = Math.min(1, t / attack, (length - t) / release);
+      const envelope = fade * fade * (3 - 2 * fade);
+      const signal = voice(t) * envelope;
       left[first + sample] += signal * gainL;
       right[first + sample] += signal * gainR;
     }
   }
 
-  for (let bar = 0; bar * beat * 4 < duration; bar++) {
-    const start = bar * beat * 4;
-    const index = bar % profile.chords.length;
-    const chord = profile.chords[index];
-    for (const [tone, midi] of chord.entries()) {
-      const hz = toHz(midi + shift);
-      mix(start, beat * 4.55, (tone - 1.5) * .25, .083, t => {
-        const phase = tau * hz * t + tone * .43;
-        const warmth = .9 + .1 * Math.sin(tau * .42 * t + tone);
-        return (Math.sin(phase) + profile.pad * Math.sin(phase * 2) +
-          .025 * Math.sin(phase * 3)) * warmth * Math.exp(-t * .14);
-      }, .29 + tone * .035);
+  for (let bar = 0; bar * 16 * stepTime < duration; bar++) {
+    const start = bar * 16 * stepTime;
+    const timeAt = step => start + (step + step % 2 * profile.swing) * stepTime;
+    const chordIndex = bar % profile.chords.length;
+    const chord = profile.chords[chordIndex];
+
+    for (const [tone, note] of chord.entries()) {
+      const pitch = tau * hz(note);
+      mix(start, 16 * stepTime + .42, (tone - 1.5) * .26, profile.padLevel, t => {
+        const phase = pitch * t;
+        return .74 * Math.sin(phase) + .16 * Math.sin(2 * phase) + .10 * Math.sin(phase * 1.003);
+      }, .34, .52);
     }
+
     for (const step of profile.kicks) {
-      const time = start + (step + (step % 2 ? profile.swing : 0)) * beat / 2;
-      const root = toHz(profile.bass[index] + shift);
-      mix(time, .31, 0, .215, t =>
-        Math.sin(tau * (44 * t + .65 * (1 - Math.exp(-27 * t)))) * Math.exp(-t * 14), .006);
-      mix(time + .024, beat * .96, 0, .145, t =>
-        (Math.sin(tau * root * t) + .09 * Math.sin(tau * root * 2 * t)) * Math.exp(-t * 2.6), .047);
+      mix(timeAt(step), .26, 0, .25, t => {
+        const phase = tau * (54 * t + .69 * (1 - Math.exp(-38 * t)));
+        return Math.sin(phase) * Math.exp(-t * 15);
+      }, .007, .05);
     }
-    for (const step of profile.taps) {
-      let filtered = 0;
-      mix(start + step * beat / 2, .18, .18, .061, t => {
-        filtered += .085 * (noise() - filtered);
-        return (filtered * 1.8 + .30 * Math.sin(tau * 133 * t)) * Math.exp(-t * 18);
-      }, .009);
+
+    const bassPitch = tau * hz(profile.roots[chordIndex]);
+    for (const [index, step] of profile.bass.entries()) {
+      const next = profile.bass[index + 1] ?? 16 + profile.bass[0];
+      const offset = profile.kicks.includes(step) ? .045 : .008;
+      const length = (next - step) * stepTime * .85;
+      mix(timeAt(step) + offset, length, 0, .17, t =>
+        (.78 * Math.sin(bassPitch * t) + .22 * Math.sin(bassPitch * 2 * t)) * Math.exp(-t * 2), .045, .075);
+    }
+
+    for (const [step, tone] of profile.motifs[bar % profile.motifs.length]) {
+      const pitch = tau * hz(chord[tone] + 12);
+      mix(timeAt(step), .47, (tone - 1.5) * .21, profile.pluckLevel, t => {
+        const phase = pitch * t;
+        return (Math.sin(phase) + profile.pluckColor * Math.sin(2 * phase) * Math.exp(-t * 12)) * Math.exp(-t * profile.pluckDecay);
+      }, .018, .095);
+    }
+
+    for (const step of profile.claps) {
+      let smooth = 0;
+      mix(timeAt(step), .17, .07, .083, t => {
+        smooth += .16 * (noise() - smooth);
+        return (smooth * 1.3 + .15 * Math.sin(tau * 172 * t)) * Math.exp(-t * 23);
+      }, .011, .04);
+    }
+    for (const step of profile.hats) {
+      let fast = 0;
+      let slow = 0;
+      mix(timeAt(step), .095, step % 4 ? .28 : -.28, .061, t => {
+        const n = noise();
+        fast += .32 * (n - fast);
+        slow += .07 * (n - slow);
+        return (fast - slow) * Math.exp(-t * 38);
+      }, .008, .028);
     }
   }
+
   const accents = timing.accents.map(frame => frame / fps);
   for (const [index, start] of accents.entries()) {
-    const frequency = 104 + index * 13;
-    let filtered = 0;
-    mix(start, .24, index % 2 ? .18 : -.18, .084, t => {
-      filtered += .045 * (noise() - filtered);
-      return (Math.sin(tau * frequency * t) * .7 + filtered * 2) * Math.exp(-t * 15);
-    }, .013);
+    const pitch = tau * hz(profile.chords[0][index % 4] + 12);
+    mix(start, .25, index % 2 ? .32 : -.32, .032, t =>
+      Math.sin(pitch * t) * Math.exp(-t * 9), .026, .06);
   }
 
   let peak = 0;
   for (let i = 0; i < count; i++) peak = Math.max(peak, Math.abs(left[i]), Math.abs(right[i]));
-  const gain = .66 / Math.max(.24, peak);
+  const gain = .72 / Math.max(.24, peak);
   const wav = Buffer.alloc(44 + count * 4);
   wav.write('RIFF', 0);
   wav.writeUInt32LE(wav.length - 8, 4);
@@ -997,13 +1033,32 @@ function writeReelAudio(file, postId, duration, timing, fps) {
   wav.write('data', 36);
   wav.writeUInt32LE(count * 4, 40);
   for (let i = 0; i < count; i++) {
-    const time = i / rate;
-    const fade = Math.min(1, time / .040, (duration - time) / .38);
-    wav.writeInt16LE(Math.round(left[i] * gain * fade * 32767), 44 + i * 4);
-    wav.writeInt16LE(Math.round(right[i] * gain * fade * 32767), 46 + i * 4);
+    wav.writeInt16LE(Math.round(left[i] * gain * 32767), 44 + i * 4);
+    wav.writeInt16LE(Math.round(right[i] * gain * 32767), 46 + i * 4);
   }
   fs.writeFileSync(file, wav);
   return { audioProfile: profile.name, bpm: profile.bpm, accents };
+}
+
+function reelAudioOptions(duration) {
+  const filters = [
+    'lowpass=f=12000',
+    'highpass=f=45',
+    'afade=t=in:st=0:d=0.35',
+    'afade=t=out:st=' + (duration - .6).toFixed(3) + ':d=0.6',
+    'alimiter=limit=0.85:level=0:latency=1',
+  ].join(',');
+  return ['-af', filters, '-c:a', 'aac', '-b:a', '192k', '-ar', '48000'];
+}
+
+function runFfmpeg(ffmpegBin, args) {
+  return new Promise((resolve, reject) => {
+    const ff = spawn(ffmpegBin, args, { stdio: ['ignore', 'ignore', 'pipe'], windowsHide: true });
+    let stderr = '';
+    ff.stderr.on('data', data => { stderr = (stderr + data).slice(-3000); });
+    ff.once('error', reject);
+    ff.once('close', code => code === 0 ? resolve() : reject(new Error('ffmpeg exited ' + code + ': ' + stderr)));
+  });
 }
 
 async function encodeReel(ffmpegBin, output, audioPath, frameCount, fps, theme, keyframes, fadeFrames) {
@@ -1024,17 +1079,12 @@ async function encodeReel(ffmpegBin, output, audioPath, frameCount, fps, theme, 
   filters.push('[' + (audio + 1) + ":v]format=rgba,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='if(lt(X,W*(N+1)/" + frameCount + "),255,0)'[bar]");
   const last = keyframes.length - 1;
   filters.push('[mix' + last + '][bar]overlay=78:1542:shortest=1[v]');
+  const duration = frameCount / fps;
   args.push('-filter_complex', filters.join(';'), '-map', '[v]', '-map', audio + ':a:0',
     '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-profile:v', 'high', '-level', '4.1',
     '-crf', '18', '-preset', 'veryfast', '-threads', '2', '-frames:v', String(frameCount),
-    '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-t', String(frameCount / fps), '-movflags', '+faststart', output);
-  await new Promise((resolve, reject) => {
-    const ff = spawn(ffmpegBin, args, { stdio: ['ignore', 'ignore', 'pipe'], windowsHide: true });
-    let stderr = '';
-    ff.stderr.on('data', data => { stderr = (stderr + data).slice(-3000); });
-    ff.once('error', reject);
-    ff.once('close', code => code === 0 ? resolve() : reject(new Error('ffmpeg exited ' + code + ': ' + stderr)));
-  });
+    ...reelAudioOptions(duration), '-t', String(duration), '-movflags', '+faststart', output);
+  await runFfmpeg(ffmpegBin, args);
 }
 
 async function generateSingle(tab, post, index) {
@@ -1132,14 +1182,47 @@ async function generateCarousel(tab, post, index) {
   return { id: post.id, type: 'CAROUSEL', slides: results.length };
 }
 
-async function generateReel(tab, post, ffmpegBin) {
-  const theme = REEL_THEMES[hashString('theme:' + post.id) % REEL_THEMES.length];
+function reelFrameCount(post, fps) {
   const duration = Number(post.duration_sec || 8);
   if (!Number.isFinite(duration) || duration < 3 || duration > 90) {
     throw new Error('Invalid Reel duration for ' + post.id);
   }
+  return Math.round(duration * fps);
+}
+
+async function refreshReelAudio(post, reelIndex, ffmpegBin) {
   const fps = 30;
-  const totalFrames = Math.round(duration * fps);
+  const duration = reelFrameCount(post, fps) / fps;
+  const timing = reelTiming(duration, fps);
+  const filename = post.id + '.mp4';
+  const target = path.join(REELS_DIR, filename);
+  const input = fs.existsSync(target) ? target : path.join(OUT_DIR, 'reels', filename);
+  fs.mkdirSync(REELS_DIR, { recursive: true });
+  const staging = fs.mkdtempSync(path.join(REELS_DIR, '.audio_'));
+  const audioFile = path.join(staging, 'score.wav');
+  const videoFile = path.join(staging, filename);
+  try {
+    const audio = writeReelAudio(audioFile, reelIndex, duration, timing, fps);
+    await runFfmpeg(ffmpegBin, [
+      '-hide_banner', '-loglevel', 'error', '-i', input, '-i', audioFile,
+      '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy', ...reelAudioOptions(duration),
+      '-t', String(duration), '-movflags', '+faststart', videoFile,
+    ]);
+    const { size } = fs.statSync(videoFile);
+    if (size < 40000) throw new Error('Reel MP4 too small for ' + post.id);
+    fs.renameSync(videoFile, target);
+    return { id: post.id, type: 'REELS', bytes: size, duration, fps, ...audio, target };
+  } finally {
+    fs.rmSync(audioFile, { force: true });
+    fs.rmSync(videoFile, { force: true });
+    fs.rmdirSync(staging);
+  }
+}
+
+async function generateReel(tab, post, reelIndex, ffmpegBin) {
+  const theme = REEL_THEMES[hashString('theme:' + post.id) % REEL_THEMES.length];
+  const fps = 30;
+  const totalFrames = reelFrameCount(post, fps);
   const sheet = reelCheatSheet(post);
   const timing = reelTiming(totalFrames / fps, fps);
   fs.mkdirSync(REELS_DIR, { recursive: true });
@@ -1151,7 +1234,7 @@ async function generateReel(tab, post, ffmpegBin) {
   const audioFile = path.join(staging, 'score.wav');
 
   try {
-    const audio = writeReelAudio(audioFile, post.id, totalFrames / fps, timing, fps);
+    const audio = writeReelAudio(audioFile, reelIndex, totalFrames / fps, timing, fps);
     await withCdp(tab.webSocketDebuggerUrl, async call => {
       await call('Emulation.setDeviceMetricsOverride', { width: 1080, height: 1920, deviceScaleFactor: 1, mobile: false });
       const { frameTree } = await call('Page.getFrameTree');
@@ -1250,6 +1333,9 @@ async function main() {
   const doAll = args.includes('--all');
   const onlyMissing = args.includes('--missing');
   const queue = JSON.parse(fs.readFileSync(QUEUE_PATH, 'utf8'));
+  const reelIndices = new Map(queue.posts
+    .filter(post => String(post.media_type).toUpperCase() === 'REELS')
+    .map((post, index) => [post.id, index]));
   let selected = wantedIds ? queue.posts.filter(post => wantedIds.has(post.id)) : wantedId
     ? queue.posts.filter((p) => p.id === wantedId)
     : ((doAll || onlyMissing) ? queue.posts : queue.posts.slice(0, 1));
@@ -1266,6 +1352,14 @@ async function main() {
 
   const needFfmpeg = selected.some((p) => String(p.media_type || 'IMAGE').toUpperCase() === 'REELS');
   const ffmpegBin = needFfmpeg ? resolveFfmpeg() : null;
+  if (args.includes('--audio-only')) {
+    if (selected.some(post => !reelIndices.has(post.id))) throw new Error('Audio refresh requires Reel IDs');
+    for (const post of selected) {
+      const result = await refreshReelAudio(post, reelIndices.get(post.id), ffmpegBin);
+      console.log('GENERATED:', JSON.stringify(result));
+    }
+    return;
+  }
 
   const tabs = await getJson(`${CDP_URL}/json/list`);
   const hostTab = tabs.find((t) => t.type === 'page');
@@ -1281,7 +1375,7 @@ async function main() {
       const idx = queue.posts.findIndex((p) => p.id === post.id);
       const mt = String(post.media_type || 'IMAGE').toUpperCase();
       let res;
-      if (mt === 'REELS') res = await generateReel(renderTab, post, ffmpegBin);
+      if (mt === 'REELS') res = await generateReel(renderTab, post, reelIndices.get(post.id), ffmpegBin);
       else if (mt === 'CAROUSEL') res = await generateCarousel(renderTab, post, idx);
       else res = await generateSingle(renderTab, post, idx);
       console.log('GENERATED:', JSON.stringify(res));

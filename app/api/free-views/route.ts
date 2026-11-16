@@ -29,8 +29,10 @@ async function redis(command: (string | number)[]): Promise<unknown> {
 }
 
 function clientIp(request: Request): string {
-  const forwarded = request.headers.get('x-forwarded-for')
-  return forwarded?.split(',')[0]?.trim() || 'unknown'
+  return request.headers.get('x-vercel-forwarded-for')?.trim()
+    || request.headers.get('x-real-ip')?.trim()
+    || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    || 'unknown'
 }
 
 function normalizeLink(raw: string): string | null {
