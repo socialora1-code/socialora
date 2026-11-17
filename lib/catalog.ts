@@ -954,7 +954,7 @@ export interface PaymentMethod {
 
 const CARD_PAYMENT_METHOD: PaymentMethod = {
   id: 'card2crypto',
-  label: 'Credit or debit card',
+  label: 'Card via crypto provider',
   asset: 'Card',
   network: 'Card2Crypto',
   address: '',

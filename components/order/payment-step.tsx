@@ -15,7 +15,7 @@ const CARD_CLASS = cn(
 )
 
 const PAYMENT_OPTIONS = [
-  { id: 'card2crypto', label: 'Credit or debit card', icon: CreditCard },
+  { id: 'card2crypto', label: 'Card via crypto provider', icon: CreditCard },
   { id: 'nowpayments', label: 'Automatic crypto', icon: Zap },
   { id: 'manual', label: 'Manual crypto', icon: Wallet },
 ] as const
@@ -72,7 +72,7 @@ export function PaymentStep({
         )}
       </fieldset>
 
-      {isCard && !paymentError && <p className="text-sm text-muted-foreground">{MIN_CARD_MESSAGE}</p>}
+      {isCard && !paymentError && <p className="text-sm text-muted-foreground">{MIN_CARD_MESSAGE} The provider may require an account.</p>}
 
       {isAutomatic && (
         <div className="flex flex-col gap-3 animate-in fade-in duration-200">
