@@ -5,7 +5,6 @@ import Script from 'next/script'
 import { ReferralCapture } from '@/components/site/referral-capture'
 import { SiteFooter } from '@/components/site/site-footer'
 import { SiteHeader } from '@/components/site/site-header'
-import { TelegramButton } from '@/components/site/telegram-button'
 import { SITE } from '@/lib/site'
 import './globals.css'
 
@@ -79,7 +78,6 @@ export default function RootLayout({
           {children}
         </main>
         <SiteFooter />
-        <TelegramButton />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
