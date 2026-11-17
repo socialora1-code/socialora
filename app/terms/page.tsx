@@ -67,7 +67,7 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          Payment is made in cryptocurrency. You can pay automatically on a secure checkout page, where you choose your
+          For cryptocurrency payments, you can pay automatically on a secure checkout page, where you choose your
           coin, or send crypto to the wallet address shown at checkout. With automatic payment, your order starts once
           the payment is confirmed. With a manual wallet payment, we verify the payment on the blockchain and your
           order stays pending until we confirm it.
@@ -76,6 +76,11 @@ const sections: LegalSection[] = [
           You are responsible for sending the exact amount on the correct network to the correct address, and for any
           network or exchange fees. Funds sent on the wrong network, to the wrong address or in the wrong asset may be
           unrecoverable and are not our responsibility.
+        </p>
+        <p>
+          If card checkout is available for your order, Card2Crypto redirects you to a payment provider that may
+          show the transaction as a cryptocurrency purchase. Review its fees and verification requirements before
+          paying. Card orders start after we verify the payment.
         </p>
         <p>We may decline or cancel any order at our discretion, in which case the Refund Policy applies.</p>
       </>

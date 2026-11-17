@@ -18,6 +18,8 @@ import {
   getServiceTitle,
   getTier,
   isTiered,
+  MIN_CARD_CENTS,
+  MIN_CARD_MESSAGE,
   PLATFORMS,
   STANDARD_PACKAGE_NAME,
   type PaymentMethodId,
@@ -50,7 +52,7 @@ function resolveQuantity(service: Service, preferred: number): number {
   return quantities.includes(preferred) ? preferred : service.defaultQuantity
 }
 
-export function OrderForm({ initial }: { initial: InitialSelection }) {
+export function OrderForm({ initial, cardEnabled }: { initial: InitialSelection; cardEnabled: boolean }) {
   const [platformId, setPlatformId] = useState<PlatformId>(initial.platform)
   const [serviceId, setServiceId] = useState<ServiceId>(initial.service)
   const [tierId, setTierId] = useState<TierId>(initial.tier ?? DEFAULT_TIER)
@@ -112,6 +114,8 @@ export function OrderForm({ initial }: { initial: InitialSelection }) {
       errors.paymentMethod = 'Please choose a payment method.'
     } else if (paymentMethod.id === 'nowpayments' && priceCents !== null && priceCents < MIN_AUTOMATIC_CENTS) {
       errors.paymentMethod = MIN_AUTOMATIC_MESSAGE
+    } else if (paymentMethod.id === 'card2crypto' && priceCents !== null && priceCents < MIN_CARD_CENTS) {
+      errors.paymentMethod = MIN_CARD_MESSAGE
     }
     if (!acceptTerms) errors.acceptTerms = 'Please accept the Terms of Service and Refund Policy.'
     if (priceCents === null) errors.quantity = 'Please choose a valid quantity.'
@@ -350,6 +354,7 @@ placeholder={
 
           <StepCard step={4} title="Payment" id="payment-step">
             <PaymentStep
+              cardEnabled={cardEnabled}
               paymentMethodId={paymentMethodId}
               onPaymentMethodChange={(id) => {
                 setPaymentMethodId(id)

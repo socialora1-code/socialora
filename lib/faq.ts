@@ -15,7 +15,7 @@ export const FAQ: readonly FaqItem[] = [
     question: 'How does Socialora work?',
     answer: [
       'Choose a platform and service, pick a quantity, then enter the public link or username you want to grow and your email address.',
-      'Next, pay with crypto. Automatic payment takes you to a secure checkout page where you choose your coin. Your order starts as soon as the payment is confirmed.',
+      'Next, choose a payment method at checkout. For automatic crypto payments, you can choose your coin on the payment page. Your order starts after payment is confirmed.',
     ],
   },
   {
@@ -81,7 +81,7 @@ export const FAQ: readonly FaqItem[] = [
   {
     question: 'What payment methods are supported?',
     answer: [
-      `We accept crypto only. You can pay automatically on a secure checkout page in the coin of your choice, or send manually with ${MANUAL_COINS}. We do not accept cards or bank transfers at this time.`,
+      `You can pay automatically with crypto or send ${MANUAL_COINS} to the wallet shown at checkout. When card checkout is available for your order, it appears alongside the crypto options.`,
     ],
   },
   {

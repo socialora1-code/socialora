@@ -930,7 +930,11 @@ export const PLATFORMS: readonly Platform[] = [
 /*                               Payment methods                              */
 /* -------------------------------------------------------------------------- */
 
+export const MIN_CARD_CENTS = 1000
+export const MIN_CARD_MESSAGE = 'Card payment is available for orders of $10 USD or more.'
+
 export type PaymentMethodId =
+  | 'card2crypto'
   | 'nowpayments'
   | 'usdt-trc20'
   | 'usdt-bsc'
@@ -946,6 +950,15 @@ export interface PaymentMethod {
   /** Wallet address. Must be displayed exactly as stored — never shortened. */
   address: string
   warning: string
+}
+
+const CARD_PAYMENT_METHOD: PaymentMethod = {
+  id: 'card2crypto',
+  label: 'Credit or debit card',
+  asset: 'Card',
+  network: 'Card2Crypto',
+  address: '',
+  warning: '',
 }
 
 export const PAYMENT_METHODS: readonly PaymentMethod[] = [
@@ -1026,7 +1039,7 @@ export function getTierDescription(service: Service, tier: Tier): string {
 }
 
 export function getPaymentMethod(id: string | null | undefined): PaymentMethod | undefined {
-  return PAYMENT_METHODS.find((m) => m.id === id)
+  return id === 'card2crypto' ? CARD_PAYMENT_METHOD : PAYMENT_METHODS.find((m) => m.id === id)
 }
 
 export function isTiered(service: Service): boolean {

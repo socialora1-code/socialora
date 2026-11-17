@@ -2,7 +2,7 @@
 
 import { FormField } from '@/components/order/form-field'
 import { WalletCard } from '@/components/order/wallet-card'
-import { getPaymentMethod, PAYMENT_METHODS, type PaymentMethodId } from '@/lib/catalog'
+import { getPaymentMethod, MIN_CARD_MESSAGE, PAYMENT_METHODS, type PaymentMethodId } from '@/lib/catalog'
 import { cn } from '@/lib/utils'
 
 const MANUAL_METHODS = PAYMENT_METHODS.filter((m) => m.id !== 'nowpayments')
@@ -14,6 +14,7 @@ const CARD_CLASS = cn(
 )
 
 export function PaymentStep({
+  cardEnabled,
   paymentMethodId,
   onPaymentMethodChange,
   amountCents,
@@ -22,6 +23,7 @@ export function PaymentStep({
   paymentError,
   transactionError,
 }: {
+  cardEnabled: boolean
   paymentMethodId: PaymentMethodId | null
   onPaymentMethodChange: (id: PaymentMethodId) => void
   amountCents: number | null
@@ -32,11 +34,13 @@ export function PaymentStep({
 }) {
   const method = getPaymentMethod(paymentMethodId)
   const isAutomatic = method?.id === 'nowpayments'
-  const isManual = !!method && !isAutomatic
+  const isCard = method?.id === 'card2crypto'
+  const isManual = Boolean(method?.address)
 
   return (
     <div className="flex flex-col gap-6">
       <div className="rounded-2xl border border-border bg-muted/50 p-4 text-sm leading-relaxed text-muted-foreground">
+        {cardEnabled && 'Card checkout is available for orders of $10 USD or more. '}
         Choose <strong className="font-medium text-foreground">automatic payment</strong> to pay in any supported
         cryptocurrency on a secure checkout page, or choose{' '}
         <strong className="font-medium text-foreground">manual crypto</strong> to send crypto to our wallet yourself.
@@ -45,6 +49,23 @@ export function PaymentStep({
       <fieldset className="min-w-0" aria-describedby={paymentError ? 'payment-error' : undefined}>
         <legend className="text-sm font-medium">Payment method</legend>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          {cardEnabled && (
+            <label className={CARD_CLASS}>
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="card2crypto"
+                checked={isCard}
+                onChange={() => onPaymentMethodChange('card2crypto')}
+                className="size-4 shrink-0 accent-[var(--primary)]"
+              />
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold">Credit or debit card</span>
+                <span className="block text-xs text-muted-foreground">Continue to Card2Crypto</span>
+              </span>
+            </label>
+          )}
+
           <label className={CARD_CLASS}>
             <input
               type="radio"
@@ -83,6 +104,13 @@ export function PaymentStep({
           </p>
         )}
       </fieldset>
+
+      {isCard && (
+        <div className="rounded-2xl border border-border bg-background p-4 text-sm leading-relaxed text-muted-foreground">
+          <p>{MIN_CARD_MESSAGE} Card2Crypto sends you to a payment provider, where you can review any fees before paying.</p>
+          <p className="mt-1">The provider may show the payment as a USDC purchase and ask for identity verification. We review the payment before processing the order.</p>
+        </div>
+      )}
 
       {isAutomatic && (
         <div className="flex flex-col gap-3 animate-in fade-in duration-200">

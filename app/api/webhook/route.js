@@ -43,6 +43,8 @@ export async function POST(request) {
     return NextResponse.json({ ok: true })
   }
 
+  if (order.cardPayment) return NextResponse.json({ ok: true })
+
   const claimed = await claimNotification(reference)
   if (!claimed) {
     return NextResponse.json({ ok: true })

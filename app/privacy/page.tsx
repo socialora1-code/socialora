@@ -82,8 +82,11 @@ const sections: LegalSection[] = [
       <p>
         We do not sell your personal information. We share it only with service providers that help us run our
         business, and only as needed for those purposes, or when required by law. These include website hosting, email
-        delivery, analytics, the payment processor for automatic crypto payments, and the supply partners that deliver
-        your order, who receive the link or username and the quantity you ordered. When you choose Join group, your browser opens our group on Telegram. Telegram handles the app or website destination under its own privacy policy.
+        delivery, analytics, payment processors, and the supply partners that deliver
+        your order, who receive the link or username and the quantity you ordered. When you choose Join group, your
+        browser opens our group on Telegram. Telegram handles the app or website destination under its own privacy
+        policy. If you choose card checkout, Card2Crypto and its payment provider receive the order amount and your
+        email to process the payment. You enter card details directly with the payment provider.
       </p>
     ),
   },
