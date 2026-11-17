@@ -14,6 +14,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const tool = getTool(slug)
   if (!tool) return {}
+  if (tool.searchMetadata) {
+    const { title, description } = tool.searchMetadata
+    return buildToolsMetadata({
+      title,
+      description,
+      canonicalPath: `/tools/${tool.slug}`,
+      fullOgTitle: title,
+      absoluteTitle: title,
+    })
+  }
   const rawTitle = tool.title
   const ctrTitle =
     rawTitle.includes('2026') || rawTitle.includes('No Login')

@@ -82,6 +82,11 @@ export const FONT_TOOLS: readonly ToolDef[] = [
     platform: 'Discord',
     name: 'Discord Font Generator',
     title: 'Discord Font Generator | Free, No Login',
+    searchMetadata: {
+      title: 'Discord Fonts (Copy & Paste) - 150+ 𝔊𝔬𝔱𝔥𝔦𝔠, 𝐁𝐨𝐥𝐝 & Aesthetic Text',
+      description:
+        'Instantly generate 150+ copy and paste Discord fonts (𝔉𝔞𝔫𝔠𝔶, 🅒ૂⓛ, Cursive, Glitch) for nicknames, bio, and channel names. Live Discord dark-mode preview - 100% free, no login.',
+    },
     h1: 'Discord Font Generator',
     description:
       'Try the free Discord font generator for instant text styles. Copy and paste Discord fonts into nicknames, profiles or messages. No login needed.',

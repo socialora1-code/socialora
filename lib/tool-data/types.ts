@@ -32,6 +32,7 @@ export interface ToolDef {
   title: string
   h1: string
   description: string
+  searchMetadata?: { title: string; description: string }
   intro: string
   tips: readonly string[]
   faqs: readonly ToolFaq[]

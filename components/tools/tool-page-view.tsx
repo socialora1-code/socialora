@@ -224,8 +224,8 @@ export function ToolPageView({ tool, niche }: { tool: ToolDef; niche?: NicheTool
     {
       '@context': 'https://schema.org',
       '@type': 'SoftwareApplication',
-      name: tool.name,
-      description: tool.description,
+      name: tool.searchMetadata?.title ?? tool.name,
+      description: tool.searchMetadata?.description ?? tool.description,
       url,
       applicationCategory: 'UtilitiesApplication',
       operatingSystem: 'Any (Web Browser)',
