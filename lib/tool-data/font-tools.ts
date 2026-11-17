@@ -83,15 +83,15 @@ export const FONT_TOOLS: readonly ToolDef[] = [
     name: 'Discord Font Generator',
     title: 'Discord Font Generator | Free, No Login',
     searchMetadata: {
-      title: 'Discord Fonts (Copy & Paste) - 150+ 𝔊𝔬𝔱𝔥𝔦𝔠, 𝐁𝐨𝐥𝐝 & Aesthetic Text',
+      title: 'Discord Fonts: 𝔊𝔬𝔱𝔥𝔦𝔠, 𝐁𝐨𝐥𝐝 & Aesthetic Copy-Paste Text (150+)',
       description:
-        'Instantly generate 150+ copy and paste Discord fonts (𝔉𝔞𝔫𝔠𝔶, 🅒ૂⓛ, Cursive, Glitch) for nicknames, bio, and channel names. Live Discord dark-mode preview - 100% free, no login.',
+        'Type & copy 150+ Discord fonts (𝔊𝔬𝔱𝔥𝔦𝔠, 𝐁𝐨𝐥𝐝, 𝒮𝒸𝓇𝒾𝓅𝓉, Cursed Zalgo). Test instantly in our Live Discord Profile, Chat & Channel Name Simulator. Free, no login.',
     },
     h1: 'Discord Font Generator',
     description:
       'Try the free Discord font generator for instant text styles. Copy and paste Discord fonts into nicknames, profiles or messages. No login needed.',
     intro:
-      'Stand out in your Discord server with a fancy nickname or a styled announcement. Type your text, pick a style and paste it into Discord.',
+      'Style your Discord profile, chat messages and channel names. Try Gothic, Bold, Script or Cursed Zalgo in the live dark-mode simulator, then copy the result.',
     tips: [
       'Many servers have nickname rules. Hard to read or hard to mention names may be changed by moderators, so check the rules first.',
       'For long messages, use Discord formatting instead: two asterisks for bold, one for italic. Fancy text works best for short headings.',
@@ -100,19 +100,19 @@ export const FONT_TOOLS: readonly ToolDef[] = [
     faqs: [
       {
         q: 'How do I copy and paste Discord fonts?',
-        a: 'Type your text here, use Copy next to the style you want, and paste it into the Discord message or nickname field. Preview the result before saving.',
+        a: 'Type your text and choose a style. Use the channel, profile or chat tab to check the result, then copy it into Discord. Recent History keeps the last five copied results while this page is open.',
       },
       {
         q: 'Can I use fancy text in my Discord nickname?',
-        a: 'In most cases yes, because nicknames accept most Unicode characters. Server rules can still limit it, so check with the moderators.',
+        a: 'Many Unicode styles work in Discord nicknames. Use the profile card to preview your display name and About Me bio, and check the rules of the server where you will use it.',
       },
       {
         q: 'Does Discord have its own text formatting?',
-        a: 'Yes. You can use simple symbols around your text for bold, italic, underline and strikethrough. Fancy fonts are a different option that changes the letters themselves.',
+        a: 'Yes. In the chat preview, use Spoiler, Code Block, Quote or Bold to add the matching Discord Markdown. Copy the result with its formatting markers for Discord to render.',
       },
       {
         q: 'Can I use custom fonts in Discord channel names?',
-        a: 'Discord channel names support small caps, sans-serif unicode, and symbols, but spaces are automatically converted to hyphens. Server admins often use styled unicode characters to organize channel category headers.',
+        a: 'Use the channel preview to try Unicode letters and prefixes such as ｜, ・ or ✦. The tool replaces spaces with standard hyphens in text channel names. Discord and server settings determine what can be saved.',
       }
     ],
   },

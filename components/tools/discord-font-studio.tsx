@@ -1,212 +1,246 @@
 'use client'
 
-import { useState } from 'react'
+import { Check, Copy } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { DiscordFontPreview, wrapDiscordMessage, type DiscordChatFormat, type DiscordPreviewTab } from '@/components/tools/discord-font-preview'
 import { SmartMomentumOffer } from '@/components/tools/smart-momentum-offer'
 import { useStudioCopy } from '@/components/tools/studio-copy'
 import { StudioMomentumBridge } from '@/components/tools/studio-momentum-bridge'
 import { orderFontStyles } from '@/lib/font-styles'
 import { FONT_CONFIGS } from '@/lib/tool-data/font-configs'
 
-const modes = {
-  channel: { label: 'Channel Name', example: '・general' },
-  role: { label: 'Server Role', example: 'VIP' },
-  announcement: { label: 'Announcement Heading', example: 'Community update' },
-  profile: { label: 'Profile / Bio', example: 'Night Owl' },
-}
-
-type Mode = keyof typeof modes
-type Placement = 'start' | 'end'
-type Favorite = { value: string; style: string; mode: Mode }
-
 const symbols = [
+  { name: 'Star', value: '✦' },
+  { name: 'Chess queen', value: '♛' },
+  { name: 'Cross', value: '✗' },
+  { name: 'Lightning', value: '⚡' },
+  { name: 'Wave kaomoji', value: '︵‿︵' },
+  { name: 'Solid star', value: '★' },
   { name: 'Middle dot', value: '・' },
   { name: 'Vertical bar', value: '｜' },
-  { name: 'Star', value: '✦' },
-  { name: 'Lightning', value: '⚡' },
   { name: 'Flame', value: '🔥' },
   { name: 'Crown', value: '👑' },
   { name: 'Corner brackets', value: '『 』' },
 ]
 
+const categories = [
+  { label: 'All', styles: null },
+  { label: 'Gothic/Edgy', styles: ['gothic', 'bold-gothic', 'double-struck', 'strike', 'wings'] },
+  { label: 'Aesthetic/Cute', styles: ['script', 'bold-script', 'bubble', 'bubble-filled', 'sparkle', 'brackets', 'wings'] },
+  { label: 'Bold/Clean', styles: ['bold', 'italic', 'bold-italic', 'serif-bold', 'serif-italic', 'serif-bold-italic', 'sans', 'monospace'] },
+  { label: 'Server Channels', styles: ['monospace', 'small-caps', 'wide', 'gothic', 'bold', 'square', 'square-filled', 'brackets'] },
+  { label: 'Cursed/Glitch', styles: ['zalgo', 'upside-down', 'strike', 'underline', 'bold-gothic'] },
+]
+
 const config = FONT_CONFIGS['discord-font-generator']
 const { ordered } = orderFontStyles(config.featured, config.only)
-const actionClass = 'inline-flex min-h-11 items-center justify-center rounded-full border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50'
-const primaryClass = 'inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring'
-const activeClass = 'rounded-md bg-[#3b3d44] ring-1 ring-[#a5acff]'
+const initialStyle = 'gothic'
+const examples = { channel: 'Gothic chat', profile: 'Night Owl', chat: 'Community update' }
+const tabLabels = { channel: 'Channel', profile: 'Profile', chat: 'Chat' }
+const noSymbols = { start: '', end: '' }
+const actionClass = 'inline-flex min-h-11 items-center justify-center rounded-lg border border-border bg-background px-3 text-sm font-medium hover:bg-muted aria-pressed:border-[#949cff] aria-pressed:bg-[#5865F2]/20 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50'
+const copyClass = 'inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#4752c4] px-4 text-sm font-semibold text-white hover:bg-[#535fd8] focus-visible:ring-2 focus-visible:ring-ring'
+const zalgoMarks = ['\u030d', '\u033f', '\u0311', '\u035c', '\u0329', '\u0330', '\u031f', '\u0336', '\u0351', '\u0323', '\u0342', '\u030a']
 
-function DiscordPreview({ mode, output }: { mode: Mode; output: string }) {
-  return (
-    <section className="mt-4 overflow-hidden rounded-2xl border border-[#4b4d56] bg-[#313338] text-[#f2f3f5]" aria-labelledby="discord-preview-title">
-      <div className="flex flex-wrap items-center justify-between gap-1 border-b border-[#202127] px-4 py-3">
-        <h3 id="discord-preview-title" className="text-sm font-semibold">Live Discord Preview</h3>
-        <p className="text-xs text-[#c6c8cd]">Dark theme mockup</p>
-      </div>
-      <div className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-        <div aria-label="Channel sidebar" role="group" className="min-w-0 bg-[#2b2d31] p-3 sm:p-4">
-          <p className="text-sm font-semibold">Creator Hub</p>
-          <p className="mt-4 text-xs font-medium text-[#c6c8cd]">Text channels</p>
-          <p className={`mt-2 flex items-start gap-1 px-2 py-1 text-sm ${mode === 'channel' ? activeClass : ''}`}>
-            <span aria-hidden="true" className="shrink-0 text-[#c6c8cd]">#</span>
-            <span className="min-w-0 wrap-anywhere">{mode === 'channel' ? output : 'general'}</span>
-          </p>
-          <p className="mt-1 px-2 py-1 text-sm text-[#c6c8cd]"># ideas</p>
-        </div>
-        <div aria-label="Message and member preview" role="group" className="min-w-0 space-y-3 p-3 sm:p-4">
-          <div className={`p-2 ${mode === 'announcement' ? activeClass : ''}`}>
-            <p className="text-xs text-[#c6c8cd]">Message preview</p>
-            <div className="mt-1 flex items-center gap-2">
-              <span aria-hidden="true" className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#5865f2] text-xs font-semibold">C</span>
-              <p className="text-xs font-semibold">Creator</p>
-            </div>
-            <p className="mt-1 whitespace-pre-wrap text-sm font-semibold wrap-anywhere">{mode === 'announcement' ? output : 'Community update'}</p>
-          </div>
-          <div className={`p-2 ${mode === 'role' ? activeClass : ''}`}>
-            <p className="text-xs text-[#c6c8cd]">Role badge</p>
-            <span className="mt-1 inline-flex max-w-full items-center gap-1.5 rounded-full bg-[#202127] px-2 py-1 text-xs">
-              <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full bg-[#a5acff]" />
-              <span className="min-w-0 wrap-anywhere">{mode === 'role' ? output : 'VIP'}</span>
-            </span>
-          </div>
-          {mode === 'profile' && (
-            <div className={`p-2 ${activeClass}`}>
-              <p className="text-xs text-[#c6c8cd]">About me</p>
-              <p className="mt-1 whitespace-pre-wrap text-sm wrap-anywhere">{output}</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
-  )
-}
+type Placement = keyof typeof noSymbols
+type HistoryEntry = { value: string; style: string; context: string }
 
-function styleOutput(text: string, mode: Mode, style: (value: string) => string) {
-  const value = text.replace(/[\u2013\u2014]/g, '-')
-  if (mode === 'channel') return style(value.toLowerCase()).trim().replace(/\s+/g, '-')
-  if (mode === 'role') return style(value.replace(/\s+/g, ' ').trim())
-  return style(value)
+function zalgo(text: string, intensity: number) {
+  const count = Math.round(intensity / 10)
+  return Array.from(text, (character, index) => {
+    if (!/[\p{L}\p{N}]/u.test(character)) return character
+    const marks = Array.from({ length: count }, (_, offset) => zalgoMarks[(index * 7 + offset * 5) % zalgoMarks.length])
+    return character + marks.join('')
+  }).join('')
 }
 
 export function DiscordFontStudio() {
-  const [mode, setMode] = useState<Mode>('channel')
+  const [tab, setTab] = useState<DiscordPreviewTab>('channel')
   const [text, setText] = useState('')
-  const [selectedId, setSelectedId] = useState(ordered[0].id)
+  const [selectedId, setSelectedId] = useState(initialStyle)
+  const [category, setCategory] = useState(categories[0].label)
+  const [intensity, setIntensity] = useState(40)
   const [placement, setPlacement] = useState<Placement>('start')
-  const [favorites, setFavorites] = useState<Favorite[]>([])
+  const [affixes, setAffixes] = useState(noSymbols)
+  const [prefix, setPrefix] = useState('｜')
+  const [bio, setBio] = useState('')
+  const [roleMode, setRoleMode] = useState(false)
+  const [format, setFormat] = useState<DiscordChatFormat>(null)
+  const [history, setHistory] = useState<HistoryEntry[]>([])
+  const [copyNotice, setCopyNotice] = useState(0)
   const { lastCopy, copy, clearCopy } = useStudioCopy()
 
-  const source = text.trim() ? text : modes[mode].example
-  const options = ordered.map((style) => ({ ...style, output: styleOutput(source, mode, style.convert) }))
-  const selected = options.find((style) => style.id === selectedId) ?? options[0]
+  useEffect(() => {
+    if (!copyNotice) return
+    const timeout = window.setTimeout(() => setCopyNotice(0), 2600)
+    return () => window.clearTimeout(timeout)
+  }, [copyNotice])
+
+  const example = tab === 'profile' && roleMode ? 'VIP' : examples[tab]
+  const source = (text.trim() ? text : example).replace(/[\u2010-\u2015]/g, '-')
+  const sample = tab === 'channel'
+    ? source.trim().toLowerCase().replace(/\s+/g, '-')
+    : tab === 'profile' && roleMode ? source.trim().replace(/\s+/g, ' ') : source
+  const styles = [...ordered, { id: 'zalgo', name: 'Cursed Zalgo', convert: (value: string) => zalgo(value, intensity) }]
+  const options = styles.map(style => ({
+    ...style,
+    output: (tab === 'channel' ? prefix : '') + affixes.start + style.convert(sample) + affixes.end,
+  }))
+  const selected = options.find(style => style.id === selectedId) ?? options[0]
+  const activeCategory = categories.find(option => option.label === category) ?? categories[0]
+  const visibleStyles = options.filter(style => !activeCategory.styles || activeCategory.styles.includes(style.id))
+  const context = tab === 'profile' && roleMode ? 'Server Role' : tabLabels[tab]
+  const hasSymbols = Boolean(affixes.start || affixes.end)
 
   function insertSymbol(symbol: string) {
-    const value = symbol === '『 』' ? `『${source}』` : placement === 'start' ? symbol + source : source + symbol
-    if (value.length > 300) return
-    setText(value)
+    setAffixes(previous => symbol === '『 』'
+      ? { start: '『' + previous.start, end: previous.end + '』' }
+      : { ...previous, [placement]: placement === 'start' ? symbol + previous.start : previous.end + symbol })
     clearCopy()
   }
 
-  async function copyStyle(style: typeof selected) {
+  async function copyResult(key: string, entry: HistoryEntry) {
+    if (!await copy(key, entry.value)) return
+    setHistory(previous => [entry, ...previous.filter(item => item.value !== entry.value)].slice(0, 5))
+    setCopyNotice(previous => previous + 1)
+  }
+
+  function copyStyle(style: typeof selected) {
     setSelectedId(style.id)
-    if (await copy(style.id, style.output)) {
-      setFavorites((previous) => [
-        { value: style.output, style: style.name, mode },
-        ...previous.filter((favorite) => favorite.value !== style.output),
-      ].slice(0, 5))
-    }
+    return copyResult(style.id, {
+      value: tab === 'chat' ? wrapDiscordMessage(style.output, format) : style.output,
+      style: style.name,
+      context,
+    })
   }
 
   return (
     <div>
-      <section className="rounded-3xl border border-border bg-card p-5 sm:p-7" aria-labelledby="discord-studio-title">
-        <h2 id="discord-studio-title" className="text-xl font-semibold tracking-tight">Discord Font Studio</h2>
-        <fieldset className="mt-4 min-w-0">
-          <legend className="text-sm font-medium">Use Mode</legend>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {(Object.keys(modes) as Mode[]).map((option) => (
-              <button key={option} type="button" aria-pressed={mode === option} className={`${actionClass} aria-pressed:border-primary aria-pressed:bg-primary/20`} onClick={() => { setMode(option); clearCopy() }}>
-                {modes[option].label}
-              </button>
-            ))}
+      <section className="rounded-2xl border border-border bg-card p-4 sm:p-6" aria-labelledby="discord-studio-title">
+        <h2 id="discord-studio-title" className="text-xl font-semibold tracking-tight">Discord Profile &amp; Server Studio</h2>
+        <div className="mt-4 grid min-w-0 items-start gap-5 lg:grid-cols-2 lg:grid-rows-[auto_1fr]">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center justify-between gap-x-2">
+              <label htmlFor="discord-font-input" className="text-sm font-medium">Your text</label>
+              <button type="button" className="min-h-11 text-sm font-medium underline underline-offset-4" onClick={() => { setText(example); clearCopy() }}>Try an example</button>
+            </div>
+            <textarea id="discord-font-input" value={text} rows={2} maxLength={300} placeholder={example}
+              onChange={event => { setText(event.target.value); clearCopy() }}
+              className="w-full rounded-xl border border-border bg-background p-3 text-base outline-none focus-visible:ring-2 focus-visible:ring-ring" />
           </div>
-        </fieldset>
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-          <label htmlFor="discord-font-input" className="text-sm font-medium">Your text</label>
-          <button type="button" className="min-h-11 text-sm font-medium underline underline-offset-4" onClick={() => { setText(modes[mode].example); clearCopy() }}>Try an example</button>
+          <div className="min-w-0 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+            <DiscordFontPreview tab={tab} onTab={value => { setTab(value); clearCopy() }} output={selected.output}
+              prefix={prefix} onPrefix={value => { setPrefix(value); clearCopy() }} voice={selected.convert('VIP-Lounge')}
+              bio={bio} onBio={setBio} roleMode={roleMode} onRoleMode={value => { setRoleMode(value); clearCopy() }}
+              format={format} onFormat={value => { setFormat(value); clearCopy() }} />
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <button type="button" className={copyClass} onClick={() => copyStyle(selected)}>
+                <Copy aria-hidden="true" className="size-4" /> Copy Selected Style
+              </button>
+              <span className="text-xs text-muted-foreground">{selected.name}</span>
+            </div>
+            {!lastCopy.key && lastCopy.message && <p role="status" className="mt-2 text-sm text-muted-foreground">{lastCopy.message}</p>}
+          </div>
+          <div className="min-w-0 lg:col-start-1 lg:row-start-2">
+            <fieldset className="min-w-0">
+              <legend className="text-sm font-medium">Aesthetic Kaomoji &amp; Symbol Bar</legend>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <label htmlFor="discord-symbol-placement" className="text-sm text-muted-foreground">Insert at</label>
+                <select id="discord-symbol-placement" value={placement} onChange={event => setPlacement(event.target.value as Placement)}
+                  className="min-h-11 rounded-lg border border-border bg-background px-3 text-sm">
+                  <option value="start">Start</option>
+                  <option value="end">End</option>
+                </select>
+                {hasSymbols && (
+                  <button type="button" className="min-h-11 px-2 text-sm underline underline-offset-4" onClick={() => { setAffixes(noSymbols); clearCopy() }}>Clear symbols</button>
+                )}
+              </div>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {symbols.map(symbol => (
+                  <button key={symbol.name} type="button" aria-label={symbol.name === 'Corner brackets' ? 'Wrap in corner brackets' : 'Add ' + symbol.name.toLowerCase()}
+                    className={actionClass} disabled={affixes.start.length + affixes.end.length + symbol.value.length > 48}
+                    onClick={() => insertSymbol(symbol.value)}>
+                    {symbol.value}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+            <div className="mt-5 rounded-xl border border-border bg-background p-3.5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label htmlFor="discord-zalgo" className="text-sm font-medium">Zalgo / Glitch Intensity</label>
+                <span className="rounded-md bg-[#5865F2]/20 px-2 py-1 text-xs font-semibold tabular-nums">{intensity}%</span>
+              </div>
+              <input type="range" id="discord-zalgo" min={10} max={100} step={10} value={intensity} aria-valuetext={intensity + '%'}
+                className="h-8 w-full cursor-pointer accent-[#5865F2] focus-visible:ring-2 focus-visible:ring-ring"
+                onChange={event => {
+                  setIntensity(Number(event.target.value))
+                  setSelectedId('zalgo')
+                  if (activeCategory.styles && !activeCategory.styles.includes('zalgo')) setCategory('Cursed/Glitch')
+                  clearCopy()
+                }} />
+              <div className="flex justify-between text-xs text-muted-foreground"><span>10%</span><span>100%</span></div>
+            </div>
+          </div>
         </div>
-        <textarea id="discord-font-input" value={text} rows={2} maxLength={300} placeholder={modes[mode].example} onChange={(event) => { setText(event.target.value); clearCopy() }} className="w-full rounded-xl border border-border bg-background p-3 text-base outline-none focus-visible:ring-2 focus-visible:ring-ring" />
-        <fieldset className="mt-4 min-w-0">
-          <legend className="text-sm font-medium">Symbols and Separators</legend>
-          <div className="mt-2 flex flex-wrap items-center gap-3">
-            <label htmlFor="discord-symbol-placement" className="text-sm text-muted-foreground">Insert at</label>
-            <select id="discord-symbol-placement" value={placement} onChange={(event) => setPlacement(event.target.value as Placement)} className="min-h-11 rounded-xl border border-border bg-background px-3 text-sm">
-              <option value="start">Start</option>
-              <option value="end">End</option>
-            </select>
-          </div>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {symbols.map((symbol) => (
-              <button key={symbol.name} type="button" aria-label={symbol.name === 'Corner brackets' ? 'Wrap in corner brackets' : `Add ${symbol.name.toLowerCase()}`} className={actionClass} disabled={source.length + (symbol.value === '『 』' ? 2 : symbol.value.length) > 300} onClick={() => insertSymbol(symbol.value)}>
-                {symbol.value}
-              </button>
-            ))}
-          </div>
-        </fieldset>
       </section>
 
-      <DiscordPreview mode={mode} output={selected.output} />
-      <div className="mt-3 flex flex-wrap items-center gap-3">
-        <button type="button" className={primaryClass} onClick={() => copyStyle(selected)}>
-          {lastCopy.key === selected.id ? 'Copied Selected Style' : 'Copy Selected Style'}
-        </button>
-        <p className="text-sm text-muted-foreground" role="status">{lastCopy.message}</p>
-      </div>
-      {mode === 'profile' && config.limit && (
-        <p className="mt-2 text-sm text-muted-foreground">{Array.from(selected.output).length} characters. Discord display names allow up to {config.limit.max}. This preview shows your About Me.</p>
-      )}
-
-      <section className="mt-4 rounded-2xl border border-border bg-card p-4 sm:p-5" aria-labelledby="discord-favorites-title">
+      <section className="mt-4 rounded-xl border border-border bg-card p-4" aria-labelledby="discord-history-title">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 id="discord-favorites-title" className="font-semibold">My Copied Favorites</h3>
-          {favorites.length > 0 && <button type="button" className="min-h-11 px-2 text-sm underline underline-offset-4" onClick={() => { setFavorites([]); clearCopy() }}>Clear favorites</button>}
+          <h3 id="discord-history-title" className="font-semibold">Recent History</h3>
+          {history.length > 0 && <button type="button" className="min-h-11 px-2 text-sm underline underline-offset-4" onClick={() => { setHistory([]); clearCopy() }}>Clear history</button>}
         </div>
-        {favorites.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">Your last five copied styles appear here while this page is open.</p>
+        {history.length === 0 ? (
+          <p className="mt-1 text-sm text-muted-foreground">Your last five copied results appear here.</p>
         ) : (
-          <ul className="mt-2 grid gap-2">
-            {favorites.map((favorite, index) => (
-              <li key={favorite.value} className="flex min-w-0 items-center justify-between gap-2 rounded-xl bg-background px-3 py-2">
-                <div className="min-w-0">
-                  <p className="text-xs text-muted-foreground">{modes[favorite.mode].label} · {favorite.style}</p>
-                  <p className="whitespace-pre-wrap text-sm wrap-anywhere">{favorite.value}</p>
-                </div>
-                <button type="button" aria-label={`Copy favorite ${index + 1}`} className={`${actionClass} shrink-0`} onClick={() => copy(`favorite-${index}`, favorite.value)}>{lastCopy.key === `favorite-${index}` ? 'Copied' : 'Copy'}</button>
+          <ul className="mt-2 grid gap-2 sm:grid-cols-2">
+            {history.map((entry, index) => (
+              <li key={entry.value} className="min-w-0">
+                <button type="button" aria-label={'Copy history item ' + (index + 1) + ': ' + entry.style}
+                  className="flex min-h-11 w-full min-w-0 items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-left hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+                  onClick={() => copyResult('history-' + index, entry)}>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-xs text-muted-foreground">{entry.style} · {entry.context}</span>
+                    <span className="block truncate text-sm">{entry.value}</span>
+                  </span>
+                  <Copy aria-hidden="true" className="size-4 shrink-0" />
+                </button>
               </li>
             ))}
           </ul>
         )}
       </section>
 
-      <StudioMomentumBridge id="discord-momentum" title="From Discord to Your Social Channels" highlighted={Boolean(lastCopy.key)}>
-        <p>Use a Discord announcement to point members to one useful next step. Share a clip on Instagram or TikTok, link the full walkthrough on YouTube, or post a recap on Telegram.</p>
-        <p>Use a distinct link for each channel. Compare link clicks, early views and meaningful replies to see what members find useful. Pin real examples or feedback shared with permission as social proof.</p>
-      </StudioMomentumBridge>
-
       <section className="mt-6" aria-labelledby="discord-styles-title">
         <h3 id="discord-styles-title" className="font-semibold">Text Styles</h3>
-        <ul className="mt-3 grid gap-2">
-          {options.map((style) => (
-            <li key={style.id} className={`flex min-w-0 items-center gap-2 rounded-xl border bg-card p-3 ${style.id === selected.id ? 'border-primary' : 'border-border'}`}>
-              <button type="button" aria-label={`Preview ${style.name}`} aria-pressed={style.id === selected.id} className="min-h-11 min-w-0 flex-1 text-left focus-visible:ring-2 focus-visible:ring-ring" onClick={() => { setSelectedId(style.id); clearCopy() }}>
+        <p className="mt-1 text-sm text-muted-foreground">{styles.length} base styles and 150+ style and symbol combinations.</p>
+        <div role="group" aria-label="Filter text styles" className="mt-3 flex flex-wrap gap-2">
+          {categories.map(option => (
+            <button key={option.label} type="button" className={actionClass} aria-pressed={option.label === category}
+              onClick={() => setCategory(option.label)}>
+              {option.label}
+            </button>
+          ))}
+        </div>
+        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+          {visibleStyles.map(style => (
+            <li key={style.id} className={'flex min-w-0 items-center gap-2 rounded-xl border bg-card p-3 ' + (style.id === selected.id ? 'border-[#949cff]' : 'border-border')}>
+              <button type="button" aria-label={'Preview ' + style.name} aria-pressed={style.id === selected.id}
+                className="min-h-11 min-w-0 flex-1 text-left focus-visible:ring-2 focus-visible:ring-ring" onClick={() => { setSelectedId(style.id); clearCopy() }}>
                 <span className="block text-xs text-muted-foreground">{style.name}</span>
                 <span className="mt-1 block whitespace-pre-wrap wrap-anywhere">{style.output}</span>
               </button>
-              <button type="button" aria-label={`Copy ${style.name}`} className={`${actionClass} shrink-0`} onClick={() => copyStyle(style)}>{lastCopy.key === style.id ? 'Copied' : 'Copy'}</button>
+              <button type="button" aria-label={'Copy ' + style.name} className={actionClass + ' shrink-0'}
+                onClick={() => copyStyle(style)}>{lastCopy.key === style.id ? 'Copied' : 'Copy'}</button>
             </li>
           ))}
         </ul>
       </section>
 
-      {(text.trim() || favorites.length > 0 || selectedId !== ordered[0].id) && <SmartMomentumOffer />}
+      <StudioMomentumBridge id="discord-momentum" title="From Discord to Your Social Channels" highlighted={Boolean(lastCopy.key)}>
+        <p>Use a Discord announcement to point members to one useful next step. Share a clip on Instagram or TikTok, link the full walkthrough on YouTube, or post a recap on Telegram.</p>
+        <p>Use a distinct link for each channel. Compare link clicks, early views and meaningful replies to see what people find useful.</p>
+      </StudioMomentumBridge>
+      {(text.trim() || history.length > 0 || selectedId !== initialStyle) && <SmartMomentumOffer />}
       {config.cheat && (
         <section className="mt-6 rounded-2xl border border-border bg-card p-5" aria-labelledby="discord-formatting-title">
           <h3 id="discord-formatting-title" className="font-semibold">{config.cheat.title}</h3>
@@ -220,6 +254,13 @@ export function DiscordFontStudio() {
           </dl>
         </section>
       )}
+      <div role="status" className="pointer-events-none fixed right-4 bottom-4 left-4 z-50 flex justify-end">
+        {copyNotice > 0 && (
+          <div className="flex items-center gap-2 rounded-xl border border-[#949cff] bg-[#313338] px-4 py-3 text-sm font-semibold text-white shadow-lg">
+            <Check aria-hidden="true" className="size-4 shrink-0 text-[#a5acff]" /> Copied! Ready to paste in Discord
+          </div>
+        )}
+      </div>
     </div>
   )
 }

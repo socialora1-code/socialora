@@ -37,9 +37,9 @@ const STUDIO_STEPS: Record<string, readonly string[]> = {
     'Pick winners and copy the Story or feed announcement.',
   ],
   'discord-font-generator': [
-    'Choose where the text will appear and type your own text or start with an example.',
-    'Add a symbol if you want, then choose a style and check the live preview.',
-    'Copy the style or copy it again from your favorites tray.',
+    'Type your text, choose a style and open the channel, profile or chat preview.',
+    'Add symbols or a channel prefix, apply chat Markdown, or adjust Zalgo intensity.',
+    'Copy the result or copy it again from Recent History.',
   ],
   'hashtag-facebook': [
     'Enter a topic and an optional second keyword, or pick a quick niche.',
@@ -211,6 +211,8 @@ export function ToolPageView({ tool, niche }: { tool: ToolDef; niche?: NicheTool
   const steps = STUDIO_STEPS[tool.slug] ?? STUDIO_STEPS[tool.widget ?? ''] ?? STEPS[tool.kind] ?? []
   const basePath = `/tools/${tool.slug}`
   const niches = getToolNiches(tool.slug)
+  const isDiscordStudio = tool.slug === 'discord-font-generator'
+  const toolBreadcrumb = niche ? tool.name.split(' for ')[0] : tool.name
 
   const url = new URL(niche?.path ?? basePath, SITE.url).href
   const sharedToolUrl = new URL(url)
@@ -245,15 +247,15 @@ export function ToolPageView({ tool, niche }: { tool: ToolDef; niche?: NicheTool
       '@type': 'BreadcrumbList',
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
-        { '@type': 'ListItem', position: 2, name: 'Free Tools', item: `${SITE.url}/tools` },
-        { '@type': 'ListItem', position: 3, name: niche ? tool.name.split(' for ')[0] : tool.name, item: new URL(basePath, SITE.url).href },
+        { '@type': 'ListItem', position: 2, name: isDiscordStudio ? 'Tools' : 'Free Tools', item: `${SITE.url}/tools` },
+        { '@type': 'ListItem', position: 3, name: isDiscordStudio ? 'Discord Fonts Generator' : toolBreadcrumb, item: new URL(basePath, SITE.url).href },
         ...(niche ? [{ '@type': 'ListItem', position: 4, name: niche.audience, item: url }] : []),
       ],
     },
   ]
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
+    <div className={`mx-auto px-4 py-12 sm:py-16 ${isDiscordStudio ? 'max-w-5xl' : 'max-w-3xl'}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
