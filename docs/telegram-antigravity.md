@@ -1,6 +1,6 @@
 # Socialora Telegram connection
 
-**Current status:** the legacy webhook was removed and verified empty on 7 November 2026 at 23:44 Europe/Istanbul at the owner's explicit request. The bot and posting rights remain. Do not reconnect ControllerBot. The Termux publisher is prepared but not installed; inbound message processing and AI replies are not deployed. `AGENTS.md` is the current working instruction. Earlier setup/audit sections below are historical where they conflict with this status.
+**Current status:** Windows n8n runs the Telegram publisher and group assistant. See the [Telegram automation README](../automation/telegram/README.md). This document describes the separate manual GitHub Actions bridge. The legacy webhook was removed and verified empty on 7 November 2026 at 23:44 Europe/Istanbul. Do not reconnect ControllerBot.
 
 
 The private repository's `Socialora Telegram` GitHub Actions workflow provides a persistent **bot** connection for Antigravity. It does not log in to a personal Telegram account or depend on a browser session.
@@ -38,12 +38,6 @@ Read-only inspections succeeded with the repository secret and expected publishe
 
 No messages were sent. An existing webhook is configured and was not changed. Preserve it; do not enable polling or replace its consumer without an integration plan and owner approval. The token value was never inspected. Automatic scheduling and inbound group-message reading remain unconfigured.
 
-
-## Termux publisher package — prepared 2026-11-07
-
-`automation/telegram/` now contains a standalone no-AI-cost editorial publisher, a 14-day content queue, tests and installation instructions. It is prepared for the owner's Android phone; it is not deployed to that phone by this repository change. See its README for activation and device checks.
-
-Do not schedule the same content through both this manual GitHub bridge and the phone. The phone keeps the authoritative delivery ledger after activation. Existing ControllerBot schedules must be checked before activation; this package cannot inspect that queue. The existing webhook stays unchanged; inbound group reading and contextual AI replies are still not enabled.
 
 ## Webhook audit — 2026-11-07 20:18 UTC
 
