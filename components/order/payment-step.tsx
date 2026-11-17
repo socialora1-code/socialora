@@ -40,7 +40,6 @@ export function PaymentStep({
   return (
     <div className="flex flex-col gap-6">
       <div className="rounded-2xl border border-border bg-muted/50 p-4 text-sm leading-relaxed text-muted-foreground">
-        {cardEnabled && 'Card checkout is available for orders of $10 USD or more. '}
         Choose <strong className="font-medium text-foreground">automatic payment</strong> to pay in any supported
         cryptocurrency on a secure checkout page, or choose{' '}
         <strong className="font-medium text-foreground">manual crypto</strong> to send crypto to our wallet yourself.
