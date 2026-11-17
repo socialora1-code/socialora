@@ -1,5 +1,6 @@
 'use client'
 
+import { Check, CreditCard, Wallet, Zap } from 'lucide-react'
 import { FormField } from '@/components/order/form-field'
 import { WalletCard } from '@/components/order/wallet-card'
 import { getPaymentMethod, MIN_CARD_MESSAGE, PAYMENT_METHODS, type PaymentMethodId } from '@/lib/catalog'
@@ -8,10 +9,16 @@ import { cn } from '@/lib/utils'
 const MANUAL_METHODS = PAYMENT_METHODS.filter((m) => m.id !== 'nowpayments')
 
 const CARD_CLASS = cn(
-  'flex min-h-14 cursor-pointer items-center gap-3 rounded-2xl border border-border bg-background px-4 py-3 transition-colors',
-  'hover:border-foreground/30 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/40',
-  'has-[:checked]:border-primary has-[:checked]:bg-accent/60 has-[:checked]:ring-1 has-[:checked]:ring-primary',
+  'group relative flex min-w-0 cursor-pointer items-center gap-3 rounded-xl border border-border bg-background p-3 transition-colors',
+  'hover:border-primary/45 hover:bg-accent/30 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring/60',
+  'has-[:checked]:border-primary has-[:checked]:bg-primary/8',
 )
+
+const PAYMENT_OPTIONS = [
+  { id: 'card2crypto', label: 'Credit or debit card', icon: CreditCard },
+  { id: 'nowpayments', label: 'Automatic crypto', icon: Zap },
+  { id: 'manual', label: 'Manual crypto', icon: Wallet },
+] as const
 
 export function PaymentStep({
   cardEnabled,
@@ -39,63 +46,24 @@ export function PaymentStep({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="rounded-2xl border border-border bg-muted/50 p-4 text-sm leading-relaxed text-muted-foreground">
-        Choose <strong className="font-medium text-foreground">automatic payment</strong> to pay in any supported
-        cryptocurrency on a secure checkout page, or choose{' '}
-        <strong className="font-medium text-foreground">manual crypto</strong> to send crypto to our wallet yourself.
-      </div>
-
       <fieldset className="min-w-0" aria-describedby={paymentError ? 'payment-error' : undefined}>
-        <legend className="text-sm font-medium">Payment method</legend>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
-          {cardEnabled && (
-            <label className={CARD_CLASS}>
+        <legend className="sr-only">Payment method</legend>
+        <div className={cn('grid gap-2 sm:grid-cols-2', cardEnabled && 'sm:grid-cols-3')}>
+          {PAYMENT_OPTIONS.filter(({ id }) => cardEnabled || id !== 'card2crypto').map(({ id, label, icon: Icon }) => (
+            <label key={id} className={cn(CARD_CLASS, 'min-h-15 sm:flex-col sm:items-start sm:gap-2')}>
               <input
                 type="radio"
                 name="paymentMethod"
-                value="card2crypto"
-                checked={isCard}
-                onChange={() => onPaymentMethodChange('card2crypto')}
-                className="size-4 shrink-0 accent-[var(--primary)]"
+                value={id}
+                checked={id === 'manual' ? isManual : paymentMethodId === id}
+                onChange={() => onPaymentMethodChange(id === 'manual' ? MANUAL_METHODS[0].id : id)}
+                className="sr-only"
               />
-              <span className="min-w-0">
-                <span className="block text-sm font-semibold">Credit or debit card</span>
-                <span className="block text-xs text-muted-foreground">Continue to Card2Crypto</span>
-              </span>
+              <Icon className="size-5 shrink-0 text-muted-foreground group-has-[:checked]:text-primary" aria-hidden="true" />
+              <span className="pr-5 text-sm font-semibold leading-snug">{label}</span>
+              <Check className="absolute right-3 top-1/2 size-4 -translate-y-1/2 text-primary opacity-0 group-has-[:checked]:opacity-100 sm:top-3 sm:translate-y-0" aria-hidden="true" />
             </label>
-          )}
-
-          <label className={CARD_CLASS}>
-            <input
-              type="radio"
-              name="paymentMethod"
-              value="nowpayments"
-              checked={isAutomatic}
-              onChange={() => onPaymentMethodChange('nowpayments')}
-              className="size-4 shrink-0 accent-[var(--primary)]"
-            />
-            <span className="min-w-0">
-              <span className="block text-sm font-semibold">Pay automatically (crypto)</span>
-              <span className="block text-xs text-muted-foreground">Choose your coin at checkout</span>
-            </span>
-          </label>
-
-          <label className={CARD_CLASS}>
-            <input
-              type="radio"
-              name="paymentMethod"
-              value="manual"
-              checked={isManual}
-              onChange={() => {
-                if (!isManual && MANUAL_METHODS[0]) onPaymentMethodChange(MANUAL_METHODS[0].id)
-              }}
-              className="size-4 shrink-0 accent-[var(--primary)]"
-            />
-            <span className="min-w-0">
-              <span className="block text-sm font-semibold">Manual crypto</span>
-              <span className="block text-xs text-muted-foreground">Send USDT, USDC or Bitcoin to our wallet</span>
-            </span>
-          </label>
+          ))}
         </div>
         {paymentError && (
           <p id="payment-error" className="mt-2 text-sm font-medium text-destructive">
@@ -104,19 +72,12 @@ export function PaymentStep({
         )}
       </fieldset>
 
-      {isCard && (
-        <div className="rounded-2xl border border-border bg-background p-4 text-sm leading-relaxed text-muted-foreground">
-          <p>{MIN_CARD_MESSAGE} Card2Crypto sends you to a payment provider, where you can review any fees before paying.</p>
-          <p className="mt-1">The provider may show the payment as a USDC purchase and ask for identity verification. We review the payment before processing the order.</p>
-        </div>
-      )}
+      {isCard && !paymentError && <p className="text-sm text-muted-foreground">{MIN_CARD_MESSAGE}</p>}
 
       {isAutomatic && (
         <div className="flex flex-col gap-3 animate-in fade-in duration-200">
           <div className="rounded-2xl border border-border bg-background p-4 text-sm leading-relaxed text-muted-foreground">
-            After you press <strong className="font-medium text-foreground">Submit Order</strong>, you will be taken
-            to a secure checkout page where you can choose your coin and pay. Your order starts once the payment is
-            confirmed.
+            Choose your coin on the next screen. Your order starts after payment is confirmed.
           </div>
           <div
             role="note"
@@ -124,7 +85,7 @@ export function PaymentStep({
           >
             <p className="font-semibold">Minimum order for automatic payment: $10 USD.</p>
             <p className="mt-1">
-              For orders under $10, please choose Manual crypto (USDT, USDC or Bitcoin wallet) instead.
+              For smaller orders, choose {cardEnabled ? 'card or manual crypto' : 'manual crypto'}.
             </p>
           </div>
         </div>
@@ -143,7 +104,7 @@ export function PaymentStep({
                     value={m.id}
                     checked={paymentMethodId === m.id}
                     onChange={() => onPaymentMethodChange(m.id)}
-                    className="size-4 shrink-0 accent-[var(--primary)]"
+                    className="size-4 shrink-0 accent-primary"
                   />
                   <span className="min-w-0">
                     <span className="block text-sm font-semibold">{m.label}</span>

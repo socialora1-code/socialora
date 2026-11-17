@@ -931,7 +931,7 @@ export const PLATFORMS: readonly Platform[] = [
 /* -------------------------------------------------------------------------- */
 
 export const MIN_CARD_CENTS = 300
-export const MIN_CARD_MESSAGE = `Card payment starts at $${MIN_CARD_CENTS / 100} USD. Available options depend on your country and order amount.`
+export const MIN_CARD_MESSAGE = `Minimum card payment: $${MIN_CARD_CENTS / 100} USD.`
 
 export type PaymentMethodId =
   | 'card2crypto'

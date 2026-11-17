@@ -76,6 +76,7 @@ export function OrderForm({ initial, cardEnabled }: { initial: InitialSelection;
   const activeTier = tiered ? (getTier(tierId) ?? null) : null
   const priceCents = getPriceCents(service, activeTier?.id ?? null, quantity)
   const paymentMethod = getPaymentMethod(paymentMethodId) ?? null
+  const usesHostedCheckout = paymentMethodId === 'card2crypto' || paymentMethodId === 'nowpayments'
   const packageName = activeTier?.name ?? STANDARD_PACKAGE_NAME
   const usernameOnly = Boolean(service.usernameOnly)
   const fixed = Boolean(service.fixed)
@@ -439,20 +440,25 @@ placeholder={
             <button
               type="submit"
               disabled={submitting}
-              className="mt-5 inline-flex h-13 w-full items-center justify-center gap-2 rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/40 focus-visible:outline-none disabled:opacity-70"
+              className="mt-5 inline-flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/40 focus-visible:outline-none disabled:opacity-70"
             >
               {submitting ? (
                 <>
                   <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-                  Submitting…
+                  {usesHostedCheckout ? 'Opening checkout…' : 'Submitting…'}
                 </>
               ) : (
-                'Submit Order'
+                <>
+                  {usesHostedCheckout ? 'Continue to payment' : 'Submit order'}
+                  <ArrowRight className="size-4" aria-hidden="true" />
+                </>
               )}
             </button>
-            <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">
-              Your order is reviewed manually after payment is confirmed.
-            </p>
+            {paymentMethod?.address && (
+              <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">
+                Your order is reviewed after we verify your transfer.
+              </p>
+            )}
           </OrderSummary>
         </div>
       </div>
@@ -474,7 +480,7 @@ placeholder={
           </div>
           <a
             href="#order-summary"
-            className="inline-flex h-12 shrink-0 items-center gap-1.5 rounded-full bg-foreground px-5 text-sm font-semibold text-background"
+            className="inline-flex h-12 shrink-0 items-center gap-1.5 rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground"
           >
             Review
             <ArrowRight className="size-4" aria-hidden="true" />
