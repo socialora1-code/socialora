@@ -233,7 +233,7 @@ export function PaymentStep({
                 <strong className="text-foreground">Using an exchange (Binance, Coinbase, Bybit, Kraken, OKX):</strong> Buy <strong>USDT</strong>, go to <strong>Assets &rarr; Withdraw (On-Chain)</strong>, paste our wallet address, pick the matching network (e.g., <strong>TRC20</strong> or <strong>BEP20</strong>), and enter the order amount. Note: exchanges charge a ~$1 withdrawal fee, so add that fee on your exchange screen so the full order amount arrives.
               </li>
               <li>
-                <strong className="text-foreground">Why we recommend Manual Crypto:</strong> Works for <strong>any amount</strong> (even $1–$9 orders), has the lowest network fees (BNB Smart Chain BEP20 &amp; Solana cost under $0.05), and gives you a <strong>+20% extra quantity bonus</strong> when you email us your order reference!
+                <strong className="text-foreground">Why we recommend Manual Crypto:</strong> Works for <strong>any order amount</strong> (including orders under $10 USD), has the lowest network fees (BNB Smart Chain BEP20 &amp; Solana cost under $0.05), and gives you a <strong>+20% extra quantity bonus</strong> when you email us your order reference!
               </li>
             </ul>
           </div>

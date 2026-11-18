@@ -101,7 +101,7 @@ export default function HowItWorksPage() {
                 </span>
               </div>
               <p className="mt-2 text-sm text-muted-foreground">
-                Works for <strong>any order amount</strong> (even $1–$9 orders) and gives you <strong>+20% extra followers, likes, views or members free</strong>.
+                Works for <strong>any order amount</strong> (including orders under $10 USD) and gives you <strong>+20% extra followers, likes, views or members free</strong>.
               </p>
               <ol className="mt-4 flex flex-col gap-3 text-sm leading-relaxed text-muted-foreground">
                 <li>
