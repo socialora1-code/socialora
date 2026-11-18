@@ -24,6 +24,12 @@ export async function create402Payment(params: {
     throw new Error('402pay secret key is not configured')
   }
 
+  const rawMeta = params.metadata ?? { reference: params.reference }
+  const metadata: Record<string, string> = {}
+  for (const [k, v] of Object.entries(rawMeta)) {
+    if (v !== undefined && v !== null) metadata[k] = String(v)
+  }
+
   const response = await fetch('https://api.402pay.co/api/v1/payments', {
     method: 'POST',
     headers: {
@@ -38,7 +44,7 @@ export async function create402Payment(params: {
       customer_email: params.customerEmail,
       success_url: params.successUrl,
       cancel_url: params.cancelUrl,
-      metadata: params.metadata ?? { reference: params.reference },
+      metadata,
     }),
     cache: 'no-store',
     signal: AbortSignal.timeout(15_000),

@@ -126,7 +126,7 @@ export async function POST(request: Request) {
           customerEmail: order.email,
           successUrl: `${SITE.url}/payment-success?ref=${reference}`,
           cancelUrl: `${SITE.url}/order`,
-          metadata: { reference, service: serviceName, quantity: order.quantity },
+          metadata: { reference, service: serviceName, quantity: String(order.quantity) },
         })
         checkoutUrl = payment.url
         pay402PaymentId = payment.id
