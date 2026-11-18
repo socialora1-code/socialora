@@ -81,7 +81,13 @@ export const FAQ: readonly FaqItem[] = [
   {
     question: 'What payment methods are supported?',
     answer: [
-      `You can pay automatically with crypto or send ${MANUAL_COINS} to the wallet shown at checkout. When available, you can also pay by credit or debit card.`,
+      `You can pay via Manual Crypto (+20% Bonus) by sending ${MANUAL_COINS} directly to the wallet shown at checkout (works for any order amount with no minimum limit), or pay automatically with 100+ cryptocurrencies via NOWPayments (orders $10+ USD). Credit and debit card checkout is also available for orders $10+ USD.`,
+    ],
+  },
+  {
+    question: 'How do I claim the +20% Manual Crypto bonus, and can you help if I get stuck paying?',
+    answer: [
+      `Every order paid via Manual Crypto qualifies for +20% extra quantity free. Simply select Manual crypto (+20% Bonus) at checkout, send the exact order amount to our wallet on the matching network, submit your order, and reply to your confirmation email (or write to ${SITE.supportEmail} with your SO-XXXXXXXX reference) to claim your +20% bonus. If you are new to crypto or need help at any step, email ${SITE.supportEmail} or message @SocialoraChat on Telegram and we will guide you.`,
     ],
   },
   {

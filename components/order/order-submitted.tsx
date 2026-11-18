@@ -1,4 +1,4 @@
-import { Clock, MailWarning } from 'lucide-react'
+import { Clock, Gift, MailWarning } from 'lucide-react'
 import Link from 'next/link'
 import { CopyButton } from '@/components/order/copy-button'
 import { WalletCard } from '@/components/order/wallet-card'
@@ -56,6 +56,24 @@ export function OrderSubmitted({ order }: { order: SubmittedOrder }) {
               Your order will be reviewed manually after your payment is confirmed on the blockchain. Delivery does not
               start until payment has been verified.
             </p>
+          </div>
+        </div>
+
+        <div className="mt-4 flex gap-3 rounded-2xl border border-emerald-500/35 bg-emerald-500/[0.08] p-4 text-sm">
+          <Gift className="mt-0.5 size-5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+          <div>
+            <p className="font-semibold text-emerald-700 dark:text-emerald-300">
+              Claim your +20% Manual Crypto Bonus!
+            </p>
+            <p className="mt-1 leading-relaxed text-foreground/90">
+              Because you chose Manual Crypto, you qualify for <strong>+20% extra quantity free</strong> on this order. After sending your payment, reply to your confirmation email or click below to email us your order reference (<code className="font-mono">{order.reference}</code>):
+            </p>
+            <a
+              href={`mailto:${SITE.supportEmail}?subject=${encodeURIComponent(`Claim +20% Bonus — Order ${order.reference}`)}&body=${encodeURIComponent(`Hi Socialora team,\n\nI paid via Manual Crypto for order ${order.reference}. Please add my +20% extra quantity bonus!\n`)}`}
+              className="mt-2.5 inline-flex h-9 items-center justify-center rounded-full bg-emerald-600 px-4 text-xs font-semibold text-white hover:bg-emerald-700"
+            >
+              Email to claim +20% bonus
+            </a>
           </div>
         </div>
 

@@ -255,7 +255,7 @@ export async function POST(request: Request) {
       ['Wallet address', order.paymentMethod.address],
       ['Transaction ID / hash', order.transactionId ?? 'Not provided'],
     ],
-    `Send the exact order amount to the wallet address above using the ${order.paymentMethod.network} network only. Your order will be reviewed manually after your payment is confirmed. Reply to this email if you have any questions, and include your order reference.`,
+    `Send the exact order amount to the wallet address above using the ${order.paymentMethod.network} network only. Your order will be reviewed manually after your payment is confirmed. BONUS: Because you chose Manual Crypto, you qualify for +20% extra quantity free — simply reply to this email with your order reference (${reference}) once paid to claim your +20% bonus!`,
   )
 
   const customerSend = await sendEmail({
