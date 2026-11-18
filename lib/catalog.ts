@@ -930,11 +930,8 @@ export const PLATFORMS: readonly Platform[] = [
 /*                               Payment methods                              */
 /* -------------------------------------------------------------------------- */
 
-export const MIN_CARD_CENTS = 300
-export const MIN_CARD_MESSAGE = `Minimum card payment: $${MIN_CARD_CENTS / 100} USD.`
-
 export type PaymentMethodId =
-  | 'card2crypto'
+  | 'payzink'
   | 'nowpayments'
   | 'usdt-trc20'
   | 'usdt-bsc'
@@ -952,11 +949,11 @@ export interface PaymentMethod {
   warning: string
 }
 
-const CARD_PAYMENT_METHOD: PaymentMethod = {
-  id: 'card2crypto',
-  label: 'Card via crypto provider',
+const PAYZINK_PAYMENT_METHOD: PaymentMethod = {
+  id: 'payzink',
+  label: 'Credit or debit card',
   asset: 'Card',
-  network: 'Card2Crypto',
+  network: 'Payzink',
   address: '',
   warning: '',
 }
@@ -1039,7 +1036,7 @@ export function getTierDescription(service: Service, tier: Tier): string {
 }
 
 export function getPaymentMethod(id: string | null | undefined): PaymentMethod | undefined {
-  return id === 'card2crypto' ? CARD_PAYMENT_METHOD : PAYMENT_METHODS.find((m) => m.id === id)
+  return id === 'payzink' ? PAYZINK_PAYMENT_METHOD : PAYMENT_METHODS.find((m) => m.id === id)
 }
 
 export function isTiered(service: Service): boolean {

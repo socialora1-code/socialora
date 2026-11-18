@@ -77,11 +77,7 @@ const sections: LegalSection[] = [
           network or exchange fees. Funds sent on the wrong network, to the wrong address or in the wrong asset may be
           unrecoverable and are not our responsibility.
         </p>
-        <p>
-          If card checkout is available for your order, Card2Crypto redirects you to a payment provider that may
-          show the transaction as a cryptocurrency purchase. Review its fees and verification requirements before
-          paying. Card orders start after we verify the payment.
-        </p>
+        <p>When card checkout is available, Payzink processes your payment. We review your order after payment is confirmed.</p>
         <p>We may decline or cancel any order at our discretion, in which case the Refund Policy applies.</p>
       </>
     ),

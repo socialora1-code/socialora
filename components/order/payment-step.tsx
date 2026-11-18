@@ -3,7 +3,7 @@
 import { Check, CreditCard, Wallet, Zap } from 'lucide-react'
 import { FormField } from '@/components/order/form-field'
 import { WalletCard } from '@/components/order/wallet-card'
-import { getPaymentMethod, MIN_CARD_MESSAGE, PAYMENT_METHODS, type PaymentMethodId } from '@/lib/catalog'
+import { getPaymentMethod, PAYMENT_METHODS, type PaymentMethodId } from '@/lib/catalog'
 import { cn } from '@/lib/utils'
 
 const MANUAL_METHODS = PAYMENT_METHODS.filter((m) => m.id !== 'nowpayments')
@@ -15,7 +15,7 @@ const CARD_CLASS = cn(
 )
 
 const PAYMENT_OPTIONS = [
-  { id: 'card2crypto', label: 'Card via crypto provider', icon: CreditCard },
+  { id: 'payzink', label: 'Credit or debit card', icon: CreditCard },
   { id: 'nowpayments', label: 'Automatic crypto', icon: Zap },
   { id: 'manual', label: 'Manual crypto', icon: Wallet },
 ] as const
@@ -41,7 +41,6 @@ export function PaymentStep({
 }) {
   const method = getPaymentMethod(paymentMethodId)
   const isAutomatic = method?.id === 'nowpayments'
-  const isCard = method?.id === 'card2crypto'
   const isManual = Boolean(method?.address)
 
   return (
@@ -49,7 +48,7 @@ export function PaymentStep({
       <fieldset className="min-w-0" aria-describedby={paymentError ? 'payment-error' : undefined}>
         <legend className="sr-only">Payment method</legend>
         <div className={cn('grid gap-2 sm:grid-cols-2', cardEnabled && 'sm:grid-cols-3')}>
-          {PAYMENT_OPTIONS.filter(({ id }) => cardEnabled || id !== 'card2crypto').map(({ id, label, icon: Icon }) => (
+          {PAYMENT_OPTIONS.filter(({ id }) => cardEnabled || id !== 'payzink').map(({ id, label, icon: Icon }) => (
             <label key={id} className={cn(CARD_CLASS, 'min-h-15 sm:flex-col sm:items-start sm:gap-2')}>
               <input
                 type="radio"
@@ -72,7 +71,9 @@ export function PaymentStep({
         )}
       </fieldset>
 
-      {isCard && !paymentError && <p className="text-sm text-muted-foreground">{MIN_CARD_MESSAGE} The provider may require an account.</p>}
+      {method?.id === 'payzink' && (
+        <p className="text-sm text-muted-foreground">Enter your card details securely on Payzink.</p>
+      )}
 
       {isAutomatic && (
         <div className="flex flex-col gap-3 animate-in fade-in duration-200">

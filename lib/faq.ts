@@ -81,7 +81,7 @@ export const FAQ: readonly FaqItem[] = [
   {
     question: 'What payment methods are supported?',
     answer: [
-      `You can pay automatically with crypto or send ${MANUAL_COINS} to the wallet shown at checkout. When card checkout is available for your order, it appears alongside the crypto options.`,
+      `You can pay automatically with crypto or send ${MANUAL_COINS} to the wallet shown at checkout. When available, you can also pay by card with Payzink.`,
     ],
   },
   {

@@ -85,8 +85,8 @@ const sections: LegalSection[] = [
         delivery, analytics, payment processors, and the supply partners that deliver
         your order, who receive the link or username and the quantity you ordered. When you choose Join group, your
         browser opens our group on Telegram. Telegram handles the app or website destination under its own privacy
-        policy. If you choose card checkout, Card2Crypto and its payment provider receive the order amount and your
-        email to process the payment. You enter card details directly with the payment provider.
+        policy. If you choose card checkout, Payzink receives your order amount and email to process the payment.
+        You enter your card details on Payzink.
       </p>
     ),
   },
