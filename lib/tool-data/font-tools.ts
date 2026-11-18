@@ -91,7 +91,7 @@ export const FONT_TOOLS: readonly ToolDef[] = [
     description:
       'Try the free Discord font generator for instant text styles. Copy and paste Discord fonts into nicknames, profiles or messages. No login needed.',
     intro:
-      'Style your Discord profile, chat messages and channel names. Try Gothic, Bold, Script or Cursed Zalgo in the live dark-mode simulator, then copy the result.',
+      'Style your Discord name, bio, channels and chat. See every change live, then copy and paste.',
     tips: [
       'Many servers have nickname rules. Hard to read or hard to mention names may be changed by moderators, so check the rules first.',
       'For long messages, use Discord formatting instead: two asterisks for bold, one for italic. Fancy text works best for short headings.',

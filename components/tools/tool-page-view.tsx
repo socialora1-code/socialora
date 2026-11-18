@@ -37,9 +37,9 @@ const STUDIO_STEPS: Record<string, readonly string[]> = {
     'Pick winners and copy the Story or feed announcement.',
   ],
   'discord-font-generator': [
-    'Type your text, choose a style and open the channel, profile or chat preview.',
+    'Choose Profile, Channels or Chat, then enter your text and pick a font.',
     'Add symbols or a channel prefix, apply chat Markdown, or adjust Zalgo intensity.',
-    'Copy the result or copy it again from Recent History.',
+    'Copy your name, bio, channel or message. Recent History keeps your last five copies while the page is open.',
   ],
   'hashtag-facebook': [
     'Enter a topic and an optional second keyword, or pick a quick niche.',
@@ -255,7 +255,7 @@ export function ToolPageView({ tool, niche }: { tool: ToolDef; niche?: NicheTool
   ]
 
   return (
-    <div className={`mx-auto px-4 py-12 sm:py-16 ${isDiscordStudio ? 'max-w-5xl' : 'max-w-3xl'}`}>
+    <div className={`mx-auto px-4 ${isDiscordStudio ? 'max-w-5xl pt-6 pb-12 sm:pt-10 sm:pb-16' : 'max-w-3xl py-12 sm:py-16'}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
@@ -263,7 +263,7 @@ export function ToolPageView({ tool, niche }: { tool: ToolDef; niche?: NicheTool
       <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{tool.h1}</h1>
       <p className="mt-3 leading-relaxed text-muted-foreground">{tool.intro}</p>
 
-      <div className="mt-8">
+      <div className={isDiscordStudio ? 'mt-4 sm:mt-6' : 'mt-8'}>
         <Widget tool={tool} niche={niche} />
       </div>
       {niche && (

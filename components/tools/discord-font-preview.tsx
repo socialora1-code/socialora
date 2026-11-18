@@ -2,12 +2,12 @@
 
 import { Tabs } from '@base-ui/react/tabs'
 import { Gamepad2, Hash, MessageSquare, ShieldCheck, UserRound, Volume2 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 
 const tabs = [
-  { id: 'profile', label: 'User Profile & Bio Card', Icon: UserRound },
-  { id: 'channel', label: 'Server Channel Preview', Icon: Hash },
-  { id: 'chat', label: 'Chat Message & Markdown', Icon: MessageSquare },
+  { id: 'profile', label: 'Profile', Icon: UserRound },
+  { id: 'channel', label: 'Channels', Icon: Hash },
+  { id: 'chat', label: 'Chat', Icon: MessageSquare },
 ] as const
 
 export type DiscordPreviewTab = (typeof tabs)[number]['id']
@@ -64,50 +64,34 @@ function ServerPreview({ output, voice, prefix, onPrefix }: {
   )
 }
 
-function ProfilePreview({ output, bio, onBio, bioPreview, styleBio, onStyleBio, roleMode, onRoleMode }: {
+function ProfilePreview({ output, bioPreview, roleMode }: {
   output: string
-  bio: string
-  onBio: (value: string) => void
   bioPreview: string
-  styleBio: boolean
-  onStyleBio: (active: boolean) => void
   roleMode: boolean
-  onRoleMode: (active: boolean) => void
 }) {
   return (
-    <div className="space-y-3">
-      <div className="overflow-hidden rounded-xl bg-[#232428]">
-        <div aria-hidden="true" className="h-11 bg-[#5865F2]" />
-        <div className="px-4 pb-4">
-          <div className="-mt-5 flex items-end justify-between gap-2">
-            <div aria-hidden="true" className="relative grid size-12 shrink-0 place-items-center rounded-full border-4 border-[#232428] bg-[#4651c4] text-white">
-              <UserRound className="size-6" />
-              <span className="absolute -right-0.5 bottom-0 size-3 rounded-full border-2 border-[#232428] bg-[#23a559]" />
-            </div>
-            <span aria-label="Server member badge" className="rounded-md bg-[#35373d] p-1.5 text-[#c7cbff]"><ShieldCheck aria-hidden="true" className="size-4" /></span>
+    <div className="overflow-hidden rounded-xl bg-[#232428]">
+      <div aria-hidden="true" className="h-11 bg-linear-to-r from-[#5865F2] to-[#8975ef]" />
+      <div className="px-4 pb-4">
+        <div className="-mt-5 flex items-end justify-between gap-2">
+          <div aria-hidden="true" className="relative grid size-12 shrink-0 place-items-center rounded-full border-4 border-[#232428] bg-[#4651c4] text-white">
+            <UserRound className="size-6" />
+            <span className="absolute -right-0.5 bottom-0 size-3 rounded-full border-2 border-[#232428] bg-[#23a559]" />
           </div>
-          <p data-testid="discord-display-name" className="mt-2 text-lg font-bold leading-snug wrap-anywhere text-white">{output}</p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            <span className="max-w-full rounded-full bg-[#35373d] px-2 py-1 text-xs wrap-anywhere">{roleMode ? output : 'Creator'}</span>
-          </div>
-          <div className="mt-3 border-t border-[#43454d] pt-3">
-            <p className="text-xs font-semibold text-[#dbdee1]">About Me</p>
-            <p data-testid="discord-about-preview" className="mt-1 text-sm whitespace-pre-wrap wrap-anywhere">{bioPreview || output}</p>
-          </div>
-          <div className="mt-3 flex items-center gap-2 text-sm text-[#dbdee1]">
-            <Gamepad2 aria-hidden="true" className="size-4 shrink-0 text-[#c7cbff]" /> Playing a Game
-          </div>
+          <span aria-label="Server member badge" className="rounded-md bg-[#35373d] p-1.5 text-[#c7cbff]"><ShieldCheck aria-hidden="true" className="size-4" /></span>
+        </div>
+        <p data-testid="discord-display-name" className="mt-2 text-lg font-bold leading-snug wrap-anywhere text-white">{output}</p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <span className="max-w-full rounded-full bg-[#35373d] px-2 py-1 text-xs wrap-anywhere">{roleMode ? output : 'Creator'}</span>
+        </div>
+        <div className="mt-3 border-t border-[#43454d] pt-3">
+          <p className="text-xs font-semibold text-[#dbdee1]">About Me</p>
+          <p data-testid="discord-about-preview" className="mt-1 text-sm whitespace-pre-wrap wrap-anywhere">{bioPreview}</p>
+        </div>
+        <div className="mt-3 flex items-center gap-2 text-sm text-[#dbdee1]">
+          <Gamepad2 aria-hidden="true" className="size-4 shrink-0 text-[#c7cbff]" /> Playing a Game
         </div>
       </div>
-      <label htmlFor="discord-about-input" className="block text-xs font-medium text-[#dbdee1]">Edit About Me</label>
-      <textarea id="discord-about-input" rows={2} maxLength={190} value={bio} onChange={event => onBio(event.target.value)}
-        className="w-full rounded-lg border border-[#50525b] bg-[#232428] px-3 py-2 text-base text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c7cbff]" />
-      <button type="button" className={darkButton} aria-pressed={styleBio} onClick={() => onStyleBio(!styleBio)}>
-        Apply selected font to bio
-      </button>
-      <button type="button" className={darkButton} aria-pressed={roleMode} onClick={() => onRoleMode(!roleMode)}>
-        Preview as server role
-      </button>
     </div>
   )
 }
@@ -171,49 +155,54 @@ function ChatPreview({ output, format, onFormat }: {
   )
 }
 
-export function DiscordFontPreview({ tab, onTab, output, voice, prefix, onPrefix, bio, onBio, bioPreview, styleBio, onStyleBio, roleMode, onRoleMode, format, onFormat }: {
+export function DiscordFontPreview({ tab, onTab, editor, fontPicker, actions, output, voice, prefix, onPrefix, bioPreview, roleMode, format, onFormat }: {
   tab: DiscordPreviewTab
   onTab: (tab: DiscordPreviewTab) => void
+  editor: ReactNode
+  fontPicker: ReactNode
+  actions: ReactNode
   output: string
   voice: string
   prefix: string
   onPrefix: (prefix: string) => void
-  bio: string
-  onBio: (bio: string) => void
   bioPreview: string
-  styleBio: boolean
-  onStyleBio: (active: boolean) => void
   roleMode: boolean
-  onRoleMode: (active: boolean) => void
   format: DiscordChatFormat
   onFormat: (format: DiscordChatFormat) => void
 }) {
   return (
-    <section className="min-w-0 overflow-hidden rounded-2xl border border-[#50525b] bg-[#313338] text-[#f2f3f5]" aria-labelledby="discord-preview-title">
-      <div className="flex items-center gap-2.5 border-b border-[#1e1f22] px-4 py-3.5">
-        <span aria-hidden="true" className="size-2.5 shrink-0 rounded-full bg-[#5865F2]" />
-        <h3 id="discord-preview-title" className="text-sm font-semibold">Live Discord Dark-Mode Simulator</h3>
+    <Tabs.Root value={tab} onValueChange={value => {
+      if (value === 'channel' || value === 'profile' || value === 'chat') onTab(value)
+    }}>
+      <Tabs.List aria-label="Discord preview" activateOnFocus className="grid grid-cols-3 gap-1 rounded-xl border border-border bg-background/65 p-1">
+        {tabs.map(({ id, label, Icon }) => (
+          <Tabs.Tab key={id} value={id} className="flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-lg px-1.5 text-center text-sm font-medium text-muted-foreground hover:bg-muted data-active:bg-[#4752c4] data-active:text-white focus-visible:outline-2 focus-visible:outline-[#949cff]">
+            <Icon aria-hidden="true" className="size-4 shrink-0" />{label}
+          </Tabs.Tab>
+        ))}
+      </Tabs.List>
+      <div className="mt-3 grid min-w-0 items-start gap-3 md:mt-5 md:grid-cols-2 md:gap-5">
+        {editor}
+        <div className="min-w-0 overflow-hidden rounded-xl border border-[#50525b] bg-[#313338] text-[#f2f3f5]">
+          <div className="flex min-w-0 items-center justify-between gap-2 px-3 pt-2.5 sm:px-4">
+            <div className="flex items-center gap-1.5 text-xs font-medium text-[#dbdee1]">
+              <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-[#949cff]" />
+              Live preview
+            </div>
+            {fontPicker}
+          </div>
+          <Tabs.Panel value="profile" className="p-3 sm:p-4">
+            <ProfilePreview output={output} bioPreview={bioPreview} roleMode={roleMode} />
+          </Tabs.Panel>
+          <Tabs.Panel value="channel" className="p-3 sm:p-4">
+            <ServerPreview output={output} voice={voice} prefix={prefix} onPrefix={onPrefix} />
+          </Tabs.Panel>
+          <Tabs.Panel value="chat" className="p-3 sm:p-4">
+            <ChatPreview output={output} format={format} onFormat={onFormat} />
+          </Tabs.Panel>
+          {actions}
+        </div>
       </div>
-      <Tabs.Root value={tab} onValueChange={value => {
-        if (value === 'channel' || value === 'profile' || value === 'chat') onTab(value)
-      }}>
-        <Tabs.List aria-label="Discord preview" activateOnFocus className="grid grid-cols-3 gap-1.5 border-b border-[#1e1f22] bg-[#2b2d31] p-2">
-          {tabs.map(({ id, label, Icon }) => (
-            <Tabs.Tab key={id} value={id} className="flex min-h-11 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1.5 py-2 text-center text-xs leading-tight font-medium text-[#dbdee1] hover:bg-[#3b3d45] data-active:bg-[#4752c4] data-active:text-white focus-visible:outline-2 focus-visible:outline-[#c7cbff]">
-              <Icon aria-hidden="true" className="size-4 shrink-0" />{label}
-            </Tabs.Tab>
-          ))}
-        </Tabs.List>
-        <Tabs.Panel value="channel" className="p-3 sm:p-4">
-          <ServerPreview output={output} voice={voice} prefix={prefix} onPrefix={onPrefix} />
-        </Tabs.Panel>
-        <Tabs.Panel value="profile" className="p-3 sm:p-4">
-          <ProfilePreview output={output} bio={bio} onBio={onBio} bioPreview={bioPreview} styleBio={styleBio} onStyleBio={onStyleBio} roleMode={roleMode} onRoleMode={onRoleMode} />
-        </Tabs.Panel>
-        <Tabs.Panel value="chat" className="p-3 sm:p-4">
-          <ChatPreview output={output} format={format} onFormat={onFormat} />
-        </Tabs.Panel>
-      </Tabs.Root>
-    </section>
+    </Tabs.Root>
   )
 }
