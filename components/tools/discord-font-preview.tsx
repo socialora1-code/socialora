@@ -5,8 +5,8 @@ import { Gamepad2, Hash, MessageSquare, ShieldCheck, UserRound, Volume2 } from '
 import { useState } from 'react'
 
 const tabs = [
-  { id: 'channel', label: 'Server Channel Preview', Icon: Hash },
   { id: 'profile', label: 'User Profile & Bio Card', Icon: UserRound },
+  { id: 'channel', label: 'Server Channel Preview', Icon: Hash },
   { id: 'chat', label: 'Chat Message & Markdown', Icon: MessageSquare },
 ] as const
 
@@ -64,10 +64,13 @@ function ServerPreview({ output, voice, prefix, onPrefix }: {
   )
 }
 
-function ProfilePreview({ output, bio, onBio, roleMode, onRoleMode }: {
+function ProfilePreview({ output, bio, onBio, bioPreview, styleBio, onStyleBio, roleMode, onRoleMode }: {
   output: string
   bio: string
   onBio: (value: string) => void
+  bioPreview: string
+  styleBio: boolean
+  onStyleBio: (active: boolean) => void
   roleMode: boolean
   onRoleMode: (active: boolean) => void
 }) {
@@ -89,7 +92,7 @@ function ProfilePreview({ output, bio, onBio, roleMode, onRoleMode }: {
           </div>
           <div className="mt-3 border-t border-[#43454d] pt-3">
             <p className="text-xs font-semibold text-[#dbdee1]">About Me</p>
-            <p data-testid="discord-about-preview" className="mt-1 text-sm whitespace-pre-wrap wrap-anywhere">{bio || output}</p>
+            <p data-testid="discord-about-preview" className="mt-1 text-sm whitespace-pre-wrap wrap-anywhere">{bioPreview || output}</p>
           </div>
           <div className="mt-3 flex items-center gap-2 text-sm text-[#dbdee1]">
             <Gamepad2 aria-hidden="true" className="size-4 shrink-0 text-[#c7cbff]" /> Playing a Game
@@ -99,6 +102,9 @@ function ProfilePreview({ output, bio, onBio, roleMode, onRoleMode }: {
       <label htmlFor="discord-about-input" className="block text-xs font-medium text-[#dbdee1]">Edit About Me</label>
       <textarea id="discord-about-input" rows={2} maxLength={190} value={bio} onChange={event => onBio(event.target.value)}
         className="w-full rounded-lg border border-[#50525b] bg-[#232428] px-3 py-2 text-base text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c7cbff]" />
+      <button type="button" className={darkButton} aria-pressed={styleBio} onClick={() => onStyleBio(!styleBio)}>
+        Apply selected font to bio
+      </button>
       <button type="button" className={darkButton} aria-pressed={roleMode} onClick={() => onRoleMode(!roleMode)}>
         Preview as server role
       </button>
@@ -165,7 +171,7 @@ function ChatPreview({ output, format, onFormat }: {
   )
 }
 
-export function DiscordFontPreview({ tab, onTab, output, voice, prefix, onPrefix, bio, onBio, roleMode, onRoleMode, format, onFormat }: {
+export function DiscordFontPreview({ tab, onTab, output, voice, prefix, onPrefix, bio, onBio, bioPreview, styleBio, onStyleBio, roleMode, onRoleMode, format, onFormat }: {
   tab: DiscordPreviewTab
   onTab: (tab: DiscordPreviewTab) => void
   output: string
@@ -174,6 +180,9 @@ export function DiscordFontPreview({ tab, onTab, output, voice, prefix, onPrefix
   onPrefix: (prefix: string) => void
   bio: string
   onBio: (bio: string) => void
+  bioPreview: string
+  styleBio: boolean
+  onStyleBio: (active: boolean) => void
   roleMode: boolean
   onRoleMode: (active: boolean) => void
   format: DiscordChatFormat
@@ -199,7 +208,7 @@ export function DiscordFontPreview({ tab, onTab, output, voice, prefix, onPrefix
           <ServerPreview output={output} voice={voice} prefix={prefix} onPrefix={onPrefix} />
         </Tabs.Panel>
         <Tabs.Panel value="profile" className="p-3 sm:p-4">
-          <ProfilePreview output={output} bio={bio} onBio={onBio} roleMode={roleMode} onRoleMode={onRoleMode} />
+          <ProfilePreview output={output} bio={bio} onBio={onBio} bioPreview={bioPreview} styleBio={styleBio} onStyleBio={onStyleBio} roleMode={roleMode} onRoleMode={onRoleMode} />
         </Tabs.Panel>
         <Tabs.Panel value="chat" className="p-3 sm:p-4">
           <ChatPreview output={output} format={format} onFormat={onFormat} />

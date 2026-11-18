@@ -55,7 +55,7 @@ function zalgo(text: string, intensity: number) {
 }
 
 export function DiscordFontStudio() {
-  const [tab, setTab] = useState<DiscordPreviewTab>('channel')
+  const [tab, setTab] = useState<DiscordPreviewTab>('profile')
   const [text, setText] = useState('')
   const [selectedId, setSelectedId] = useState(initialStyle)
   const [category, setCategory] = useState(categories[0].label)
@@ -64,6 +64,7 @@ export function DiscordFontStudio() {
   const [affixes, setAffixes] = useState(noSymbols)
   const [prefix, setPrefix] = useState('｜')
   const [bio, setBio] = useState('')
+  const [styleBio, setStyleBio] = useState(false)
   const [roleMode, setRoleMode] = useState(false)
   const [format, setFormat] = useState<DiscordChatFormat>(null)
   const [history, setHistory] = useState<HistoryEntry[]>([])
@@ -131,7 +132,8 @@ export function DiscordFontStudio() {
           <div className="min-w-0 lg:col-start-2 lg:row-span-2 lg:row-start-1">
             <DiscordFontPreview tab={tab} onTab={value => { setTab(value); clearCopy() }} output={selected.output}
               prefix={prefix} onPrefix={value => { setPrefix(value); clearCopy() }} voice={selected.convert('VIP-Lounge')}
-              bio={bio} onBio={setBio} roleMode={roleMode} onRoleMode={value => { setRoleMode(value); clearCopy() }}
+              bio={bio} onBio={setBio} bioPreview={styleBio ? selected.convert(bio) : bio}
+              styleBio={styleBio} onStyleBio={setStyleBio} roleMode={roleMode} onRoleMode={value => { setRoleMode(value); clearCopy() }}
               format={format} onFormat={value => { setFormat(value); clearCopy() }} />
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <button type="button" className={copyClass} onClick={() => copyStyle(selected)}>
