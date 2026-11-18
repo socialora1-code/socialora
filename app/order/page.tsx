@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { OrderForm, type InitialSelection } from '@/components/order/order-form'
-import { payzinkEnabled } from '@/lib/payzink'
+import { isPay402Enabled } from '@/lib/pay402'
 import { getPlatform, getQuantities, getService, getTier, isTiered, PLATFORMS } from '@/lib/catalog'
 
 export const metadata: Metadata = {
@@ -38,7 +38,7 @@ export default async function OrderPage({ searchParams }: { searchParams: Search
           No account needed. Review your selection, add your public profile and email, then choose a payment method.
         </p>
       </header>
-      <OrderForm key={JSON.stringify(initial)} initial={initial} cardEnabled={payzinkEnabled()} />
+      <OrderForm key={JSON.stringify(initial)} initial={initial} cardEnabled={isPay402Enabled()} />
     </div>
   )
 }

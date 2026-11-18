@@ -12,8 +12,15 @@ export interface PendingOrder {
   packageName: string
   amount: string
   priceCents: number
+  pay402PaymentId?: string
   payzinkReference?: string
-  cardPayment?: { callbackToken: string; payoutWallet: string; trackingId?: string }
+  cardPayment?: {
+    callbackToken?: string
+    payoutWallet?: string
+    trackingId?: string
+    provider?: string
+    paymentId?: string
+  }
   referral?: { code: string; email: string; self: boolean } | null
 }
 

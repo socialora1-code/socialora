@@ -77,7 +77,7 @@ const sections: LegalSection[] = [
           network or exchange fees. Funds sent on the wrong network, to the wrong address or in the wrong asset may be
           unrecoverable and are not our responsibility.
         </p>
-        <p>When card checkout is available, Payzink processes your payment. We review your order after payment is confirmed.</p>
+        <p>When card checkout is available, 402pay processes your payment securely. Your order starts automatically once payment is confirmed.</p>
         <p>We may decline or cancel any order at our discretion, in which case the Refund Policy applies.</p>
       </>
     ),

@@ -10,18 +10,17 @@ export const metadata: Metadata = {
 export default async function PaymentSuccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ provider?: string }>
+  searchParams: Promise<{ provider?: string; ref?: string }>
 }) {
-  const isCard = (await searchParams).provider === 'payzink'
+  const params = await searchParams
   return (
     <main className="mx-auto flex min-h-[60vh] max-w-xl flex-col items-center justify-center px-4 py-16 text-center">
       <h1 className="text-3xl font-semibold tracking-tight">
-        {isCard ? 'You’re back from Payzink' : 'Thank you! Your payment is being confirmed'}
+        Thank you! Your payment is being confirmed
       </h1>
       <p className="mt-4 leading-relaxed text-muted-foreground">
-        {isCard
-          ? 'If your card payment was successful, we’ll verify it and email you when your order is in progress.'
-          : 'Crypto payments are confirmed on the blockchain, which can take a few minutes. Your order starts as soon as the payment is confirmed, and we will email you when it is in progress.'}
+        Your payment is being confirmed. Your order starts as soon as the
+        payment is confirmed, and we will email you when it is in progress.
       </p>
       <p className="mt-3 text-sm text-muted-foreground">
         Questions? Write to{' '}

@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server'
 import { buildApprovalUrl, createApprovalToken, profileToLink, profileToUsername } from '@/lib/approval'
-import { STANDARD_PACKAGE_NAME } from '@/lib/catalog'
+import { MIN_CARD_CENTS, MIN_CARD_MESSAGE, STANDARD_PACKAGE_NAME } from '@/lib/catalog'
 import { getInboxAddress, renderTableEmail, sendEmail } from '@/lib/email'
 import { formatQuantity, formatUSD } from '@/lib/format'
 import { getPanelKey, serviceExtras } from '@/lib/panels'
+import { create402Payment, isPay402Enabled } from '@/lib/pay402'
 import { createInvoice, saveOrder } from '@/lib/pay-store'
-import { createPayzinkCheckout, payzinkEnabled } from '@/lib/payzink'
 import { COMMISSION_PERCENT, normalizeRefCode } from '@/lib/referral'
 import { reliableSupportsQuantity } from '@/lib/reliable-smm'
 import { SITE } from '@/lib/site'
@@ -80,9 +80,12 @@ export async function POST(request: Request) {
   }
 
   const order = result.value
-  const usesPayzink = order.paymentMethod.id === 'payzink'
-  if (usesPayzink && !payzinkEnabled()) {
+  const isCard = order.paymentMethod.id === 'pay402' || order.paymentMethod.id === 'payzink' || order.paymentMethod.id === 'card2crypto'
+  if (isCard && !isPay402Enabled()) {
     return NextResponse.json({ ok: false, error: SUBMIT_FAILED }, { status: 503 })
+  }
+  if (isCard && order.priceCents < MIN_CARD_CENTS) {
+    return NextResponse.json({ ok: false, fieldErrors: { paymentMethod: MIN_CARD_MESSAGE } }, { status: 422 })
   }
   if (order.service.panel === 'reliablesmm') {
     const key = getPanelKey('reliablesmm')
@@ -110,17 +113,25 @@ export async function POST(request: Request) {
     ? profileToUsername(order.profile)
     : profileToLink(order.platform.id, order.profile)
 
-  if (usesPayzink || order.paymentMethod.id === 'nowpayments') {
+  if (isCard || order.paymentMethod.id === 'nowpayments') {
     try {
-      const payzinkCheckout = usesPayzink
-        ? await createPayzinkCheckout({
-            reference,
-            priceCents: order.priceCents,
-            email: order.email,
-            notificationUrl: `${SITE.url}/api/webhook/payzink?ref=${reference}`,
-            callbackUrl: `${SITE.url}/payment-success?provider=payzink`,
-          })
-        : undefined
+      let checkoutUrl: string | null = null
+      let pay402PaymentId: string | undefined
+
+      if (isCard) {
+        const payment = await create402Payment({
+          reference,
+          amountCents: order.priceCents,
+          description: `${serviceName} x ${formatQuantity(order.quantity)}`,
+          customerEmail: order.email,
+          successUrl: `${SITE.url}/payment-success?ref=${reference}`,
+          cancelUrl: `${SITE.url}/order`,
+          metadata: { reference, service: serviceName, quantity: order.quantity },
+        })
+        checkoutUrl = payment.url
+        pay402PaymentId = payment.id
+      }
+
       await saveOrder({
         reference,
         panelServiceId: panelServiceId ?? null,
@@ -132,10 +143,11 @@ export async function POST(request: Request) {
         amount,
         priceCents: order.priceCents,
         panel,
-        payzinkReference: payzinkCheckout?.reference,
+        pay402PaymentId,
+        cardPayment: pay402PaymentId ? { paymentId: pay402PaymentId, trackingId: pay402PaymentId, provider: '402pay' } : undefined,
         referral: referrer ? { code: referrer.code, email: referrer.email, self: referrer.self } : null,
       })
-      const invoiceUrl = payzinkCheckout?.url ?? await createInvoice({
+      const invoiceUrl = checkoutUrl ?? await createInvoice({
         priceCents: order.priceCents,
         reference,
         description: `${serviceName} x ${formatQuantity(order.quantity)}`,

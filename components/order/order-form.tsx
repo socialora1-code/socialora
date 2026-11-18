@@ -18,6 +18,8 @@ import {
   getServiceTitle,
   getTier,
   isTiered,
+  MIN_CARD_CENTS,
+  MIN_CARD_MESSAGE,
   PLATFORMS,
   STANDARD_PACKAGE_NAME,
   type PaymentMethodId,
@@ -74,7 +76,8 @@ export function OrderForm({ initial, cardEnabled }: { initial: InitialSelection;
   const activeTier = tiered ? (getTier(tierId) ?? null) : null
   const priceCents = getPriceCents(service, activeTier?.id ?? null, quantity)
   const paymentMethod = getPaymentMethod(paymentMethodId) ?? null
-  const usesHostedCheckout = paymentMethodId === 'payzink' || paymentMethodId === 'nowpayments'
+  const isCard = paymentMethodId === 'pay402' || paymentMethodId === 'payzink' || paymentMethodId === 'card2crypto'
+  const usesHostedCheckout = isCard || paymentMethodId === 'nowpayments'
   const packageName = activeTier?.name ?? STANDARD_PACKAGE_NAME
   const usernameOnly = Boolean(service.usernameOnly)
   const fixed = Boolean(service.fixed)
@@ -113,6 +116,8 @@ export function OrderForm({ initial, cardEnabled }: { initial: InitialSelection;
       errors.paymentMethod = 'Please choose a payment method.'
     } else if (paymentMethod.id === 'nowpayments' && priceCents !== null && priceCents < MIN_AUTOMATIC_CENTS) {
       errors.paymentMethod = MIN_AUTOMATIC_MESSAGE
+    } else if ((paymentMethod.id === 'pay402' || paymentMethod.id === 'payzink' || paymentMethod.id === 'card2crypto') && priceCents !== null && priceCents < MIN_CARD_CENTS) {
+      errors.paymentMethod = MIN_CARD_MESSAGE
     }
     if (!acceptTerms) errors.acceptTerms = 'Please accept the Terms of Service and Refund Policy.'
     if (priceCents === null) errors.quantity = 'Please choose a valid quantity.'

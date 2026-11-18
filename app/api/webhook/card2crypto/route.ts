@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
   const order = await getOrder(reference)
   const card = order?.cardPayment
-  if (!order || !card || !timingSafeEqual(Buffer.from(token, 'hex'), Buffer.from(card.callbackToken, 'hex'))) {
+  if (!order || !card || !card.callbackToken || !card.payoutWallet || !timingSafeEqual(Buffer.from(token, 'hex'), Buffer.from(card.callbackToken, 'hex'))) {
     return NextResponse.json({ ok: false }, { status: 403 })
   }
 
